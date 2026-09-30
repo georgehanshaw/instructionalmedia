@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The First Five Minutes - Helping Skills Simulation (Week 2)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React & ReactDOM CDNs -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;800;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { animation: none; }
+      * { transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body class="bg-[#3A3350] min-h-screen">
+  <div id="root" class="min-h-screen w-full"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    // --- SVG ICON COMPONENTS ---
+    const Icon = ({ size = 18, className = "", children }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">{children}</svg>
+    );
+    const ArrowLeft = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+    const RotateCcw = (p) => <Icon {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></Icon>;
+    const MessageCircle = (p) => <Icon {...p}><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></Icon>;
+    const Scale = (p) => <Icon {...p}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></Icon>;
+    const DoorOpen = (p) => <Icon {...p}><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.51-1.94l4-1A2 2 0 0 1 13 4.56z"/></Icon>;
+    const Repeat = (p) => <Icon {...p}><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></Icon>;
+    const Sprout = (p) => <Icon {...p}><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></Icon>;
+    const HelpCircle = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></Icon>;
+    const BookOpenCheck = (p) => <Icon {...p}><path d="M8 3H2v15h6a4 4 0 0 1 4 4 4 4 0 0 1 4-4h6V3h-6a4 4 0 0 0-4 4 4 4 0 0 0-4-4z"/><path d="m9 12 2 2 4-4"/></Icon>;
+
+    // --- THE CONVERSATION ---
+    // Nia is a fictional student. To use a photo, set avatar: "https://raw.githubusercontent.com/.../Nia.jpeg"
+    const STUDENT = { name: "Nia", avatar: null, color: "bg-violet-600" };
+
+    const TURNS = [
+      {
+        id: 1,
+        label: "Opening",
+        concept: "Invitational Skills: Door Openers",
+        pre: [
+          { t: "scene", text: "Nia, one of your resident assistants, arrives for her weekly one-on-one. She usually jokes around. Today her hood is up, she hasn't opened her laptop, and she is staring at the table." },
+        ],
+        question: "How do you open the conversation?",
+        options: [
+          { id: "a", text: "\"You seem quieter than usual today. Want to talk about it?\"", skill: "Door opener", correct: true, isQuestion: false,
+            feedback: "A door opener names what you notice and invites without pressure. Nia can walk through the door or not; either way she knows you see her.",
+            reaction: "Nia lets out a long breath. \"Yeah... I guess I do.\"" },
+          { id: "b", text: "\"Before we start, did you finish your duty log?\"", skill: "Closed question", correct: false, isQuestion: true,
+            feedback: "A closed question gets a fact, not a story. Starting with the supervisor hat tells Nia this meeting is about paperwork, not about her.",
+            reaction: "\"Yeah, it's done.\" She pulls her hood a little tighter." },
+          { id: "c", text: "\"Why are you so quiet today?\"", skill: "\"Why\" question", correct: false, isQuestion: true,
+            feedback: "\"Why\" questions can sound like an accusation, as if being quiet is something Nia has to defend.",
+            reaction: "\"I'm not being quiet. I'm just tired,\" she says, a little defensively." },
+        ],
+        note: "NOTICE OUT LOUD + INVITE WITHOUT PRESSURE = A DOOR OPENER",
+      },
+      {
+        id: 2,
+        label: "Staying with her",
+        concept: "Invitational Skills: Encouragers and Attentive Silence",
+        pre: [
+          { t: "nia", text: "I don't know. It's just... a lot right now." },
+          { t: "scene", text: "She stops and looks back down at the table." },
+        ],
+        question: "Nia has stopped talking. What do you do?",
+        options: [
+          { id: "a", text: "\"What's 'a lot'? Is it classes? Family? Your friends?\"", skill: "Question stacking", correct: false, isQuestion: true,
+            feedback: "A menu of closed questions puts Nia on the spot to pick an answer, and steers the conversation toward your guesses instead of her story.",
+            reaction: "\"I don't know. All of it? Never mind.\"" },
+          { id: "b", text: "Nod, let the pause sit for a moment, then say softly, \"Mm-hm... go on.\"", skill: "Silence + encourager", correct: true, isQuestion: false,
+            feedback: "When you feel stuck, a patient pause often works better than another question. The encourager tells Nia you are still with her and there is room to keep going.",
+            reaction: "After a moment, Nia takes a breath and keeps going." },
+          { id: "c", text: "\"Everybody feels that way around midterms. You'll get through it.\"", skill: "Reassurance", correct: false, isQuestion: false,
+            feedback: "Reassurance is kind in intent but it wraps up the topic before Nia has said what it is.",
+            reaction: "\"Yeah, I guess.\" She glances at her phone." },
+        ],
+        note: "WHEN YOU'RE STUCK, WAIT: SILENCE AND \"MM-HM\" KEEP THE DOOR OPEN",
+      },
+      {
+        id: 3,
+        label: "Reflecting",
+        concept: "Reflecting Skills: Paraphrasing",
+        pre: [
+          { t: "nia", text: "I have two exams this week. My mom keeps calling about money for home. And I've had desk duty three nights in a row, so I haven't slept more than five hours." },
+        ],
+        question: "Which response is a true paraphrase?",
+        options: [
+          { id: "a", text: "\"So you have two exams, your mom's been calling, and three duty nights?\"", skill: "Parroting", correct: false, isQuestion: true,
+            feedback: "This repeats her words back as a list, and the rising tone turns it into a question. A paraphrase captures the heart of what she said, in your words, as a statement.",
+            reaction: "\"...Yes? That's what I said.\"" },
+          { id: "b", text: "\"Have you tried time-blocking? A planner app really helped me in grad school.\"", skill: "Advice", correct: false, isQuestion: true,
+            feedback: "Advice jumps past understanding, and shifting to your own story moves the spotlight away from Nia.",
+            reaction: "\"I have a planner. That's not really the problem.\"" },
+          { id: "c", text: "\"Everything is landing on you at once, and there's no room left to rest.\"", skill: "Paraphrase", correct: true, isQuestion: false,
+            feedback: "Shorter than what she said, in your own words, and delivered as a statement. Nia gets to hear her own story and know you understood it.",
+            reaction: "\"Yes. Exactly. I feel like I'm drowning.\"" },
+        ],
+        note: "HEART OF WHAT THEY SAID + YOUR WORDS + SHORTER + A STATEMENT = PARAPHRASE",
+        extra: "paraphrase",
+      },
+      {
+        id: 4,
+        label: "The hard moment",
+        concept: "Ethics: The Three Tests and Christian Virtues",
+        pre: [
+          { t: "nia", text: "Can I tell you something if you promise not to tell anyone? A couple of nights I had a friend who isn't an RA sit at the front desk so I could study. Please don't write me up." },
+        ],
+        question: "Nia asks you to promise secrecy. What do you say?",
+        options: [
+          { id: "a", text: "\"That's a serious policy violation. I'm going to have to write you up.\"", skill: "Rush to discipline", correct: false, isQuestion: false,
+            feedback: "You may still have to follow up on this, but leading with discipline ends the conversation and her trust at the same moment. Compassion should shape how you deliver hard truths.",
+            reaction: "\"Forget it. I shouldn't have said anything.\" Nia starts to stand up." },
+          { id: "b", text: "\"Of course. Whatever you say stays between us.\"", skill: "Promise of secrecy", correct: false, isQuestion: false,
+            feedback: "A promise you may not be able to keep. You are her supervisor, residents' safety is involved, and campus policy may require you to act. Breaking this promise later would hurt her more than honesty now.",
+            reaction: "Nia relaxes and tells you everything. Now you hold information about residents' safety that you promised to keep secret." },
+          { id: "c", text: "\"Before you go on, I want to be honest with you. As your supervisor, I can't promise to keep everything private, especially anything about residents' safety. I still want to hear what's going on, and I'll be straight with you about what happens next.\"", skill: "Honest limits", correct: true, isQuestion: false,
+            feedback: "Truth telling up front, humility about your role, and compassion in the delivery. Nia gets to decide what to share knowing the real limits, and the relationship survives whatever comes next.",
+            reaction: "Nia is quiet for a moment. \"Okay. That's fair. I'd rather you be honest with me.\"" },
+        ],
+        note: "BE HONEST UP FRONT ABOUT WHAT YOU CAN AND CANNOT KEEP CONFIDENTIAL",
+        extra: "tests",
+      },
+      {
+        id: 5,
+        label: "Wrapping up",
+        concept: "Reflecting Skills: Summarizing + Emerging Adulthood",
+        pre: [
+          { t: "scene", text: "Twenty minutes later, as you start to wrap up, Nia adds one more thing." },
+          { t: "nia", text: "Honestly, I don't even know if I should be an RA. Or a nursing major. Everyone else seems to have their life figured out, and I keep changing my mind." },
+        ],
+        question: "How do you close this part of the conversation?",
+        options: [
+          { id: "a", text: "\"Let me pull up the career center's major quiz. It might help you decide.\"", skill: "Rush to fix", correct: false, isQuestion: false,
+            feedback: "A resource may help later, but it treats a big question about identity and purpose as a problem to solve in five minutes.",
+            reaction: "\"I've taken those. They all say something different.\"" },
+          { id: "b", text: "\"So there's the exams, the money pressure at home, the duty nights... and underneath all of it, a bigger question about who you're becoming and what you want your life to be about.\"", skill: "Summary", correct: true, isQuestion: false,
+            feedback: "A summary pulls several threads together at a transition or the end of a conversation. It also honors what Parks describes: this is not mere indecision but the work of forming an adult self.",
+            reaction: "Nia's eyes fill up. \"Yeah. That's it. I don't know who I'm supposed to be yet.\"" },
+          { id: "c", text: "\"At some point you just have to pick something and commit. Switching around will hurt your GPA.\"", skill: "Judging the season", correct: false, isQuestion: false,
+            feedback: "This reads Nia's searching as a flaw. For emerging adults, wrestling with meaning, purpose, and faith is important developmental work, and it goes best with mentors who take it seriously.",
+            reaction: "\"Right. Everyone keeps telling me that.\" Nia goes quiet." },
+        ],
+        note: "SEVERAL THREADS + ONE STATEMENT AT A TRANSITION = SUMMARY. SEE THE SEASON, NOT JUST THE DECISION.",
+        extra: "parks",
+      },
+    ];
+
+    const TAKEAWAYS = [
+      { title: "Run the three tests", text: "Legal, ethical, appropriate: ask all three when a situation feels unclear.", icon: Scale, tone: "bg-amber-50 border-amber-200", label: "text-amber-800" },
+      { title: "Invite, then reflect", text: "Open the conversation well, then show the student you have understood.", icon: DoorOpen, tone: "bg-violet-50 border-violet-200", label: "text-violet-800" },
+      { title: "Go easy on questions", text: "Paraphrases and silence often get further than another question.", icon: HelpCircle, tone: "bg-sky-50 border-sky-200", label: "text-sky-800" },
+      { title: "See the season", text: "Emerging adulthood is a time of forming meaning, not just making decisions.", icon: Sprout, tone: "bg-emerald-50 border-emerald-200", label: "text-emerald-800" },
+    ];
+
+    // --- SMALL COMPONENTS ---
+    const Avatar = ({ size = "w-10 h-10", text = "text-lg" }) => (
+      STUDENT.avatar
+        ? <img src={STUDENT.avatar} alt={`Portrait of ${STUDENT.name}`} className={`${size} shrink-0 rounded-full object-cover bg-stone-100`} />
+        : <div className={`${size} shrink-0 ${STUDENT.color} rounded-full flex items-center justify-center text-white font-black ${text}`} aria-hidden="true">{STUDENT.name[0]}</div>
+    );
+
+    const Toolkit = () => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left">
+        <div className="bg-violet-50 border-2 border-violet-200 rounded-xl p-3">
+          <p className="font-black text-xs uppercase text-violet-800 flex items-center gap-1.5 mb-1.5"><DoorOpen size={16} /> Invitational skills</p>
+          <ul className="text-xs font-bold text-stone-800 space-y-1">
+            <li>• Welcoming nonverbal behavior</li>
+            <li>• Door openers</li>
+            <li>• Minimal encouragers</li>
+            <li>• Careful questions (open, not "why")</li>
+            <li>• Attentive silence</li>
+          </ul>
+        </div>
+        <div className="bg-sky-50 border-2 border-sky-200 rounded-xl p-3">
+          <p className="font-black text-xs uppercase text-sky-800 flex items-center gap-1.5 mb-1.5"><Repeat size={16} /> Reflecting skills</p>
+          <ul className="text-xs font-bold text-stone-800 space-y-1">
+            <li>• <strong>Paraphrase:</strong> the heart of what they said, in your words, shorter</li>
+            <li>• <strong>Summary:</strong> several points pulled together, often at a transition</li>
+            <li>• Both work best as statements, not questions</li>
+          </ul>
+        </div>
+      </div>
+    );
+
+    const ThreeTests = ({ compact }) => {
+      const tests = [
+        ["Is it legal?", "Does it follow the law and campus policy?"],
+        ["Is it ethical?", "Does it fit professional ethical standards?"],
+        ["Is it appropriate?", "Does it fit your role, your relationship with the student, and the setting?"],
+      ];
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full text-left">
+          {tests.map(([q, d], i) => (
+            <div key={q} className="bg-amber-50 border-2 border-amber-200 rounded-xl p-3">
+              <p className="font-black text-sm text-amber-900"><span className="inline-flex w-5 h-5 rounded-full bg-amber-700 text-white text-[11px] items-center justify-center mr-1.5">{i + 1}</span>{q}</p>
+              {!compact && <p className="text-xs font-semibold text-stone-800 mt-1 leading-snug">{d}</p>}
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    const ParaphrasePanel = () => (
+      <div className="fade-in bg-sky-50 border-2 border-sky-200 rounded-xl p-4">
+        <p className="text-xs font-black uppercase text-sky-900 tracking-wider mb-2">Anatomy of a paraphrase</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+          {["The heart of what they said", "In your own words", "Briefer than the original", "Said as a statement"].map((s, i) => (
+            <div key={s} className="bg-white border border-sky-200 rounded-lg p-2 text-xs font-black text-stone-900"><span className="text-sky-700 text-lg leading-none block">{i + 1}</span>{s}</div>
+          ))}
+        </div>
+        <p className="text-xs font-semibold text-stone-800 leading-snug">
+          <strong>From your reading:</strong> Student: "I have three papers due, my shifts got doubled, and my roommate keeps having people over." Helper: "Everything is piling up at once, and there's no quiet place to catch up."
+        </p>
+      </div>
+    );
+
+    const TestsPanel = () => {
+      const rows = [
+        ["Legal?", "Campus policy on staffing the front desk may require you to follow up. A blanket promise could put you at odds with it."],
+        ["Ethical?", "ACPA principles of doing no harm and being faithful: residents' safety is involved, and a promise you may have to break is not faithful."],
+        ["Appropriate?", "You supervise Nia. The supervisor hat does not come off because she is struggling; that is exactly the conflict of interest to name."],
+      ];
+      const virtues = [
+        ["Truth telling", "Be honest up front about what you can and cannot keep confidential."],
+        ["Humility", "Stay humble about the limits of your role and training."],
+        ["Compassion", "Let compassion shape how you deliver hard truths, not whether you deliver them."],
+      ];
+      return (
+        <div className="fade-in space-y-3">
+          <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4">
+            <p className="text-xs font-black uppercase text-amber-900 tracking-wider mb-2">Running the three tests on "I promise not to tell"</p>
+            <div className="space-y-2">
+              {rows.map(([q, d]) => (
+                <div key={q} className="flex gap-2 items-start bg-white border border-amber-200 rounded-lg p-2.5">
+                  <span className="shrink-0 bg-red-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full mt-0.5">✕ {q}</span>
+                  <p className="text-xs font-semibold text-stone-800 leading-snug">{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="bg-violet-50 border-2 border-violet-200 rounded-xl p-4">
+            <p className="text-xs font-black uppercase text-violet-900 tracking-wider mb-2">Where ethics and Christian virtues meet</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {virtues.map(([v, d]) => (
+                <div key={v} className="bg-white border border-violet-200 rounded-lg p-2.5">
+                  <p className="text-xs font-black uppercase text-violet-800">{v}</p>
+                  <p className="text-xs font-semibold text-stone-800 leading-snug mt-0.5">{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const ParksPanel = () => (
+      <div className="fade-in bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
+        <p className="text-xs font-black uppercase text-emerald-900 tracking-wider mb-2 flex items-center gap-1.5"><Sprout size={16} /> Parks: the season of emerging adulthood</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+          {[
+            ["Big questions", "Meaning, purpose, and faith."],
+            ["Forming commitments", "The choices that will shape the rest of life."],
+            ["Mentoring communities", "Emerging adults do this best with people who take their questions seriously."],
+          ].map(([t, d]) => (
+            <div key={t} className="bg-white border border-emerald-200 rounded-lg p-2.5">
+              <p className="text-xs font-black uppercase text-emerald-800">{t}</p>
+              <p className="text-xs font-semibold text-stone-800 leading-snug mt-0.5">{d}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs font-bold text-emerald-950">Much of what looks like indecision in a college student is the important work of forming an adult self.</p>
+      </div>
+    );
+
+    // --- CHAT ---
+    const Bubble = ({ who, children, tone }) => {
+      if (who === "scene") return (
+        <p className="text-center text-xs font-semibold italic text-stone-600 px-4 py-1">{children}</p>
+      );
+      if (who === "nia") return (
+        <div className="flex gap-2 items-end max-w-[88%]">
+          <Avatar size="w-8 h-8" text="text-sm" />
+          <div className="bg-white border-2 border-stone-200 rounded-2xl rounded-bl-none px-4 py-2.5 text-sm font-bold text-stone-900 leading-snug shadow-sm">{children}</div>
+        </div>
+      );
+      return (
+        <div className="flex justify-end">
+          <div className={`max-w-[88%] rounded-2xl rounded-br-none px-4 py-2.5 text-sm font-bold leading-snug shadow-sm border-2 ${tone}`}>{children}</div>
+        </div>
+      );
+    };
+
+    const Conversation = ({ upTo, results }) => {
+      const items = [];
+      TURNS.slice(0, upTo + 1).forEach((turn, i) => {
+        turn.pre.forEach((p, j) => items.push(<Bubble key={`${i}-p${j}`} who={p.t === "nia" ? "nia" : "scene"}>{p.t === "nia" ? `"${p.text}"` : p.text}</Bubble>));
+        const chosen = turn.options.find(o => o.id === results[i]);
+        if (!chosen) return;
+        const best = turn.options.find(o => o.correct);
+        items.push(
+          <div key={`${i}-you`} className="fade-in space-y-1.5">
+            <Bubble who="you" tone={chosen.correct ? "bg-emerald-50 border-emerald-400 text-emerald-950" : "bg-red-50 border-red-300 text-red-950"}>
+              <span className="block text-[10px] font-black uppercase tracking-wider mb-0.5 opacity-80">You • {chosen.skill} {chosen.correct ? "✓" : "✕"}</span>
+              {chosen.text}
+            </Bubble>
+            <Bubble who="scene">{chosen.reaction}</Bubble>
+          </div>
+        );
+        if (!chosen.correct) {
+          items.push(
+            <div key={`${i}-rewind`} className="fade-in space-y-1.5">
+              <div className="flex items-center gap-2 px-2" aria-hidden="true">
+                <div className="flex-1 border-t-2 border-dashed border-violet-300"></div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-violet-700 flex items-center gap-1"><RotateCcw size={12} /> Rewind: a better move</span>
+                <div className="flex-1 border-t-2 border-dashed border-violet-300"></div>
+              </div>
+              <Bubble who="you" tone="bg-emerald-50 border-emerald-400 text-emerald-950">
+                <span className="block text-[10px] font-black uppercase tracking-wider mb-0.5 opacity-80">Take two • {best.skill} ✓</span>
+                {best.text}
+              </Bubble>
+              <Bubble who="scene">{best.reaction}</Bubble>
+            </div>
+          );
+        }
+      });
+      return <div className="space-y-3">{items}</div>;
+    };
+
+    // --- MAIN APP ---
+    function App() {
+      const [screen, setScreen] = useState("intro");
+      const [idx, setIdx] = useState(0);
+      const [results, setResults] = useState({});
+      const topRef = useRef(null);
+      const focusRef = useRef(null);
+      const firstRender = useRef(true);
+      useEffect(() => {
+        if (firstRender.current) { firstRender.current = false; return; }
+        if (focusRef.current) focusRef.current.focus({ preventScroll: true });
+      }, [screen, idx]);
+      const chatEndRef = useRef(null);
+
+      const turn = TURNS[idx];
+      const chosenId = results[idx];
+      const answered = chosenId !== undefined;
+      const chosenOpts = TURNS.map((t, i) => t.options.find(o => o.id === results[i])).filter(Boolean);
+      const score = chosenOpts.filter(o => o.correct).length;
+      const questions = chosenOpts.filter(o => o.isQuestion).length;
+      const completed = Object.keys(results).length;
+
+      useEffect(() => {
+        if (topRef.current) topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, [screen]);
+
+      useEffect(() => {
+        if (screen === "playing" && chatEndRef.current) {
+          const box = chatEndRef.current.parentElement;
+          if (box) box.scrollTop = box.scrollHeight;
+        }
+      }, [idx, results, screen]);
+
+      const choose = (optId) => { if (!answered) setResults({ ...results, [idx]: optId }); };
+      const next = () => { if (idx < TURNS.length - 1) setIdx(idx + 1); else setScreen("synthesis"); };
+      const back = () => {
+        if (screen === "score") setScreen("synthesis");
+        else if (screen === "synthesis") { setIdx(TURNS.length - 1); setScreen("playing"); }
+        else if (screen === "playing" && idx > 0) setIdx(idx - 1);
+        else setScreen("intro");
+      };
+      const restart = () => { setResults({}); setIdx(0); setScreen("intro"); };
+      const start = () => { setResults({}); setIdx(0); setScreen("playing"); };
+
+const optMsg = (opts, id) => {
+        const o = opts.find(x => x.id === id); if (!o) return "";
+        const b = opts.find(x => x.correct);
+        return `${o.correct ? "Correct" : "Not the best choice"}: ${o.tag || o.skill}. ${o.feedback}${o.correct ? "" : ` The stronger response is ${String.fromCharCode(65 + opts.indexOf(b))}: ${b.tag || b.skill}.`}`;
+      };
+      const srHeading = screen === "intro" ? "Introduction" : screen === "playing" ? `Moment ${idx + 1} of ${TURNS.length}: ${turn.label}` : screen === "synthesis" ? "Week 2 synthesis" : "Your results";
+      const liveOpt = screen === "playing" && answered ? turn.options.find(o => o.id === chosenId) : null;
+      const liveMsg = liveOpt ? `${optMsg(turn.options, chosenId)} Nia's reaction: ${liveOpt.reaction}` : "";
+
+      return (
+        <div ref={topRef} className="min-h-screen w-full bg-[#3A3350] flex flex-col relative">
+
+          {/* HEADER BAR */}
+          <header className="sticky top-0 bg-stone-900 text-stone-100 flex flex-wrap items-center gap-2 px-4 sm:px-6 py-3 shadow-md z-30 border-b border-stone-800" role="banner">
+            <div className="flex-1 flex items-center gap-3 min-w-[230px]">
+              <div className="bg-violet-300 text-stone-950 px-2.5 py-1 rounded font-black text-xs tracking-wider">WEEK 2</div>
+              <h1 className="font-black text-lg tracking-tight">THE FIRST FIVE MINUTES</h1>
+            </div>
+            <div className="hidden lg:block flex-1 text-center">
+              <span className="bg-stone-800 text-violet-300 font-extrabold text-xs uppercase px-3 py-1 rounded-full border border-stone-700 tracking-wider">
+                Ethics, Invitation, and Reflection
+              </span>
+            </div>
+            <div className="flex-1 flex items-center justify-end gap-3 font-bold text-xs">
+              <span className="text-stone-300">MOMENTS: <strong className="text-white text-sm">{completed}/{TURNS.length}</strong></span>
+              <div className="flex gap-1.5" aria-hidden="true">
+                {TURNS.map((_, i) => {
+                  const done = results[i] !== undefined;
+                  const current = screen === "playing" && i === idx && !done;
+                  return (
+                    <div key={i} className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${done ? "bg-emerald-700 text-white" : current ? "bg-violet-300 text-stone-900 ring-2 ring-violet-200" : "bg-stone-700 text-stone-200"}`}
+                      aria-label={`Moment ${i + 1} ${done ? "completed" : current ? "current" : "pending"}`}>
+                      {done ? "✓" : i + 1}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+
+          {/* BODY */}
+          <main id="main" className="flex-1 relative flex items-start justify-center p-3 sm:p-6">
+            <h2 ref={focusRef} tabIndex={-1} className="sr-only">{srHeading}</h2>
+            <div aria-live="polite" className="sr-only">{liveMsg}</div>
+
+            {/* 1. INTRO */}
+            {screen === "intro" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-3xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-violet-100 text-violet-900 border border-violet-300 font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                  Helping Skills Conversation Simulation
+                </span>
+                <div className="text-violet-700 mb-1"><MessageCircle size={40} /></div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-2">The First Five Minutes</h2>
+                <p className="text-base sm:text-lg font-extrabold text-stone-600 uppercase tracking-wide mb-4">One conversation. Five moments. Go easy on questions.</p>
+
+                <div className="bg-violet-50/90 border-2 border-violet-200 rounded-xl p-4 mb-4 text-base font-semibold leading-relaxed text-left space-y-2 w-full">
+                  <p>You are a hall director. Nia is one of your resident assistants, so you wear two hats: you supervise her work, and she trusts you enough to bring you her struggles. Today's weekly one-on-one is about to become more than a check-in.</p>
+                  <p className="font-extrabold text-stone-950">Your job: at each moment, choose what you say next. Invite, then reflect, and ask as few questions as you can.</p>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-4">
+                  <span className="bg-stone-900 text-white text-xs font-black uppercase px-3 py-1.5 rounded-full">Hat 1: You supervise her</span>
+                  <span className="bg-violet-600 text-white text-xs font-black uppercase px-3 py-1.5 rounded-full">Hat 2: She trusts you</span>
+                </div>
+
+                <p className="text-xs font-black uppercase tracking-wider text-stone-700 mb-2 self-start">Your toolkit this week</p>
+                <div className="w-full mb-4"><Toolkit /></div>
+
+                <p className="text-xs font-black uppercase tracking-wider text-stone-700 mb-2 self-start">When a situation feels unclear, run the three tests</p>
+                <div className="w-full mb-6"><ThreeTests compact /></div>
+
+                <button onClick={start}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 outline-none text-white font-black text-xl py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] uppercase tracking-wider">
+                  Start the one-on-one →
+                </button>
+              </div>
+            )}
+
+            {/* 2. CONVERSATION */}
+            {screen === "playing" && (
+              <div className="fade-in z-20 w-full max-w-[1200px] flex flex-col lg:flex-row gap-4 items-start">
+
+                {/* LEFT: CONVERSATION */}
+                <div className="flex-1 w-full min-w-0 flex flex-col gap-4">
+                  <div className="bg-[#F4F1FA] border-2 border-violet-200 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="bg-violet-200 px-4 py-2.5 flex items-center gap-3 flex-wrap">
+                      <Avatar />
+                      <div className="flex-1 min-w-[140px]">
+                        <p className="font-black text-stone-900 uppercase leading-tight">{STUDENT.name}</p>
+                        <p className="text-[11px] font-extrabold text-stone-700 uppercase">Junior • Resident Assistant • Nursing major</p>
+                      </div>
+                      <div className="flex gap-1.5 flex-wrap">
+                        <span className="bg-stone-900 text-white text-[10px] font-black uppercase px-2 py-1 rounded-full">You supervise her</span>
+                        <span className="bg-violet-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded-full">She trusts you</span>
+                      </div>
+                    </div>
+                    <div className="p-4 max-h-[60vh] lg:max-h-[62vh] overflow-y-auto" tabIndex={0} role="region" aria-label="Conversation with Nia">
+                      <Conversation upTo={idx} results={results} />
+                      <div ref={chatEndRef}></div>
+                    </div>
+                    <div className="bg-violet-100 border-t border-violet-200 px-4 py-2 flex items-center justify-between gap-2 flex-wrap">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-violet-900">Moment {idx + 1} of {TURNS.length}: {turn.label}</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-stone-600">Fictional scenario</span>
+                    </div>
+                  </div>
+
+                  {answered && (
+                    <div className="fade-in bg-[#FEF08A] border-2 border-amber-300 p-4 shadow-md rounded-xl" role="region" aria-label="Skill in focus">
+                      <div className="flex items-center gap-1.5 text-amber-950 font-black text-xs uppercase mb-1">
+                        <BookOpenCheck size={16} /> Skill in focus: {turn.concept}
+                      </div>
+                      <p className="text-sm text-stone-950 font-black leading-snug">{turn.note}</p>
+                    </div>
+                  )}
+                  {answered && turn.extra === "paraphrase" && <ParaphrasePanel />}
+                  {answered && turn.extra === "tests" && <TestsPanel />}
+                  {answered && turn.extra === "parks" && <ParksPanel />}
+                </div>
+
+                {/* RIGHT: YOUR MOVE */}
+                <div className="w-full lg:w-[400px] lg:sticky lg:top-20 bg-stone-200/95 border-2 border-stone-400 rounded-2xl p-4 shadow-xl flex flex-col gap-3 shrink-0" role="region" aria-label="Your response">
+                  <div className="bg-stone-900 text-stone-100 text-center py-2 px-3 rounded-xl font-black text-xs uppercase tracking-widest shadow">Your move</div>
+                  <p className="font-black text-stone-900 text-base leading-snug">{turn.question}</p>
+
+                  <div className="space-y-2.5">
+                    {turn.options.map((o, i) => {
+                      const selected = chosenId === o.id;
+                      let style = "bg-white border-stone-300 hover:border-violet-500 hover:-translate-y-0.5 cursor-pointer";
+                      if (answered) {
+                        if (selected && o.correct) style = "bg-emerald-50 border-emerald-600 ring-4 ring-emerald-300";
+                        else if (selected) style = "bg-red-50 border-red-600 ring-4 ring-red-200";
+                        else if (o.correct) style = "bg-emerald-50 border-emerald-500";
+                        else style = "bg-stone-100 border-stone-300";
+                      }
+                      return (
+                        <button key={o.id} onClick={() => choose(o.id)} aria-disabled={answered} aria-pressed={selected}
+                          className={`w-full text-left p-3 rounded-xl border-2 shadow-sm transition-all focus:ring-4 focus:ring-violet-300 outline-none disabled:cursor-default ${style}`}>
+                          <div className="flex gap-2.5 items-start">
+                            <span className="w-6 h-6 shrink-0 rounded-full bg-stone-900 text-white text-xs font-black flex items-center justify-center">{String.fromCharCode(65 + i)}</span>
+                            <span className="text-sm font-bold text-stone-900 leading-snug">{o.text}</span>
+                          </div>
+                          {answered && (selected || o.correct) && (
+                            <div className="mt-2 pl-8 fade-in">
+                              <span className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mb-1 ${o.correct ? "bg-emerald-700 text-white" : "bg-red-600 text-white"}`}>
+                                {o.correct ? "✓ " : "✕ "}{o.skill}
+                              </span>
+                              <p className="text-xs font-semibold text-stone-800 leading-snug">{o.feedback}</p>
+                            </div>
+                          )}
+                          {answered && !selected && !o.correct && (
+                            <div className="mt-1 pl-8"><span className="text-[10px] font-black uppercase tracking-wider text-stone-600">{o.skill}</span></div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {answered ? (
+                    <button onClick={next}
+                      className="fade-in w-full bg-stone-900 hover:bg-black text-white font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider focus:ring-4 focus:ring-violet-400 outline-none">
+                      {idx < TURNS.length - 1 ? "Continue the conversation →" : "Step back and reflect →"}
+                    </button>
+                  ) : (
+                    <p className="text-center p-2 text-stone-700 font-extrabold text-xs uppercase tracking-wider">Choose what you say next.</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 3. SYNTHESIS */}
+            {screen === "synthesis" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-violet-100 text-violet-900 border border-violet-300 font-black text-sm px-4 py-1.5 rounded-full uppercase tracking-widest mb-3">Week 2 Synthesis</span>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-5">Five moments. One pattern.</h2>
+
+                <div className="bg-violet-100/90 border-2 border-violet-300 rounded-xl p-5 text-left text-sm font-bold mb-6 space-y-2 w-full">
+                  <p className="text-base font-black text-violet-950 uppercase tracking-wide">The core takeaway:</p>
+                  <p className="leading-relaxed">The moves that carried this conversation forward were almost never questions. An invitation opened the door, silence and an encourager kept it open, reflections showed Nia she was understood, and honesty about your limits kept her trust when the conversation got hard.</p>
+                  <p className="text-violet-950 font-black leading-relaxed">Wearing two hats does not mean choosing between care and responsibility. It means being honest about both.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+                  {TAKEAWAYS.map(t => (
+                    <div key={t.title} className={`border-2 p-4 rounded-xl text-left ${t.tone}`}>
+                      <span className={`font-black text-sm uppercase flex items-center gap-1.5 mb-1 ${t.label}`}><t.icon size={18} /> {t.title}</span>
+                      <p className="text-sm font-bold leading-snug text-stone-900">{t.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={() => setScreen("score")}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-emerald-300 outline-none">
+                  View my results →
+                </button>
+              </div>
+            )}
+
+            {/* 4. SCORE */}
+            {screen === "score" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-4">One-on-one complete</h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+                  <div className="bg-stone-900 text-white px-6 py-4 rounded-2xl shadow flex flex-col items-center justify-center">
+                    <span className="text-sm font-bold text-stone-300 uppercase">Helpful moves</span>
+                    <span className="text-4xl font-black text-violet-300">{score} / {TURNS.length}</span>
+                  </div>
+                  <div className="bg-sky-900 text-white px-6 py-4 rounded-2xl shadow flex flex-col items-center justify-center">
+                    <span className="text-sm font-bold text-sky-200 uppercase">Questions you asked</span>
+                    <span className="text-4xl font-black text-sky-200">{questions}</span>
+                    <span className="text-[11px] font-bold text-sky-100 mt-1">{questions === 0 ? "Nice. That's this week's challenge." : "This week's challenge: aim for zero."}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 w-full mb-6">
+                  {TURNS.map((t, i) => {
+                    const o = t.options.find(op => op.id === results[i]);
+                    const ok = o && o.correct;
+                    return (
+                      <button key={t.id} onClick={() => { setIdx(i); setScreen("playing"); }}
+                        className="bg-white border-2 border-stone-200 hover:border-violet-500 p-2.5 rounded-xl flex flex-col items-center shadow-sm focus:ring-4 focus:ring-violet-300 outline-none"
+                        aria-label={`Review moment ${i + 1}, ${t.label}: ${ok ? "helpful" : "review"}`}>
+                        <span className="text-[10px] font-black uppercase text-stone-600">Moment {i + 1}</span>
+                        <span className="font-black text-sm uppercase leading-tight">{t.label}</span>
+                        <span className={`text-[11px] font-black mt-1 ${ok ? "text-emerald-700" : "text-red-600"}`}>{o ? `${ok ? "✓" : "✕"} ${o.skill}` : "Not answered"}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-[#FEF08A] border-2 border-amber-300 rounded-xl p-5 text-left w-full mb-4">
+                  <p className="font-black text-amber-950 uppercase tracking-wider text-base mb-1">Try it this week</p>
+                  <p className="text-sm font-bold text-stone-900 leading-relaxed">For the first five minutes of your practice conversation, ask no questions at all. Use only door openers, brief encouragers, and paraphrases. Notice how much the student tells you without being asked, and write about it in your Skills Reflection.</p>
+                </div>
+
+                <details className="bg-stone-100 border-2 border-stone-300 rounded-xl p-4 text-left w-full mb-6">
+                  <summary className="font-black text-stone-900 uppercase tracking-wider text-sm cursor-pointer">References</summary>
+                  <ul className="mt-3 space-y-2 text-xs font-semibold text-stone-800 leading-snug pl-6" style={{ textIndent: "-1.5rem" }}>
+                    <li>ACPA. (2006). <em>Statement of ethical principles and standards</em>. <a className="text-violet-800 underline break-all" href="http://www2.myacpa.org/ethics/statement.php" target="_blank" rel="noopener noreferrer">http://www2.myacpa.org/ethics/statement.php</a></li>
+                    <li>Galloway Burke, M., Duba Sauerheber, J., Hughey, A., &amp; Laves, K. (2017). <em>Helping skills for working with college students: Applying counseling theory to student affairs practice</em>. Routledge.</li>
+                    <li>Parks, S. D. (2011). <em>Big questions, worthy dreams: Mentoring emerging adults in their search for meaning, purpose, and faith</em> (Rev. ed.). Jossey-Bass.</li>
+                    <li>Young, M. E. (2021). <em>Learning the art of helping: Building blocks and techniques</em> (7th ed.). Pearson.</li>
+                  </ul>
+                </details>
+
+                <button onClick={restart}
+                  className="w-full bg-stone-900 hover:bg-black text-white font-black text-lg py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-violet-400 outline-none">
+                  Start a new one-on-one
+                </button>
+              </div>
+            )}
+          </main>
+
+          {/* FOOTER BAR */}
+          <footer className="bg-stone-900 text-stone-300 flex items-center px-4 sm:px-6 py-3 justify-between gap-2 z-30 border-t border-stone-800 text-xs font-bold" role="contentinfo">
+            <div className="flex-1">
+              {screen !== "intro" && (
+                <button onClick={back}
+                  className="flex items-center gap-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 px-3 py-1.5 rounded-lg border border-stone-700 uppercase tracking-wider focus:ring-2 focus:ring-violet-400 outline-none">
+                  <ArrowLeft size={16} /> Back
+                </button>
+              )}
+            </div>
+            <div className="hidden sm:block flex-1 text-center text-stone-400 uppercase tracking-widest text-[10px]">Fictional Scenario for Instructional Purposes</div>
+            <div className="flex-1 flex justify-end">
+              <button onClick={restart}
+                className="flex items-center gap-1 text-stone-400 hover:text-white px-2 py-1 uppercase text-[11px] focus:ring-2 focus:ring-violet-400 outline-none rounded">
+                <RotateCcw size={14} /> Start over
+              </button>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

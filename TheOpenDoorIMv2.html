@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Open Door - Helping Skills Simulation (Week 1)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React & ReactDOM CDNs -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;800;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { animation: none; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-[#2F4A56] min-h-screen">
+  <div id="root" class="min-h-screen w-full"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    // --- SVG ICON COMPONENTS ---
+    const Icon = ({ size = 18, className = "", children }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">{children}</svg>
+    );
+    const ArrowLeft = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+    const RotateCcw = (p) => <Icon {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></Icon>;
+    const Ear = (p) => <Icon {...p}><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></Icon>;
+    const Lightbulb = (p) => <Icon {...p}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></Icon>;
+    const Footprints = (p) => <Icon {...p}><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/></Icon>;
+    const Heart = (p) => <Icon {...p}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></Icon>;
+    const Compass = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></Icon>;
+    const Users = (p) => <Icon {...p}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
+    const BookOpenCheck = (p) => <Icon {...p}><path d="M8 3H2v15h6a4 4 0 0 1 4 4 4 4 0 0 1 4-4h6V3h-6a4 4 0 0 0-4 4 4 4 0 0 0-4-4z"/><path d="m9 12 2 2 4-4"/></Icon>;
+    const DoorOpen = (p) => <Icon {...p}><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.51-1.94l4-1A2 2 0 0 1 13 4.56z"/></Icon>;
+
+    // --- THE COUNSELING ARC (Hill's Three-Phase Model) ---
+    const PHASES = [
+      { id: 1, name: "Explore", full: "Phase 1: Establishing rapport and exploring", desc: "Build trust and help the student tell their story.", bg: "bg-sky-600", soft: "bg-sky-50 border-sky-200 text-sky-950", label: "text-sky-800", icon: Ear },
+      { id: 2, name: "Insight", full: "Phase 2: Gaining insight and focusing", desc: "Help the student understand what is going on and what matters most.", bg: "bg-violet-600", soft: "bg-violet-50 border-violet-200 text-violet-950", label: "text-violet-800", icon: Lightbulb },
+      { id: 3, name: "Action", full: "Phase 3: Taking action", desc: "Help the student choose and take concrete next steps.", bg: "bg-amber-600", soft: "bg-amber-50 border-amber-200 text-amber-950", label: "text-amber-800", icon: Footprints },
+    ];
+
+    // --- STUDENT VISITS ---
+    // To use a photo instead of initials, add: avatar: "https://raw.githubusercontent.com/APU-Global/Instructional_Media/main/FILE.jpeg"
+    const CASES = [
+      {
+        id: 1,
+        student: "Jordan",
+        year: "Sophomore",
+        office: "Academic Advising",
+        color: "bg-teal-600",
+        concept: "Helping Is Not Only for Counselors",
+        badges: ["WALK-IN, NO APPOINTMENT", "REQUEST: SIGN A DROP FORM", "COMMENT: \"I DON'T BELONG\"", "EYES ON THE FLOOR"],
+        scene: [
+          { t: "scene", text: "You are an academic advisor. Jordan walks into your office holding a completed drop form for Statistics." },
+          { t: "quote", text: "I just need your signature. Honestly, I'm not even sure I belong here." },
+          { t: "scene", text: "Jordan's eyes stay on the floor. The form is already filled out and ready to go." },
+        ],
+        question: "What is your best first response?",
+        options: [
+          { id: "a", text: "\"No problem. Let's pull up your schedule and find a class to replace Statistics.\"", tag: "Jumps to fixing", correct: false,
+            feedback: "This solves the stated request but skips the student. Treating the form as the whole story means the most important thing Jordan said goes unheard." },
+          { id: "b", text: "\"You said you're not sure you belong here. I'd like to hear more about that, if you're willing.\"", tag: "Understand first", correct: true,
+            feedback: "You set the paperwork aside long enough to understand. The form can wait five minutes; the comment about belonging may be the real reason Jordan came in." },
+          { id: "c", text: "\"Everyone feels that way sophomore year. You'll be fine once you find your people.\"", tag: "Closes the door", correct: false,
+            feedback: "Reassurance feels kind, but it quietly tells Jordan the feeling is not worth talking about, and the conversation ends there." },
+        ],
+        clue: "Jordan asked for a signature, but the comment about belonging was the thread worth following. You do not need to be a counselor to notice it; helping starts with understanding, not solving.",
+        note: "SURFACE REQUEST + UNEXPECTED COMMENT = UNDERSTAND BEFORE YOU FIX",
+      },
+      {
+        id: 2,
+        student: "Maya",
+        year: "First-Year",
+        office: "Residence Life",
+        color: "bg-rose-600",
+        concept: "The Three-Phase Model of Helping",
+        badges: ["8 P.M. KNOCK ON YOUR DOOR", "ROOMMATE CONFLICT", "FIRST TIME TELLING STAFF", "VOICE SHAKING"],
+        scene: [
+          { t: "scene", text: "You are a resident director. Maya, a first-year student, knocks on your door at 8 p.m." },
+          { t: "quote", text: "My roommate has people over every night. I can't sleep, I can't study, and she acts like I'm the problem." },
+          { t: "scene", text: "Her voice is shaking. This is the first time she has mentioned any of this to staff, and she has been talking for about two minutes." },
+        ],
+        question: "Which response fits where this conversation is right now?",
+        options: [
+          { id: "a", text: "\"It sounds like the hardest part is feeling like a stranger in your own room.\"", tag: "Phase 2: Insight", correct: false,
+            feedback: "A thoughtful observation, but it is premature. Two minutes in, you have not yet earned the trust or gathered the understanding that makes insight land." },
+          { id: "b", text: "\"Let's set up a roommate agreement meeting. I'll email you both tonight.\"", tag: "Phase 3: Action", correct: false,
+            feedback: "Action may help eventually, but it comes too early. Maya has not finished telling her story, so any plan built now is built on guesses." },
+          { id: "c", text: "\"That sounds exhausting. Come in and sit down. Tell me what's been happening.\"", tag: "Phase 1: Explore", correct: true,
+            feedback: "You are building rapport and inviting her story. Careful exploration now is what makes later insight and action useful." },
+        ],
+        clue: "This is the very start of the conversation and Maya's first time raising the concern. Hill's model says to establish rapport and explore before moving to insight or action.",
+        note: "EARLY CONVERSATION + TRUST NOT YET BUILT = STAY IN PHASE 1: EXPLORE",
+        extra: "arc",
+      },
+      {
+        id: 3,
+        student: "Sam",
+        year: "Senior",
+        office: "Career Center",
+        color: "bg-indigo-600",
+        concept: "Attending and Following: S-O-L-E-R",
+        badges: ["GRADUATION IN 8 WEEKS", "NO JOB OFFERS YET", "YOUR LAPTOP: OPEN", "YOUR ARMS: CROSSED"],
+        scene: [
+          { t: "scene", text: "You are a career coach. Sam, a senior, sits down for an appointment. Graduation is eight weeks away and there are no job offers yet." },
+          { t: "scene", text: "You are behind your desk, laptop open, leaning back with your arms crossed. An email notification just chimed." },
+          { t: "quote", text: "I don't really know where to start." },
+          { t: "scene", text: "Sam says this quietly, glancing at you and then down at the desk." },
+        ],
+        question: "Before you say a word, what should change?",
+        options: [
+          { id: "a", text: "Close the laptop, turn your chair toward Sam, uncross your arms, and lean in slightly.", tag: "S-O-L-E-R", correct: true,
+            feedback: "Square up, open posture, lean in. Your body now says \"you have my attention\" before you speak. Keep yourself relaxed so Sam can settle too." },
+          { id: "b", text: "Lock eyes with Sam and hold steady eye contact so Sam knows you are fully focused.", tag: "Stare, not attend", correct: false,
+            feedback: "Eye contact should be steady and natural, not a stare. Sam keeps glancing down; an intense gaze may add pressure. Eye contact norms vary across cultures and individuals." },
+          { id: "c", text: "Stay as you are, but say, \"Go ahead, I'm listening.\"", tag: "Words vs. body", correct: false,
+            feedback: "Words cannot outvote your body. An open laptop and crossed arms tell Sam you are only partly here." },
+        ],
+        clue: "Sam is anxious and unsure where to start, and your posture was already sending a message: distracted and closed. S-O-L-E-R fixes that, adjusted to the student in front of you.",
+        note: "YOUR BODY TELLS A STUDENT WHETHER YOU ARE LISTENING BEFORE YOU SAY A WORD",
+        extra: "soler",
+      },
+      {
+        id: 4,
+        student: "Luis",
+        year: "Second-Year",
+        office: "First-Gen Student Center",
+        color: "bg-emerald-700",
+        concept: "Listening Beneath the Surface",
+        badges: ["FIRST-GENERATION STUDENT", "FAILED CHEM MIDTERM", "TELLS PARENTS \"IT'S FINE\"", "LAUGHS, THEN GOES QUIET"],
+        scene: [
+          { t: "scene", text: "You staff the first-generation student center. Luis stops by between classes." },
+          { t: "quote", text: "I failed my chem midterm. My parents keep calling to ask how school is going, and I just tell them it's fine." },
+          { t: "scene", text: "He laughs a little after he says it, then goes quiet." },
+        ],
+        question: "Luis has gone quiet. What is your next move?",
+        options: [
+          { id: "a", text: "\"The tutoring center has chemistry drop-in hours. Want me to send you the link?\"", tag: "Content only", correct: false,
+            feedback: "A useful resource, offered too soon. It responds to the content (a failed exam) and skips whatever might be underneath it." },
+          { id: "b", text: "\"Why haven't you told your parents the truth?\"", tag: "Steering", correct: false,
+            feedback: "\"Why\" questions can feel like judgment. This one also steers toward your curiosity instead of following Luis." },
+          { id: "c", text: "Let the silence sit for a moment, nod, and say gently, \"You tell them it's fine...\"", tag: "Following", correct: true,
+            feedback: "Patient silence and a simple encourager give the deeper layers room to surface. You are following Luis, not steering him." },
+        ],
+        clue: "What Luis said first was the content. The laugh, the pause, and the comment about his parents hint at feelings and meaning beneath it. Silence and encouragers give those layers room.",
+        note: "LISTEN ON THREE LEVELS: CONTENT, FEELINGS, AND MEANING",
+        extra: "levels",
+      },
+      {
+        id: 5,
+        student: "Tessa",
+        year: "Junior",
+        office: "Student Activities",
+        color: "bg-fuchsia-700",
+        concept: "Wellness and Boundaries: Sustainable Helpers",
+        badges: ["CLUB TREASURER", "4 AFTER-MEETING TALKS THIS WEEK", "TEXTED YOU AT 11:40 P.M.", "YOU: SKIPPING LUNCH"],
+        scene: [
+          { t: "scene", text: "You advise student government. Tessa, the club treasurer, has stayed after meetings four times this week to talk about stress at home. Last night she texted you at 11:40 p.m." },
+          { t: "quote", text: "Can we just meet every day? You're the only one who gets me." },
+          { t: "scene", text: "You care about Tessa. You also notice you have been skipping lunch to fit in these conversations, and you are running on empty." },
+        ],
+        question: "How do you respond?",
+        options: [
+          { id: "a", text: "\"Of course. Text me anytime, day or night. I'm here for you.\"", tag: "No boundary", correct: false,
+            feedback: "Generous, but not sustainable or protective. Unlimited availability blurs your role and leaves Tessa relying on one person who is already running on empty." },
+          { id: "b", text: "\"I care about how you're doing, and I'm not the best person for this. I know who is, and I'll help you connect with the counseling center. Let's keep our weekly check-ins, too.\"", tag: "Boundary + referral", correct: true,
+            feedback: "A clear role, an honest limit, and a warm handoff. You are setting a limit as a way of caring for Tessa, not as a failure of care." },
+          { id: "c", text: "\"I'm not a counselor, so I can't talk about this. You should go to the counseling center.\"", tag: "Cold handoff", correct: false,
+            feedback: "The boundary is accurate, but it lands like a closed door. A referral works best when it comes with care and help connecting." },
+        ],
+        clue: "Tessa's need is real and growing, and so is your fatigue. Helpers who never pause cannot sustain the work. A boundary paired with a warm referral protects Tessa, you, and the field. (You will return to referral skills in Week 4.)",
+        note: "CLEAR ROLE + HONEST LIMIT + WARM REFERRAL = CARE, NOT REJECTION",
+      },
+    ];
+
+    const TAKEAWAYS = [
+      { title: "Listen before you help", text: "Attending well is the foundation for every other skill in this course.", icon: Ear, tone: "bg-sky-50 border-sky-200", label: "text-sky-800" },
+      { title: "Follow the arc", text: "Explore first, then build insight, then move to action.", icon: Compass, tone: "bg-violet-50 border-violet-200", label: "text-violet-800" },
+      { title: "Adapt the posture", text: "Use S-O-L-E-R as a starting point and adjust it to the student and their culture.", icon: Users, tone: "bg-teal-50 border-teal-200", label: "text-teal-800" },
+      { title: "Care for the helper", text: "Wellness and boundaries are part of the work, not a break from it.", icon: Heart, tone: "bg-rose-50 border-rose-200", label: "text-rose-800" },
+    ];
+
+    const WELLNESS = ["Emotional", "Physical", "Social", "Spiritual", "Intellectual", "Occupational", "Financial", "Environmental"];
+
+    // --- SMALL COMPONENTS ---
+    const Avatar = ({ c, size = "w-24 h-24", text = "text-4xl" }) => (
+      c.avatar
+        ? <img src={c.avatar} alt={`Portrait of ${c.student}`} className={`${size} shrink-0 rounded-lg object-cover bg-stone-100`} />
+        : <div className={`${size} shrink-0 ${c.color} rounded-lg flex items-center justify-center text-white font-black ${text}`} aria-hidden="true">{c.student[0]}</div>
+    );
+
+    const OfficeDecorations = () => (
+      <div className="hidden xl:block absolute inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        {/* Door sign */}
+        <div className="absolute top-6 left-8 bg-white border-4 border-stone-700 rounded-md px-3 py-2 shadow-xl -rotate-3">
+          <p className="text-[10px] font-black tracking-widest text-stone-600">OFFICE HOURS</p>
+          <p className="text-sm font-black text-emerald-700">DOOR OPEN</p>
+        </div>
+        {/* Sticky note */}
+        <div className="absolute top-28 left-12 bg-[#FEF08A] p-2 rotate-6 shadow-md border border-amber-300">
+          <p className="font-handwriting text-lg text-amber-950 leading-none">Listen first!</p>
+        </div>
+        {/* Wellness wheel */}
+        <div className="absolute top-8 right-10 flex flex-col items-center opacity-90">
+          <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl"
+            style={{ background: "conic-gradient(#0ea5e9 0 12.5%, #8b5cf6 0 25%, #f59e0b 0 37.5%, #10b981 0 50%, #f43f5e 0 62.5%, #6366f1 0 75%, #14b8a6 0 87.5%, #eab308 0 100%)" }}></div>
+          <p className="font-handwriting text-lg text-white mt-1">wellness wheel</p>
+        </div>
+        {/* Plant */}
+        <div className="absolute bottom-6 right-10 flex flex-col items-center opacity-90">
+          <div className="flex -mb-2">
+            <div className="w-8 h-12 bg-emerald-600 rounded-full -rotate-12"></div>
+            <div className="w-8 h-14 bg-emerald-500 rounded-full"></div>
+            <div className="w-8 h-12 bg-emerald-700 rounded-full rotate-12"></div>
+          </div>
+          <div className="w-16 h-12 bg-orange-700 rounded-b-xl border-t-4 border-orange-800"></div>
+        </div>
+        {/* Mug */}
+        <div className="absolute bottom-8 left-10 w-14 h-14 bg-stone-200 rounded-full shadow-xl border-4 border-white flex items-center justify-center opacity-90">
+          <div className="w-10 h-10 bg-[#4A2E24] rounded-full border-2 border-[#362119]"></div>
+        </div>
+      </div>
+    );
+
+    const ArcStrip = ({ highlight }) => (
+      <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full">
+        {PHASES.map((p, i) => (
+          <React.Fragment key={p.id}>
+            <div className={`flex-1 rounded-xl border-2 p-3 text-left ${p.soft} ${highlight === p.id ? "ring-4 ring-emerald-400" : ""}`}>
+              <div className={`flex items-center gap-1.5 font-black text-xs uppercase ${p.label}`}>
+                <p.icon size={16} /> {p.name}
+              </div>
+              <p className="text-xs font-bold leading-snug mt-1">{p.desc}</p>
+            </div>
+            {i < PHASES.length - 1 && <div className="hidden sm:flex items-center text-white/70 font-black" aria-hidden="true">→</div>}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+
+    const SolerGrid = () => {
+      const items = [["S", "Square up", "Turn toward the student."], ["O", "Open posture", "Uncross arms; put the phone away."], ["L", "Lean in", "A slight forward lean shows interest."], ["E", "Eye contact", "Steady and natural, not a stare."], ["R", "Relax", "A calm body helps an anxious student settle."]];
+      return (
+        <div className="fade-in bg-indigo-50 border-2 border-indigo-200 rounded-xl p-3">
+          <p className="text-xs font-black uppercase text-indigo-900 tracking-wider mb-2">The S-O-L-E-R posture</p>
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+            {items.map(([l, t, d]) => (
+              <div key={l} className="bg-white rounded-lg border border-indigo-200 p-2">
+                <p className="text-2xl font-black text-indigo-700 leading-none">{l}</p>
+                <p className="text-[11px] font-black text-stone-900 uppercase mt-1">{t}</p>
+                <p className="text-[11px] font-semibold text-stone-700 leading-snug">{d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] font-bold text-indigo-950 mt-2">Norms for eye contact, distance, and touch vary across cultures and individuals. Treat S-O-L-E-R as a starting point and adjust to the student in front of you.</p>
+        </div>
+      );
+    };
+
+    const LevelsGrid = () => {
+      const items = [
+        ["Content", "What happened", "He failed a chemistry midterm.", "bg-sky-50 border-sky-200", "text-sky-800"],
+        ["Feelings", "How it affected him", "Perhaps embarrassment, pressure, or loneliness. Listen for them; don't assume.", "bg-violet-50 border-violet-200", "text-violet-800"],
+        ["Meaning", "Why it matters to him", "Perhaps what his family's hopes mean to him, and what it would mean to let them down.", "bg-amber-50 border-amber-200", "text-amber-800"],
+      ];
+      return (
+        <div className="fade-in space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {items.map(([t, s, d, tone, lab]) => (
+              <div key={t} className={`rounded-lg border-2 p-2.5 ${tone}`}>
+                <p className={`text-xs font-black uppercase ${lab}`}>{t}</p>
+                <p className="text-[11px] font-black text-stone-600 uppercase">{s}</p>
+                <p className="text-xs font-bold text-stone-900 leading-snug mt-1">{d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs italic font-semibold text-stone-700 text-center">"The purposes of a person's heart are deep waters, but one who has insight draws them out" (Proverbs 20:5).</p>
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+    function App() {
+      const [screen, setScreen] = useState("intro");
+      const [idx, setIdx] = useState(0);
+      const [results, setResults] = useState({});
+      const [thinAreas, setThinAreas] = useState([]);
+      const topRef = useRef(null);
+      const focusRef = useRef(null);
+      const firstRender = useRef(true);
+      useEffect(() => {
+        if (firstRender.current) { firstRender.current = false; return; }
+        if (focusRef.current) focusRef.current.focus({ preventScroll: true });
+      }, [screen, idx]);
+
+      const c = CASES[idx];
+      const chosenId = results[idx];
+      const answered = chosenId !== undefined;
+      const score = CASES.filter((cs, i) => { const o = cs.options.find(op => op.id === results[i]); return o && o.correct; }).length;
+      const completed = Object.keys(results).length;
+
+      useEffect(() => {
+        if (topRef.current) topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, [screen, idx]);
+
+      const choose = (optId) => { if (!answered) setResults({ ...results, [idx]: optId }); };
+      const next = () => { if (idx < CASES.length - 1) setIdx(idx + 1); else setScreen("synthesis"); };
+      const back = () => {
+        if (screen === "score") setScreen("synthesis");
+        else if (screen === "synthesis") { setIdx(CASES.length - 1); setScreen("playing"); }
+        else if (screen === "playing" && idx > 0) setIdx(idx - 1);
+        else setScreen("intro");
+      };
+      const restart = () => { setResults({}); setIdx(0); setThinAreas([]); setScreen("intro"); };
+      const start = () => { setResults({}); setIdx(0); setScreen("playing"); };
+      const toggleThin = (a) => setThinAreas(thinAreas.includes(a) ? thinAreas.filter(x => x !== a) : [...thinAreas, a]);
+
+const optMsg = (opts, id) => {
+        const o = opts.find(x => x.id === id); if (!o) return "";
+        const b = opts.find(x => x.correct);
+        return `${o.correct ? "Correct" : "Not the best choice"}: ${o.tag || o.skill}. ${o.feedback}${o.correct ? "" : ` The stronger response is ${String.fromCharCode(65 + opts.indexOf(b))}: ${b.tag || b.skill}.`}`;
+      };
+      const srHeading = screen === "intro" ? "Introduction" : screen === "playing" ? `Visit ${idx + 1} of ${CASES.length}: ${c.student}, ${c.office}` : screen === "synthesis" ? "Week 1 synthesis" : "Your results";
+      const liveMsg = screen === "playing" && answered ? optMsg(c.options, chosenId) : "";
+
+      return (
+        <div ref={topRef} className="min-h-screen w-full bg-[#2F4A56] flex flex-col relative">
+
+          {/* HEADER BAR */}
+          <header className="sticky top-0 bg-stone-900 text-stone-100 flex flex-wrap items-center gap-2 px-4 sm:px-6 py-3 shadow-md z-30 border-b border-stone-800" role="banner">
+            <div className="flex-1 flex items-center gap-3 min-w-[200px]">
+              <div className="bg-teal-400 text-stone-950 px-2.5 py-1 rounded font-black text-xs tracking-wider">WEEK 1</div>
+              <h1 className="font-black text-lg tracking-tight">THE OPEN DOOR</h1>
+            </div>
+            <div className="hidden md:block flex-1 text-center">
+              <span className="bg-stone-800 text-teal-300 font-extrabold text-xs uppercase px-3 py-1 rounded-full border border-stone-700 tracking-wider">
+                Listening as the Foundation of Helping
+              </span>
+            </div>
+            <div className="flex-1 flex items-center justify-end gap-3 font-bold text-xs">
+              <span className="text-stone-300">VISITS: <strong className="text-white text-sm">{completed}/{CASES.length}</strong></span>
+              <div className="flex gap-1.5" aria-hidden="true">
+                {CASES.map((_, i) => {
+                  const done = results[i] !== undefined;
+                  const current = screen === "playing" && i === idx && !done;
+                  return (
+                    <div key={i} className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${done ? "bg-emerald-700 text-white" : current ? "bg-teal-300 text-stone-900 ring-2 ring-teal-200" : "bg-stone-700 text-stone-200"}`}
+                      aria-label={`Visit ${i + 1} ${done ? "completed" : current ? "current" : "pending"}`}>
+                      {done ? "✓" : i + 1}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+
+          {/* BODY */}
+          <main id="main" className="flex-1 relative flex items-start justify-center p-3 sm:p-6">
+            <h2 ref={focusRef} tabIndex={-1} className="sr-only">{srHeading}</h2>
+            <div aria-live="polite" className="sr-only">{liveMsg}</div>
+            {screen !== "playing" && <OfficeDecorations />}
+
+            {/* 1. INTRO */}
+            {screen === "intro" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-2xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center my-auto">
+                <span className="bg-teal-100 text-teal-900 border border-teal-300 font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                  Student Affairs Helping Skills Simulation
+                </span>
+                <div className="text-teal-700 mb-1"><DoorOpen size={40} /></div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-2">The Open Door</h2>
+                <p className="text-base sm:text-lg font-extrabold text-stone-600 uppercase tracking-wide mb-4">Five students. No appointments. Listen first.</p>
+
+                <div className="bg-teal-50/90 border-2 border-teal-200 rounded-xl p-4 mb-4 text-base font-semibold leading-relaxed text-left space-y-2">
+                  <p>Every student affairs role involves helping. This week, five students walk through your door: in advising, residence life, the career center, the first-gen center, and student activities. None of them booked a counseling appointment.</p>
+                  <p className="font-extrabold text-stone-950">Your job: choose the response that shows the helping skills from this week.</p>
+                </div>
+
+                <p className="text-xs font-black uppercase tracking-wider text-stone-700 mb-2 self-start">The counseling arc (Hill's three-phase model)</p>
+                <div className="w-full mb-6 bg-[#2F4A56] rounded-xl p-3"><ArcStrip /></div>
+
+                <button onClick={start}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 outline-none text-white font-black text-xl py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] uppercase tracking-wider">
+                  Open the Door →
+                </button>
+              </div>
+            )}
+
+            {/* 2. VISITS */}
+            {screen === "playing" && (
+              <div key={idx} className="fade-in z-20 w-full max-w-[1200px] flex flex-col lg:flex-row gap-4 items-stretch">
+
+                {/* VISIT FILE */}
+                <div className="flex-1 bg-[#F7F3EA] border-2 border-[#DCCFB0] rounded-2xl shadow-2xl flex flex-col overflow-hidden min-w-0">
+                  <div className="bg-[#DCCFB0] text-stone-900 px-5 py-1.5 font-black text-xs uppercase tracking-wider w-max max-w-full rounded-b-lg ml-5">
+                    Visit 0{c.id} • {c.office}
+                  </div>
+
+                  <div className="flex flex-col md:flex-row p-4 gap-4">
+                    {/* Profile */}
+                    <div className="md:w-[40%] flex flex-col gap-3">
+                      <div className="flex gap-4 items-start">
+                        <div className="bg-white p-2 pb-2 shadow-lg rounded border border-stone-200 rotate-[-2deg] shrink-0">
+                          <Avatar c={c} />
+                          <p className="text-center font-handwriting text-lg text-stone-800 mt-1">{c.student}</p>
+                        </div>
+                        <div>
+                          <span className="bg-stone-800 text-stone-100 font-extrabold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider">Student</span>
+                          <h3 className="text-2xl font-black uppercase tracking-tight mt-1">{c.student}</h3>
+                          <p className="text-xs font-extrabold text-stone-700 uppercase">{c.year}</p>
+                          <p className="text-xs font-extrabold text-stone-600 uppercase">{c.office}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-[11px] font-black uppercase text-stone-900 tracking-wider">What you notice:</p>
+                        {c.badges.map((b, i) => (
+                          <div key={i} className="bg-sky-100 border border-sky-300 text-sky-950 font-extrabold text-xs px-3 py-2 rounded-lg shadow-sm flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-sky-600 shrink-0" aria-hidden="true"></span>
+                            <span>{b}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {answered && (
+                        <div className="fade-in bg-[#FEF08A] border-2 border-amber-300 p-3.5 shadow-md rotate-1 rounded-lg" role="region" aria-label="Skill in focus">
+                          <div className="flex items-center gap-1.5 text-amber-950 font-black text-xs uppercase mb-1">
+                            <BookOpenCheck size={16} /> Skill in focus: {c.concept}
+                          </div>
+                          <p className="text-xs text-stone-950 font-bold leading-snug">{c.clue}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Scene */}
+                    <div className="md:w-[60%] bg-white rounded-xl shadow-md p-4 sm:p-5 border border-stone-200 flex flex-col gap-3">
+                      <div className="border-b-2 border-stone-200 pb-2 flex justify-between items-center">
+                        <h4 className="font-black text-stone-900 text-xs tracking-wider uppercase">What you hear and see</h4>
+                        <span className="text-[10px] font-black text-stone-600 uppercase">Fictional scenario</span>
+                      </div>
+                      {c.scene.map((s, i) => s.t === "quote" ? (
+                        <div key={i} className="flex gap-2 items-start">
+                          <Avatar c={c} size="w-8 h-8" text="text-sm" />
+                          <div className="bg-teal-50 border-2 border-teal-200 rounded-2xl rounded-tl-none px-4 py-3 text-stone-950 font-bold text-base leading-snug">
+                            "{s.text}"
+                          </div>
+                        </div>
+                      ) : (
+                        <div key={i} className="p-3 bg-stone-50 rounded-lg border border-stone-200 text-stone-800 font-semibold text-sm leading-snug">{s.text}</div>
+                      ))}
+
+                      {answered && c.extra === "soler" && <SolerGrid />}
+                      {answered && c.extra === "levels" && <LevelsGrid />}
+                      {answered && c.extra === "arc" && (
+                        <div className="fade-in bg-[#2F4A56] rounded-xl p-3">
+                          <p className="text-[11px] font-black uppercase text-white tracking-wider mb-2">Where Maya's conversation is right now:</p>
+                          <ArcStrip highlight={1} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* RESPONSE PANEL */}
+                <div className="lg:w-[380px] bg-stone-200/95 border-2 border-stone-400 rounded-2xl p-4 shadow-xl flex flex-col gap-3 shrink-0" role="region" aria-label="Your response">
+                  <div className="bg-stone-900 text-stone-100 text-center py-2 px-3 rounded-xl font-black text-xs uppercase tracking-widest shadow">Your move</div>
+                  <p className="font-black text-stone-900 text-base leading-snug">{c.question}</p>
+
+                  <div className="space-y-2.5">
+                    {c.options.map((o, i) => {
+                      const selected = chosenId === o.id;
+                      let style = "bg-white border-stone-300 hover:border-teal-500 hover:-translate-y-0.5 cursor-pointer";
+                      if (answered) {
+                        if (selected && o.correct) style = "bg-emerald-50 border-emerald-600 ring-4 ring-emerald-300";
+                        else if (selected) style = "bg-red-50 border-red-600 ring-4 ring-red-200";
+                        else if (o.correct) style = "bg-emerald-50 border-emerald-500";
+                        else style = "bg-stone-100 border-stone-300";
+                      }
+                      return (
+                        <button key={o.id} onClick={() => choose(o.id)} aria-disabled={answered} aria-pressed={selected}
+                          className={`w-full text-left p-3 rounded-xl border-2 shadow-sm transition-all focus:ring-4 focus:ring-teal-300 outline-none disabled:cursor-default ${style}`}>
+                          <div className="flex gap-2.5 items-start">
+                            <span className="w-6 h-6 shrink-0 rounded-full bg-stone-900 text-white text-xs font-black flex items-center justify-center">{String.fromCharCode(65 + i)}</span>
+                            <span className="text-sm font-bold text-stone-900 leading-snug">{o.text}</span>
+                          </div>
+                          {answered && (selected || o.correct) && (
+                            <div className="mt-2 pl-8 fade-in">
+                              <span className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mb-1 ${o.correct ? "bg-emerald-700 text-white" : "bg-red-600 text-white"}`}>
+                                {o.correct ? "✓ " : "✕ "}{o.tag}
+                              </span>
+                              <p className="text-xs font-semibold text-stone-800 leading-snug">{o.feedback}</p>
+                            </div>
+                          )}
+                          {answered && !selected && !o.correct && (
+                            <div className="mt-1 pl-8"><span className="text-[10px] font-black uppercase tracking-wider text-stone-600">{o.tag}</span></div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div>
+                    {answered ? (
+                      <div className="fade-in bg-white p-3.5 rounded-xl border-2 border-stone-300 shadow space-y-2">
+                        <div className="flex items-center gap-1.5 font-black text-xs uppercase text-teal-800"><BookOpenCheck size={16} /> Helper's note</div>
+                        <p className="text-xs font-black leading-tight text-stone-900">{c.note}</p>
+                        <button onClick={next}
+                          className="w-full bg-stone-900 hover:bg-black text-white font-black text-sm py-2.5 rounded-lg shadow uppercase tracking-wider mt-1 focus:ring-4 focus:ring-teal-400 outline-none">
+                          {idx < CASES.length - 1 ? `Next visitor: ${CASES[idx + 1].student} →` : "See the pattern →"}
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-center p-2 text-stone-700 font-extrabold text-xs uppercase tracking-wider">Choose one response.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 3. SYNTHESIS */}
+            {screen === "synthesis" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center my-auto">
+                <span className="bg-teal-100 text-teal-900 border border-teal-300 font-black text-sm px-4 py-1.5 rounded-full uppercase tracking-widest mb-3">Week 1 Synthesis</span>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-5">Five visits. One foundation.</h2>
+
+                <div className="bg-teal-100/90 border-2 border-teal-300 rounded-xl p-5 text-left text-sm font-bold mb-6 space-y-2 w-full">
+                  <p className="text-base font-black text-teal-950 uppercase tracking-wide">The core takeaway:</p>
+                  <p className="leading-relaxed">In every visit, the strongest move started with listening: not fixing the form, not rushing to a plan, not steering toward your own questions, and not giving more than you can sustain.</p>
+                  <p className="text-teal-950 font-black leading-relaxed">Most new helpers rush to Phase 3. Careful exploration is what earns the trust, and gathers the understanding, that makes action useful.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+                  {TAKEAWAYS.map(t => (
+                    <div key={t.title} className={`border-2 p-4 rounded-xl text-left ${t.tone}`}>
+                      <span className={`font-black text-sm uppercase flex items-center gap-1.5 mb-1 ${t.label}`}><t.icon size={18} /> {t.title}</span>
+                      <p className="text-sm font-bold leading-snug text-stone-900">{t.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={() => setScreen("score")}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-emerald-300 outline-none">
+                  View my results →
+                </button>
+              </div>
+            )}
+
+            {/* 4. SCORE */}
+            {screen === "score" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center my-auto">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-3">Office hours complete</h2>
+
+                <div className="bg-stone-900 text-white px-8 py-3.5 rounded-2xl mb-6 shadow flex items-center gap-4">
+                  <span className="text-base font-bold text-stone-300 uppercase">Listening score:</span>
+                  <span className="text-4xl font-black text-teal-300">{score} / {CASES.length}</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 w-full mb-6">
+                  {CASES.map((cs, i) => {
+                    const o = cs.options.find(op => op.id === results[i]);
+                    const ok = o && o.correct;
+                    return (
+                      <button key={cs.id} onClick={() => { setIdx(i); setScreen("playing"); }}
+                        className="bg-white border-2 border-stone-200 hover:border-teal-500 p-2.5 rounded-xl flex flex-col items-center shadow-sm focus:ring-4 focus:ring-teal-300 outline-none"
+                        aria-label={`Review visit with ${cs.student}: ${ok ? "correct" : "review"}`}>
+                        <Avatar c={cs} size="w-12 h-12" text="text-xl" />
+                        <span className="font-black text-sm uppercase mt-1.5">{cs.student}</span>
+                        <span className="text-[10px] font-bold text-stone-600 uppercase leading-tight">{cs.office}</span>
+                        <span className={`text-xs font-black mt-1 ${ok ? "text-emerald-700" : "text-red-600"}`}>{ok ? "✓ Listened well" : "✕ Review"}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Helper check-in */}
+                <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-5 text-left w-full mb-4">
+                  <p className="font-black text-rose-900 uppercase tracking-wider text-sm mb-1 flex items-center gap-1.5"><Heart size={18} /> Helper check-in: your wellness wheel</p>
+                  <p className="text-sm font-semibold text-stone-800 mb-3">Tap any area that feels thin in your own life right now. (Nothing is saved or shared.)</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {WELLNESS.map(w => {
+                      const on = thinAreas.includes(w);
+                      return (
+                        <button key={w} onClick={() => toggleThin(w)} aria-pressed={on}
+                          className={`px-3 py-2 rounded-lg border-2 text-sm font-black transition-colors focus:ring-4 focus:ring-rose-300 outline-none ${on ? "bg-rose-600 border-rose-700 text-white" : "bg-white border-rose-200 text-stone-800 hover:border-rose-400"}`}>
+                          {w}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {thinAreas.length > 0 && (
+                    <p className="fade-in text-sm font-bold text-rose-950 mt-3">Noticing is the first step. What is one small thing you could do this week for your {thinAreas.map(a => a.toLowerCase()).join(", ")} wellness, so you bring a steadier self to students?</p>
+                  )}
+                </div>
+
+                {/* Try it */}
+                <div className="bg-[#FEF08A] border-2 border-amber-300 rounded-xl p-5 text-left w-full mb-4">
+                  <p className="font-black text-amber-950 uppercase tracking-wider text-base mb-1">Try it this week</p>
+                  <p className="text-sm font-bold text-stone-900 leading-relaxed">In your first Skills Reflection conversation, practice only attending. Use the S-O-L-E-R posture, resist the urge to give advice, and let the student lead. Afterward, write down the moment you most wanted to jump in with a solution, and what happened when you waited.</p>
+                </div>
+
+                <details className="bg-stone-100 border-2 border-stone-300 rounded-xl p-4 text-left w-full mb-6">
+                  <summary className="font-black text-stone-900 uppercase tracking-wider text-sm cursor-pointer">References</summary>
+                  <ul className="mt-3 space-y-2 text-xs font-semibold text-stone-800 leading-snug pl-6" style={{ textIndent: "-1.5rem" }}>
+                    <li>Galloway Burke, M., Duba Sauerheber, J., Hughey, A., &amp; Laves, K. (2017). <em>Helping skills for working with college students: Applying counseling theory to student affairs practice</em>. Routledge.</li>
+                    <li>American Psychological Association. (n.d.). <em>Clara Hill interview on helping skills</em> [Video]. <a className="text-teal-800 underline break-all" href="https://www.apa.org/pubs/books/interviews/4311012-hill" target="_blank" rel="noopener noreferrer">https://www.apa.org/pubs/books/interviews/4311012-hill</a></li>
+                    <li>Higgins, J. (2018, December 18). What you're forgetting when you set boundaries with students. <em>Presence</em> [PDF in Canvas].</li>
+                    <li>Rodriguez, W., &amp; Carpenter, A. (2022, April 7). Loving your field enough to set limits. <em>Inside Higher Ed</em>. <a className="text-teal-800 underline break-all" href="https://www.insidehighered.com/advice/2022/04/08/people-who-work-higher-ed-must-set-professional-boundaries-opinion" target="_blank" rel="noopener noreferrer">https://www.insidehighered.com/advice/2022/04/08/people-who-work-higher-ed-must-set-professional-boundaries-opinion</a></li>
+                  </ul>
+                </details>
+
+                <button onClick={restart}
+                  className="w-full bg-stone-900 hover:bg-black text-white font-black text-lg py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-teal-400 outline-none">
+                  Return to the front door
+                </button>
+              </div>
+            )}
+          </main>
+
+          {/* FOOTER BAR */}
+          <footer className="bg-stone-900 text-stone-300 flex items-center px-4 sm:px-6 py-3 justify-between gap-2 z-30 border-t border-stone-800 text-xs font-bold" role="contentinfo">
+            <div className="flex-1">
+              {screen !== "intro" && (
+                <button onClick={back}
+                  className="flex items-center gap-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 px-3 py-1.5 rounded-lg border border-stone-700 uppercase tracking-wider focus:ring-2 focus:ring-teal-400 outline-none">
+                  <ArrowLeft size={16} /> Back
+                </button>
+              )}
+            </div>
+            <div className="hidden sm:block flex-1 text-center text-stone-400 uppercase tracking-widest text-[10px]">Fictional Scenarios for Instructional Purposes</div>
+            <div className="flex-1 flex justify-end">
+              <button onClick={restart}
+                className="flex items-center gap-1 text-stone-400 hover:text-white px-2 py-1 uppercase text-[11px] focus:ring-2 focus:ring-teal-400 outline-none rounded">
+                <RotateCcw size={14} /> Start over
+              </button>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
