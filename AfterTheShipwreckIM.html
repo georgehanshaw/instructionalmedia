@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>After the Shipwreck - Helping Skills Simulation (Week 3)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React & ReactDOM CDNs -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;800;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bob {
+      animation: bob 3s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translate(-50%, 0) rotate(-3deg); }
+      50% { transform: translate(-50%, -3px) rotate(3deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in, .bob { animation: none; }
+      .bob { transform: translate(-50%, 0); }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-[#1F3A56] min-h-screen">
+  <div id="root" class="min-h-screen w-full"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    // --- SVG ICON COMPONENTS ---
+    const Icon = ({ size = 18, className = "", children }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">{children}</svg>
+    );
+    const ArrowLeft = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+    const RotateCcw = (p) => <Icon {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></Icon>;
+    const Sailboat = (p) => <Icon {...p}><path d="M22 18H2a4 4 0 0 0 4 4h12a4 4 0 0 0 4-4Z"/><path d="M21 14 10 2 3 14h18Z"/><path d="M10 2v16"/></Icon>;
+    const Sun = (p) => <Icon {...p}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></Icon>;
+    const Sparkles = (p) => <Icon {...p}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></Icon>;
+    const CloudLightning = (p) => <Icon {...p}><path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 3.5 7.33"/><path d="m13 12-3 5h4l-3 5"/></Icon>;
+    const Layers = (p) => <Icon {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></Icon>;
+    const Brain = (p) => <Icon {...p}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></Icon>;
+    const Glasses = (p) => <Icon {...p}><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-4 0"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2"/></Icon>;
+    const ListTree = (p) => <Icon {...p}><path d="M21 12h-8"/><path d="M21 6H8"/><path d="M21 18h-8"/><path d="M3 6v4c0 1.1.9 2 2 2h3"/><path d="M3 10v6c0 1.1.9 2 2 2h3"/></Icon>;
+    const BookOpenCheck = (p) => <Icon {...p}><path d="M8 3H2v15h6a4 4 0 0 1 4 4 4 4 0 0 1 4-4h6V3h-6a4 4 0 0 0-4 4 4 4 0 0 0-4-4z"/><path d="m9 12 2 2 4-4"/></Icon>;
+    const Copy = (p) => <Icon {...p}><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></Icon>;
+
+    // --- STUDENT ---
+    // Mateo is a fictional student. To use a photo, set avatar: "https://raw.githubusercontent.com/.../Mateo.jpeg"
+    const STUDENT = { name: "Mateo", avatar: null, color: "bg-sky-700" };
+
+    // --- STATIONS ---
+    const STATIONS = [
+      {
+        id: 1, meeting: "Meeting 1 • October", stage: "shipwreck", label: "The shipwreck",
+        concept: "Shipwreck, Gladness, and Amazement", type: "choice",
+        scene: [
+          { t: "scene", text: "You advise student athletes. Mateo, a sophomore and starting midfielder, tore his ACL in September. The season is over, and his doctors aren't sure he will play at this level again." },
+          { t: "quote", text: "Everyone keeps telling me everything happens for a reason. My teammates, my aunt, even my professor. I'm so tired of hearing it." },
+        ],
+        question: "What do you say?",
+        options: [
+          { id: "a", text: "\"Maybe this is a chance to discover a new passion. Some of the best things come out of setbacks!\"", tag: "Rushing to gladness", correct: false,
+            feedback: "Hope may come later, but pushing Mateo toward the bright side now is one more version of \"everything happens for a reason.\" It rushes him out of the shipwreck." },
+          { id: "b", text: "\"Right now it feels like everything you counted on just fell apart, and people keep trying to tie a bow on it.\"", tag: "Being present", correct: true,
+            feedback: "You stay with Mateo in the middle of the shipwreck instead of hurrying him out. Presence, not a silver lining, is often the most helpful thing a helper can offer." },
+          { id: "c", text: "\"Have you thought about coaching or athletic training? You'd still be around the game.\"", tag: "Rush to fix", correct: false,
+            feedback: "A reasonable idea for later, but it treats a loss as a scheduling problem. Mateo hasn't finished grieving what he lost." },
+        ],
+        note: "DON'T RUSH A STUDENT OUT OF THE SHIPWRECK. BE PRESENT IN THE MIDDLE OF IT.",
+        extra: "shipwreck",
+      },
+      {
+        id: 2, meeting: "Meeting 1 • October", stage: "shipwreck", label: "Reflect the why",
+        concept: "Reflecting Meaning", type: "choice",
+        scene: [
+          { t: "scene", text: "A few minutes later, Mateo keeps going." },
+          { t: "quote", text: "Soccer's been my thing since I was five. My dad drove me to every single practice, even when he was working two jobs. I don't even know who I am if I'm not a player." },
+        ],
+        question: "Which response reflects meaning?",
+        options: [
+          { id: "a", text: "\"You've been playing since you were five, and now you can't play.\"", tag: "Content only", correct: false,
+            feedback: "Accurate, but it only restates the facts. Mateo hears that you followed the story, not that you understood why it matters." },
+          { id: "b", text: "\"You're feeling lost and sad right now.\"", tag: "Reflection of feeling", correct: false,
+            feedback: "A solid reflection of feeling, and not wrong. It names the emotion but not the values underneath it." },
+          { id: "c", text: "\"Soccer has been more than a sport. It's been who you are, and part of how you and your dad show up for each other.\"", tag: "Reflection of meaning", correct: true,
+            feedback: "You name why it matters: identity, and a bond with his dad. Reflecting meaning like this often opens Phase 2 of the counseling arc, where insight begins." },
+        ],
+        note: "A REFLECTION OF FEELING NAMES THE EMOTION. A REFLECTION OF MEANING NAMES WHY IT MATTERS.",
+        extra: "ladder",
+      },
+      {
+        id: 3, meeting: "Meeting 2 • November", stage: "shipwreck", label: "Lens 1: Psychoanalytic",
+        concept: "Psychoanalytic Theory in Brief", type: "sort",
+        scene: [
+          { t: "scene", text: "Two weeks later, Mateo stops by again. Over twenty minutes he says the three things listed under Your move. Each one sounds reasonable on the surface." },
+          { t: "scene", text: "Through a psychoanalytic lens, each may also be a defense mechanism: a way of protecting himself from anxiety that sits beneath his awareness." },
+        ],
+        question: "Match each statement to the defense mechanism it may show.",
+        categories: ["Denial", "Projection", "Rationalization"],
+        items: [
+          { id: "i1", text: "\"Coach never believed in me anyway.\"", answer: "Projection",
+            why: "Mateo's own doubts about himself may be showing up as something he sees in Coach." },
+          { id: "i2", text: "\"I'll be back by spring. The doctors are being dramatic.\"", answer: "Denial",
+            why: "Refusing to accept a painful reality keeps the full weight of the injury at a distance." },
+          { id: "i3", text: "\"Honestly, I didn't even like soccer that much. It was more my dad's thing.\"", answer: "Rationalization",
+            why: "A reasonable-sounding explanation that makes the loss hurt less, even though it contradicts what he told you in October." },
+        ],
+        note: "NOTICE PATTERNS AND DEFENSIVENESS WITH COMPASSION. DON'T ANNOUNCE THEM (\"THAT'S DENIAL!\").",
+        extra: "psych",
+      },
+      {
+        id: 4, meeting: "Meeting 2 • November", stage: "shipwreck", label: "Lens 2: CBT and REBT",
+        concept: "CBT and REBT in Brief", type: "sort",
+        scene: [
+          { t: "scene", text: "Later in the same meeting, Mateo shifts to school." },
+          { t: "quote", text: "I bombed my stats exam last week. I can't focus on anything. I'm going to fail out and lose my scholarship. I must never fail at anything, or I'm worthless. I haven't slept, and I skipped stats twice this week." },
+        ],
+        question: "Using Ellis' A-B-C model, sort the pieces of Mateo's story.",
+        categories: ["A: Activating event", "B: Belief", "C: Consequence"],
+        items: [
+          { id: "i1", text: "\"I must never fail at anything, or I'm worthless.\"", answer: "B: Belief",
+            why: "A rigid \"must\" belief, and all-or-nothing thinking: exactly the kind of belief REBT targets for disputing." },
+          { id: "i2", text: "Not sleeping, feeling panicky, skipping stats class", answer: "C: Consequence",
+            why: "The emotional and behavioral consequences. In REBT, these flow from the belief about the event, not from the event alone." },
+          { id: "i3", text: "Did poorly on one stats exam", answer: "A: Activating event",
+            why: "The event itself. Disappointing, but on its own it doesn't dictate how Mateo must feel or act." },
+          { id: "i4", text: "\"I'm going to fail out and lose my scholarship.\"", answer: "B: Belief",
+            why: "Catastrophizing: jumping from one exam to the worst possible outcome." },
+        ],
+        followup: {
+          question: "Now dispute it. Which belief could replace \"I must never fail\"?",
+          options: [
+            { id: "a", text: "\"I just need to work harder so I never fail again.\"", tag: "Still a \"must\"", correct: false,
+              feedback: "This keeps the demand that he never fail. The rigid belief is still in charge, just with a new to-do list." },
+            { id: "b", text: "\"Stats doesn't matter anyway. I'll just stop thinking about it.\"", tag: "Avoidance", correct: false,
+              feedback: "Dismissing the event isn't disputing the belief. \"I must never fail\" is untouched and will show up again next time." },
+            { id: "c", text: "\"One exam is disappointing, and I have time and help to recover.\"", tag: "Realistic belief", correct: true,
+              feedback: "Specific, true, and hopeful, without pretending the exam went fine. That is the kind of belief REBT aims for." },
+          ],
+        },
+        note: "IN REBT, THE BELIEF ABOUT AN EVENT DRIVES THE CONSEQUENCE. DISPUTE THE BELIEF.",
+        extra: "abc",
+      },
+      {
+        id: 5, meeting: "Meeting 3 • December", stage: "gladness", label: "Gladness",
+        concept: "Faith as Meaning-Making + Reflecting Meaning", type: "choice",
+        scene: [
+          { t: "scene", text: "In December, Mateo walks in smiling for the first time all semester." },
+          { t: "quote", text: "It's weird. I've been helping coach the club team, and I actually love it. When a freshman finally gets a move right, it's the best feeling. I've been going back to church with my roommate, too. I didn't think I'd feel like this again." },
+        ],
+        question: "Which response reflects the meaning he is making?",
+        options: [
+          { id: "a", text: "\"It sounds like what mattered most in soccer, helping a team grow and belonging to something bigger than yourself, is still yours, even off the field.\"", tag: "Reflection of meaning", correct: true,
+            feedback: "You reflect the new, more adequate meaning Mateo is composing, in his terms. That is gladness, and he gets to hear it named." },
+          { id: "b", text: "\"See? Everything really does happen for a reason.\"", tag: "Imposing meaning", correct: false,
+            feedback: "Mateo told you in October how tired he was of hearing this. The meaning he is finding is his to compose, not yours to announce." },
+          { id: "c", text: "\"You sound really happy!\"", tag: "Reflection of feeling", correct: false,
+            feedback: "True and warm, but it stops at the emotion. There is a bigger story about meaning here." },
+        ],
+        note: "GLADNESS: A NEW, MORE ADEQUATE SENSE OF MEANING EMERGES. REFLECT IT; DON'T WRITE IT FOR HIM.",
+        extra: "faith",
+      },
+      {
+        id: 6, meeting: "Meeting 3 • December", stage: "gladness", label: "Four summaries",
+        concept: "Four Kinds of Summaries", type: "sort",
+        scene: [
+          { t: "scene", text: "Looking back, you used a different kind of summary at each point in your work with Mateo. Here they are, out of order." },
+        ],
+        question: "Name each kind of summary.",
+        categories: ["Opening", "Signal", "Thematic", "Planning"],
+        items: [
+          { id: "i1", text: "\"Your dad keeps coming up: the rides to practice, not wanting to let him down, not knowing how to call him now. He seems close to the center of all this.\"", answer: "Thematic",
+            why: "Names a theme that keeps coming up across the conversations." },
+          { id: "i2", text: "\"So your next steps are to meet your advisor about kinesiology, keep helping with the club team, and call your dad this weekend.\"", answer: "Planning",
+            why: "Pulls together goals and next steps at the end of a conversation." },
+          { id: "i3", text: "\"Last time, you told me how strange it feels to watch practice from the sidelines. I'd like to pick up there.\"", answer: "Opening",
+            why: "Reconnects to where you left off last time." },
+          { id: "i4", text: "\"We've spent a lot of time on how hard this has been. I wonder if we could shift toward what you want the rest of this year to look like.\"", answer: "Signal",
+            why: "Marks a transition, here from exploring to focusing." },
+        ],
+        note: "OPENING RECONNECTS • SIGNAL MARKS A TRANSITION • THEMATIC NAMES A PATTERN • PLANNING GATHERS NEXT STEPS",
+        extra: "summaries",
+      },
+    ];
+
+    const TAKEAWAYS = [
+      { title: "Meaning is made", text: "Students are composing meaning, and shipwrecks are part of the process.", icon: Sailboat, tone: "bg-sky-50 border-sky-200", label: "text-sky-800" },
+      { title: "Reflect the why", text: "Reflecting meaning names the values underneath a student's words.", icon: Layers, tone: "bg-amber-50 border-amber-200", label: "text-amber-800" },
+      { title: "Summaries give shape", text: "Use opening, signal, thematic, and planning summaries to move through the arc.", icon: ListTree, tone: "bg-emerald-50 border-emerald-200", label: "text-emerald-800" },
+      { title: "Two lenses", text: "Psychoanalytic Theory looks beneath awareness; CBT and REBT look at thoughts we can examine and change.", icon: Glasses, tone: "bg-violet-50 border-violet-200", label: "text-violet-800" },
+    ];
+
+    const NOTEBOOK = `COUNSELING THEORIES DIGITAL NOTEBOOK: WEEK 3 STARTER
+
+Psychoanalytic Theory
+- Core idea (in my words):
+- Key terms: unconscious, early experiences, defense mechanisms (denial, projection, rationalization), free association, interpretation, transference
+- Where I saw it in Mateo's story:
+- What is useful for student affairs work:
+- A question I want the presentation to answer:
+
+CBT and REBT
+- Core idea (in my words):
+- The A-B-C model, with my own example: A = ___ / B = ___ / C = ___ / Dispute = ___
+- Thinking errors to watch for: all-or-nothing thinking, catastrophizing
+- What is useful for student affairs work:
+- A question I want the presentation to answer:
+
+Integration
+- How does each theory fit, or not fit, with my own faith and values?`;
+
+    // --- HELPERS ---
+    const maxPoints = (s) => s.type === "choice" ? 1 : s.items.length + (s.followup ? 1 : 0);
+    const TOTAL = STATIONS.reduce((n, s) => n + maxPoints(s), 0);
+
+    const pointsFor = (s, a) => {
+      if (!a) return 0;
+      if (s.type === "choice") { const o = s.options.find(x => x.id === a.choice); return o && o.correct ? 1 : 0; }
+      let p = a.checked ? s.items.filter(it => a.assign[it.id] === it.answer).length : 0;
+      if (s.followup) { const o = s.followup.options.find(x => x.id === a.followup); if (o && o.correct) p += 1; }
+      return p;
+    };
+
+    const isDone = (s, a) => {
+      if (!a) return false;
+      if (s.type === "choice") return !!a.choice;
+      return a.checked && (!s.followup || !!a.followup);
+    };
+
+    // --- SMALL COMPONENTS ---
+    const Avatar = ({ size = "w-10 h-10", text = "text-lg" }) => (
+      STUDENT.avatar
+        ? <img src={STUDENT.avatar} alt={`Portrait of ${STUDENT.name}`} className={`${size} shrink-0 rounded-full object-cover bg-stone-100`} />
+        : <div className={`${size} shrink-0 ${STUDENT.color} rounded-full flex items-center justify-center text-white font-black ${text}`} aria-hidden="true">{STUDENT.name[0]}</div>
+    );
+
+    const shipPos = (screen, idx) => {
+      if (screen === "intro") return 4;
+      if (screen !== "playing") return 94;
+      return [9, 20, 32, 44, 66, 78][idx];
+    };
+
+    const Voyage = ({ screen, idx }) => {
+      const pos = shipPos(screen, idx);
+      const stage = pos < 55 ? "Shipwreck" : pos < 86 ? "Gladness" : "Amazement";
+      return (
+        <div className="w-full" role="img" aria-label={`Mateo's journey: currently at ${stage}`}>
+          <div className="relative h-14">
+            <div className="absolute left-0 right-0 bottom-2 h-3 rounded-full overflow-hidden flex">
+              <div className="h-full bg-slate-500" style={{ width: "55%" }}></div>
+              <div className="h-full bg-amber-400" style={{ width: "31%" }}></div>
+              <div className="h-full bg-sky-300" style={{ width: "14%" }}></div>
+            </div>
+            <div className="bob absolute bottom-4 text-white transition-all duration-700 ease-out" style={{ left: `${pos}%` }}>
+              <Sailboat size={34} />
+            </div>
+          </div>
+          <div className="flex text-[10px] sm:text-xs font-black uppercase tracking-wider">
+            <div className="flex items-center gap-1 text-slate-200" style={{ width: "55%" }}><CloudLightning size={14} /> Shipwreck</div>
+            <div className="flex items-center gap-1 text-amber-300" style={{ width: "31%" }}><Sun size={14} /> Gladness</div>
+            <div className="flex items-center gap-1 text-sky-200" style={{ width: "14%" }}><Sparkles size={14} /> <span className="hidden sm:inline">Amazement</span></div>
+          </div>
+        </div>
+      );
+    };
+
+    const Panel = ({ tone, title, icon: I, children }) => (
+      <div className={`fade-in border-2 rounded-xl p-4 ${tone}`}>
+        <p className="text-xs font-black uppercase tracking-wider mb-2 flex items-center gap-1.5">{I && <I size={16} />} {title}</p>
+        {children}
+      </div>
+    );
+
+    const MiniCards = ({ items, border }) => (
+      <div className={`grid grid-cols-1 ${items.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"} gap-2`}>
+        {items.map(([t, d]) => (
+          <div key={t} className={`bg-white border ${border} rounded-lg p-2.5`}>
+            <p className="text-xs font-black uppercase">{t}</p>
+            <p className="text-xs font-semibold text-stone-800 leading-snug mt-0.5">{d}</p>
+          </div>
+        ))}
+      </div>
+    );
+
+    const Extras = ({ kind }) => {
+      if (kind === "shipwreck") return (
+        <Panel tone="bg-slate-50 border-slate-300 text-slate-900" title="Parks: how meaning grows through loss" icon={Sailboat}>
+          <MiniCards border="border-slate-200" items={[
+            ["Shipwreck", "What we counted on falls apart: a failure, a loss, a betrayal."],
+            ["Gladness", "A new and more adequate sense of meaning emerges."],
+            ["Amazement", "Wonder at having come through."],
+          ]} />
+          <p className="text-xs font-bold text-slate-900 mt-2">Being present in the middle of it, as Psalm 34:18 pictures God being close to the brokenhearted, is often the most helpful thing we can offer.</p>
+        </Panel>
+      );
+      if (kind === "ladder") return (
+        <Panel tone="bg-amber-50 border-amber-200 text-amber-900" title="Three levels of reflection" icon={Layers}>
+          <div className="space-y-2">
+            {[
+              ["Content", "What happened", "He can't play soccer this season.", "bg-white"],
+              ["Feeling", "The emotion", "He feels lost and sad.", "bg-white"],
+              ["Meaning", "Why it matters", "Soccer is his identity and a bond with his dad.", "bg-amber-100"],
+            ].map(([t, s, d, bg], i) => (
+              <div key={t} className={`${bg} border border-amber-200 rounded-lg p-2.5 flex gap-3 items-start`} style={{ marginLeft: `${i * 12}px` }}>
+                <span className="text-xs font-black uppercase w-16 shrink-0">{t}</span>
+                <p className="text-xs font-semibold text-stone-800 leading-snug"><strong className="uppercase text-[10px] text-stone-500 block">{s}</strong>{d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs font-semibold text-stone-800 mt-2 leading-snug"><strong>From your reading:</strong> Student: "I don't know if I can switch majors. My parents gave up so much for me to be here." Helper: "You're torn, because honoring your family's sacrifice matters as much to you as finding the right path."</p>
+        </Panel>
+      );
+      if (kind === "psych") return (
+        <Panel tone="bg-violet-50 border-violet-200 text-violet-900" title="Psychoanalytic Theory in brief" icon={Brain}>
+          <ul className="text-xs font-semibold text-stone-800 space-y-1.5 leading-snug">
+            <li>• Associated with Sigmund Freud and later analytic thinkers.</li>
+            <li>• Much of what drives behavior is unconscious and shaped by early experiences and relationships.</li>
+            <li>• Defense mechanisms, such as denial, projection, and rationalization, protect us from anxiety.</li>
+            <li>• Classic techniques include free association, interpretation, and attention to transference.</li>
+            <li className="font-black text-violet-950">• In student affairs, the value is less in the techniques than in noticing patterns and defensiveness with compassion.</li>
+          </ul>
+        </Panel>
+      );
+      if (kind === "abc") return (
+        <Panel tone="bg-sky-50 border-sky-200 text-sky-900" title="Ellis' A-B-C model, plus D" icon={Glasses}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              ["A", "Activating event", "One poor stats exam"],
+              ["B", "Belief", "\"I must never fail, or I'm worthless.\""],
+              ["C", "Consequence", "Panic, no sleep, skipping class"],
+              ["D", "Dispute", "\"One exam is disappointing, and I have time and help to recover.\""],
+            ].map(([l, t, d]) => (
+              <div key={l} className={`rounded-lg p-2.5 border ${l === "D" ? "bg-emerald-50 border-emerald-300" : "bg-white border-sky-200"}`}>
+                <p className={`text-2xl font-black leading-none ${l === "D" ? "text-emerald-700" : "text-sky-700"}`}>{l}</p>
+                <p className="text-[11px] font-black uppercase text-stone-900 mt-1">{t}</p>
+                <p className="text-[11px] font-semibold text-stone-700 leading-snug">{d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs font-bold text-sky-950 mt-2">CBT also looks for automatic thoughts and thinking errors, such as all-or-nothing thinking and catastrophizing.</p>
+        </Panel>
+      );
+      if (kind === "faith") return (
+        <Panel tone="bg-amber-50 border-amber-200 text-amber-900" title="Parks: faith as meaning-making" icon={Sun}>
+          <MiniCards border="border-amber-200" items={[
+            ["Parks' broad sense", "Faith is the activity of making meaning: composing a sense of what is ultimately true, trustworthy, and worth living for."],
+            ["A biblical definition", "\"Now faith is confidence in what we hope for and assurance about what we do not see\" (Hebrews 11:1)."],
+          ]} />
+          <p className="text-xs font-bold text-amber-950 mt-2">As you read perspectives that differ from your own, use your own critical thinking and values to decide what you believe.</p>
+        </Panel>
+      );
+      if (kind === "summaries") return (
+        <Panel tone="bg-emerald-50 border-emerald-200 text-emerald-900" title="Four kinds of summaries" icon={ListTree}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              ["Opening", "Reconnects to where you left off last time."],
+              ["Signal", "Marks a transition, such as moving from exploring to focusing."],
+              ["Thematic", "Names a theme that keeps coming up."],
+              ["Planning", "Pulls together goals and next steps at the end."],
+            ].map(([t, d]) => (
+              <div key={t} className="bg-white border border-emerald-200 rounded-lg p-2.5">
+                <p className="text-xs font-black uppercase">{t}</p>
+                <p className="text-[11px] font-semibold text-stone-800 leading-snug mt-0.5">{d}</p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      );
+      return null;
+    };
+
+    // --- CHOICE LIST ---
+    const ChoiceList = ({ options, chosen, onChoose }) => {
+      const answered = !!chosen;
+      return (
+        <div className="space-y-2.5">
+          {options.map((o, i) => {
+            const selected = chosen === o.id;
+            let style = "bg-white border-stone-300 hover:border-sky-500 hover:-translate-y-0.5 cursor-pointer";
+            if (answered) {
+              if (selected && o.correct) style = "bg-emerald-50 border-emerald-600 ring-4 ring-emerald-300";
+              else if (selected) style = "bg-red-50 border-red-600 ring-4 ring-red-200";
+              else if (o.correct) style = "bg-emerald-50 border-emerald-500";
+              else style = "bg-stone-100 border-stone-300 opacity-80";
+            }
+            return (
+              <button key={o.id} onClick={() => onChoose(o.id)} disabled={answered} aria-pressed={selected}
+                className={`w-full text-left p-3 rounded-xl border-2 shadow-sm transition-all focus:ring-4 focus:ring-sky-300 outline-none disabled:cursor-default ${style}`}>
+                <div className="flex gap-2.5 items-start">
+                  <span className="w-6 h-6 shrink-0 rounded-full bg-stone-900 text-white text-xs font-black flex items-center justify-center">{String.fromCharCode(65 + i)}</span>
+                  <span className="text-sm font-bold text-stone-900 leading-snug">{o.text}</span>
+                </div>
+                {answered && (selected || o.correct) && (
+                  <div className="mt-2 pl-8 fade-in">
+                    <span className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mb-1 ${o.correct ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}>
+                      {o.correct ? "✓ " : "✕ "}{o.tag}
+                    </span>
+                    <p className="text-xs font-semibold text-stone-800 leading-snug">{o.feedback}</p>
+                  </div>
+                )}
+                {answered && !selected && !o.correct && (
+                  <div className="mt-1 pl-8"><span className="text-[10px] font-black uppercase tracking-wider text-stone-500">{o.tag}</span></div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      );
+    };
+
+    // --- SORT LIST ---
+    const SortList = ({ station, answer, onAssign, onCheck }) => {
+      const assign = (answer && answer.assign) || {};
+      const checked = answer && answer.checked;
+      const allSet = station.items.every(it => assign[it.id]);
+      return (
+        <div className="space-y-2.5">
+          {station.items.map((it, n) => {
+            const pick = assign[it.id];
+            const ok = checked && pick === it.answer;
+            return (
+              <div key={it.id} className={`p-3 rounded-xl border-2 shadow-sm ${checked ? (ok ? "bg-emerald-50 border-emerald-500" : "bg-red-50 border-red-400") : "bg-white border-stone-300"}`}
+                role="group" aria-label={`Item ${n + 1}`}>
+                <p className="text-sm font-bold text-stone-900 leading-snug mb-2">{it.text}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {station.categories.map(c => {
+                    const on = pick === c;
+                    let st = on ? "bg-stone-900 text-white border-stone-900" : "bg-stone-100 text-stone-800 border-stone-300 hover:border-sky-500";
+                    if (checked) {
+                      if (c === it.answer) st = "bg-emerald-600 text-white border-emerald-700";
+                      else if (on) st = "bg-red-600 text-white border-red-700 line-through";
+                      else st = "bg-stone-100 text-stone-400 border-stone-200";
+                    }
+                    return (
+                      <button key={c} onClick={() => onAssign(it.id, c)} disabled={checked} aria-pressed={on}
+                        className={`text-[11px] font-black uppercase tracking-wide px-2.5 py-1.5 rounded-full border-2 transition-colors focus:ring-4 focus:ring-sky-300 outline-none disabled:cursor-default ${st}`}>
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+                {checked && (
+                  <p className="fade-in text-xs font-semibold text-stone-800 leading-snug mt-2">
+                    <strong className={ok ? "text-emerald-700" : "text-red-700"}>{ok ? "✓ " : `✕ It's ${it.answer}. `}</strong>{it.why}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          {!checked && (
+            <button onClick={onCheck} disabled={!allSet}
+              className={`w-full font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider outline-none focus:ring-4 focus:ring-sky-300 ${allSet ? "bg-sky-700 hover:bg-sky-800 text-white" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>
+              {allSet ? "Check my answers" : `Label all ${station.items.length} to check`}
+            </button>
+          )}
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+    function App() {
+      const [screen, setScreen] = useState("intro");
+      const [idx, setIdx] = useState(0);
+      const [answers, setAnswers] = useState({});
+      const [copied, setCopied] = useState(false);
+      const topRef = useRef(null);
+
+      const st = STATIONS[idx];
+      const ans = answers[idx];
+      const done = isDone(st, ans);
+      const score = STATIONS.reduce((n, s, i) => n + pointsFor(s, answers[i]), 0);
+      const completed = STATIONS.filter((s, i) => isDone(s, answers[i])).length;
+
+      useEffect(() => {
+        if (topRef.current) topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, [screen, idx]);
+
+      const update = (patch) => setAnswers({ ...answers, [idx]: { ...(answers[idx] || { assign: {} }), ...patch } });
+      const choose = (id) => { if (!ans || !ans.choice) update({ choice: id }); };
+      const assign = (itemId, cat) => { if (!(ans && ans.checked)) update({ assign: { ...((ans && ans.assign) || {}), [itemId]: cat } }); };
+      const check = () => update({ checked: true });
+      const follow = (id) => { if (!ans.followup) update({ followup: id }); };
+
+      const next = () => { if (idx < STATIONS.length - 1) setIdx(idx + 1); else setScreen("synthesis"); };
+      const back = () => {
+        if (screen === "score") setScreen("synthesis");
+        else if (screen === "synthesis") { setIdx(STATIONS.length - 1); setScreen("playing"); }
+        else if (screen === "playing" && idx > 0) setIdx(idx - 1);
+        else setScreen("intro");
+      };
+      const restart = () => { setAnswers({}); setIdx(0); setScreen("intro"); };
+      const start = () => { setAnswers({}); setIdx(0); setScreen("playing"); };
+
+      const copyNotebook = async () => {
+        try { await navigator.clipboard.writeText(NOTEBOOK); setCopied(true); setTimeout(() => setCopied(false), 2500); }
+        catch (e) {
+          const el = document.getElementById("notebook-text");
+          if (el) { el.focus(); el.select(); }
+        }
+      };
+
+      const showExtras = st && (st.type === "choice" ? done : ans && ans.checked);
+
+      return (
+        <div ref={topRef} className="min-h-screen w-full bg-[#1F3A56] flex flex-col relative" role="main">
+
+          {/* HEADER BAR */}
+          <header className="sticky top-0 bg-stone-900 text-stone-100 flex flex-wrap items-center gap-2 px-4 sm:px-6 py-3 shadow-md z-30 border-b border-stone-800" role="banner">
+            <div className="flex-1 flex items-center gap-3 min-w-[220px]">
+              <div className="bg-amber-300 text-stone-950 px-2.5 py-1 rounded font-black text-xs tracking-wider">WEEK 3</div>
+              <h1 className="font-black text-lg tracking-tight">AFTER THE SHIPWRECK</h1>
+            </div>
+            <div className="hidden lg:block flex-1 text-center">
+              <span className="bg-stone-800 text-amber-300 font-extrabold text-xs uppercase px-3 py-1 rounded-full border border-stone-700 tracking-wider">
+                Meaning, Summaries, and Two Lenses
+              </span>
+            </div>
+            <div className="flex-1 flex items-center justify-end gap-3 font-bold text-xs">
+              <span className="text-stone-300">STOPS: <strong className="text-white text-sm">{completed}/{STATIONS.length}</strong></span>
+              <div className="flex gap-1.5" aria-label="Progress tracker">
+                {STATIONS.map((s, i) => {
+                  const d = isDone(s, answers[i]);
+                  const cur = screen === "playing" && i === idx && !d;
+                  return (
+                    <div key={i} className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${d ? "bg-emerald-500 text-white" : cur ? "bg-amber-300 text-stone-900 ring-2 ring-amber-200" : "bg-stone-700 text-stone-400"}`}
+                      aria-label={`Stop ${i + 1} ${d ? "completed" : cur ? "current" : "pending"}`}>
+                      {d ? "✓" : i + 1}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+
+          {/* BODY */}
+          <div className="flex-1 relative flex flex-col items-center p-3 sm:p-6 gap-4">
+
+            <div className="w-full max-w-[1200px] px-1"><Voyage screen={screen} idx={idx} /></div>
+
+            {/* 1. INTRO */}
+            {screen === "intro" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-3xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-amber-100 text-amber-900 border border-amber-300 font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                  Helping Skills and Theory Simulation
+                </span>
+                <div className="text-sky-800 mb-1"><Sailboat size={40} /></div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-2">After the Shipwreck</h2>
+                <p className="text-base sm:text-lg font-extrabold text-stone-600 uppercase tracking-wide mb-4">One student. One lost season. Reflect the why.</p>
+
+                <div className="bg-sky-50/90 border-2 border-sky-200 rounded-xl p-4 mb-4 text-base font-semibold leading-relaxed text-left space-y-2 w-full">
+                  <p>You advise student athletes. Over one semester, you will meet with Mateo three times, from the week his season ends to the day he walks in smiling again.</p>
+                  <p>Along the way you will reflect meaning, look at his story through two theory lenses, and use four kinds of summaries. Watch the boat above: Parks says meaning often grows through shipwreck, gladness, and amazement.</p>
+                  <p className="font-extrabold text-stone-950">Your job: at each stop, choose or sort. Every stop explains why.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full mb-4 text-left">
+                  {[
+                    ["Meeting 1", "October", "Shipwreck: be present, reflect meaning"],
+                    ["Meeting 2", "November", "Two lenses: psychoanalytic, then CBT and REBT"],
+                    ["Meeting 3", "December", "Gladness: meaning and summaries"],
+                  ].map(([m, d, t]) => (
+                    <div key={m} className="bg-white border-2 border-stone-200 rounded-xl p-3">
+                      <p className="text-xs font-black uppercase text-sky-800">{m} • {d}</p>
+                      <p className="text-sm font-bold text-stone-800 leading-snug mt-0.5">{t}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-xs font-semibold text-stone-600 mb-6">The theory stops are a preview. Your classmates' presentations will go much deeper.</p>
+
+                <button onClick={start}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 outline-none text-white font-black text-xl py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] uppercase tracking-wider">
+                  Set sail →
+                </button>
+              </div>
+            )}
+
+            {/* 2. STOPS */}
+            {screen === "playing" && (
+              <div key={idx} className="fade-in z-20 w-full max-w-[1200px] flex flex-col lg:flex-row gap-4 items-start">
+
+                {/* LEFT: SCENE */}
+                <div className="flex-1 w-full min-w-0 flex flex-col gap-4">
+                  <div className="bg-[#F3F6FA] border-2 border-sky-200 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="bg-sky-200 px-4 py-2.5 flex items-center gap-3 flex-wrap">
+                      <Avatar />
+                      <div className="flex-1 min-w-[140px]">
+                        <p className="font-black text-stone-900 uppercase leading-tight">{STUDENT.name}</p>
+                        <p className="text-[11px] font-extrabold text-stone-700 uppercase">Sophomore • Midfielder • Injured reserve</p>
+                      </div>
+                      <span className="bg-stone-900 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full">{st.meeting}</span>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <p className="text-[11px] font-black uppercase tracking-wider text-sky-800">Stop {idx + 1} of {STATIONS.length}: {st.label}</p>
+                      {st.scene.map((s, i) => s.t === "quote" ? (
+                        <div key={i} className="flex gap-2 items-end">
+                          <Avatar size="w-8 h-8" text="text-sm" />
+                          <div className="bg-white border-2 border-stone-200 rounded-2xl rounded-bl-none px-4 py-3 text-base font-bold text-stone-900 leading-snug shadow-sm">"{s.text}"</div>
+                        </div>
+                      ) : (
+                        <p key={i} className="p-3 bg-white/70 rounded-lg border border-stone-200 text-stone-800 font-semibold text-sm leading-snug">{s.text}</p>
+                      ))}
+                    </div>
+                    <div className="bg-sky-100 border-t border-sky-200 px-4 py-2 flex justify-end">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-stone-500">Fictional scenario</span>
+                    </div>
+                  </div>
+
+                  {showExtras && (
+                    <div className="fade-in bg-[#FEF08A] border-2 border-amber-300 p-4 shadow-md rounded-xl" role="region" aria-label="Skill in focus">
+                      <div className="flex items-center gap-1.5 text-amber-950 font-black text-xs uppercase mb-1">
+                        <BookOpenCheck size={16} /> Skill in focus: {st.concept}
+                      </div>
+                      <p className="text-sm text-stone-950 font-black leading-snug">{st.note}</p>
+                    </div>
+                  )}
+                  {showExtras && <Extras kind={st.extra} />}
+                </div>
+
+                {/* RIGHT: YOUR MOVE */}
+                <div className="w-full lg:w-[420px] bg-stone-200/95 border-2 border-stone-400 rounded-2xl p-4 shadow-xl flex flex-col gap-3 shrink-0" role="region" aria-label="Your move" aria-live="polite">
+                  <div className="bg-stone-900 text-stone-100 text-center py-2 px-3 rounded-xl font-black text-xs uppercase tracking-widest shadow">
+                    Your move {st.type === "sort" ? "• Sort" : "• Choose"}
+                  </div>
+                  <p className="font-black text-stone-900 text-base leading-snug">{st.question}</p>
+
+                  {st.type === "choice" && <ChoiceList options={st.options} chosen={ans && ans.choice} onChoose={choose} />}
+                  {st.type === "sort" && <SortList station={st} answer={ans} onAssign={assign} onCheck={check} />}
+
+                  {st.type === "sort" && st.followup && ans && ans.checked && (
+                    <div className="fade-in space-y-2.5 pt-2 border-t-2 border-dashed border-stone-400">
+                      <p className="font-black text-stone-900 text-base leading-snug">{st.followup.question}</p>
+                      <ChoiceList options={st.followup.options} chosen={ans.followup} onChoose={follow} />
+                    </div>
+                  )}
+
+                  {done ? (
+                    <button onClick={next}
+                      className="fade-in w-full bg-stone-900 hover:bg-black text-white font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider focus:ring-4 focus:ring-amber-400 outline-none">
+                      {idx < STATIONS.length - 1 ? (STATIONS[idx + 1].meeting !== st.meeting ? `On to ${STATIONS[idx + 1].meeting.split(" •")[0]} →` : "Next stop →") : "Reach the shore →"}
+                    </button>
+                  ) : st.type === "choice" ? (
+                    <p className="text-center p-2 text-stone-700 font-extrabold text-xs uppercase tracking-wider">Choose one response.</p>
+                  ) : null}
+                </div>
+              </div>
+            )}
+
+            {/* 3. SYNTHESIS: AMAZEMENT */}
+            {screen === "synthesis" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-sky-100 text-sky-900 border border-sky-300 font-black text-sm px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 flex items-center gap-1.5"><Sparkles size={16} /> Amazement</span>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-2">Wonder at having come through</h2>
+                <p className="text-sm font-bold text-stone-600 mb-5">Notice where the boat spent most of the semester: in the shipwreck. That is normal, and it is where a helper's presence matters most.</p>
+
+                <div className="bg-amber-100/90 border-2 border-amber-300 rounded-xl p-5 text-left text-sm font-bold mb-6 space-y-2 w-full">
+                  <p className="text-base font-black text-amber-950 uppercase tracking-wide">The core takeaway:</p>
+                  <p className="leading-relaxed">Mateo was composing meaning the whole time. Your job was not to supply it. You stayed present in the shipwreck, reflected the why beneath his words, used summaries to give the conversations shape, and let theory help you notice without labeling him.</p>
+                </div>
+
+                <p className="text-xs font-black uppercase tracking-wider text-stone-700 mb-2 self-start">Same student, two lenses</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6 text-left">
+                  <div className="bg-violet-50 border-2 border-violet-200 rounded-xl p-4">
+                    <p className="font-black text-sm uppercase text-violet-800 flex items-center gap-1.5 mb-1"><Brain size={18} /> Psychoanalytic</p>
+                    <p className="text-sm font-bold text-stone-900 leading-snug">Looks beneath awareness. Mateo's identity since age five, his bond with his dad, and defenses like denial and rationalization that protect him from anxiety.</p>
+                  </div>
+                  <div className="bg-sky-50 border-2 border-sky-200 rounded-xl p-4">
+                    <p className="font-black text-sm uppercase text-sky-800 flex items-center gap-1.5 mb-1"><Glasses size={18} /> CBT and REBT</p>
+                    <p className="text-sm font-bold text-stone-900 leading-snug">Looks at thoughts we can examine and change. "I must never fail" drives the panic; disputing it opens a more realistic belief.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+                  {TAKEAWAYS.map(t => (
+                    <div key={t.title} className={`border-2 p-4 rounded-xl text-left ${t.tone}`}>
+                      <span className={`font-black text-sm uppercase flex items-center gap-1.5 mb-1 ${t.label}`}><t.icon size={18} /> {t.title}</span>
+                      <p className="text-sm font-bold leading-snug text-stone-900">{t.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={() => setScreen("score")}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-emerald-300 outline-none">
+                  View my results →
+                </button>
+              </div>
+            )}
+
+            {/* 4. SCORE */}
+            {screen === "score" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-3">Voyage complete</h2>
+
+                <div className="bg-stone-900 text-white px-8 py-3.5 rounded-2xl mb-6 shadow flex items-center gap-4">
+                  <span className="text-base font-bold text-stone-300 uppercase">Points:</span>
+                  <span className="text-4xl font-black text-amber-300">{score} / {TOTAL}</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full mb-6">
+                  {STATIONS.map((s, i) => {
+                    const p = pointsFor(s, answers[i]);
+                    const m = maxPoints(s);
+                    return (
+                      <button key={s.id} onClick={() => { setIdx(i); setScreen("playing"); }}
+                        className="bg-white border-2 border-stone-200 hover:border-sky-500 p-2.5 rounded-xl flex flex-col items-center shadow-sm focus:ring-4 focus:ring-sky-300 outline-none"
+                        aria-label={`Review stop ${i + 1}, ${s.label}: ${p} of ${m} points`}>
+                        <span className="text-[10px] font-black uppercase text-stone-500">Stop {i + 1}</span>
+                        <span className="font-black text-sm uppercase leading-tight">{s.label}</span>
+                        <span className={`text-xs font-black mt-1 ${p === m ? "text-emerald-600" : "text-red-600"}`}>{p} / {m}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-[#FEF08A] border-2 border-amber-300 rounded-xl p-5 text-left w-full mb-4">
+                  <p className="font-black text-amber-950 uppercase tracking-wider text-base mb-1">Try it this week</p>
+                  <p className="text-sm font-bold text-stone-900 leading-relaxed">In your practice conversation, try at least one reflection of meaning: "It sounds like ___ matters deeply to you because ___." Then close the conversation with a planning summary that pulls together what the student said and what they want to do next.</p>
+                </div>
+
+                <div className="bg-violet-50 border-2 border-violet-200 rounded-xl p-5 text-left w-full mb-4">
+                  <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
+                    <p className="font-black text-violet-900 uppercase tracking-wider text-sm">Digital Notebook starter</p>
+                    <button onClick={copyNotebook}
+                      className="flex items-center gap-1.5 bg-violet-700 hover:bg-violet-800 text-white text-xs font-black uppercase px-3 py-1.5 rounded-lg focus:ring-4 focus:ring-violet-300 outline-none">
+                      <Copy size={14} /> {copied ? "Copied!" : "Copy template"}
+                    </button>
+                  </div>
+                  <p className="text-sm font-semibold text-stone-800 mb-2">Use this to start your first two entries in the Counseling Theories Digital Notebook.</p>
+                  <textarea id="notebook-text" readOnly value={NOTEBOOK} rows={8}
+                    className="w-full text-xs font-mono text-stone-800 bg-white border border-violet-200 rounded-lg p-3 focus:ring-4 focus:ring-violet-300 outline-none"
+                    aria-label="Notebook starter template" />
+                </div>
+
+                <details className="bg-stone-100 border-2 border-stone-300 rounded-xl p-4 text-left w-full mb-6">
+                  <summary className="font-black text-stone-900 uppercase tracking-wider text-sm cursor-pointer">References</summary>
+                  <ul className="mt-3 space-y-2 text-xs font-semibold text-stone-800 leading-snug pl-6" style={{ textIndent: "-1.5rem" }}>
+                    <li>Parks, S. D. (2011). <em>Big questions, worthy dreams: Mentoring emerging adults in their search for meaning, purpose, and faith</em> (Rev. ed.). Jossey-Bass.</li>
+                    <li>Tan, S.-Y. (2022). <em>Counseling and psychotherapy: A Christian perspective</em> (2nd ed.). Baker Academic.</li>
+                    <li>Young, M. E. (2021). <em>Learning the art of helping: Building blocks and techniques</em> (7th ed.). Pearson.</li>
+                  </ul>
+                </details>
+
+                <button onClick={restart}
+                  className="w-full bg-stone-900 hover:bg-black text-white font-black text-lg py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-amber-400 outline-none">
+                  Start the voyage again
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* FOOTER BAR */}
+          <footer className="bg-stone-900 text-stone-300 flex items-center px-4 sm:px-6 py-3 justify-between gap-2 z-30 border-t border-stone-800 text-xs font-bold" role="contentinfo">
+            <div className="flex-1">
+              {screen !== "intro" && (
+                <button onClick={back}
+                  className="flex items-center gap-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 px-3 py-1.5 rounded-lg border border-stone-700 uppercase tracking-wider focus:ring-2 focus:ring-amber-400 outline-none">
+                  <ArrowLeft size={16} /> Back
+                </button>
+              )}
+            </div>
+            <div className="hidden sm:block flex-1 text-center text-stone-400 uppercase tracking-widest text-[10px]">Fictional Scenario for Instructional Purposes</div>
+            <div className="flex-1 flex justify-end">
+              <button onClick={restart}
+                className="flex items-center gap-1 text-stone-400 hover:text-white px-2 py-1 uppercase text-[11px] focus:ring-2 focus:ring-amber-400 outline-none rounded">
+                <RotateCcw size={14} /> Start over
+              </button>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
