@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Insight to Action - Helping Skills Simulation (Week 4)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React & ReactDOM CDNs -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;800;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .wheel-seg { cursor: pointer; transition: opacity 0.2s, filter 0.2s; }
+    .wheel-seg:hover { filter: brightness(0.93); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { animation: none; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-[#1E4035] min-h-screen">
+  <div id="root" class="min-h-screen w-full"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    // --- SVG ICON COMPONENTS ---
+    const Icon = ({ size = 18, className = "", children }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">{children}</svg>
+    );
+    const ArrowLeft = (p) => <Icon {...p}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></Icon>;
+    const RotateCcw = (p) => <Icon {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></Icon>;
+    const Footprints = (p) => <Icon {...p}><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/></Icon>;
+    const Target = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Icon>;
+    const Scale = (p) => <Icon {...p}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></Icon>;
+    const HeartHandshake = (p) => <Icon {...p}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"/></Icon>;
+    const BookOpen = (p) => <Icon {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Icon>;
+    const Compass = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></Icon>;
+    const Palette = (p) => <Icon {...p}><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></Icon>;
+    const ClipboardList = (p) => <Icon {...p}><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></Icon>;
+    const AlertTriangle = (p) => <Icon {...p}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></Icon>;
+    const BookOpenCheck = (p) => <Icon {...p}><path d="M8 3H2v15h6a4 4 0 0 1 4 4 4 4 0 0 1 4-4h6V3h-6a4 4 0 0 0-4 4 4 4 0 0 0-4-4z"/><path d="m9 12 2 2 4-4"/></Icon>;
+
+    // --- STUDENT ---
+    // Devon is a fictional student. To use a photo, set avatar: "https://raw.githubusercontent.com/.../Devon.jpeg"
+    const STUDENT = { name: "Devon", avatar: null, color: "bg-orange-600" };
+
+    // --- FEELINGS WHEEL (a simplified wheel for this activity) ---
+    const WHEEL = [
+      { core: "Happy", fill: "#F59E0B", light: "#FDE68A", feelings: ["Proud", "Hopeful", "Grateful", "Content"] },
+      { core: "Peaceful", fill: "#10B981", light: "#A7F3D0", feelings: ["Calm", "Relieved", "Secure", "Accepted"] },
+      { core: "Sad", fill: "#3B82F6", light: "#BFDBFE", feelings: ["Lonely", "Disappointed", "Ashamed", "Discouraged"] },
+      { core: "Scared", fill: "#8B5CF6", light: "#DDD6FE", feelings: ["Anxious", "Overwhelmed", "Insecure", "Worried"] },
+      { core: "Angry", fill: "#EF4444", light: "#FECACA", feelings: ["Frustrated", "Resentful", "Irritated", "Jealous"] },
+    ];
+    const BEST_FEELING = "Ashamed";
+    const FEELING_FEEDBACK = {
+      Ashamed: "Precise. Devon is hiding the letter from his mom and says he has let everyone down. That is shame: a painful feeling about who he is, not just about what happened.",
+      Disappointed: "Close, and true, but it misses the hiding and the sense of having let other people down.",
+      Discouraged: "Close. He is discouraged, but his words point to how he sees himself in others' eyes.",
+      Overwhelmed: "Plausible, but Devon didn't describe too much to do. He described letting people down.",
+      Anxious: "There may be anxiety about telling his mom, but it is not the heart of what he said.",
+      Worried: "There may be worry about telling his mom, but it is not the heart of what he said.",
+      Insecure: "Getting warmer: this is about how he sees himself. But \"let everyone down\" points more precisely to shame.",
+    };
+    const coreFeedback = (core) => ({
+      Happy: "Nothing in what Devon said points here.",
+      Peaceful: "Nothing in what Devon said points here.",
+      Angry: "There may be frustration underneath, but his words point inward: \"I've let everyone down.\"",
+      Sad: "You are in the right family of feelings. Look for the word that fits \"let everyone down\" and hiding it from his mom.",
+      Scared: "Fear may be part of it, but his words point to how he sees himself, not to a threat ahead.",
+    })[core];
+
+    // --- SMART BUILDER ---
+    const SMART_ROWS = [
+      { key: "action", label: "What will Devon do?", options: [
+        { id: "a1", text: "study more", S: false, note: "Too vague to act on or check." },
+        { id: "a2", text: "go to the stats tutoring center", S: true, note: "Specific, but he has already missed three tutoring sessions. Building on what already works is more achievable." },
+        { id: "a3", text: "study stats with the two friends from his history group", S: true, best: true, note: "Specific, and it builds on the exception you found: studying with friends already works for him." },
+      ]},
+      { key: "when", label: "How often?", options: [
+        { id: "w1", text: "whenever he can", M: false, A: true, note: "Not measurable: how would either of you know it happened?" },
+        { id: "w2", text: "every day for four hours", M: true, A: false, note: "Measurable, but not achievable for a student who has been missing sessions." },
+        { id: "w3", text: "twice a week, Tuesdays and Thursdays at 4 p.m.,", M: true, A: true, best: true, note: "Measurable and realistic." },
+      ]},
+      { key: "time", label: "By when?", options: [
+        { id: "t1", text: "until things get better", T: false, note: "No end point, so there is no moment to check progress." },
+        { id: "t2", text: "for the rest of college", T: false, note: "Too far away to be time-bound in a useful way." },
+        { id: "t3", text: "for the next two weeks, then review it together on the 15th", T: true, best: true, note: "Time-bound, with a built-in check-in." },
+      ]},
+      { key: "owner", label: "Whose step is it?", options: [
+        { id: "o1", text: "You assign the step and tell Devon the plan.", own: false, note: "Even a good step is less likely to happen if Devon didn't choose it." },
+        { id: "o2", text: "You ask, \"What feels like a doable first step?\" and Devon chooses it.", own: true, best: true, note: "Let the student choose the step. A step they own is far more likely to happen." },
+      ]},
+    ];
+
+    // --- STOPS ---
+    const STOPS = [
+      {
+        id: 1, label: "Name the feeling", concept: "Naming Feelings Precisely", type: "wheel",
+        scene: [
+          { t: "scene", text: "You are Devon's academic success advisor. He is a junior on academic probation after a rough fall. This is your fourth meeting, so rapport is already built. He drops his probation letter on your desk." },
+          { t: "quote", text: "I'm just stressed. My mom doesn't even know yet. I feel like I've let everyone down." },
+        ],
+        question: "\"Stressed\" is a broad word. Use the feelings wheel to find a more precise feeling to reflect.",
+        note: "BROAD WORDS LIKE \"STRESSED\" OR \"FINE\" ARE A STARTING POINT. MOVE FROM THE CENTER OF THE WHEEL TO THE EDGE.",
+        extra: "wheel",
+        plan: ["Feeling, named precisely", "Ashamed: \"like I've let everyone down\""],
+      },
+      {
+        id: 2, label: "Challenge respectfully", concept: "Challenging Respectfully", type: "choice",
+        scene: [
+          { t: "scene", text: "You ask about his plan. From your notes: Devon signed up for stats tutoring three times this month and missed all three sessions." },
+          { t: "quote", text: "Getting off probation is my number one priority. I'm serious this time." },
+        ],
+        question: "How do you respond?",
+        options: [
+          { id: "a", text: "\"If it's really your priority, why do you keep skipping tutoring?\"", tag: "Challenges the person", correct: false,
+            feedback: "It names the discrepancy, but the \"why\" and the \"if it's really\" question Devon's sincerity. Challenge the contradiction, never the person." },
+          { id: "b", text: "\"On the one hand, getting off probation is your top priority. On the other hand, you've missed the last three tutoring sessions. Help me understand.\"", tag: "Tentative challenge", correct: true,
+            feedback: "Tentative, curious, and built on rapport. You name the gap between what Devon says and what he does, and invite him to explore it rather than defend himself." },
+          { id: "c", text: "\"That's great to hear! It sounds like you're really motivated.\"", tag: "Avoids the discrepancy", correct: false,
+            feedback: "Warm, but it lets a contradiction Devon may not see go unnamed. Without a gentle challenge, the plan is built on something that isn't working." },
+        ],
+        after: "I don't know. Every time I sit down to go, I just think, why bother, I'm going to fail anyway.",
+        note: "CHALLENGE THE CONTRADICTION, NEVER THE PERSON: TENTATIVE, CURIOUS, AND ON A FOUNDATION OF RAPPORT.",
+        extra: "challenge",
+        plan: ["Discrepancy, named gently", "Says probation is his top priority, but missed three tutoring sessions."],
+      },
+      {
+        id: 3, label: "A new story", concept: "Constructivist Theories: Narrative + Solution-Focused", type: "choice",
+        scene: [
+          { t: "quote", text: "Honestly, I'm just a failure. I've always been bad at school." },
+        ],
+        question: "Devon has summed himself up in one word. What do you say?",
+        options: [
+          { id: "a", text: "\"You're not a failure! You're one of the smartest students I work with.\"", tag: "Arguing the label", correct: false,
+            feedback: "Kind, but arguing with the label keeps the conversation inside the problem story, and Devon may simply argue back." },
+          { id: "b", text: "\"What do you think makes you so bad at school?\"", tag: "Problem-saturated", correct: false,
+            feedback: "This invites Devon to add more evidence to the failure story." },
+          { id: "c", text: "\"It sounds like self-doubt has been pushing you around this semester. Has there been a time lately when it had less of a hold on you?\"", tag: "Externalize + exception", correct: true,
+            feedback: "Narrative Therapy separates the problem from the person: Devon isn't \"a failure,\" he's being pushed around by self-doubt. The exception question (Solution-Focused) then looks for a moment that doesn't fit the problem story." },
+        ],
+        after: "I mean... I have a B in history. I study with two guys from my floor every Tuesday. That class actually feels okay.",
+        note: "LOOK FOR MOMENTS THAT DON'T FIT THE PROBLEM STORY, AND BUILD A NEW ONE FROM THEM.",
+        extra: "constructivist",
+        plan: ["A new story", "Not \"a failure\": self-doubt has been pushing him around. Exception: a B in history, studying with friends on Tuesdays."],
+      },
+      {
+        id: 4, label: "Theory toolbox", concept: "Solution-Focused, Narrative, and Existential Approaches", type: "sort",
+        scene: [
+          { t: "scene", text: "This week's theory presentations offer more tools. Here are seven questions and invitations a helper could use with Devon. Each one comes from one of the three approaches." },
+          { t: "scene", text: "Background for one of them: Devon's little sister tells everyone that her big brother is in college." },
+        ],
+        question: "Which approach does each one come from?",
+        categories: ["Solution-Focused", "Narrative", "Existential"],
+        items: [
+          { id: "i1", text: "\"Suppose that tonight, while you sleep, a miracle happens and the probation problem is solved. What's the first thing you'd notice tomorrow?\"", answer: "Solution-Focused",
+            why: "The miracle question helps Devon picture his preferred future in concrete detail." },
+          { id: "i2", text: "\"When self-doubt shows up while you're studying, what does it tell you?\"", answer: "Narrative",
+            why: "Externalizing: the problem is self-doubt, not Devon, so he can notice it and push back." },
+          { id: "i3", text: "\"You mentioned your little sister tells everyone you're in college. What do you hope she learns from watching you?\"", answer: "Existential",
+            why: "Dereflection (Frankl's logotherapy) turns attention away from anxious self-focus and toward someone meaningful." },
+          { id: "i4", text: "\"On a scale of 1 to 10, how confident are you about passing stats? What would move you up one point?\"", answer: "Solution-Focused",
+            why: "A scaling question makes progress concrete, and small enough to act on." },
+          { id: "i5", text: "\"Before your stats presentation, try to be as nervous as you possibly can. See if you can set a record for sweaty palms.\"", answer: "Existential",
+            why: "Paradoxical intention (logotherapy): intending the feared thing can break the cycle of anticipatory anxiety." },
+          { id: "i6", text: "\"If this semester were one chapter in your story, what would you want the next chapter to be called?\"", answer: "Narrative",
+            why: "Invites Devon to author a new story instead of living inside the problem story." },
+          { id: "i7", text: "\"Tell me more about the history class. What's different there that makes it work?\"", answer: "Solution-Focused",
+            why: "An exception question looks at when the problem isn't happening, and what is different then." },
+        ],
+        note: "SOLUTION-FOCUSED BUILDS ON WHAT WORKS. NARRATIVE REWRITES THE STORY. EXISTENTIAL ASKS WHAT GIVES LIFE MEANING.",
+        extra: "existential",
+        plan: ["Strengths to build on", "Studying with friends works. His sister's pride in him is a source of meaning."],
+      },
+      {
+        id: 5, label: "Make it SMART", concept: "Goals, Objectives, and SMART Steps", type: "smart",
+        scene: [
+          { t: "scene", text: "Devon is ready to move. His goal is broad: get off academic probation. A goal is the outcome he wants; an objective is a specific step toward it." },
+          { t: "quote", text: "Okay. I want to actually do something this time. I just don't know where to start." },
+        ],
+        question: "Build Devon's first SMART objective. Pick one option in each row, then check it.",
+        note: "SPECIFIC, MEASURABLE, ACHIEVABLE, RELEVANT, TIME-BOUND, AND CHOSEN BY THE STUDENT.",
+        extra: "smart",
+        plan: ["SMART step (Devon's choice)", "Study stats with his history group, Tuesdays and Thursdays at 4 p.m., for two weeks. Review on the 15th."],
+      },
+      {
+        id: 6, label: "Refer warmly", concept: "When the Right Action Is a Referral", type: "choice",
+        scene: [
+          { t: "scene", text: "As you wrap up, Devon hesitates at the door." },
+          { t: "quote", text: "Can I say something weird? It's not just school. I haven't felt like myself since summer. I don't really enjoy anything anymore, even gaming. I mostly just sleep." },
+        ],
+        question: "What is the right action now?",
+        options: [
+          { id: "a", text: "\"Thank you for telling me. What you're describing sounds heavier than stress about grades, and you deserve more support than I can give as your advisor. The counseling center is good with exactly this. Would you be willing to call them with me right now? And I'll check in with you Friday.\"", tag: "Warm referral", correct: true,
+            feedback: "You explain why, help him connect on the spot, and plan to follow up. Distress that has lasted since summer is beyond your role, and the referral is an act of care, not a hand-off." },
+          { id: "b", text: "\"That's probably just the probation stress. Once your grades come up, you'll feel better.\"", tag: "Minimizing", correct: false,
+            feedback: "Months of low mood and losing interest in things he enjoys is persistent distress. Folding it into the grade problem leaves Devon without the support he needs." },
+          { id: "c", text: "\"You should really go to the counseling center. Here's their number.\"", tag: "Cold hand-off", correct: false,
+            feedback: "The right destination, delivered as a hand-off. Without an explanation, help connecting, or a follow-up, many students never make the call." },
+        ],
+        after: "Yeah... okay. Can you stay while I call?",
+        note: "REFERRAL IS AN ACT OF CARE, NOT A HAND-OFF: EXPLAIN WHY, HELP THE STUDENT CONNECT, AND FOLLOW UP.",
+        extra: "referral",
+        plan: ["Referral", "Counseling center, called together today. Advisor check-in on Friday."],
+      },
+    ];
+
+    const TAKEAWAYS = [
+      { title: "Challenge with care", text: "Name discrepancies tentatively, and only after you have built rapport.", icon: Scale, tone: "bg-orange-50 border-orange-200", label: "text-orange-800" },
+      { title: "Make it SMART", text: "Turn broad goals into specific steps the student chooses.", icon: Target, tone: "bg-emerald-50 border-emerald-200", label: "text-emerald-800" },
+      { title: "Refer warmly", text: "Referral is part of helping, and safety concerns come first.", icon: HeartHandshake, tone: "bg-rose-50 border-rose-200", label: "text-rose-800" },
+      { title: "New stories, deeper meaning", text: "Constructivist and existential theories help students see strengths and purpose.", icon: BookOpen, tone: "bg-violet-50 border-violet-200", label: "text-violet-800" },
+    ];
+
+    // --- SCORING ---
+    const maxPoints = (s) => s.type === "sort" ? s.items.length : s.type === "smart" ? SMART_ROWS.length : 1;
+    const TOTAL = STOPS.reduce((n, s) => n + maxPoints(s), 0);
+
+    const smartPick = (a, row) => row.options.find(o => o.id === (a && a.picks && a.picks[row.key]));
+
+    const pointsFor = (s, a) => {
+      if (!a) return 0;
+      if (s.type === "choice") { const o = s.options.find(x => x.id === a.choice); return o && o.correct ? 1 : 0; }
+      if (s.type === "wheel") return a.checked && a.feeling === BEST_FEELING ? 1 : 0;
+      if (s.type === "sort") return a.checked ? s.items.filter(it => a.assign[it.id] === it.answer).length : 0;
+      if (s.type === "smart") return a.checked ? SMART_ROWS.filter(r => { const o = smartPick(a, r); return o && o.best; }).length : 0;
+      return 0;
+    };
+
+    const isDone = (s, a) => {
+      if (!a) return false;
+      if (s.type === "choice") return !!a.choice;
+      return !!a.checked;
+    };
+
+    // --- SMALL COMPONENTS ---
+    const Avatar = ({ size = "w-10 h-10", text = "text-lg" }) => (
+      STUDENT.avatar
+        ? <img src={STUDENT.avatar} alt={`Portrait of ${STUDENT.name}`} className={`${size} shrink-0 rounded-full object-cover bg-stone-100`} />
+        : <div className={`${size} shrink-0 ${STUDENT.color} rounded-full flex items-center justify-center text-white font-black ${text}`} aria-hidden="true">{STUDENT.name[0]}</div>
+    );
+
+    const Quote = ({ text }) => (
+      <div className="flex gap-2 items-end">
+        <Avatar size="w-8 h-8" text="text-sm" />
+        <div className="bg-white border-2 border-stone-200 rounded-2xl rounded-bl-none px-4 py-3 text-base font-bold text-stone-900 leading-snug shadow-sm">"{text}"</div>
+      </div>
+    );
+
+    const Panel = ({ tone, title, icon: I, children }) => (
+      <div className={`fade-in border-2 rounded-xl p-4 ${tone}`}>
+        <p className="text-xs font-black uppercase tracking-wider mb-2 flex items-center gap-1.5">{I && <I size={16} />} {title}</p>
+        {children}
+      </div>
+    );
+
+    const Cards = ({ items, border, cols }) => (
+      <div className={`grid grid-cols-1 ${cols === 2 ? "sm:grid-cols-2" : cols === 4 ? "sm:grid-cols-2 xl:grid-cols-4" : "sm:grid-cols-3"} gap-2`}>
+        {items.map(([t, d, hi]) => (
+          <div key={t} className={`border rounded-lg p-2.5 ${hi ? "bg-orange-100 border-orange-400 ring-2 ring-orange-300" : `bg-white ${border}`}`}>
+            <p className="text-xs font-black uppercase">{t}{hi ? " ← this one" : ""}</p>
+            <p className="text-xs font-semibold text-stone-800 leading-snug mt-0.5">{d}</p>
+          </div>
+        ))}
+      </div>
+    );
+
+    const ArcPhase3 = () => (
+      <div className="flex flex-col sm:flex-row gap-2 w-full text-left">
+        {[
+          ["Phase 1: Explore", "Build trust and help the student tell their story.", false],
+          ["Phase 2: Insight", "Help the student understand what matters most.", false],
+          ["Phase 3: Action", "Help the student choose and take concrete next steps.", true],
+        ].map(([t, d, on]) => (
+          <div key={t} className={`flex-1 rounded-xl border-2 p-3 ${on ? "bg-orange-50 border-orange-400 ring-4 ring-orange-200" : "bg-stone-100 border-stone-200 opacity-70"}`}>
+            <p className={`text-xs font-black uppercase ${on ? "text-orange-800" : "text-stone-600"}`}>{t}{on ? " • This week" : ""}</p>
+            <p className="text-xs font-bold text-stone-800 leading-snug mt-1">{d}</p>
+          </div>
+        ))}
+      </div>
+    );
+
+    const Extras = ({ kind }) => {
+      if (kind === "wheel") return (
+        <Panel tone="bg-sky-50 border-sky-200 text-sky-900" title="Why precision matters" icon={Palette}>
+          <p className="text-xs font-semibold text-stone-800 leading-snug">A feelings wheel moves from core feelings at the center to more specific ones at the edge. A precise word helps you reflect feelings accurately, and helps students understand themselves.</p>
+          <p className="text-xs font-bold text-sky-950 mt-2">Broad: "You're stressed." Precise: "You feel ashamed, like you've let everyone down, and it's hard to even tell your mom."</p>
+        </Panel>
+      );
+      if (kind === "challenge") return (
+        <Panel tone="bg-orange-50 border-orange-200 text-orange-900" title="Where discrepancies show up" icon={Scale}>
+          <Cards border="border-orange-200" cols={4} items={[
+            ["Says vs. does", "What a student says and what they do.", true],
+            ["Says vs. says", "Two things they have said."],
+            ["Goals vs. behavior", "What they want and how they act."],
+            ["Words vs. body", "What they say and what their body language shows."],
+          ]} />
+          <ul className="text-xs font-semibold text-stone-800 mt-2 space-y-1 leading-snug">
+            <li>• A skill to use occasionally rather than often, and only on a foundation of rapport.</li>
+            <li>• It matters most in roles such as student conduct, probation advising, and supervising student staff.</li>
+          </ul>
+        </Panel>
+      );
+      if (kind === "constructivist") return (
+        <Panel tone="bg-violet-50 border-violet-200 text-violet-900" title="Constructivist theories: people build meaning through stories" icon={BookOpen}>
+          <Cards border="border-violet-200" cols={2} items={[
+            ["Solution-Focused Brief Therapy", "Builds on strengths and what already works, using the miracle question, scaling questions, and exception questions."],
+            ["Narrative Therapy", "Separates the problem from the person, so a student is not \"a failure\" but someone pushed around by self-doubt."],
+          ]} />
+          <p className="text-xs font-bold text-violet-950 mt-2">Both look for moments that don't fit the problem story, like Devon's B in history, and use them to build a new one.</p>
+        </Panel>
+      );
+      if (kind === "existential") return (
+        <Panel tone="bg-amber-50 border-amber-200 text-amber-900" title="Existential theory and Frankl's logotherapy" icon={Compass}>
+          <p className="text-xs font-semibold text-stone-800 leading-snug mb-2">Existential approaches take up the big questions of human life: meaning, freedom, responsibility, and limits. They help people take responsibility for their choices and find meaning, including in suffering. For Frankl, people are driven by a search for meaning, found through:</p>
+          <Cards border="border-amber-200" items={[
+            ["What we create or do", "Work, service, and contribution."],
+            ["What we experience", "Beauty, truth, and the people we love."],
+            ["The attitude we take", "Toward suffering we cannot avoid."],
+          ]} />
+          <ul className="text-xs font-semibold text-stone-800 mt-2 space-y-1 leading-snug">
+            <li>• <strong>Dereflection</strong> turns attention away from excessive self-focus toward something or someone meaningful.</li>
+            <li>• <strong>Paradoxical intention</strong> invites a person to intend the very thing they fear, which can break the cycle of anticipatory anxiety.</li>
+          </ul>
+        </Panel>
+      );
+      if (kind === "smart") return (
+        <Panel tone="bg-emerald-50 border-emerald-200 text-emerald-900" title="Goal vs. objective" icon={Target}>
+          <Cards border="border-emerald-200" cols={2} items={[
+            ["Goal", "The broad outcome a student wants. From your reading: \"Feel more settled about my major.\""],
+            ["SMART objective", "A specific step toward it: \"Meet with faculty in two majors I'm considering before the end of next week.\""],
+          ]} />
+          <p className="text-xs font-bold text-emerald-950 mt-2">Let the student choose the step. A step they own is far more likely to happen.</p>
+        </Panel>
+      );
+      if (kind === "referral") return (
+        <div className="space-y-3">
+          <Panel tone="bg-rose-50 border-rose-200 text-rose-900" title="When and how to refer" icon={HeartHandshake}>
+            <Cards border="border-rose-200" items={[
+              ["Beyond your role", "The concern is beyond your role or training."],
+              ["Distress persists", "Like Devon's low mood since summer."],
+              ["Safety concerns", "Any sign a student may be at risk of harm."],
+            ]} />
+            <p className="text-xs font-bold text-rose-950 mt-2">Make it warm: explain why, help the student connect, and follow up afterward.</p>
+          </Panel>
+          <div className="fade-in bg-red-700 text-white rounded-xl p-4 flex gap-3 items-start">
+            <AlertTriangle size={22} />
+            <p className="text-sm font-bold leading-snug">Safety comes first. If a student may be at risk of harm, follow your campus crisis protocol right away. If Devon had mentioned thoughts of hurting himself or not wanting to be alive, you would not wait until Friday.</p>
+          </div>
+        </div>
+      );
+      return null;
+    };
+
+    // --- FEELINGS WHEEL ---
+    const pt = (r, a) => { const rad = (a * Math.PI) / 180; return [r * Math.sin(rad), -r * Math.cos(rad)]; };
+    const sector = (r0, r1, a0, a1) => {
+      const large = a1 - a0 > 180 ? 1 : 0;
+      const [x1, y1] = pt(r1, a0), [x2, y2] = pt(r1, a1);
+      if (r0 === 0) return `M0 0 L${x1} ${y1} A${r1} ${r1} 0 ${large} 1 ${x2} ${y2} Z`;
+      const [x3, y3] = pt(r0, a1), [x4, y4] = pt(r0, a0);
+      return `M${x1} ${y1} A${r1} ${r1} 0 ${large} 1 ${x2} ${y2} L${x3} ${y3} A${r0} ${r0} 0 ${large} 0 ${x4} ${y4} Z`;
+    };
+
+    const FeelingsWheel = ({ answer, onUpdate }) => {
+      const a = answer || {};
+      const checked = !!a.checked;
+      const focusCore = a.core || null;
+      const pick = a.feeling || null;
+      const segCore = 360 / WHEEL.length;
+      const segOuter = segCore / 4;
+
+      const chooseCore = (core) => { if (!checked) onUpdate({ core, feeling: null }); };
+      const chooseFeeling = (core, f) => { if (!checked) onUpdate({ core, feeling: f }); };
+      const pickedCore = pick ? WHEEL.find(w => w.feelings.includes(pick)).core : null;
+
+      return (
+        <div className="space-y-3">
+          <div className="flex justify-center">
+            <svg viewBox="-165 -165 330 330" className="w-full max-w-[330px]" aria-hidden="true">
+              {WHEEL.map((w, ci) => {
+                const a0 = ci * segCore, a1 = a0 + segCore, mid = a0 + segCore / 2;
+                const dim = focusCore && focusCore !== w.core;
+                const [lx, ly] = pt(45, mid);
+                const crot = mid <= 180 ? mid - 90 : mid + 90;
+                return (
+                  <g key={w.core} style={{ opacity: dim ? 0.35 : 1 }}>
+                    <path d={sector(0, 72, a0, a1)} fill={w.fill} stroke="#fff" strokeWidth="2" className="wheel-seg" onClick={() => chooseCore(w.core)} />
+                    <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" fontSize="9.5" fontWeight="900" fill="#fff" transform={`rotate(${crot} ${lx} ${ly})`} style={{ pointerEvents: "none" }}>{w.core.toUpperCase()}</text>
+                    {w.feelings.map((f, fi) => {
+                      const b0 = a0 + fi * segOuter, b1 = b0 + segOuter, m = b0 + segOuter / 2;
+                      const [tx, ty] = pt(118, m);
+                      const rot = m <= 180 ? m - 90 : m + 90;
+                      const sel = pick === f;
+                      const isBest = checked && f === BEST_FEELING;
+                      return (
+                        <g key={f}>
+                          <path d={sector(74, 160, b0, b1)} fill={isBest ? "#16A34A" : sel ? w.fill : w.light}
+                            stroke={sel ? "#1C1917" : "#fff"} strokeWidth={sel ? 3 : 2} className="wheel-seg" onClick={() => chooseFeeling(w.core, f)} />
+                          <text x={tx} y={ty} textAnchor="middle" dominantBaseline="middle" fontSize="10" fontWeight="800"
+                            fill={sel || isBest ? "#fff" : "#1C1917"} transform={`rotate(${rot} ${tx} ${ty})`} style={{ pointerEvents: "none" }}>{f}</text>
+                        </g>
+                      );
+                    })}
+                  </g>
+                );
+              })}
+              <circle r="16" fill="#fff" stroke="#E7E5E4" strokeWidth="2" />
+              <text textAnchor="middle" dominantBaseline="middle" fontSize="7" fontWeight="900" fill="#57534E">START</text>
+            </svg>
+          </div>
+
+          {/* Accessible controls that mirror the wheel */}
+          <div>
+            <p className="text-[11px] font-black uppercase text-stone-700 tracking-wider mb-1.5">1. Core feeling</p>
+            <div className="flex flex-wrap gap-1.5">
+              {WHEEL.map(w => (
+                <button key={w.core} onClick={() => chooseCore(w.core)} disabled={checked} aria-pressed={focusCore === w.core}
+                  className={`text-[11px] font-black uppercase px-2.5 py-1.5 rounded-full border-2 focus:ring-4 focus:ring-orange-300 outline-none disabled:cursor-default ${focusCore === w.core ? "text-white border-stone-900" : "bg-white text-stone-800 border-stone-300"}`}
+                  style={focusCore === w.core ? { background: w.fill } : {}}>
+                  {w.core}
+                </button>
+              ))}
+            </div>
+          </div>
+          {focusCore && (
+            <div className="fade-in">
+              <p className="text-[11px] font-black uppercase text-stone-700 tracking-wider mb-1.5">2. More precise feeling</p>
+              <div className="flex flex-wrap gap-1.5">
+                {WHEEL.find(w => w.core === focusCore).feelings.map(f => (
+                  <button key={f} onClick={() => chooseFeeling(focusCore, f)} disabled={checked} aria-pressed={pick === f}
+                    className={`text-[11px] font-black uppercase px-2.5 py-1.5 rounded-full border-2 focus:ring-4 focus:ring-orange-300 outline-none disabled:cursor-default ${pick === f ? "bg-stone-900 text-white border-stone-900" : "bg-white text-stone-800 border-stone-300"}`}>
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!checked ? (
+            <button onClick={() => onUpdate({ checked: true })} disabled={!pick}
+              className={`w-full font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider outline-none focus:ring-4 focus:ring-orange-300 ${pick ? "bg-orange-600 hover:bg-orange-700 text-white" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>
+              {pick ? `Reflect "${pick.toLowerCase()}"` : "Pick a feeling at the edge of the wheel"}
+            </button>
+          ) : (
+            <div className={`fade-in p-3 rounded-xl border-2 ${pick === BEST_FEELING ? "bg-emerald-50 border-emerald-500" : "bg-amber-50 border-amber-400"}`}>
+              <span className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mb-1 ${pick === BEST_FEELING ? "bg-emerald-600 text-white" : "bg-amber-600 text-white"}`}>
+                {pick === BEST_FEELING ? "✓ Precise" : FEELING_FEEDBACK[pick] ? "~ Close" : "✕ Not quite"}: {pick}
+              </span>
+              <p className="text-xs font-semibold text-stone-800 leading-snug">{FEELING_FEEDBACK[pick] || coreFeedback(pickedCore)}</p>
+              {pick !== BEST_FEELING && <p className="text-xs font-black text-emerald-800 mt-1.5">A more precise word here: Ashamed (highlighted in green).</p>}
+              <p className="text-xs font-bold text-stone-900 mt-2 bg-white rounded-lg border border-stone-200 p-2">Your reflection: "You feel ashamed, like you've let everyone down, and it's hard to even tell your mom."</p>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // --- SMART BUILDER ---
+    const SmartBuilder = ({ answer, onUpdate }) => {
+      const a = answer || {};
+      const picks = a.picks || {};
+      const checked = !!a.checked;
+      const get = (k) => SMART_ROWS.find(r => r.key === k).options.find(o => o.id === picks[k]);
+      const act = get("action"), when = get("when"), time = get("time"), own = get("owner");
+      const letters = [
+        ["S", "Specific", act ? act.S : null],
+        ["M", "Measurable", when ? when.M : null],
+        ["A", "Achievable", when ? when.A && (!act || act.id !== "a2") : null],
+        ["R", "Relevant", act ? true : null],
+        ["T", "Time-bound", time ? time.T : null],
+      ];
+      const allPicked = SMART_ROWS.every(r => picks[r.key]);
+      const setPick = (k, id) => { if (!checked) onUpdate({ picks: { ...picks, [k]: id } }); };
+
+      return (
+        <div className="space-y-3">
+          <div className="bg-stone-900 rounded-xl p-3">
+            <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-1">Goal</p>
+            <p className="text-sm font-black text-white mb-2">Get off academic probation.</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-1">Objective (live preview)</p>
+            <p className="text-sm font-bold text-orange-200 leading-snug">
+              Devon will {act ? act.text : "____"} {when ? when.text : "____"} {time ? time.text : "____"}.
+            </p>
+            <div className="flex gap-1.5 mt-3" aria-label="SMART meter">
+              {letters.map(([l, name, ok]) => (
+                <div key={l} className={`flex-1 rounded-lg py-1.5 text-center border-2 ${ok === null ? "bg-stone-800 border-stone-700 text-stone-500" : ok ? "bg-emerald-500 border-emerald-300 text-white" : "bg-red-600 border-red-400 text-white"}`}
+                  aria-label={`${name}: ${ok === null ? "not set" : ok ? "yes" : "no"}`}>
+                  <p className="text-lg font-black leading-none">{l}</p>
+                  <p className="text-[8px] font-black uppercase tracking-wide mt-0.5">{name}</p>
+                </div>
+              ))}
+            </div>
+            <p className={`text-[11px] font-black uppercase mt-2 ${own ? (own.own ? "text-emerald-300" : "text-red-300") : "text-stone-500"}`}>
+              {own ? (own.own ? "✓ Student-owned step" : "✕ Assigned by you") : "Ownership: not set"}
+            </p>
+          </div>
+
+          {SMART_ROWS.map(row => (
+            <div key={row.key} role="group" aria-label={row.label} className="bg-white border-2 border-stone-300 rounded-xl p-3">
+              <p className="text-[11px] font-black uppercase text-stone-700 tracking-wider mb-1.5">{row.label}</p>
+              <div className="flex flex-col gap-1.5">
+                {row.options.map(o => {
+                  const on = picks[row.key] === o.id;
+                  let st = on ? "bg-stone-900 text-white border-stone-900" : "bg-stone-50 text-stone-800 border-stone-300 hover:border-orange-500";
+                  if (checked) st = o.best ? "bg-emerald-50 text-emerald-950 border-emerald-500" : on ? "bg-red-50 text-red-950 border-red-400" : "bg-stone-50 text-stone-400 border-stone-200";
+                  return (
+                    <button key={o.id} onClick={() => setPick(row.key, o.id)} disabled={checked} aria-pressed={on}
+                      className={`text-left text-xs font-bold px-3 py-2 rounded-lg border-2 focus:ring-4 focus:ring-orange-300 outline-none disabled:cursor-default ${st}`}>
+                      {checked && (o.best ? "✓ " : on ? "✕ " : "")}{o.text.replace(/,$/, "")}
+                      {checked && (on || o.best) && <span className="block text-[11px] font-semibold mt-1 text-stone-700">{o.note}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {!checked && (
+            <button onClick={() => onUpdate({ checked: true })} disabled={!allPicked}
+              className={`w-full font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider outline-none focus:ring-4 focus:ring-orange-300 ${allPicked ? "bg-orange-600 hover:bg-orange-700 text-white" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>
+              {allPicked ? "Check Devon's objective" : "Pick one option in each row"}
+            </button>
+          )}
+        </div>
+      );
+    };
+
+    // --- CHOICE LIST ---
+    const ChoiceList = ({ options, chosen, onChoose }) => {
+      const answered = !!chosen;
+      return (
+        <div className="space-y-2.5">
+          {options.map((o, i) => {
+            const selected = chosen === o.id;
+            let style = "bg-white border-stone-300 hover:border-orange-500 hover:-translate-y-0.5 cursor-pointer";
+            if (answered) {
+              if (selected && o.correct) style = "bg-emerald-50 border-emerald-600 ring-4 ring-emerald-300";
+              else if (selected) style = "bg-red-50 border-red-600 ring-4 ring-red-200";
+              else if (o.correct) style = "bg-emerald-50 border-emerald-500";
+              else style = "bg-stone-100 border-stone-300 opacity-80";
+            }
+            return (
+              <button key={o.id} onClick={() => onChoose(o.id)} disabled={answered} aria-pressed={selected}
+                className={`w-full text-left p-3 rounded-xl border-2 shadow-sm transition-all focus:ring-4 focus:ring-orange-300 outline-none disabled:cursor-default ${style}`}>
+                <div className="flex gap-2.5 items-start">
+                  <span className="w-6 h-6 shrink-0 rounded-full bg-stone-900 text-white text-xs font-black flex items-center justify-center">{String.fromCharCode(65 + i)}</span>
+                  <span className="text-sm font-bold text-stone-900 leading-snug">{o.text}</span>
+                </div>
+                {answered && (selected || o.correct) && (
+                  <div className="mt-2 pl-8 fade-in">
+                    <span className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mb-1 ${o.correct ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}>
+                      {o.correct ? "✓ " : "✕ "}{o.tag}
+                    </span>
+                    <p className="text-xs font-semibold text-stone-800 leading-snug">{o.feedback}</p>
+                  </div>
+                )}
+                {answered && !selected && !o.correct && (
+                  <div className="mt-1 pl-8"><span className="text-[10px] font-black uppercase tracking-wider text-stone-500">{o.tag}</span></div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      );
+    };
+
+    // --- SORT LIST ---
+    const SortList = ({ station, answer, onAssign, onCheck }) => {
+      const assign = (answer && answer.assign) || {};
+      const checked = answer && answer.checked;
+      const allSet = station.items.every(it => assign[it.id]);
+      return (
+        <div className="space-y-2.5">
+          {station.items.map((it, n) => {
+            const pick = assign[it.id];
+            const ok = checked && pick === it.answer;
+            return (
+              <div key={it.id} className={`p-3 rounded-xl border-2 shadow-sm ${checked ? (ok ? "bg-emerald-50 border-emerald-500" : "bg-red-50 border-red-400") : "bg-white border-stone-300"}`}
+                role="group" aria-label={`Item ${n + 1}`}>
+                <p className="text-sm font-bold text-stone-900 leading-snug mb-2">{it.text}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {station.categories.map(c => {
+                    const on = pick === c;
+                    let st = on ? "bg-stone-900 text-white border-stone-900" : "bg-stone-100 text-stone-800 border-stone-300 hover:border-orange-500";
+                    if (checked) {
+                      if (c === it.answer) st = "bg-emerald-600 text-white border-emerald-700";
+                      else if (on) st = "bg-red-600 text-white border-red-700 line-through";
+                      else st = "bg-stone-100 text-stone-400 border-stone-200";
+                    }
+                    return (
+                      <button key={c} onClick={() => onAssign(it.id, c)} disabled={checked} aria-pressed={on}
+                        className={`text-[11px] font-black uppercase tracking-wide px-2.5 py-1.5 rounded-full border-2 transition-colors focus:ring-4 focus:ring-orange-300 outline-none disabled:cursor-default ${st}`}>
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+                {checked && (
+                  <p className="fade-in text-xs font-semibold text-stone-800 leading-snug mt-2">
+                    <strong className={ok ? "text-emerald-700" : "text-red-700"}>{ok ? "✓ " : `✕ It's ${it.answer}. `}</strong>{it.why}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          {!checked && (
+            <button onClick={onCheck} disabled={!allSet}
+              className={`w-full font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider outline-none focus:ring-4 focus:ring-orange-300 ${allSet ? "bg-orange-600 hover:bg-orange-700 text-white" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>
+              {allSet ? "Check my answers" : `Label all ${station.items.length} to check`}
+            </button>
+          )}
+        </div>
+      );
+    };
+
+    // --- ACTION PLAN CARD ---
+    const ActionPlan = ({ answers, full }) => (
+      <div className="bg-[#FFFBF2] border-2 border-orange-300 rounded-xl shadow-md overflow-hidden">
+        <div className="bg-orange-200 px-4 py-2 flex items-center gap-2">
+          <ClipboardList size={18} />
+          <p className="font-black text-sm uppercase tracking-wider text-stone-900">Devon's Action Plan</p>
+        </div>
+        <div className="p-4 space-y-2.5">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-orange-800">Goal</p>
+            <p className="text-sm font-bold text-stone-900">Get off academic probation.</p>
+          </div>
+          {STOPS.map((s, i) => {
+            const shown = full || isDone(s, answers[i]);
+            return (
+              <div key={s.id} className={shown ? "fade-in" : ""}>
+                <p className="text-[10px] font-black uppercase tracking-widest text-orange-800">{s.plan[0]}</p>
+                <p className={`text-sm leading-snug ${shown ? "font-bold text-stone-900" : "font-semibold text-stone-400 italic"}`}>
+                  {shown ? s.plan[1] : `Complete stop ${i + 1} to fill this in`}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+
+    // --- MAIN APP ---
+    function App() {
+      const [screen, setScreen] = useState("intro");
+      const [idx, setIdx] = useState(0);
+      const [answers, setAnswers] = useState({});
+      const topRef = useRef(null);
+
+      const st = STOPS[idx];
+      const ans = answers[idx];
+      const done = isDone(st, ans);
+      const score = STOPS.reduce((n, s, i) => n + pointsFor(s, answers[i]), 0);
+      const completed = STOPS.filter((s, i) => isDone(s, answers[i])).length;
+
+      useEffect(() => {
+        if (topRef.current) topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, [screen, idx]);
+
+      const update = (patch) => setAnswers({ ...answers, [idx]: { ...(answers[idx] || { assign: {} }), ...patch } });
+      const choose = (id) => { if (!ans || !ans.choice) update({ choice: id }); };
+      const assign = (itemId, cat) => { if (!(ans && ans.checked)) update({ assign: { ...((ans && ans.assign) || {}), [itemId]: cat } }); };
+
+      const next = () => { if (idx < STOPS.length - 1) setIdx(idx + 1); else setScreen("synthesis"); };
+      const back = () => {
+        if (screen === "score") setScreen("synthesis");
+        else if (screen === "synthesis") { setIdx(STOPS.length - 1); setScreen("playing"); }
+        else if (screen === "playing" && idx > 0) setIdx(idx - 1);
+        else setScreen("intro");
+      };
+      const restart = () => { setAnswers({}); setIdx(0); setScreen("intro"); };
+      const start = () => { setAnswers({}); setIdx(0); setScreen("playing"); };
+
+      return (
+        <div ref={topRef} className="min-h-screen w-full bg-[#1E4035] flex flex-col relative" role="main">
+
+          {/* HEADER BAR */}
+          <header className="sticky top-0 bg-stone-900 text-stone-100 flex flex-wrap items-center gap-2 px-4 sm:px-6 py-3 shadow-md z-30 border-b border-stone-800" role="banner">
+            <div className="flex-1 flex items-center gap-3 min-w-[240px]">
+              <div className="bg-orange-300 text-stone-950 px-2.5 py-1 rounded font-black text-xs tracking-wider">WEEK 4</div>
+              <h1 className="font-black text-lg tracking-tight">FROM INSIGHT TO ACTION</h1>
+            </div>
+            <div className="hidden lg:block flex-1 text-center">
+              <span className="bg-stone-800 text-orange-300 font-extrabold text-xs uppercase px-3 py-1 rounded-full border border-stone-700 tracking-wider">
+                Phase 3: Taking Action
+              </span>
+            </div>
+            <div className="flex-1 flex items-center justify-end gap-3 font-bold text-xs">
+              <span className="text-stone-300">STOPS: <strong className="text-white text-sm">{completed}/{STOPS.length}</strong></span>
+              <div className="flex gap-1.5" aria-label="Progress tracker">
+                {STOPS.map((s, i) => {
+                  const d = isDone(s, answers[i]);
+                  const cur = screen === "playing" && i === idx && !d;
+                  return (
+                    <div key={i} className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${d ? "bg-emerald-500 text-white" : cur ? "bg-orange-300 text-stone-900 ring-2 ring-orange-200" : "bg-stone-700 text-stone-400"}`}
+                      aria-label={`Stop ${i + 1} ${d ? "completed" : cur ? "current" : "pending"}`}>
+                      {d ? "✓" : i + 1}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+
+          {/* BODY */}
+          <div className="flex-1 relative flex flex-col items-center p-3 sm:p-6 gap-4">
+
+            {/* 1. INTRO */}
+            {screen === "intro" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-3xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-orange-100 text-orange-900 border border-orange-300 font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                  Helping Skills and Theory Simulation
+                </span>
+                <div className="text-orange-700 mb-1"><Footprints size={40} /></div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-2">From Insight to Action</h2>
+                <p className="text-base sm:text-lg font-extrabold text-stone-600 uppercase tracking-wide mb-4">One meeting. Six stops. One action plan.</p>
+
+                <div className="bg-orange-50/90 border-2 border-orange-200 rounded-xl p-4 mb-4 text-base font-semibold leading-relaxed text-left space-y-2 w-full">
+                  <p>Insight matters, but students also need to move. You are Devon's academic success advisor. He is on academic probation, and after three meetings, you have built real rapport. Today is the meeting where insight needs to turn into action.</p>
+                  <p className="font-extrabold text-stone-950">Your job: name, challenge, reframe, plan, and refer. Devon's action plan fills in as you go.</p>
+                </div>
+
+                <p className="text-xs font-black uppercase tracking-wider text-stone-700 mb-2 self-start">The counseling arc</p>
+                <div className="w-full mb-4"><ArcPhase3 /></div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full mb-6 text-left">
+                  {STOPS.map((s, i) => (
+                    <div key={s.id} className="bg-white border-2 border-stone-200 rounded-xl p-2.5">
+                      <p className="text-[10px] font-black uppercase text-orange-800">Stop {i + 1} • {s.type === "choice" ? "Choose" : s.type === "sort" ? "Sort" : s.type === "wheel" ? "Feelings wheel" : "Build"}</p>
+                      <p className="text-sm font-black text-stone-900 leading-tight mt-0.5">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={start}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 outline-none text-white font-black text-xl py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] uppercase tracking-wider">
+                  Start the meeting →
+                </button>
+              </div>
+            )}
+
+            {/* 2. STOPS */}
+            {screen === "playing" && (
+              <div key={idx} className="fade-in z-20 w-full max-w-[1200px] flex flex-col lg:flex-row gap-4 items-start">
+
+                {/* LEFT: SCENE */}
+                <div className="flex-1 w-full min-w-0 flex flex-col gap-4">
+                  <div className="bg-[#F5F8F4] border-2 border-emerald-200 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="bg-emerald-200 px-4 py-2.5 flex items-center gap-3 flex-wrap">
+                      <Avatar />
+                      <div className="flex-1 min-w-[140px]">
+                        <p className="font-black text-stone-900 uppercase leading-tight">{STUDENT.name}</p>
+                        <p className="text-[11px] font-extrabold text-stone-700 uppercase">Junior • Academic probation • Meeting 4</p>
+                      </div>
+                      <span className="bg-stone-900 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full">Stop {idx + 1} of {STOPS.length}</span>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <p className="text-[11px] font-black uppercase tracking-wider text-emerald-800">{st.label}</p>
+                      {st.scene.map((s, i) => s.t === "quote"
+                        ? <Quote key={i} text={s.text} />
+                        : <p key={i} className="p-3 bg-white/70 rounded-lg border border-stone-200 text-stone-800 font-semibold text-sm leading-snug">{s.text}</p>
+                      )}
+                      {done && st.after && (
+                        <div className="fade-in space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-stone-500 pl-10">Devon, after the stronger response:</p>
+                          <Quote text={st.after} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="bg-emerald-100 border-t border-emerald-200 px-4 py-2 flex justify-end">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-stone-500">Fictional scenario</span>
+                    </div>
+                  </div>
+
+                  {done && (
+                    <div className="fade-in bg-[#FEF08A] border-2 border-amber-300 p-4 shadow-md rounded-xl" role="region" aria-label="Skill in focus">
+                      <div className="flex items-center gap-1.5 text-amber-950 font-black text-xs uppercase mb-1">
+                        <BookOpenCheck size={16} /> Skill in focus: {st.concept}
+                      </div>
+                      <p className="text-sm text-stone-950 font-black leading-snug">{st.note}</p>
+                    </div>
+                  )}
+                  {done && <Extras kind={st.extra} />}
+                </div>
+
+                {/* RIGHT: YOUR MOVE + PLAN */}
+                <div className="w-full lg:w-[420px] shrink-0 flex flex-col gap-4">
+                  <div className="bg-stone-200/95 border-2 border-stone-400 rounded-2xl p-4 shadow-xl flex flex-col gap-3" role="region" aria-label="Your move" aria-live="polite">
+                    <div className="bg-stone-900 text-stone-100 text-center py-2 px-3 rounded-xl font-black text-xs uppercase tracking-widest shadow">
+                      Your move • {st.type === "choice" ? "Choose" : st.type === "sort" ? "Sort" : st.type === "wheel" ? "Feelings wheel" : "Build"}
+                    </div>
+                    <p className="font-black text-stone-900 text-base leading-snug">{st.question}</p>
+
+                    {st.type === "choice" && <ChoiceList options={st.options} chosen={ans && ans.choice} onChoose={choose} />}
+                    {st.type === "sort" && <SortList station={st} answer={ans} onAssign={assign} onCheck={() => update({ checked: true })} />}
+                    {st.type === "wheel" && <FeelingsWheel answer={ans} onUpdate={update} />}
+                    {st.type === "smart" && <SmartBuilder answer={ans} onUpdate={update} />}
+
+                    {done ? (
+                      <button onClick={next}
+                        className="fade-in w-full bg-stone-900 hover:bg-black text-white font-black text-sm py-3 rounded-lg shadow uppercase tracking-wider focus:ring-4 focus:ring-orange-400 outline-none">
+                        {idx < STOPS.length - 1 ? `Next: ${STOPS[idx + 1].label} →` : "Review the plan →"}
+                      </button>
+                    ) : st.type === "choice" ? (
+                      <p className="text-center p-2 text-stone-700 font-extrabold text-xs uppercase tracking-wider">Choose one response.</p>
+                    ) : null}
+                  </div>
+
+                  <ActionPlan answers={answers} />
+                </div>
+              </div>
+            )}
+
+            {/* 3. SYNTHESIS */}
+            {screen === "synthesis" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <span className="bg-orange-100 text-orange-900 border border-orange-300 font-black text-sm px-4 py-1.5 rounded-full uppercase tracking-widest mb-3">Week 4 Synthesis</span>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-5">Action with care</h2>
+
+                <div className="bg-orange-100/90 border-2 border-orange-300 rounded-xl p-5 text-left text-sm font-bold mb-6 space-y-2 w-full">
+                  <p className="text-base font-black text-orange-950 uppercase tracking-wide">The core takeaway:</p>
+                  <p className="leading-relaxed">Action did not start with a plan. It started with a precise feeling, a gentle challenge, and a new story built on what already worked. Only then did a SMART step make sense, and it was Devon's step, not yours.</p>
+                  <p className="text-orange-950 font-black leading-relaxed">And sometimes the most important action is a warm referral. Safety concerns always come first.</p>
+                </div>
+
+                <div className="w-full mb-6 text-left"><ActionPlan answers={answers} full /></div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+                  {TAKEAWAYS.map(t => (
+                    <div key={t.title} className={`border-2 p-4 rounded-xl text-left ${t.tone}`}>
+                      <span className={`font-black text-sm uppercase flex items-center gap-1.5 mb-1 ${t.label}`}><t.icon size={18} /> {t.title}</span>
+                      <p className="text-sm font-bold leading-snug text-stone-900">{t.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button onClick={() => setScreen("score")}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-emerald-300 outline-none">
+                  View my results →
+                </button>
+              </div>
+            )}
+
+            {/* 4. SCORE */}
+            {screen === "score" && (
+              <div className="fade-in z-20 bg-stone-50 border-4 border-stone-300 rounded-2xl shadow-2xl max-w-4xl w-full p-5 sm:p-8 text-stone-900 flex flex-col items-center text-center">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase mb-3">Meeting complete</h2>
+
+                <div className="bg-stone-900 text-white px-8 py-3.5 rounded-2xl mb-6 shadow flex items-center gap-4">
+                  <span className="text-base font-bold text-stone-300 uppercase">Points:</span>
+                  <span className="text-4xl font-black text-orange-300">{score} / {TOTAL}</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full mb-6">
+                  {STOPS.map((s, i) => {
+                    const p = pointsFor(s, answers[i]);
+                    const m = maxPoints(s);
+                    return (
+                      <button key={s.id} onClick={() => { setIdx(i); setScreen("playing"); }}
+                        className="bg-white border-2 border-stone-200 hover:border-orange-500 p-2.5 rounded-xl flex flex-col items-center shadow-sm focus:ring-4 focus:ring-orange-300 outline-none"
+                        aria-label={`Review stop ${i + 1}, ${s.label}: ${p} of ${m} points`}>
+                        <span className="text-[10px] font-black uppercase text-stone-500">Stop {i + 1}</span>
+                        <span className="font-black text-sm uppercase leading-tight">{s.label}</span>
+                        <span className={`text-xs font-black mt-1 ${p === m ? "text-emerald-600" : "text-red-600"}`}>{p} / {m}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-[#FEF08A] border-2 border-amber-300 rounded-xl p-5 text-left w-full mb-4">
+                  <p className="font-black text-amber-950 uppercase tracking-wider text-base mb-1">Try it this week</p>
+                  <p className="text-sm font-bold text-stone-900 leading-relaxed">In your practice conversation, listen for one discrepancy and name it gently: "On the one hand... on the other hand..." Then help the student set one SMART next step. In your Skills Reflection, describe how the student responded to the challenge.</p>
+                </div>
+
+                <details className="bg-stone-100 border-2 border-stone-300 rounded-xl p-4 text-left w-full mb-6">
+                  <summary className="font-black text-stone-900 uppercase tracking-wider text-sm cursor-pointer">References</summary>
+                  <ul className="mt-3 space-y-2 text-xs font-semibold text-stone-800 leading-snug pl-6" style={{ textIndent: "-1.5rem" }}>
+                    <li>Galloway Burke, M., Duba Sauerheber, J., Hughey, A., &amp; Laves, K. (2017). <em>Helping skills for working with college students: Applying counseling theory to student affairs practice</em>. Routledge.</li>
+                    <li>Institute for Solution-Focused Therapy. (n.d.). <em>What is solution-focused therapy?</em> <a className="text-orange-800 underline break-all" href="https://solutionfocused.net/what-is-solution-focused-therapy/" target="_blank" rel="noopener noreferrer">https://solutionfocused.net/what-is-solution-focused-therapy/</a></li>
+                    <li>Tan, S.-Y. (2022). <em>Counseling and psychotherapy: A Christian perspective</em> (2nd ed.). Baker Academic.</li>
+                    <li>Young, M. E. (2021). <em>Learning the art of helping: Building blocks and techniques</em> (7th ed.). Pearson.</li>
+                  </ul>
+                </details>
+
+                <button onClick={restart}
+                  className="w-full bg-stone-900 hover:bg-black text-white font-black text-lg py-4 rounded-xl shadow-lg uppercase tracking-wider transition-transform hover:scale-[1.01] focus:ring-4 focus:ring-orange-400 outline-none">
+                  Start the meeting again
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* FOOTER BAR */}
+          <footer className="bg-stone-900 text-stone-300 flex items-center px-4 sm:px-6 py-3 justify-between gap-2 z-30 border-t border-stone-800 text-xs font-bold" role="contentinfo">
+            <div className="flex-1">
+              {screen !== "intro" && (
+                <button onClick={back}
+                  className="flex items-center gap-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 px-3 py-1.5 rounded-lg border border-stone-700 uppercase tracking-wider focus:ring-2 focus:ring-orange-400 outline-none">
+                  <ArrowLeft size={16} /> Back
+                </button>
+              )}
+            </div>
+            <div className="hidden sm:block flex-1 text-center text-stone-400 uppercase tracking-widest text-[10px]">Fictional Scenario for Instructional Purposes</div>
+            <div className="flex-1 flex justify-end">
+              <button onClick={restart}
+                className="flex items-center gap-1 text-stone-400 hover:text-white px-2 py-1 uppercase text-[11px] focus:ring-2 focus:ring-orange-400 outline-none rounded">
+                <RotateCcw size={14} /> Start over
+              </button>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
