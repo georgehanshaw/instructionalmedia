@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Makino A77 — Interactive CNC Control Replica</title>
+<style>
+:root{
+  --beige:#d9d6ca;--beige2:#c3c0b5;--dark:#36383e;--dark2:#24272b;
+  --key:#ddd8c9;--key2:#aaa596;--screen:#b9c9d8;--green:#38d258;
+  --red:#d53b32;--yellow:#e7c93e
+}
+*{box-sizing:border-box}
+body{margin:0;background:#202226;color:#eee;font-family:Arial,Helvetica,sans-serif}
+.page{max-width:1220px;margin:18px auto;padding:0 12px}
+.console{
+  background:linear-gradient(145deg,#eeeae0,#c5c1b6);
+  border:5px solid #a39f95;border-radius:10px;padding:14px;
+  box-shadow:inset 0 0 0 2px #faf8f2,0 10px 32px #0008
+}
+.brand{text-align:center;color:#24262a;font-weight:900;font-size:27px;letter-spacing:6px;margin:0 0 10px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:7px}
+.left{min-width:0}
+.row{display:grid;gap:6px;margin-bottom:6px}
+.row.top{grid-template-columns:minmax(0,1.45fr) minmax(240px,.95fr) minmax(100px,.42fr)}
+.row.middle{grid-template-columns:1.12fr 1fr}
+.row.bottom{grid-template-columns:1fr 1fr 1fr}
+.module{
+  background:linear-gradient(#3d3f45,#303238);
+  border:2px solid #17191c;border-radius:4px;padding:9px;min-width:0
+}
+.titleline,.label{
+  color:#eee;font-size:9px;font-weight:700;letter-spacing:.35px;text-align:center;
+  border-bottom:1px solid #686a6e;padding-bottom:4px;margin-bottom:7px
+}
+.screen{
+  background:var(--screen);border:5px solid #25282c;padding:7px;
+  color:#172229;font-family:Consolas,monospace;font-size:11px;min-height:207px
+}
+.screen-top{display:flex;justify-content:space-between;border-bottom:1px solid #66737b;padding-bottom:3px}
+.coords{font-size:16px;line-height:1.42;margin:7px 0}
+.program{border-top:1px solid #66737b;padding-top:5px;height:70px;overflow:hidden}
+.softkeys{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:5px}
+.key{
+  min-height:30px;border:1px solid #68645b;border-radius:3px;
+  background:linear-gradient(#eee9dc,#aaa596);color:#282923;font-size:10px;
+  font-weight:700;box-shadow:inset 0 1px 1px #fff8,0 1px 1px #0006;
+  cursor:pointer;padding:4px
+}
+.key:hover{filter:brightness(1.06)}
+.key:active,.key.active{transform:translateY(1px);background:#a49f91;box-shadow:inset 0 2px 4px #0005}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.mode{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.mode .selected{background:#5b665d;color:#fff;box-shadow:inset 0 2px 4px #0008}
+.smallgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.controlpair{display:flex;justify-content:space-between;align-items:center;gap:4px;color:#ddd;font-size:9px}
+.toggle{
+  width:38px;height:23px;border-radius:12px;border:2px solid #111;background:#17191c;
+  position:relative;cursor:pointer;flex:none
+}
+.toggle:after{content:"";position:absolute;width:14px;height:14px;left:3px;top:2px;background:#bbb;border-radius:50%;transition:.15s}
+.toggle.on:after{left:17px;background:#63dc74}
+.toggle.on{box-shadow:0 0 7px #39d85a66}
+.led{display:inline-block;width:10px;height:10px;border-radius:50%;background:#15351d;box-shadow:inset 0 1px 2px #0008}
+.led.on{background:#3cdb5b;box-shadow:0 0 7px #3cdb5b}
+.led.yellow.on{background:#ffd93b;box-shadow:0 0 7px #ffd93b}
+.status{
+  background:#111519;border:1px solid #000;color:#aaffb3;padding:7px;
+  font:11px Consolas,monospace;min-height:39px;margin-top:8px
+}
+.round{
+  width:44px;height:44px;border-radius:50%;border:2px solid #555;
+  background:radial-gradient(circle at 35% 28%,#f2f0e8,#bbb7ac 53%,#74716b 58%,#303236 100%);
+  box-shadow:0 2px 4px #0008;position:relative;cursor:pointer
+}
+.round:after{content:"";position:absolute;width:3px;height:13px;border-radius:2px;background:#202124;top:4px;left:18px;transform-origin:50% 18px;transform:rotate(var(--knob-rotation,0deg));transition:.15s}
+.biground{width:58px;height:58px}
+.biground:after{height:17px;left:25px}
+.knobwrap{text-align:center;color:#ddd;font:9px Arial}
+.knobreadout{font:11px Consolas,monospace;color:#fff;margin-top:3px}
+.estopwrap{text-align:center}
+.estop{
+  width:62px;height:62px;border-radius:50%;background:#d53b32;border:7px solid #e1bd20;
+  box-shadow:inset 0 3px 3px #fff5,0 3px 5px #0008;color:#fff;
+  font-weight:900;font-size:9px;cursor:pointer;padding:0;display:block;margin:auto
+}
+.estoplabel{color:#f2f2f2;font-size:9px;font-weight:800;letter-spacing:.2px;margin-top:4px}
+.power{width:39px;height:39px;background:#f3a300;border:2px solid #604600;border-radius:4px;font-weight:900;cursor:pointer}
+.bigkeys{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.threekeys{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.log-panel{display:flex;flex-direction:column;min-height:100%}
+.response{
+  flex:1;background:#111519;border:2px solid #090a0c;border-radius:3px;
+  padding:9px;font:11px Consolas,monospace;color:#b9ffc2;overflow:auto;min-height:330px
+}
+.entry{padding:0 0 7px;margin-bottom:7px;border-bottom:1px solid #30343a}
+.time{color:#7f8a91}.action{color:#e8e8e8}.effect{color:#7ff08c;margin-top:2px}
+.machine-state{margin-top:7px;background:#25282d;border:1px solid #555;padding:8px;font-size:10px;line-height:1.55}
+.machine-state b{color:#fff}
+.help{font-size:9px;color:#bbb;line-height:1.35;margin-top:7px}
+.footer{font-size:10px;color:#555;text-align:center;margin-top:8px}
+@media(max-width:1050px){
+  .layout{grid-template-columns:1fr}
+  .log-panel{min-height:350px}
+}
+@media(max-width:800px){
+  .row.top,.row.middle,.row.bottom{grid-template-columns:1fr}
+  .softkeys{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="console">
+<h1 class="brand">VTM-100</h1>
+
+<div class="layout">
+<div class="left">
+
+<div class="row top">
+<section class="module">
+<div class="label">FANUC Series 31i — MODEL A</div>
+<div class="screen" id="screen">
+<div class="screen-top"><span id="screenTitle">ACTUAL POSITION</span><span id="seq">N00000</span></div>
+<div class="coords">X&nbsp;&nbsp;<span id="xval">20.2361</span><br>Y&nbsp;&nbsp;<span id="yval">34.4825</span><br>Z&nbsp;&nbsp;<span id="zval">78.0000</span></div>
+<div class="program" id="program">G00 X20.2361 Y34.4825<br>G01 Z78.0000 F120<br>G43 H01 Z12.500<br>M03 S2500</div>
+<div class="softkeys">
+<button class="key" data-soft="POS">POS</button><button class="key" data-soft="PROG">PROG</button>
+<button class="key" data-soft="OFS/SET">OFS/SET</button><button class="key" data-soft="SYSTEM">SYSTEM</button>
+<button class="key" data-soft="MESSAGE">MESSAGE</button><button class="key" data-soft="CUSTOM">CUSTOM</button>
+<button class="key" data-soft="GRAPH">GRAPH</button><button class="key" data-soft="HELP">HELP</button>
+</div>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">MANUAL TOOL CHANGE / TOOL CLAMP / ATC</div>
+<div class="smallgrid">
+<div class="controlpair">AIR BLOW <button class="toggle" data-toggle="Air Blow"></button></div>
+<div class="controlpair">TOOL CLAMP <button class="toggle" data-toggle="Tool Clamp"></button></div>
+<div class="controlpair">ATC POSITION <button class="toggle" data-toggle="ATC Position"></button></div>
+<div class="controlpair">UNCLAMP <button class="toggle" data-toggle="Unclamp"></button></div>
+<div class="controlpair">M AXIS LOW <span class="led"></span></div>
+<div class="controlpair">M AXIS HIGH <span class="led on"></span></div>
+</div>
+<div class="titleline" style="margin-top:9px">SPINDLE</div>
+<div class="smallgrid">
+<div class="controlpair">0° HIGH <span class="led"></span></div>
+<div class="controlpair">0° LOW <span class="led"></span></div>
+<div class="controlpair">BRAKE <span class="led yellow on"></span></div>
+</div>
+<div class="status" id="quickStatus">READY — MACHINE POWER OFF</div>
+</section>
+
+<section class="module">
+<div class="titleline">CHUCK</div>
+<div style="display:flex;justify-content:center;margin:8px 0 12px">
+<div class="knobwrap"><button class="round" id="chuckKnob" aria-label="Chuck selector"></button><div>CHUCK SELECT</div><div class="knobreadout" id="chuckReadout">CENTER</div></div>
+</div>
+<div class="titleline">M AXIS</div>
+<div class="controlpair">LOW <span class="led"></span></div>
+<div class="controlpair">HIGH <span class="led on"></span></div>
+</section>
+</div>
+
+<div class="row middle">
+<section class="module">
+<div class="titleline">MODE SELECT</div>
+<div class="mode">
+<button class="key selected" data-mode="EDIT">EDIT</button><button class="key" data-mode="AUTO">AUTO</button>
+<button class="key" data-mode="MDI">MDI</button><button class="key" data-mode="HANDLE">HANDLE</button>
+</div>
+<div class="titleline" style="margin-top:8px">CONTROL</div>
+<div class="threekeys">
+<button class="key" data-action="SINGLE BLOCK">SINGLE BLOCK</button>
+<button class="key" data-action="BLOCK SKIP">BLOCK SKIP</button>
+<button class="key" data-action="OPT STOP">OPT STOP</button>
+</div>
+<div class="threekeys" style="margin-top:5px">
+<button class="key" data-action="DRY RUN">DRY RUN</button>
+<button class="key" id="cycle">AUTO CYCLE START</button>
+<button class="key" id="hold">FEED HOLD</button>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">KEYBOARD</div>
+<div class="keys" id="keyboard"></div>
+<div class="keys" style="margin-top:6px">
+<button class="key" data-k="CAN">CAN</button><button class="key" data-k="INPUT">INPUT</button>
+<button class="key" data-k="ALTER">ALTER</button><button class="key" data-k="INSERT">INSERT</button>
+<button class="key" data-k="DELETE">DELETE</button>
+</div>
+</section>
+</div>
+
+<div class="row bottom">
+<section class="module">
+<div class="titleline">POWER / EMERGENCY STOP</div>
+<div style="display:flex;align-items:center;justify-content:space-around">
+<div style="text-align:center;color:#ddd;font-size:9px">POWER<br><button class="power" id="power">I</button></div>
+<div style="text-align:center;color:#ddd;font-size:9px">POWER STATUS<br><span class="led" id="powerled"></span></div>
+<div class="estopwrap"><button class="estop" id="estop" aria-label="Emergency stop">STOP</button><div class="estoplabel">EMERGENCY STOP</div></div>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">Q.T.S. / CHUCK / DOOR</div>
+<div class="bigkeys">
+<button class="key" data-jog="QTS FORWARD">QTS FORWARD</button><button class="key" data-jog="QTS BACKWARD">QTS BACKWARD</button>
+<button class="key" data-jog="CHUCK CLOSE">CHUCK CLOSE</button><button class="key" data-jog="CHUCK OPEN">CHUCK OPEN</button>
+<button class="key" data-jog="DOOR CLOSE">DOOR CLOSE</button><button class="key" data-jog="DOOR OPEN">DOOR OPEN</button>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">PULSE HANDLE</div>
+<div class="keys">
+<button class="key" data-axis="X">X</button><button class="key" data-axis="Y">Y</button><button class="key" data-axis="Z">Z</button>
+<button class="key" data-axis="X1">X1</button><button class="key" data-axis="X10">X10</button>
+<button class="key" data-axis="X100">X100</button>
+</div>
+<div class="titleline" style="margin-top:9px">OVERRIDES</div>
+<div style="display:flex;justify-content:space-around;gap:8px">
+<div class="knobwrap"><button class="round biground" id="feedKnob"></button><div>FEED RATE</div><div class="knobreadout" id="feedval">100%</div></div>
+<div class="knobwrap"><button class="round biground" id="spindleKnob"></button><div>SPINDLE</div><div class="knobreadout" id="spindleval">100%</div></div>
+</div>
+<div class="threekeys" style="margin-top:7px">
+<button class="key" id="feedMinus">FEED −</button><button class="key" id="feedPlus">FEED +</button><button class="key" id="resetOverrides">RESET 100%</button>
+</div>
+</section>
+</div>
+</div>
+
+<aside class="module log-panel">
+<div class="titleline">MACHINE RESPONSE / ACTION LOG</div>
+<div class="response" id="log" aria-live="polite"></div>
+<div class="machine-state">
+<b>MACHINE STATE</b><br>
+Power: <span id="statePower">OFF</span><br>
+E-stop: <span id="stateEstop">RESET</span><br>
+Mode: <span id="stateMode">EDIT</span><br>
+Cycle: <span id="stateCycle">STOPPED</span><br>
+Feed hold: <span id="stateHold">OFF</span><br>
+Door: <span id="stateDoor">CLOSED</span><br>
+Chuck: <span id="stateChuck">CLOSED</span><br>
+Feed override: <span id="stateFeed">100%</span><br>
+Spindle override: <span id="stateSpindle">100%</span><br>
+Selected axis: <span id="stateAxis">—</span>
+</div>
+<div class="help">Training/UI replica only. No commands are transmitted to a real CNC controller. Double-click POWER after an E-stop to reset the simulated E-stop.</div>
+</aside>
+</div>
+
+<div class="footer">Interactive local simulation — every control produces a visible response and updates machine state where applicable.</div>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const state={power:false,estop:false,mode:"EDIT",cycle:false,hold:false,door:"CLOSED",chuck:"CLOSED",feed:100,spindle:100,axis:"—",chuckSelect:"CENTER"};
+const log=$("#log"),quick=$("#quickStatus");
+
+function time(){return new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});}
+function updateState(){
+  $("#statePower").textContent=state.power?"ON":"OFF";
+  $("#stateEstop").textContent=state.estop?"ACTIVE":"RESET";
+  $("#stateMode").textContent=state.mode;
+  $("#stateCycle").textContent=state.cycle?"RUNNING":"STOPPED";
+  $("#stateHold").textContent=state.hold?"ACTIVE":"OFF";
+  $("#stateDoor").textContent=state.door;
+  $("#stateChuck").textContent=state.chuck;
+  $("#stateFeed").textContent=state.feed+"%";
+  $("#stateSpindle").textContent=state.spindle+"%";
+  $("#stateAxis").textContent=state.axis;
+  $("#feedval").textContent=state.feed+"%";
+  $("#spindleval").textContent=state.spindle+"%";
+}
+function response(action,effect){
+  quick.textContent=effect;
+  const e=document.createElement("div");e.className="entry";
+  e.innerHTML='<div class="time">'+time()+'</div><div class="action">'+action+'</div><div class="effect">→ '+effect+'</div>';
+  log.prepend(e);while(log.children.length>18)log.removeChild(log.lastChild);updateState();
+}
+function needPower(action){if(!state.power){response(action,"Blocked — machine power is OFF.");return false}return true}
+
+const softText={
+ POS:["ACTUAL POSITION","Position display selected."],
+ PROG:["PROGRAM","Program display selected."],
+ "OFS/SET":["OFFSET / SETTING","Offset/setting display selected."],
+ SYSTEM:["SYSTEM","System display selected."],
+ MESSAGE:["MESSAGE","Message display selected."],
+ CUSTOM:["CUSTOM","Custom display selected."],
+ GRAPH:["GRAPH","Tool-path graph display selected."],
+ HELP:["HELP","Help display selected."]
+};
+$$("[data-soft]").forEach(b=>b.addEventListener("click",()=>{
+  const n=b.dataset.soft,t=softText[n];$("#screenTitle").textContent=t[0];
+  if(n==="PROG")$("#program").innerHTML="O0001 A77_TRAINING<br>N10 G00 X20.2361 Y34.4825<br>N20 G01 Z78.0000 F120<br>N30 M03 S2500";
+  else if(n==="GRAPH")$("#program").innerHTML="TOOL PATH GRAPH<br><br>▔▔▔╲____╱▔▔▔<br>&nbsp;&nbsp;&nbsp;X / Y PATH";
+  else if(n==="HELP")$("#program").innerHTML="HELP<br>Use MODE SELECT for EDIT/AUTO/MDI/HANDLE.<br>Machine response appears at right.";
+  else $("#program").innerHTML="SCREEN: "+n+"<br>LOCAL TRAINING DISPLAY<br>NO REAL CNC COMMANDS";
+  response("Soft key: "+n,t[1]);
+}));
+
+$$("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{
+  b.classList.toggle("on");response(b.dataset.toggle,b.classList.contains("on")?"Function enabled.":"Function disabled.");
+}));
+
+$$("[data-mode]").forEach(b=>b.addEventListener("click",()=>{
+  $$(".mode .key").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");state.mode=b.dataset.mode;
+  response("Mode select: "+state.mode,"Control mode changed to "+state.mode+".");
+}));
+
+$$("[data-action]").forEach(b=>b.addEventListener("click",()=>{
+  b.classList.toggle("active");response(b.dataset.action,b.classList.contains("active")?"Function enabled.":"Function disabled.");
+}));
+
+$("#power").addEventListener("click",()=>{
+  if(state.estop){response("POWER","Blocked — reset the emergency stop first.");return}
+  state.power=!state.power;$("#power").textContent=state.power?"O":"I";$("#powerled").classList.toggle("on",state.power);
+  response("Machine power",state.power?"Power ON — simulated machine available.":"Power OFF — motion commands blocked.");
+});
+$("#power").addEventListener("dblclick",()=>{
+  if(state.estop){state.estop=false;response("E-stop reset","Emergency stop reset. Machine remains powered OFF.");}
+});
+$("#estop").addEventListener("click",()=>{
+  state.estop=true;state.power=false;state.cycle=false;state.hold=false;
+  $("#power").textContent="I";$("#powerled").classList.remove("on");$("#cycle").classList.remove("active");$("#hold").classList.remove("active");
+  response("EMERGENCY STOP","Machine halted; simulated power removed. Double-click POWER to reset E-stop.");
+});
+$("#cycle").addEventListener("click",()=>{
+  if(!needPower("AUTO CYCLE"))return;
+  state.cycle=!state.cycle;$("#cycle").classList.toggle("active",state.cycle);
+  response("AUTO CYCLE",state.cycle?"Cycle started (simulation).":"Cycle stopped.");
+});
+$("#hold").addEventListener("click",()=>{
+  if(!needPower("FEED HOLD"))return;
+  state.hold=!state.hold;$("#hold").classList.toggle("active",state.hold);
+  response("FEED HOLD",state.hold?"Feed hold active.":"Feed hold released.");
+});
+
+$$("[data-jog]").forEach(b=>b.addEventListener("click",()=>{
+  const c=b.dataset.jog;if(!needPower(c))return;
+  if(c.includes("DOOR"))state.door=c.endsWith("OPEN")?"OPEN":"CLOSED";
+  if(c.includes("CHUCK"))state.chuck=c.endsWith("OPEN")?"OPEN":"CLOSED";
+  response(c,c+" simulated; machine state updated.");
+}));
+
+$$("[data-axis]").forEach(b=>b.addEventListener("click",()=>{
+  state.axis=b.dataset.axis;$$("[data-axis]").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+  response("Pulse handle","Selected axis/increment: "+state.axis+".");
+}));
+$$("[data-k]").forEach(b=>b.addEventListener("click",()=>response("Keyboard: "+b.dataset.k,"Key accepted by local training interface.")));
+
+["7","8","9","4","5","6","1","2","3","0","-","+","X","Y","Z","A","B","C","D","E","F","G","H"].forEach(n=>{
+  const b=document.createElement("button");b.type="button";b.className="key";b.textContent=n;
+  b.addEventListener("click",()=>response("Keyboard: "+n,"Key accepted by local training interface."));$("#keyboard").appendChild(b);
+});
+
+function rotateKnob(el,percent,min,max){
+  const deg=-135+((percent-min)/(max-min))*270;el.style.setProperty("--rot",deg+"deg");el.style.transform="rotate(0deg)";
+  el.style.setProperty("filter",percent===100?"brightness(1)":"brightness(1.05)");
+  const after=el;after.style.setProperty("--knob-rotation",deg+"deg");
+}
+function installKnob(id,which){
+  const el=$(id);el.addEventListener("click",()=>{
+    if(which==="feed"){state.feed+=10;if(state.feed>200)state.feed=0;rotateKnob(el,state.feed,0,200);response("Feed rate override","Feed override set to "+state.feed+"%.")}
+    else if(which==="spindle"){state.spindle+=10;if(state.spindle>200)state.spindle=0;rotateKnob(el,state.spindle,0,200);response("Spindle override","Spindle override set to "+state.spindle+"%.")}
+    else {const vals=["LOW","CENTER","HIGH"];let i=vals.indexOf(state.chuckSelect);state.chuckSelect=vals[(i+1)%vals.length];$("#chuckReadout").textContent=state.chuckSelect;response("Chuck selector","Chuck selector set to "+state.chuckSelect+".")}
+  });
+}
+installKnob("#feedKnob","feed");installKnob("#spindleKnob","spindle");installKnob("#chuckKnob","chuck");
+
+$("#feedMinus").addEventListener("click",()=>{state.feed=Math.max(0,state.feed-10);rotateKnob($("#feedKnob"),state.feed,0,200);response("Feed rate override","Feed override set to "+state.feed+"%.")});
+$("#feedPlus").addEventListener("click",()=>{state.feed=Math.min(200,state.feed+10);rotateKnob($("#feedKnob"),state.feed,0,200);response("Feed rate override","Feed override set to "+state.feed+"%.")});
+$("#resetOverrides").addEventListener("click",()=>{state.feed=100;state.spindle=100;rotateKnob($("#feedKnob"),100,0,200);rotateKnob($("#spindleKnob"),100,0,200);response("Overrides","Feed and spindle overrides reset to 100%.")});
+
+updateState();
+response("SYSTEM START","Interactive A77 training control initialized. Machine power is OFF.");
+})();
+</script>
+</body>
+</html>
