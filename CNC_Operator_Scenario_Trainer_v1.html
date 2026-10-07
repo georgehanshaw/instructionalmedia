@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CNC Operator Scenario Trainer</title>
+<style>
+:root{--screen:#b9c9d8;--ink:#2f3a40;--amber:#c98a1b;--amber2:#e3c88f;--paper:#f7f5ef}
+*{box-sizing:border-box}
+body{margin:0;background:#202226;color:#eee;font-family:Arial,Helvetica,sans-serif}
+.page{max-width:1440px;margin:14px auto;padding:0 10px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;align-items:start}
+.console{background:linear-gradient(145deg,#eeeae0,#c5c1b6);border:5px solid #a39f95;border-radius:10px;padding:12px;box-shadow:inset 0 0 0 2px #faf8f2,0 10px 32px #0008;min-width:0}
+.brand{text-align:center;color:#24262a;font-weight:900;font-size:22px;letter-spacing:6px;margin:0 0 8px}
+.row{display:grid;gap:6px;margin-bottom:6px}
+.row.top{grid-template-columns:minmax(0,1.5fr) minmax(200px,.9fr) minmax(130px,.5fr)}
+.row.view{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.row.middle{grid-template-columns:1.12fr 1fr}
+.row.bottom{grid-template-columns:1fr 1fr 1.1fr}
+.module{background:linear-gradient(#3d3f45,#303238);border:2px solid #17191c;border-radius:4px;padding:8px;min-width:0}
+.titleline,.label{color:#eee;font-size:9px;font-weight:700;letter-spacing:.35px;text-align:center;border-bottom:1px solid #686a6e;padding-bottom:4px;margin-bottom:7px}
+.screen{background:var(--screen);border:5px solid #25282c;padding:6px;color:#172229;font-family:Consolas,"Courier New",monospace;font-size:11px}
+.screen-top{display:flex;justify-content:space-between;gap:6px;border-bottom:1px solid #66737b;padding-bottom:3px;font-weight:bold}
+.scr-main{min-height:176px;max-height:176px;overflow:hidden;padding-top:4px}
+.scr-alarm{min-height:15px;color:#a3150c;font-weight:bold;border-top:1px solid #66737b;padding-top:2px;font-size:10.5px}
+.scr-alarm.blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+.scr-buf{border-top:1px solid #66737b;padding-top:2px;font-size:11px}
+.caret{animation:blink 1s steps(2) infinite}
+table.pos{width:100%;border-collapse:collapse;font-size:15px;line-height:1.3}
+table.pos th{font-size:10px;text-align:left;color:#34505f}
+table.pos td.ax{width:22px;font-weight:bold}
+.posinfo{font-size:10.5px;margin:4px 0;color:#24404e}
+.plines{border-top:1px dashed #6f818b;padding-top:3px;font-size:10.5px;line-height:1.35}
+.plines .cur{background:#1d3a4b;color:#e8f4ff}
+.proglist{font-size:10.5px;line-height:1.3}
+.proglist .cur{background:#1d3a4b;color:#e8f4ff}
+table.ofs{width:100%;border-collapse:collapse;font-size:12px}
+table.ofs th{font-size:10px;text-align:left;border-bottom:1px solid #66737b}
+table.ofs td{padding:2px 3px}
+table.ofs tr.r{cursor:pointer}
+table.ofs tr.cursor td{background:#1d3a4b;color:#fff}
+.scrnote{font-size:10px;color:#2f4b5a;margin-top:5px}
+.softkeys{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:5px}
+.key{min-height:28px;border:1px solid #68645b;border-radius:3px;background:linear-gradient(#eee9dc,#aaa596);color:#282923;font-size:9.5px;font-weight:700;box-shadow:inset 0 1px 1px #fff8,0 1px 1px #0006;cursor:pointer;padding:3px}
+.key:hover{filter:brightness(1.06)}
+.key:active,.key.active{transform:translateY(1px);background:#a49f91;box-shadow:inset 0 2px 4px #0005}
+.key.active{background:#7f9a83;color:#fff}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.keys6{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
+.keys4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.mode{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.mode .selected{background:#5b665d;color:#fff;box-shadow:inset 0 2px 4px #0008}
+.smallgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.controlpair{display:flex;justify-content:space-between;align-items:center;gap:4px;color:#ddd;font-size:9px;margin-bottom:4px}
+.toggle{width:36px;height:21px;border-radius:12px;border:2px solid #111;background:#17191c;position:relative;cursor:pointer;flex:none}
+.toggle:after{content:"";position:absolute;width:13px;height:13px;left:3px;top:2px;background:#bbb;border-radius:50%;transition:.15s}
+.toggle.on:after{left:16px;background:#63dc74}
+.led{display:inline-block;width:10px;height:10px;border-radius:50%;background:#15351d;box-shadow:inset 0 1px 2px #0008;flex:none}
+.led.on{background:#3cdb5b;box-shadow:0 0 7px #3cdb5b}
+.led.yellow.on{background:#ffd93b;box-shadow:0 0 7px #ffd93b}
+.status{background:#111519;border:1px solid #000;color:#aaffb3;padding:6px;font:10.5px Consolas,monospace;min-height:44px;margin-top:6px}
+.round{width:44px;height:44px;border-radius:50%;border:2px solid #555;background:radial-gradient(circle at 35% 28%,#f2f0e8,#bbb7ac 53%,#74716b 58%,#303236 100%);box-shadow:0 2px 4px #0008;position:relative;cursor:pointer}
+.round:after{content:"";position:absolute;width:3px;height:13px;border-radius:2px;background:#202124;top:4px;left:18px;transform-origin:50% 18px;transform:rotate(var(--knob-rotation,0deg));transition:.15s}
+.biground{width:52px;height:52px}
+.biground:after{height:16px;left:22px;transform-origin:50% 22px}
+.knobwrap{text-align:center;color:#ddd;font:9px Arial}
+.knobreadout{font:11px Consolas,monospace;color:#fff;margin-top:3px}
+.estop{width:62px;height:62px;border-radius:50%;background:#d53b32;border:7px solid #e1bd20;box-shadow:inset 0 3px 3px #fff5,0 4px 6px #0009;color:#fff;font-weight:900;font-size:9px;cursor:pointer;padding:0;display:block;margin:auto;transition:.1s}
+.estop.pressed{background:#9d2620;box-shadow:inset 0 4px 8px #0009;transform:scale(.94)}
+.estoplabel{color:#f2f2f2;font-size:9px;font-weight:800;margin-top:4px;text-align:center}
+.estopstate{font:10px Consolas,monospace;color:#ffd0cc;text-align:center}
+.power{width:39px;height:39px;background:#f3a300;border:2px solid #604600;border-radius:4px;font-weight:900;cursor:pointer}
+.bigkeys{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.threekeys{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+#wz{width:100%;height:230px;display:block;background:#14181c;border:2px solid #090a0c;border-radius:3px}
+.log-panel{display:flex;flex-direction:column}
+.response{flex:none;min-height:0;background:#111519;border:2px solid #090a0c;border-radius:3px;padding:7px;font:10.5px Consolas,monospace;color:#b9ffc2;overflow-y:auto;height:230px;max-height:230px}
+.entry{padding:0 0 5px;margin-bottom:5px;border-bottom:1px solid #30343a}
+.entry.div{color:#e3c88f;border-bottom:1px solid #6b5422;font-weight:bold}
+.time{color:#7f8a91}.action{color:#e8e8e8}.effect{color:#7ff08c;margin-top:1px}
+.stategrid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px 10px;font:10px Consolas,monospace;color:#cfd6da}
+.stategrid b{color:#fff;font-weight:normal}
+.footer{font-size:10px;color:#555;text-align:center;margin-top:6px}
+
+/* Scenario panel */
+.scn{background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;border-radius:8px;border-top:6px solid var(--amber);padding:14px 16px;position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto;box-shadow:0 8px 24px #0007}
+.scn-kicker{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8a6a1f}
+.scn h2{font-size:19px;margin:3px 0 6px;line-height:1.2}
+.scn-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#55626a}
+.badge{font-family:Arial,sans-serif;font-size:10px;font-weight:bold;letter-spacing:.06em;padding:2px 7px;border-radius:3px;background:var(--ink);color:#fff}
+.badge.assess{background:#8a2a1f}
+.progress{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:10px 0 4px}
+.progress div{height:6px;border-radius:3px;background:#dcd6c6}
+.progress div.cur{background:var(--amber)}
+.progress div.done{background:var(--ink)}
+.scn-sec{border-top:1px solid var(--amber2);padding-top:9px;margin-top:10px}
+.scn-h{font-size:12px;font-weight:bold;color:#a8701a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.scn p{margin:0 0 7px;font-size:13.5px;line-height:1.45}
+.scn ol{margin:0;padding-left:20px;font-size:13px;line-height:1.4}
+.scn ol li{margin-bottom:5px;color:#7b868c}
+.scn ol li.done{color:#4a7a52;text-decoration:line-through;text-decoration-color:#9bbd9f}
+.scn ol li.now{color:var(--ink);font-weight:bold}
+.hint{font-weight:normal;font-size:12px;color:#6b5422;background:#f6ecd5;border-left:3px solid var(--amber);padding:5px 7px;margin-top:4px}
+.fb{font-size:13px;line-height:1.45;padding:8px 10px;border-radius:4px;background:#eceee9}
+.fb.error{background:#f8e1dd;border-left:4px solid #b8392b}
+.fb.good{background:#e1efe2;border-left:4px solid #3e8a49}
+.fb.info{background:#eef0f2;border-left:4px solid #6c7a83}
+table.ctx{width:100%;border-collapse:collapse;font-size:12.5px}
+table.ctx td{padding:5px 4px;border-bottom:1px solid #e3ddcf;vertical-align:top}
+table.ctx tr:nth-child(even) td{background:#f1ede2}
+.st{font-family:Arial,sans-serif;font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;white-space:nowrap}
+.st.no{background:#dcd6c6;color:#55626a}.st.ok{background:#d8ebd9;color:#235c2a}.st.bad{background:#f6d5d1;color:#8d1f14}.st.fix{background:#cfe1f2;color:#1d4b79}
+.sbtn{font-family:Arial,sans-serif;font-size:11px;border:1px solid #8b8f92;background:#fff;border-radius:3px;padding:3px 7px;cursor:pointer;margin:2px 0 0 0}
+.sbtn:hover{background:#f6ecd5}
+.sbtn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sheet{background:#fff;border:1px solid #d8d1bf;padding:9px 10px;font-size:12.5px}
+.sheet h4{margin:0 0 4px;font-size:13px}
+.sheet table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.sheet td,.sheet th{padding:3px 4px;border-bottom:1px solid #eee;text-align:left}
+.sheet th{background:var(--ink);color:#fff;font-weight:normal}
+.lnk{background:none;border:none;color:#7b5a12;text-decoration:underline;cursor:pointer;font-family:Georgia,serif;font-size:12px;padding:0}
+.scn-foot{margin-top:12px;text-align:right}
+
+/* Overlays */
+.ov{position:fixed;inset:0;background:rgba(16,18,21,.78);display:flex;align-items:flex-start;justify-content:center;z-index:50;overflow:auto;padding:30px 12px}
+.ov.hidden{display:none}
+.card{background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;max-width:620px;width:100%;border-radius:8px;border-top:6px solid var(--amber);padding:22px 24px;box-shadow:0 14px 40px #000a}
+.card.wide{max-width:900px}
+.card .kick{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a6a1f}
+.card h1{font-size:25px;margin:4px 0 10px}
+.card h2{font-size:21px;margin:4px 0 10px}
+.card p{font-size:14.5px;line-height:1.5;margin:0 0 10px}
+.card label{display:block;font-size:13px;margin:10px 0 3px;color:#55626a}
+.card input[type=text]{width:100%;font:15px Georgia,serif;padding:7px 9px;border:1px solid #b9b3a3;border-radius:4px;background:#fff}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.modeopt{border:2px solid #d8d1bf;border-radius:6px;padding:10px;cursor:pointer;background:#fff}
+.modeopt.sel{border-color:var(--amber);background:#fbf3df}
+.modeopt b{display:block;font-size:14px;margin-bottom:3px}
+.modeopt span{font-size:12.5px;color:#55626a;line-height:1.35}
+.btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.btn{font:bold 13px Arial,sans-serif;padding:9px 16px;border-radius:4px;border:none;background:var(--ink);color:#fff;cursor:pointer}
+.btn:hover{background:#465660}
+.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+.btn.amber{background:var(--amber)}
+.crit{color:#8d1f14;font-weight:bold}
+.formerr{color:#8d1f14;font-size:12.5px;min-height:16px;margin-top:6px}
+.errlist{font-size:13px;margin:6px 0 0 18px;padding:0}
+.errlist li{margin-bottom:6px}
+.errlist .c{font-size:12.5px;color:#55626a}
+#printHost{display:none}
+
+@media(max-width:1180px){.wrap{grid-template-columns:1fr}.scn{position:static;max-height:none;order:-1}}
+@media(max-width:820px){.row.top,.row.view,.row.middle,.row.bottom{grid-template-columns:1fr}.softkeys{grid-template-columns:repeat(4,1fr)}.stategrid{grid-template-columns:repeat(3,1fr)}.modes{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}body>*:not(#printHost){display:none!important}#printHost{display:block}}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="wrap">
+
+<div class="console">
+<h1 class="brand">VMC TRAINING CONSOLE</h1>
+
+<div class="row top">
+<section class="module">
+<div class="label">CNC CONTROL</div>
+<div class="screen" id="screen">
+<div class="screen-top"><span id="screenTitle">ACTUAL POSITION</span><span id="scrModeTag">EDIT</span><span id="seq">O0000 N00000</span></div>
+<div class="scr-main" id="scrMain"></div>
+<div class="scr-alarm" id="scrAlarm"></div>
+<div class="scr-buf">&gt;&nbsp;<span id="scrBuf"></span><span class="caret">_</span></div>
+</div>
+<div class="softkeys">
+<button class="key" data-soft="POS">POS</button><button class="key" data-soft="PROG">PROG</button>
+<button class="key" data-soft="OFS/SET">OFS/SET</button><button class="key" data-soft="SYSTEM">SYSTEM</button>
+<button class="key" data-soft="MESSAGE">MESSAGE</button><button class="key" data-soft="CUSTOM">CUSTOM</button>
+<button class="key" data-soft="GRAPH">GRAPH</button><button class="key" data-soft="HELP">HELP</button>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">TOOL / ATC</div>
+<div class="smallgrid">
+<div class="controlpair">AIR BLOW <button class="toggle" data-toggle="Air blow"></button></div>
+<div class="controlpair">TOOL CLAMP <button class="toggle on" data-toggle="Tool clamp"></button></div>
+<div class="controlpair">ATC POSITION <button class="toggle" data-toggle="ATC position"></button></div>
+<div class="controlpair">TOOL UNCLAMP <button class="toggle" data-toggle="Tool unclamp"></button></div>
+<div class="controlpair">GEAR LOW <span class="led" id="ledGearLo"></span></div>
+<div class="controlpair">GEAR HIGH <span class="led" id="ledGearHi"></span></div>
+</div>
+<div class="titleline" style="margin-top:6px">SPINDLE</div>
+<div class="smallgrid">
+<div class="controlpair">RUN <span class="led" id="ledRun"></span></div>
+<div class="controlpair">COOLANT <span class="led" id="ledCool"></span></div>
+<div class="controlpair">BRAKE <span class="led yellow" id="ledBrake"></span></div>
+<div class="controlpair">ALARM <span class="led yellow" id="ledAlm"></span></div>
+</div>
+<div class="status" id="quickStatus">READY</div>
+</section>
+
+<section class="module">
+<div class="titleline">WORKHOLDING</div>
+<div style="display:flex;justify-content:center;margin:4px 0 8px">
+<div class="knobwrap"><button class="round" id="clampKnob" aria-label="Clamp pressure selector"></button><div>CLAMP PRESSURE</div><div class="knobreadout" id="clampReadout">NORMAL</div></div>
+</div>
+<div class="titleline">STATUS</div>
+<div class="controlpair">CLAMPED <span class="led" id="ledClamp"></span></div>
+<div class="controlpair">DOOR LOCKED <span class="led" id="ledDoor"></span></div>
+<div class="controlpair">SETTER IN <span class="led yellow" id="ledSetter"></span></div>
+</section>
+</div>
+
+<div class="row view">
+<section class="module">
+<div class="titleline">WORK ZONE VIEW (SIDE VIEW, X-Z)</div>
+<svg id="wz" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid meet" aria-label="Work zone side view">
+<defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#232a30" stroke-width="1"/></pattern></defs>
+<rect width="600" height="260" fill="#14181c"/><rect width="600" height="260" fill="url(#grid)"/>
+<rect x="0" y="252" width="600" height="8" fill="#4a4f55"/>
+<rect x="140" y="240" width="260" height="12" fill="#6b7178"/>
+<rect id="wzPart" x="190" y="180" width="160" height="60" fill="#9aa7b1" stroke="#c9d3da"/>
+<rect id="wzPocket" x="0" y="0" width="0" height="0" fill="#2b3238"/>
+<rect id="wzClampL" width="28" height="10" fill="#c9a54a" stroke="#6b5422"/>
+<rect id="wzClampR" width="28" height="10" fill="#c9a54a" stroke="#6b5422"/>
+<polyline id="wzHex" points="" fill="none" stroke="#e0a526" stroke-width="5" stroke-linecap="round"/>
+<g id="wzSetter"><rect x="470" y="140" width="22" height="100" fill="#5d6b78"/><rect x="462" y="132" width="38" height="10" fill="#8ca0b3"/><text x="481" y="128" fill="#8ca0b3" font-size="9" text-anchor="middle" font-family="Arial">SETTER</text></g>
+<line x1="0" x2="600" y1="180" y2="180" stroke="#c98a1b" stroke-dasharray="4 6" opacity=".55"/>
+<text x="6" y="176" fill="#c98a1b" font-size="9" font-family="Arial">Z0 PART TOP</text>
+<g id="wzToolG"><rect id="wzSpindle" fill="#59616a" stroke="#2c3035"/><rect id="wzHolder" fill="#7d868f" stroke="#2c3035"/><rect id="wzTool" fill="#c8ced4" stroke="#40464c"/></g>
+<g id="wzCool"><line id="wzC1" stroke="#4fb3ff" stroke-width="3" stroke-dasharray="6 4"/><line id="wzC2" stroke="#4fb3ff" stroke-width="3" stroke-dasharray="6 4"/></g>
+<g id="wzSparks"></g><g id="wzSmoke"></g>
+<text id="wzInfo" x="8" y="16" fill="#cfd6da" font-size="11" font-family="Consolas,monospace"></text>
+<text id="wzInfo2" x="8" y="31" fill="#8f9aa1" font-size="10" font-family="Consolas,monospace"></text>
+<text id="wzCrash" x="300" y="120" text-anchor="middle" fill="#ff4b3a" font-size="30" font-weight="bold" font-family="Arial"></text>
+</svg>
+</section>
+<section class="module log-panel">
+<div class="titleline">MACHINE RESPONSE / ACTION LOG</div>
+<div class="response" id="log" aria-live="polite"></div>
+</section>
+</div>
+
+<div class="row middle">
+<section class="module">
+<div class="titleline">MODE SELECT</div>
+<div class="mode">
+<button class="key" data-mode="EDIT">EDIT</button><button class="key" data-mode="AUTO">AUTO</button>
+<button class="key" data-mode="MDI">MDI</button><button class="key" data-mode="HANDLE">HANDLE</button>
+<button class="key" data-mode="ZRN">ZERO RTN</button>
+</div>
+<div class="titleline" style="margin-top:8px">CONTROL</div>
+<div class="keys4">
+<button class="key" data-action="SINGLE BLOCK">SINGLE BLOCK</button>
+<button class="key" data-action="BLOCK SKIP">BLOCK SKIP</button>
+<button class="key" data-action="OPT STOP">OPT STOP</button>
+<button class="key" data-action="DRY RUN">DRY RUN</button>
+</div>
+<div class="bigkeys" style="margin-top:6px">
+<button class="key" id="cycle" style="min-height:38px">AUTO CYCLE START</button>
+<button class="key" id="hold" style="min-height:38px">FEED HOLD</button>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">KEYBOARD</div>
+<div class="keys" id="keyboard"></div>
+<div class="keys6">
+<button class="key" data-k="RESET" style="background:linear-gradient(#f2d9a5,#c9a560)">RESET</button>
+<button class="key" data-k="CAN">CAN</button><button class="key" data-k="INPUT">INPUT</button>
+<button class="key" data-k="ALTER">ALTER</button><button class="key" data-k="INSERT">INSERT</button>
+<button class="key" data-k="DELETE">DELETE</button>
+</div>
+</section>
+</div>
+
+<div class="row bottom">
+<section class="module">
+<div class="titleline">POWER / EMERGENCY STOP</div>
+<div style="display:flex;align-items:center;justify-content:space-around">
+<div style="text-align:center;color:#ddd;font-size:9px">POWER<br><button class="power" id="power">I</button></div>
+<div style="text-align:center;color:#ddd;font-size:9px">POWER STATUS<br><span class="led" id="powerled"></span></div>
+<div><button class="estop" id="estop" aria-label="Emergency stop">STOP</button><div class="estoplabel">EMERGENCY STOP</div><div class="estopstate" id="estopState">PRESSED</div></div>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">TOOL SETTER / CLAMP / DOOR</div>
+<div class="bigkeys">
+<button class="key" data-jog="SETTER IN">SETTER IN</button><button class="key" data-jog="SETTER OUT">SETTER OUT</button>
+<button class="key" data-jog="CLAMP CLOSE">CLAMP CLOSE</button><button class="key" data-jog="CLAMP OPEN">CLAMP OPEN</button>
+<button class="key" data-jog="DOOR CLOSE">DOOR CLOSE</button><button class="key" data-jog="DOOR OPEN">DOOR OPEN</button>
+</div>
+</section>
+
+<section class="module">
+<div class="titleline">PULSE HANDLE / AXIS</div>
+<div class="keys4">
+<button class="key" data-axis="x">X</button><button class="key" data-axis="y">Y</button><button class="key" data-axis="z">Z</button>
+<button class="key" data-jogdir="-1">JOG &minus;</button>
+<button class="key" data-inc="X1">X1</button><button class="key" data-inc="X10">X10</button>
+<button class="key" data-inc="X100">X100</button><button class="key" data-jogdir="1">JOG +</button>
+</div>
+<div class="titleline" style="margin-top:7px">OVERRIDES</div>
+<div style="display:flex;justify-content:space-around;gap:8px">
+<div class="knobwrap"><button class="round biground" id="feedKnob" aria-label="Feed override"></button><div>FEED</div><div class="knobreadout" id="feedval">100%</div></div>
+<div class="knobwrap"><button class="round biground" id="spindleKnob" aria-label="Spindle override"></button><div>SPINDLE</div><div class="knobreadout" id="spindleval">100%</div></div>
+</div>
+<div class="keys4" style="margin-top:6px">
+<button class="key" id="feedMinus">FEED &minus;</button><button class="key" id="feedPlus">FEED +</button>
+<button class="key" id="rapidBtn">RAPID 100%</button><button class="key" id="resetOverrides">ALL 100%</button>
+</div>
+</section>
+</div>
+
+<div class="module"><div class="titleline">MACHINE STATE</div><div class="stategrid" id="stateGrid"></div></div>
+<div class="footer">Training replica only. No commands are transmitted to a real CNC control.</div>
+</div>
+
+<aside class="scn" id="scn">
+<div class="scn-kicker" id="scnKicker">Level 2 CNC Qualification &middot; Simulation</div>
+<h2 id="scnTitle">CNC Operator Scenario</h2>
+<div class="scn-meta"><span class="badge" id="scnBadge">PRACTICE</span><span id="scnTrainee"></span><span id="scnTimer">00:00</span></div>
+<div class="progress" id="scnProgress"><div></div><div></div><div></div></div>
+<div class="scn-sec"><div class="scn-h">Situation</div><p id="scnSituation"></p><p id="scnObjective"></p></div>
+<div class="scn-sec" id="stepsSec"><div class="scn-h">Steps</div><ol id="scnSteps"></ol></div>
+<div class="scn-sec" id="ctxSec"><div id="scnContext"></div></div>
+<div class="scn-sec" id="fbSec"><div class="scn-h">Coaching</div><div class="fb info" id="scnFeedback">Coaching appears here as you work.</div></div>
+<div class="scn-foot"><button class="lnk" id="endBtn">End session and view record</button></div>
+</aside>
+
+</div>
+</div>
+
+<div class="ov" id="ovStart">
+<div class="card">
+<div class="kick">Level 2 CNC Qualification &middot; Simulation</div>
+<h1>CNC Operator Scenario Trainer</h1>
+<p>Three linked modules on a vertical machining center control: <b>1. Safe startup and warm-up</b>, <b>2. New program prove-out</b>, and <b>3. Abnormal condition response</b>. Work the console the way you would on the floor. The work zone view shows where the tool actually is.</p>
+<label for="fName">Trainee name (required)</label><input type="text" id="fName" autocomplete="off">
+<label for="fId">Employee ID</label><input type="text" id="fId" autocomplete="off">
+<label for="fEval">Observer / evaluator (optional)</label><input type="text" id="fEval" autocomplete="off">
+<label>Session mode</label>
+<div class="modes">
+<div class="modeopt sel" data-m="practice"><b>Practice</b><span>Step list, hints, and coaching after each mistake. Retry any module. Formative only.</span></div>
+<div class="modeopt" data-m="assessment"><b>Assessment</b><span>No prompts or coaching. One attempt per module. Results go to the readiness record.</span></div>
+</div>
+<div class="formerr" id="formErr"></div>
+<div class="btns"><button class="btn amber" id="beginBtn">Begin session</button></div>
+</div>
+</div>
+
+<div class="ov hidden" id="ovMsg"><div class="card"><div class="kick" id="msgKick"></div><h2 id="msgTitle"></h2><div id="msgBody"></div><div class="btns" id="msgBtns"></div></div></div>
+
+<div class="ov hidden" id="ovRecord"><div class="card wide"><div id="recordView"></div>
+<div class="btns"><button class="btn sec" id="newBtn">Start new session</button><button class="btn sec" id="dlBtn">Download record (.html)</button><button class="btn amber" id="printBtn">Print / Save as PDF</button></div></div></div>
+
+<div id="printHost"></div>
+
+<script>
+(function(){
+"use strict";
+/* ===== Configuration ===== */
+const ORG_NAME="General Tool Company";
+const PROGRAM_NAME="Machinist Workforce Development Program";
+const COURSE="Level 2 CNC Qualification";
+const RESPONSE_TARGET_MS=5000;
+
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const clone=o=>JSON.parse(JSON.stringify(o));
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TOOL_LEN={1:152.4,2:98.25,3:110.5};
+const SETUP_OFS={1:152.4,2:98.25,3:110.5,4:0,5:0};
+const HOME={x:-80,y:60,z:80};
+const PART={x0:-15,x1:65,y0:-10,y1:50};
+const POCKET_DEPTH=-5,DEPTH_TOL=0.02,TOOL_R=5;
+const RESULTS=["Not Yet Demonstrated","In Progress","Demonstrated","Mastered"];
+
+const PROGRAMS={
+ O9000:{name:"O9000 SPINDLE WARM-UP",blocks:[
+  {t:"N10 G91 G28 Z0.",home:true},
+  {t:"N20 G90 M03 S500",spindle:500},
+  {t:"N30 G04 X3.",dwell:1400},
+  {t:"N40 S2000",spindle:2000},
+  {t:"N50 G04 X3.",dwell:1400},
+  {t:"N60 S5000",spindle:5000},
+  {t:"N70 G04 X3.",dwell:1400},
+  {t:"N80 M05",spindle:0},
+  {t:"N90 M30",end:true}]},
+ O1234:{name:"O1234 BRACKET OP10 REV B",blocks:[
+  {t:"N10 G90 G17 G40 G49 G80"},
+  {t:"N20 T01 M06",tool:1},
+  {t:"N30 G54 G00 X0. Y0.",rapid:true,x:0,y:0},
+  {t:"N40 S3200 M03",spindle:3200},
+  {t:"N50 G43 H01 Z25. M08",rapid:true,z:25,g43:1,coolant:true},
+  {t:"N60 G00 Z2.",rapid:true,z:2},
+  {t:"N70 G01 Z-5. F150",z:-5,f:150},
+  {t:"N80 X50. F400",x:50,f:400},
+  {t:"N90 Y40.",y:40,f:400},
+  {t:"N100 X0.",x:0,f:400},
+  {t:"N110 Y0.",y:0,f:400},
+  {t:"N120 G00 Z25. M09",rapid:true,z:25,coolant:false},
+  {t:"N130 M01",opt:true},
+  {t:"N140 G91 G28 Z0. M05",home:true,spindle:0},
+  {t:"N150 M30",end:true}]}
+};
+const idxOf=(p,n)=>PROGRAMS[p].blocks.findIndex(b=>b.t.indexOf(n+" ")===0);
+
+/* ===== Machine state ===== */
+function base(){return{power:true,estop:false,alarms:[],mode:"EDIT",cycle:"IDLE",door:"CLOSED",clamp:"CLOSED",clampPress:"NORMAL",setter:"OUT",
+ feed:100,spindleOvr:100,rapid:100,singleBlock:false,blockSkip:false,optStop:false,dryRun:false,axis:null,inc:"X10",
+ pos:clone(HOME),tip:clone(HOME),homed:{x:true,y:true,z:true},spindle:0,coolant:false,g43:false,activeH:0,tool:1,
+ offsets:clone(SETUP_OFS),cursor:1,buf:"",prog:"O1234",block:0,curBlock:-1,screen:"POS",load:0,chatter:false,coolantFault:false,
+ smoke:0,crashed:false,cut:{x0:null,x1:null,minZ:null,depth:null},lubeLow:false,hexKey:false,partPresent:true}}
+const S=base();
+let motion=null;
+
+/* ===== Scenario state ===== */
+const SC={mode:"practice",trainee:{name:"",id:"",evaluator:""},sessionId:"",start:null,end:null,mi:-1,active:false,F:{errKeys:{}},
+ MR:[0,1,2].map(()=>({attempts:0,errors:[],start:null,end:null,completed:false,ended:false,events:[]})),stepDone:[],lastCoach:null};
+
+const MODULES=[
+{title:"Safe Startup and Warm-Up",
+ situation:"Second shift. The vertical machining center was shut down at the end of first shift: E-stop pressed, control powered off, door left open. Nothing is on the table but the fixture.",
+ objective:"Bring the machine to a homed, alarm-free, warmed-up ready state without skipping a safety check.",
+ setup(){Object.assign(S,base(),{power:false,estop:true,door:"OPEN",prog:"O9000",homed:{x:false,y:false,z:false},pos:{x:42.318,y:17.902,z:46.25},lubeLow:true,hexKey:true,partPresent:false});
+  S.tip=clone(S.pos);
+  SC.F={errKeys:{},insp:{lube:{seen:false,fixed:false},coolant:{seen:false},air:{seen:false},envelope:{seen:false,fixed:false},guards:{seen:false}},progViewed:false,warmupDone:false};},
+ steps:[
+  {text:"Complete the pre-start inspection in the panel below and correct every finding.",hint:"Inspect each item. Anything flagged needs Correct before you power up.",done:()=>inspDone()},
+  {text:"Turn control POWER on.",hint:"POWER is in the Power / Emergency Stop module.",done:()=>S.power},
+  {text:"Release the EMERGENCY STOP.",hint:"Click the red button to twist-release it.",done:()=>S.power&&!S.estop},
+  {text:"Press RESET to clear the alarm.",hint:"RESET is on the keyboard module. If an alarm will not clear, press MESSAGE to read it.",done:()=>S.power&&!S.estop&&S.alarms.length===0},
+  {text:"Close the door.",hint:"DOOR CLOSE is in the Tool Setter / Clamp / Door module. Axes will not move with the door open.",done:()=>S.door==="CLOSED"},
+  {text:"Select ZERO RTN, then home Z first, then X and Y.",hint:"In ZERO RTN mode the X, Y, and Z keys in the Pulse Handle module send each axis home. Z first lifts the spindle clear of the table before anything moves sideways.",done:()=>S.homed.x&&S.homed.y&&S.homed.z},
+  {text:"Select AUTO and press PROG to confirm O9000 is loaded.",hint:"PROG is a soft key under the screen.",done:()=>S.mode==="AUTO"&&SC.F.progViewed},
+  {text:"Press AUTO CYCLE START and let the warm-up finish.",hint:"The spindle steps through 500, 2000, and 5000 RPM, then the program ends at M30.",done:()=>SC.F.warmupDone}],
+ context:ctxInspection},
+{title:"New Program Prove-Out",
+ situation:"Engineering released O1234 (Bracket, Op 10, Rev B). This is its first run on this machine. The part is on the fixture, T01 is in the spindle, and the setup sheet is posted. The last operator on this machine was doing air cuts.",
+ objective:"Prove out the program without crashing the machine or scrapping the part. Verify before you run, and run with controls that let you stop in time.",
+ setup(){Object.assign(S,base(),{door:"OPEN",clamp:"OPEN",clampPress:"LOW",dryRun:true,mode:"EDIT"});S.offsets[1]=125.4;
+  SC.F={errKeys:{},progViewed:false,ofsViewed:false,proveChecked:false,started:false,nearMiss:false,done:false};},
+ steps:[
+  {text:"Set CLAMP PRESSURE to match the setup sheet.",hint:"Click the CLAMP PRESSURE knob in the Workholding module. The sheet calls for NORMAL.",done:()=>S.clampPress==="NORMAL"},
+  {text:"Close the clamp.",hint:"CLAMP CLOSE is in the Tool Setter / Clamp / Door module.",done:()=>S.clamp==="CLOSED"},
+  {text:"Close the door.",hint:"DOOR CLOSE.",done:()=>S.door==="CLOSED"},
+  {text:"Press PROG and confirm O1234 Rev B is loaded.",hint:"Compare the program name on screen with the setup sheet.",done:()=>SC.F.progViewed},
+  {text:"Press OFS/SET. Compare every tool length offset with the setup sheet and correct any mismatch.",hint:"Compare digit by digit. To correct: click the row on the screen, key in the value (use the . key), then press INPUT.",done:()=>SC.F.ofsViewed&&ofsMatch()},
+  {text:"Set SINGLE BLOCK on, OPT STOP on, and DRY RUN off.",hint:"Check the Machine State bar. Something may have been left on from the air cuts.",done:()=>S.singleBlock&&S.optStop&&!S.dryRun},
+  {text:"Set FEED and RAPID overrides to 25% or lower.",hint:"FEED minus lowers feed in 10% steps. The RAPID key cycles 100%, 50%, 25%, F0.",done:()=>S.feed<=25&&S.rapid<=25},
+  {text:"Select AUTO and press CYCLE START once per block. Watch DIST TO GO and the work zone view before each move.",hint:"If the tool is heading lower than the program intends, press FEED HOLD.",done:()=>S.cut.depth!==null},
+  {text:"Run the program through M30.",hint:"At M01 the program pauses for inspection. Press CYCLE START to continue.",done:()=>SC.F.done}],
+ context:ctxSetupSheet},
+{title:"Abnormal Condition Response",
+ situation:"O1234 is proven and running production at 100% overrides. Your job is to monitor the machine while it cuts. Conditions can change without warning.",
+ objective:"Recognize each abnormal condition, choose the correct stop for it, make the machine safe, and notify your lead.",
+ setup(){Object.assign(S,base(),{mode:"AUTO"});SC.F={errKeys:{},events:Math.random()<.5?["chatter","smoke"]:["smoke","chatter"],eventIdx:0,ev:null,results:[],started:false};SC.MR[2].events=[];},
+ steps:[
+  {text:"Confirm the machine is in AUTO and press CYCLE START to begin production.",hint:"Everything is already set up for production.",done:()=>SC.F.started},
+  {text:"Monitor the cut. When a condition develops, choose the correct stop for it.",hint:"Ask: is anyone in danger, is there fire, or is this a process problem? FEED HOLD is the controlled stop for process problems. EMERGENCY STOP is for danger to people, fire, or an imminent collision.",done:()=>SC.F.eventIdx>0||(SC.F.ev&&SC.F.ev.stoppedAt!==null)},
+  {text:"Make the machine safe, then use Notify Lead in the panel below.",hint:"A turning spindle is not safe. Never open the door on smoke.",done:()=>SC.F.eventIdx>0},
+  {text:"Resume production and handle the next condition.",hint:"Same decision process: identify, stop correctly, make safe, notify.",done:()=>SC.F.eventIdx>1}],
+ context:ctxFloor}
+];
+
+/* ===== Helpers ===== */
+const log=$("#log");
+function clock(){return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
+function mmss(ms){if(ms==null||isNaN(ms))return"--:--";const s=Math.max(0,Math.round(ms/1000));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function response(action,effect){
+ $("#quickStatus").textContent=effect;
+ const e=document.createElement("div");e.className="entry";
+ e.innerHTML='<div class="time">'+clock()+'</div><div class="action">'+esc(action)+'</div><div class="effect">&rarr; '+esc(effect)+'</div>';
+ log.prepend(e);while(log.children.length>60)log.removeChild(log.lastChild);
+ renderScenario();
+}
+function logDivider(t){const e=document.createElement("div");e.className="entry div";e.textContent=t;log.prepend(e)}
+function needPower(a){if(!S.power){response(a,"Not accepted. Control power is OFF.");return false}return true}
+function addAlarm(code,text){if(!S.alarms.some(a=>a.code===code))S.alarms.push({code,text})}
+function inPartXY(p){return p.x>PART.x0-TOOL_R&&p.x<PART.x1+TOOL_R&&p.y>PART.y0-TOOL_R&&p.y<PART.y1+TOOL_R}
+function ofsMatch(){return [1,2,3].every(k=>Math.abs(S.offsets[k]-SETUP_OFS[k])<0.0005)}
+function inspDone(){const i=SC.F.insp;return i&&Object.values(i).every(x=>x.seen)&&i.lube.fixed&&i.envelope.fixed}
+function modeName(m){return m==="ZRN"?"ZERO RTN":m}
+function homedAll(){return S.homed.x&&S.homed.y&&S.homed.z}
+
+function err(type,key,msg,coach){
+ if(!SC.active)return;
+ const F=SC.F;if(key){if(F.errKeys[key])return;F.errKeys[key]=1}
+ const m=SC.MR[SC.mi];m.errors.push({t:Date.now()-m.start,type,msg,coach:coach||""});
+ if(type==="critical"){critical(msg,coach);return}
+ setCoach("error",msg+(coach?" "+coach:""));
+}
+function setCoach(kind,text){SC.lastCoach={kind,text};renderScenario()}
+
+/* ===== Motion engine ===== */
+function startMotion(to,toTip,kind,f,onDone,o){
+ o=o||{};const d=Math.hypot(toTip.x-S.tip.x,toTip.y-S.tip.y,toTip.z-S.tip.z);let dur=o.dur;
+ if(dur==null){if(kind==="rapid")dur=Math.max(300,d*11);else if(kind==="home")dur=Math.max(600,d*14);else dur=Math.max(300,d/(f||400)*60000*0.15)}
+ motion={from:clone(S.pos),to,fromTip:clone(S.tip),toTip,kind,f:f||0,dur,el:0,onDone,manual:!!o.manual,willCrash:!!o.willCrash};
+}
+let last=performance.now();
+function tick(now){
+ const dt=Math.min(50,now-last);last=now;
+ if(motion&&SC.active){
+  const go=motion.manual||S.cycle==="RUN";
+  if(go&&S.power&&!S.estop){
+   let r=1;if(motion.kind==="rapid")r=S.rapid/100;else if(motion.kind==="feed")r=S.dryRun?2.5:S.feed/100;
+   motion.el+=dt*r;const k=Math.min(1,motion.el/motion.dur);
+   ["x","y","z"].forEach(a=>{S.pos[a]=motion.from[a]+(motion.to[a]-motion.from[a])*k;S.tip[a]=motion.fromTip[a]+(motion.toTip[a]-motion.fromTip[a])*k});
+   trackCut();
+   const c=collide();
+   if(c)crash(c);
+   else if(k>=1){const cb=motion.onDone;motion=null;if(cb)cb()}
+  }
+ }
+ eventTick(dt);
+ renderLive(now);
+ requestAnimationFrame(tick);
+}
+function trackCut(){
+ if(!S.partPresent||!motion||motion.kind!=="feed")return;const t=S.tip;
+ if(t.z<0&&inPartXY(t)){const c=S.cut;c.x0=c.x0==null?t.x:Math.min(c.x0,t.x);c.x1=c.x1==null?t.x:Math.max(c.x1,t.x);c.minZ=c.minZ==null?t.z:Math.min(c.minZ,t.z)}
+}
+function collide(){
+ if(!S.partPresent||!motion)return null;const t=S.tip;if(!inPartXY(t)||t.z>=0)return null;
+ if(motion.kind==="rapid"||motion.kind==="home"){
+  const desc=motion.toTip.z<motion.fromTip.z-0.001,xy=Math.abs(motion.toTip.x-motion.fromTip.x)>0.001||Math.abs(motion.toTip.y-motion.fromTip.y)>0.001;
+  if(desc||xy)return"Rapid move drove the tool into the part. Tool tip reached Z "+t.z.toFixed(3)+" at rapid traverse.";
+ }
+ if(motion.kind==="feed"&&t.z<POCKET_DEPTH-6)return"Tool buried in the part at Z "+t.z.toFixed(3)+".";
+ return null;
+}
+function crash(reason){
+ motion=null;S.crashed=true;S.cycle="IDLE";S.spindle=0;S.coolant=false;
+ addAlarm("SV","SERVO ALARM: EXCESS ERROR (COLLISION)");
+ response("COLLISION",reason);
+ let coach="";
+ if(SC.mi===1&&Math.abs(S.activeH-TOOL_LEN[1])>0.0005)coach=ofsCoach();
+ err("critical",null,"Collision. "+reason,coach);
+}
+function ofsCoach(){
+ const L=TOOL_LEN[1],H=S.activeH,d=H-L;
+ return "The setup sheet lists H01 as "+L.toFixed(3)+" mm, but the control ran with H01 = "+H.toFixed(3)+" mm. The control believed the tool was "+Math.abs(d).toFixed(3)+" mm "+(d<0?"shorter":"longer")+" than it really is, so every Z position was off by that amount. Comparing OFS/SET against the setup sheet digit by digit before CYCLE START catches this. Single block with rapid at 25% or less, while watching DIST TO GO, gives you time to FEED HOLD if something slips through.";
+}
+
+/* ===== Program execution ===== */
+function runBlock(){
+ if(!SC.active||S.cycle!=="RUN")return;
+ const P=PROGRAMS[S.prog],b=P.blocks[S.block];
+ if(!b){programEnd();return}
+ S.curBlock=S.block;const F=SC.F;
+ if(SC.mi===2&&!F.ev&&F.eventIdx<2&&b.t.indexOf("N80 ")===0)startEvent(F.events[F.eventIdx]);
+ if(b.spindle!==undefined)S.spindle=b.spindle;
+ if(b.coolant!==undefined)S.coolant=b.coolant&&!S.coolantFault;
+ if(b.tool)S.tool=b.tool;
+ if(b.g43){S.g43=true;S.activeH=S.offsets[b.g43]}
+ let kind="dwell",to=clone(S.pos),toTip=clone(S.tip),dur=null;
+ if(b.home){kind="rapid";to.z=HOME.z;toTip.z=HOME.z}
+ else if(b.x!==undefined||b.y!==undefined||b.z!==undefined){
+  kind=b.rapid?"rapid":"feed";
+  if(b.x!==undefined)to.x=b.x;if(b.y!==undefined)to.y=b.y;if(b.z!==undefined)to.z=b.z;
+  const d=S.g43?(S.activeH-TOOL_LEN[S.tool]):0;toTip={x:to.x,y:to.y,z:to.z+d};
+ } else dur=b.dwell||160;
+ const willCrash=kind==="rapid"&&S.partPresent&&toTip.z<0&&inPartXY(toTip)&&toTip.z<S.tip.z;
+ if(S.singleBlock)response("Single block","Executing "+b.t);
+ startMotion(to,toTip,kind,b.f,()=>afterBlock(b),{dur,willCrash});
+ renderAll();
+}
+function afterBlock(b){
+ if(!SC.active)return;
+ if(b.home){S.g43=false;S.pos.z=HOME.z;S.tip.z=HOME.z}
+ if(b.t.indexOf("N70 ")===0&&S.partPresent)S.cut.depth=S.tip.z;
+ if(b.end){programEnd();return}
+ S.block++;
+ const F=SC.F;
+ if(SC.mi===2&&F.ev&&b.t.indexOf("N110 ")===0)S.block=idxOf("O1234","N80");
+ if(S.cycle!=="RUN"){renderAll();return}
+ if(b.opt&&S.optStop){S.cycle="STOP";response("M01 OPTIONAL STOP","Program paused at M01. Check the part, then press CYCLE START to continue.");renderAll();return}
+ if(S.singleBlock){S.cycle="STOP";renderAll();renderScenario();return}
+ setTimeout(runBlock,40);
+}
+function programEnd(){
+ S.cycle="IDLE";S.block=0;S.curBlock=-1;S.spindle=0;S.coolant=false;
+ response("M30 PROGRAM END",PROGRAMS[S.prog].name+" complete. Program rewound.");
+ const i=SC.mi,F=SC.F;
+ if(i===0&&S.prog==="O9000"){F.warmupDone=true;setCoach("good","Warm-up complete. The machine is homed, alarm-free, and ready for setup.");setTimeout(completeModule,700)}
+ if(i===1){
+  if(S.cut.depth===null||Math.abs(S.cut.depth-POCKET_DEPTH)>DEPTH_TOL){
+   const dd=S.cut.depth===null||S.cut.depth>=0?"no material removed":"pocket depth "+(-S.cut.depth).toFixed(3)+" mm";
+   err("critical",null,"Quality escape: "+dd+" against a 5.000 +/- 0.020 mm requirement.",ofsCoach());
+  } else {F.done=true;setCoach("good","Program proved out. Pocket depth "+(-S.cut.depth).toFixed(3)+" mm, in tolerance. The part goes to first article inspection.");setTimeout(completeModule,700)}
+ }
+ renderAll();
+}
+
+/* ===== Module 2 checks ===== */
+function proveChecks(){
+ const F=SC.F;F.proveChecked=true;
+ if(S.clampPress!=="NORMAL")err("standard","press","Ran with clamp pressure at "+S.clampPress+"; the setup sheet calls for NORMAL.","Wrong clamp pressure lets the part shift under cutting load or distorts thin walls. Match the setup sheet before clamping.");
+ if(!F.progViewed)err("standard","prog","Started the cycle without verifying the program on the PROG screen.","Confirm the program number and revision match the setup sheet every time. Running the wrong revision is a quality escape.");
+ if(!F.ofsViewed)err("standard","ofs","Started the cycle without checking tool offsets on OFS/SET.","Offsets are the most common source of first-run crashes. Compare every active offset with the setup sheet.");
+ if([2,3].some(k=>Math.abs(S.offsets[k]-SETUP_OFS[k])>0.0005))err("standard","ofs-other","Changed an offset that already matched the setup sheet (H02 or H03).","Only change offsets that are wrong, and confirm the row before pressing INPUT.");
+ if(!S.singleBlock)err("standard","sb","Started a first-run prove-out without SINGLE BLOCK.","Single block stops after every block so you can read the next move before it happens.");
+ if(!S.optStop)err("standard","os","Started a prove-out with OPT STOP off.","OPT STOP makes the program pause at M01 so you can check the part before the next operation.");
+ if(S.dryRun)err("standard","dry","Left DRY RUN on for a cut on a real part.","Dry run replaces programmed feedrates with a much faster rate. It is for air cuts only. Always check it before cutting a part.");
+ if(S.feed>25)err("standard","feed","Started a prove-out with feed override at "+S.feed+"%.","Run new programs at 25% feed or less until each move is confirmed.");
+ if(S.rapid>25)err("standard","rapid","Started a prove-out with rapid override at "+(S.rapid===5?"F0":S.rapid+"%")+".","Rapid at 25% or less gives you time to react. Feed override does not slow rapid moves.");
+}
+function nearMiss(){
+ if(SC.mi!==1||SC.F.nearMiss)return;SC.F.nearMiss=true;
+ err("standard","nearmiss","Stopped a rapid move that would have driven the tool into the part.","Good stop. The real problem was upstream: the offset should have been verified before CYCLE START. Press RESET, open OFS/SET, correct the offset to the setup sheet, and restart from the top.");
+}
+
+/* ===== Module 3 events ===== */
+function startEvent(type){
+ const F=SC.F;F.ev={type,start:Date.now(),stoppedAt:null,stopAction:null,firstAction:null,spindleStopped:false};
+ if(type==="chatter"){S.chatter=true;S.load=92;response("SPINDLE LOAD","Load is climbing. Loud chatter and a high-pitched squeal from the cut zone. Chips are coming off blue.")}
+ else{S.coolantFault=true;S.coolant=false;S.smoke=0.08;response("COOLANT FLOW","Coolant flow has stopped. Smoke is building inside the enclosure and there is a glow at the cut.")}
+}
+function eventTick(dt){
+ if(!SC.active||SC.mi!==2)return;const ev=SC.F.ev;if(!ev)return;
+ if(ev.type==="chatter"){
+  if(ev.stoppedAt===null&&S.cycle==="RUN"){S.load+=dt*0.0065*(0.3+0.7*S.feed/100);
+   if(S.load>=150){S.load=150;S.chatter=false;motion=null;
+    err("critical",null,"Tool failure: the end mill broke in the cut after the chatter was not stopped. Part scrapped.","Rising load with chatter and a squeal means the tool is failing. FEED HOLD immediately stops the feed while keeping position, then RESET stops the spindle so the tool can be inspected.")}}
+ } else {
+  if(ev.stoppedAt===null){S.smoke=Math.min(1,S.smoke+dt/9000);
+   if(S.smoke>=1){motion=null;err("critical",null,"No emergency stop within the response window. The smoke became an enclosure fire.","Smoke or a glow in the enclosure calls for EMERGENCY STOP right away, then keep the door closed and follow the site emergency procedure.")}}
+  else S.smoke=Math.max(0.2,S.smoke-dt/20000);
+ }
+}
+function onStopAction(a){
+ if(!SC.active||SC.mi!==2)return;const ev=SC.F.ev;if(!ev)return;
+ const ms=Date.now()-ev.start;
+ if(ev.type==="chatter"){
+  if(ev.stoppedAt!==null){if((a==="RESET"||a==="E-STOP")&&!ev.spindleStopped){ev.spindleStopped=true;setCoach("good","Spindle stopped. Now notify your lead before the tool is inspected.")}return}
+  if(!ev.firstAction)ev.firstAction=a;
+  ev.stoppedAt=ms;ev.stopAction=a;S.chatter=false;
+  if(a==="FEED HOLD")setCoach("good","Correct. FEED HOLD brought the axes to a controlled stop and kept position. The spindle is still turning: press RESET to stop it, then notify your lead.");
+  else if(a==="E-STOP"){ev.spindleStopped=true;err("standard","chat-estop","Used EMERGENCY STOP for a process problem (chatter).","For chatter or a tool in distress with no danger to people, FEED HOLD is the controlled stop. E-stop removes servo power abruptly and can leave the tool dragging in the cut. Save E-stop for danger to people, fire, or an imminent collision.")}
+  else if(a==="RESET"){ev.spindleStopped=true;err("standard","chat-reset","Used RESET before FEED HOLD during chatter.","RESET cancels the program and stops the spindle with the tool still in the cut. Stop the feed first with FEED HOLD, then RESET.")}
+ } else {
+  if(ev.stoppedAt!==null)return;
+  if(!ev.firstAction)ev.firstAction=a;
+  if(a==="E-STOP"){ev.stoppedAt=ms;ev.stopAction=a;ev.spindleStopped=true;setCoach("good","Correct. EMERGENCY STOP removed power from the spindle, axes, and coolant pump. Keep the door closed so the enclosure starves the fire of air. Notify your lead and follow the site emergency procedure.")}
+  else if(a==="FEED HOLD")err("standard","smoke-hold","Used FEED HOLD for smoke in the enclosure.","Feed hold only stops the axes. The spindle keeps turning and the machine stays powered. Smoke or fire calls for EMERGENCY STOP.");
+  else if(a==="RESET")err("standard","smoke-reset","Used RESET instead of EMERGENCY STOP for smoke.","RESET stops the program but leaves the machine powered. Smoke or fire calls for EMERGENCY STOP.");
+ }
+}
+function notifyLead(){
+ if(!SC.active||SC.mi!==2)return;const ev=SC.F.ev;
+ if(!ev){response("Notify lead","Lead acknowledges. No abnormal condition is active.");return}
+ if(ev.stoppedAt===null){response("Notify lead","Lead: \"Stop the machine first, then call me.\"");err("standard","notify-early-"+ev.type,"Called the lead before stopping the hazard.","Stop the condition first. Every second spent walking away or calling is a second the hazard keeps growing.");return}
+ if(!ev.spindleStopped){response("Notify lead","Lead: \"Is the spindle still turning? Make it safe first.\"");setCoach("error","The spindle is still turning. Press RESET to stop it before you step away.");return}
+ response("Notify lead","Lead is on the way. Condition reported: "+(ev.type==="chatter"?"chatter, rising spindle load, tool in distress.":"smoke and loss of coolant inside the enclosure."));
+ resolveEvent();
+}
+function resolveEvent(){
+ const F=SC.F,ev=F.ev,exp=ev.type==="chatter"?"FEED HOLD":"E-STOP";
+ F.results.push({type:ev.type,expected:exp,first:ev.firstAction||ev.stopAction,ms:ev.stoppedAt,correct:ev.firstAction===exp});
+ SC.MR[2].events=F.results.slice();
+ F.eventIdx++;F.ev=null;motion=null;
+ Object.assign(S,base(),{mode:"AUTO"});
+ response("Lead","Condition cleared: "+(ev.type==="chatter"?"worn end mill replaced and a new part loaded.":"fire response complete, coolant line repaired, and a new part loaded.")+(F.eventIdx<2?" Press CYCLE START to resume production.":""));
+ if(F.eventIdx>=2)setTimeout(completeModule,600);else setCoach("info","Machine restored by your lead. Press CYCLE START to resume production and keep monitoring.");
+ renderAll();
+}
+
+/* ===== Console handlers ===== */
+$("#power").addEventListener("click",()=>{
+ if(!SC.active)return;
+ if(!S.power){
+  S.power=true;if(S.estop)addAlarm("EMG","EMG: EMERGENCY STOP");if(S.lubeLow)addAlarm("LUBE","2001 WAY LUBE LEVEL LOW");
+  response("Control power ON",S.alarms.length?"Control booted. Alarm active: "+S.alarms.map(a=>a.text).join("; ")+".":"Control booted. Ready.");
+  if(SC.mi===0&&!Object.values(SC.F.insp).every(x=>x.seen))err("standard","insp-power","Powered on before the pre-start inspection was complete.","Finish the walkaround before power-up. That is where low lube, loose tools, and damaged guards get caught.");
+ } else {
+  motion=null;S.power=false;S.cycle="IDLE";S.block=0;S.curBlock=-1;S.spindle=0;S.coolant=false;S.alarms=[];
+  response("Control power OFF","Control shut down. Motion and spindle stopped.");
+ }
+ renderAll();
+});
+$("#estop").addEventListener("click",()=>{
+ if(!SC.active)return;
+ if(!S.estop){
+  const saved=motion&&motion.willCrash;
+  S.estop=true;motion=null;S.cycle="IDLE";S.block=0;S.curBlock=-1;S.spindle=0;S.coolant=false;S.chatter=false;
+  if(S.g43){S.g43=false;S.pos=clone(S.tip)}
+  if(S.power)addAlarm("EMG","EMG: EMERGENCY STOP");
+  response("EMERGENCY STOP pressed","Servo, spindle, and coolant power removed. Program reset. Twist the button to release, then press RESET.");
+  if(saved)nearMiss();
+  onStopAction("E-STOP");
+ } else {S.estop=false;response("E-STOP released","Button released. Press RESET to clear the emergency stop alarm.")}
+ renderAll();
+});
+function doReset(){
+ if(!S.power){response("RESET","No effect. Control power is OFF.");return}
+ motion=null;S.cycle="IDLE";S.block=0;S.curBlock=-1;S.spindle=0;S.coolant=false;
+ if(S.g43){S.g43=false;S.pos=clone(S.tip)}
+ const before=S.alarms.length;
+ S.alarms=S.alarms.filter(a=>a.code==="EMG"?S.estop:a.code==="LUBE"?S.lubeLow:false);
+ let m="Program reset to the top. Spindle and coolant stopped.";
+ if(S.alarms.length)m+=" Alarm remains: "+S.alarms.map(a=>a.text).join("; ")+".";else if(before)m+=" Alarms cleared.";
+ response("RESET",m);onStopAction("RESET");renderAll();
+}
+$("#hold").addEventListener("click",()=>{
+ if(!SC.active||!needPower("FEED HOLD"))return;
+ if(S.cycle==="RUN"){const saved=motion&&motion.willCrash;S.cycle="HOLD";
+  response("FEED HOLD","Axis motion stopped. Spindle still turning. CYCLE START resumes; RESET cancels.");
+  if(saved)nearMiss();onStopAction("FEED HOLD");}
+ else{response("FEED HOLD","No axis motion in progress.");onStopAction("FEED HOLD")}
+ renderAll();
+});
+$("#cycle").addEventListener("click",()=>{
+ if(!SC.active||!needPower("CYCLE START"))return;
+ if(S.estop||S.alarms.length){response("CYCLE START","Not accepted. Alarm active: "+(S.alarms.map(a=>a.text).join("; ")||"EMERGENCY STOP pressed")+".");return}
+ if(S.mode!=="AUTO"){response("CYCLE START","Not accepted. Select AUTO to run the loaded program.");return}
+ if(S.cycle==="RUN"){response("CYCLE START","Cycle already running.");return}
+ if(S.door!=="CLOSED"){response("CYCLE START","DOOR INTERLOCK: close the door to run in AUTO.");if(SC.mi<2)err("standard","door-cs","Pressed CYCLE START with the door open.","The interlock caught it this time. Check the door before every cycle start.");return}
+ if(!homedAll()){response("CYCLE START","ALARM: ZERO RETURN NOT FINISHED. Home all axes first.");err("standard","nohome","Pressed CYCLE START before all axes were homed.","Without a reference return the control does not know where the axes are. Home Z, then X and Y, before running anything.");return}
+ if(S.partPresent&&S.clamp!=="CLOSED"){response("CYCLE START","FIXTURE INTERLOCK: clamp not confirmed closed.");err("standard","clamp-cs","Pressed CYCLE START with the workholding unclamped.","Confirm the part is clamped at the correct pressure before every cycle.");return}
+ if(S.setter==="IN"){response("CYCLE START","INTERLOCK: tool setter arm is in the work zone. Retract it.");err("standard","setter-cs","Pressed CYCLE START with the tool setter arm in the work zone.","Retract the tool setter before running. It sits in the tool's path.");return}
+ const F=SC.F;
+ if(S.cycle==="HOLD"){
+  if(SC.mi===2&&F.ev&&F.ev.type==="chatter"&&F.ev.stoppedAt!==null&&!F.ev.spindleStopped){F.ev.stoppedAt=null;S.chatter=true;err("standard","resume-chatter","Resumed cutting with a tool in distress.","Once you stop for chatter, stay stopped. Stop the spindle, notify your lead, and let the tool be inspected.")}
+  S.cycle="RUN";response("CYCLE START","Cycle resumed.");if(!motion)runBlock();renderAll();return}
+ if(S.cycle==="IDLE"&&S.block===0){
+  if(SC.mi===0&&S.hexKey)err("standard","hexkey","Ran the warm-up with a hex key left in the work envelope.","Loose items on the table can be thrown by chip flush, coolant, or the tool changer. Clear the envelope during the walkaround.");
+  if(SC.mi===1&&!F.proveChecked)proveChecks();
+  if(SC.mi===2)F.started=true;
+  if(!SC.active)return;
+  S.cycle="RUN";response("CYCLE START","Cycle started: "+PROGRAMS[S.prog].name+".");
+ } else S.cycle="RUN";
+ runBlock();renderAll();
+});
+$$("[data-mode]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;
+ if(S.cycle==="RUN"||S.cycle==="HOLD"){response("Mode select","Not changed. Reset or finish the cycle before changing mode.");return}
+ S.mode=b.dataset.mode;response("Mode select","Mode changed to "+modeName(S.mode)+".");renderAll();
+}));
+$$("[data-action]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;const a=b.dataset.action,map={"SINGLE BLOCK":"singleBlock","BLOCK SKIP":"blockSkip","OPT STOP":"optStop","DRY RUN":"dryRun"};
+ S[map[a]]=!S[map[a]];response(a,S[map[a]]?"ON.":"OFF.");renderAll();
+}));
+$$("[data-soft]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;const n=b.dataset.soft;S.screen=n;
+ if(n==="PROG")SC.F.progViewed=true;if(n==="OFS/SET")SC.F.ofsViewed=true;
+ response("Soft key: "+n,n+" screen displayed.");renderAll();
+}));
+$$("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;const n=b.dataset.toggle;
+ if(n==="Tool unclamp"&&S.spindle>0){response(n,"Not accepted while the spindle is running.");return}
+ b.classList.toggle("on");response(n,b.classList.contains("on")?"Enabled.":"Disabled.");
+}));
+$$("[data-jog]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;const c=b.dataset.jog;const F=SC.F;
+ if(c==="DOOR CLOSE"){S.door="CLOSED";response(c,"Door closed and locked.");renderAll();return}
+ if(c==="DOOR OPEN"){
+  if(S.door==="OPEN"){response(c,"Door is already open.");return}
+  if(S.spindle>0||S.cycle==="RUN"){response(c,"DOOR LOCKED: spindle running or cycle active.");
+   if(SC.mi===2&&F.ev)err("standard","door-"+F.ev.type,"Tried to open the door while the spindle was running.","Make the machine safe before opening the enclosure.");return}
+  if(SC.mi===2&&F.ev&&F.ev.type==="smoke"){S.door="OPEN";response(c,"Door opened. Fresh air rushes into the enclosure and the smoldering chips flare up.");err("critical",null,"Opened the enclosure door on smoke. The fire flared and spread out of the machine.","Keep the door closed on smoke or fire. The enclosure limits oxygen and contains the flare. E-stop, keep it closed, notify your lead, and follow the site emergency procedure.");renderAll();return}
+  S.door="OPEN";response(c,"Door unlocked and opened.");renderAll();return}
+ if(!needPower(c))return;
+ if(c==="CLAMP CLOSE"){S.clamp="CLOSED";response(c,"Fixture clamped at "+S.clampPress+" pressure.")}
+ else if(c==="CLAMP OPEN"){
+  if(S.spindle>0||S.cycle!=="IDLE"){response(c,"Not accepted: cycle active or spindle running.");err("standard","unclamp","Tried to unclamp the workholding during an active cycle.","Never unclamp until the program has ended or been reset and the spindle has stopped.");return}
+  S.clamp="OPEN";response(c,"Fixture unclamped.")}
+ else if(c==="SETTER IN"){if(S.cycle!=="IDLE"){response(c,"Not accepted during a cycle.");return}S.setter="IN";response(c,"Tool setter arm moved into the work zone.")}
+ else if(c==="SETTER OUT"){S.setter="OUT";response(c,"Tool setter arm retracted.")}
+ renderAll();
+}));
+$$("[data-axis]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active)return;const ax=b.dataset.axis;S.axis=ax;
+ if(S.mode==="ZRN")homeAxis(ax);else response("Axis select",ax.toUpperCase()+" selected for handle jog.");
+ renderAll();
+}));
+$$("[data-inc]").forEach(b=>b.addEventListener("click",()=>{if(!SC.active)return;S.inc=b.dataset.inc;response("Handle increment",S.inc+" ("+incVal()+" mm per division).");renderAll()}));
+function incVal(){return S.inc==="X1"?0.001:S.inc==="X10"?0.01:0.1}
+$$("[data-jogdir]").forEach(b=>b.addEventListener("click",()=>{
+ if(!SC.active||!needPower("Handle jog"))return;
+ if(S.mode!=="HANDLE"){response("Handle jog","Select HANDLE mode to jog.");return}
+ if(!S.axis){response("Handle jog","Select an axis first.");return}
+ if(S.estop||S.alarms.some(a=>a.code==="EMG"||a.code==="SV")){response("Handle jog","Servo not ready.");return}
+ const d=incVal()*10*Number(b.dataset.jogdir);S.pos[S.axis]+=d;S.tip[S.axis]+=d;
+ if(S.partPresent&&S.tip.z<(S.cut.minZ==null?0:S.cut.minZ)-0.5&&inPartXY(S.tip)){crash("Jogged the tool into the part.");return}
+ response("Handle jog",S.axis.toUpperCase()+(d>0?" +":" ")+d.toFixed(3)+" mm (10 divisions).");renderAll();
+}));
+function homeAxis(ax){
+ const X=ax.toUpperCase();
+ if(!needPower("ZERO RETURN "+X))return;
+ if(S.estop||S.alarms.some(a=>a.code==="EMG")){response("ZERO RETURN "+X,"Not accepted. Servo not ready: release the E-stop and press RESET.");return}
+ if(S.door!=="CLOSED"){response("ZERO RETURN "+X,"DOOR OPEN: axis motion inhibited. Close the door.");err("standard","door-home","Tried to home the axes with the door open.","Close the door before any axis motion. The interlock is a backstop, not the procedure.");return}
+ if(motion){response("ZERO RETURN "+X,"Axis busy. Wait for the current move to finish.");return}
+ if(SC.mi===0&&ax!=="z"&&!S.homed.z)err("standard","zfirst","Homed "+X+" before Z.","Home Z first. Lifting the spindle before X or Y moves keeps the tool clear of the fixture and anything left on the table.");
+ const to=clone(S.pos),tt=clone(S.tip);to[ax]=HOME[ax];tt[ax]=HOME[ax];
+ response("ZERO RETURN "+X,"Moving "+X+" to its reference position.");
+ startMotion(to,tt,"home",null,()=>{S.homed[ax]=true;response("ZERO RETURN "+X,X+" axis at reference position.");renderAll()},{manual:true});
+}
+function keyIn(k){
+ if(!SC.active)return;
+ if(k==="RESET"){doReset();return}
+ if(k==="CAN"){S.buf=S.buf.slice(0,-1);renderAll();return}
+ if(k==="INPUT"){
+  if(S.screen!=="OFS/SET"){response("INPUT","No input field active. Open OFS/SET to enter an offset.");return}
+  if(S.cycle==="RUN"){response("INPUT","Not accepted while the cycle is running.");return}
+  if(!/^[-+]?\d*\.?\d+$/.test(S.buf)){response("INPUT","FORMAT ERROR: key in a number, for example 152.400.");return}
+  const v=Math.round(parseFloat(S.buf)*1000)/1000,old=S.offsets[S.cursor];S.offsets[S.cursor]=v;S.buf="";
+  response("INPUT","H"+String(S.cursor).padStart(2,"0")+" geometry changed from "+old.toFixed(3)+" to "+v.toFixed(3)+".");renderAll();return}
+ if(k==="ALTER"||k==="INSERT"||k==="DELETE"){response(k,"Program editing is locked for this scenario.");return}
+ if(S.buf.length<12)S.buf+=k;renderAll();
+}
+["7","8","9","X","Y","4","5","6","Z","G","1","2","3","H","F","-","0",".","M","S","+","/","T","D","N"].forEach(n=>{
+ const b=document.createElement("button");b.type="button";b.className="key";b.textContent=n;b.addEventListener("click",()=>keyIn(n));$("#keyboard").appendChild(b);
+});
+$$("[data-k]").forEach(b=>b.addEventListener("click",()=>keyIn(b.dataset.k)));
+$("#screen").addEventListener("pointerdown",e=>{const r=e.target.closest("tr[data-row]");if(r&&SC.active){S.cursor=Number(r.dataset.row);renderAll()}});
+$("#feedKnob").addEventListener("click",()=>{if(!SC.active)return;S.feed=S.feed>=200?0:S.feed+10;response("Feed override","Feed override "+S.feed+"%.");renderAll()});
+$("#spindleKnob").addEventListener("click",()=>{if(!SC.active)return;S.spindleOvr=S.spindleOvr>=150?50:S.spindleOvr+10;response("Spindle override","Spindle override "+S.spindleOvr+"%.");renderAll()});
+$("#feedMinus").addEventListener("click",()=>{if(!SC.active)return;S.feed=Math.max(0,S.feed-10);response("Feed override","Feed override "+S.feed+"%.");renderAll()});
+$("#feedPlus").addEventListener("click",()=>{if(!SC.active)return;S.feed=Math.min(200,S.feed+10);response("Feed override","Feed override "+S.feed+"%.");renderAll()});
+$("#rapidBtn").addEventListener("click",()=>{if(!SC.active)return;const seq=[100,50,25,5];S.rapid=seq[(seq.indexOf(S.rapid)+1)%seq.length];response("Rapid override","Rapid override "+(S.rapid===5?"F0":S.rapid+"%")+".");renderAll()});
+$("#resetOverrides").addEventListener("click",()=>{if(!SC.active)return;S.feed=100;S.spindleOvr=100;S.rapid=100;response("Overrides","Feed, spindle, and rapid overrides set to 100%.");renderAll()});
+$("#clampKnob").addEventListener("click",()=>{if(!SC.active)return;const v=["LOW","NORMAL","HIGH"];S.clampPress=v[(v.indexOf(S.clampPress)+1)%3];response("Clamp pressure","Selector set to "+S.clampPress+(S.clamp==="CLOSED"?". Applied to the closed clamp.":"."));renderAll()});
+
+/* ===== Scenario panel context ===== */
+const INSP=[
+ {id:"lube",name:"Way lube reservoir",ok:false,finding:"Level is below the MIN line.",fix:"Fill to MAX"},
+ {id:"coolant",name:"Coolant level and concentration",ok:true,finding:"Level OK. Refractometer reads 7%, within the posted range."},
+ {id:"air",name:"Shop air pressure",ok:true,finding:"0.6 MPa (87 psi), within spec."},
+ {id:"envelope",name:"Work envelope and table",ok:false,finding:"A hex key is lying on the table beside the fixture.",fix:"Remove and store it"},
+ {id:"guards",name:"Guards, window, and door switch",ok:true,finding:"Window intact, guards in place, door switch undamaged."}];
+function ctxInspection(){
+ const I=SC.F.insp;let h='<div class="scn-h">Pre-start inspection</div><table class="ctx">';
+ INSP.forEach(it=>{const s=I[it.id];let st,txt="";
+  if(!s.seen)st='<span class="st no">NOT CHECKED</span>';
+  else if(it.ok){st='<span class="st ok">OK</span>';txt=it.finding}
+  else if(s.fixed){st='<span class="st fix">CORRECTED</span>';txt=it.finding}
+  else{st='<span class="st bad">FINDING</span>';txt=it.finding}
+  let btn="";if(!s.seen)btn='<button class="sbtn" data-insp="'+it.id+'" data-act="inspect">Inspect</button>';
+  else if(!it.ok&&!s.fixed)btn='<button class="sbtn primary" data-insp="'+it.id+'" data-act="fix">'+esc(it.fix)+'</button>';
+  h+='<tr><td><b>'+esc(it.name)+'</b><br><span style="color:#55626a">'+esc(txt)+'</span></td><td style="text-align:right">'+st+'<br>'+btn+'</td></tr>'});
+ return h+'</table>';
+}
+function ctxSetupSheet(){
+ return '<div class="scn-h">Setup sheet</div><div class="sheet"><h4>O1234 &middot; Bracket &middot; Op 10 &middot; Rev B</h4>'+
+ '<div>Workholding: hydraulic fixture, clamp pressure <b>NORMAL</b></div><div>Work offset: G54 &middot; Units: mm</div>'+
+ '<table><tr><th>Tool</th><th>Description</th><th>H (length)</th></tr>'+
+ '<tr><td>T01</td><td>10 mm 3-flute carbide end mill</td><td><b>152.400</b></td></tr>'+
+ '<tr><td>T02</td><td>6.8 mm carbide drill</td><td>98.250</td></tr>'+
+ '<tr><td>T03</td><td>M8 x 1.25 tap</td><td>110.500</td></tr></table>'+
+ '<div style="margin-top:6px">Feature: pocket 50.0 x 40.0, depth <b>5.000 &plusmn; 0.020</b></div><div>First run on this machine: prove-out required.</div></div>';
+}
+function ctxFloor(){
+ const F=SC.F;
+ return '<div class="scn-h">Floor actions</div><p style="font-size:12.5px">Production count this shift: '+(14+F.eventIdx)+' &middot; Conditions handled: '+F.eventIdx+' of 2</p>'+
+ '<button class="sbtn primary" id="notifyBtn" style="padding:7px 12px;font-size:12.5px">Notify lead</button>';
+}
+$("#scnContext").addEventListener("click",e=>{
+ if(!SC.active)return;
+ const b=e.target.closest("[data-insp]");
+ if(b){const id=b.dataset.insp,it=INSP.find(x=>x.id===id),s=SC.F.insp[id];
+  if(b.dataset.act==="inspect"){s.seen=true;response("Inspection: "+it.name,it.finding)}
+  else{s.fixed=true;if(id==="lube")S.lubeLow=false;if(id==="envelope")S.hexKey=false;response("Correction: "+it.name,id==="lube"?"Way lube filled to MAX."+(S.alarms.some(a=>a.code==="LUBE")?" Press RESET to clear the lube alarm.":""):"Hex key removed and returned to the tool board.")}
+  renderAll();return}
+ if(e.target.id==="notifyBtn")notifyLead();
+});
+
+/* ===== Rendering ===== */
+function renderScenario(){
+ const i=SC.mi;if(i<0)return;const M=MODULES[i],prac=SC.mode==="practice";
+ $("#scnTitle").textContent="Module "+(i+1)+": "+M.title;
+ $("#scnBadge").textContent=prac?"PRACTICE":"ASSESSMENT";$("#scnBadge").classList.toggle("assess",!prac);
+ $("#scnTrainee").textContent=SC.trainee.name;
+ $$("#scnProgress div").forEach((d,k)=>{d.className=k<i||(k===i&&SC.MR[i].completed)?"done":k===i?"cur":""});
+ $("#scnSituation").textContent=M.situation;
+ $("#scnObjective").innerHTML="<b>Objective.</b> "+esc(M.objective)+(prac?"":" <i>Assessment mode: no step prompts or coaching. Machine responses still appear.</i>");
+ $("#stepsSec").style.display=prac?"":"none";$("#fbSec").style.display=prac?"":"none";
+ if(SC.active)M.steps.forEach((s,k)=>{if(!SC.stepDone[k]&&s.done())SC.stepDone[k]=true});
+ if(prac){let cur=M.steps.findIndex((s,k)=>!SC.stepDone[k]);
+  $("#scnSteps").innerHTML=M.steps.map((s,k)=>'<li class="'+(SC.stepDone[k]?"done":k===cur?"now":"")+'">'+esc(s.text)+(k===cur?'<div class="hint">'+esc(s.hint)+'</div>':"")+'</li>').join("");
+  const c=SC.lastCoach;const fb=$("#scnFeedback");fb.className="fb "+(c?c.kind:"info");fb.textContent=c?c.text:"Coaching appears here as you work.";}
+ $("#scnContext").innerHTML=M.context();
+}
+function led(id,on){$(id).classList.toggle("on",!!on)}
+function knob(el,v,min,max){el.style.setProperty("--knob-rotation",(-135+((v-min)/(max-min))*270)+"deg")}
+function renderControls(){
+ $$("[data-mode]").forEach(b=>b.classList.toggle("selected",b.dataset.mode===S.mode));
+ const act={"SINGLE BLOCK":S.singleBlock,"BLOCK SKIP":S.blockSkip,"OPT STOP":S.optStop,"DRY RUN":S.dryRun};
+ $$("[data-action]").forEach(b=>b.classList.toggle("active",!!act[b.dataset.action]));
+ $("#cycle").classList.toggle("active",S.cycle==="RUN");$("#hold").classList.toggle("active",S.cycle==="HOLD");
+ $("#power").textContent=S.power?"O":"I";led("#powerled",S.power);
+ $("#estop").classList.toggle("pressed",S.estop);$("#estopState").textContent=S.estop?"PRESSED":"RELEASED";
+ knob($("#feedKnob"),S.feed,0,200);knob($("#spindleKnob"),S.spindleOvr,50,150);
+ knob($("#clampKnob"),["LOW","NORMAL","HIGH"].indexOf(S.clampPress),0,2);
+ $("#feedval").textContent=S.feed+"%";$("#spindleval").textContent=S.spindleOvr+"%";$("#clampReadout").textContent=S.clampPress;
+ $("#rapidBtn").textContent="RAPID "+(S.rapid===5?"F0":S.rapid+"%");
+ $$("[data-axis]").forEach(b=>b.classList.toggle("active",b.dataset.axis===S.axis));
+ $$("[data-inc]").forEach(b=>b.classList.toggle("active",b.dataset.inc===S.inc));
+ led("#ledRun",S.spindle>0);led("#ledCool",S.coolant);led("#ledBrake",S.power&&S.spindle===0);led("#ledAlm",S.alarms.length>0);
+ led("#ledGearLo",S.spindle>0&&S.spindle<=2000);led("#ledGearHi",S.spindle>2000);
+ led("#ledClamp",S.clamp==="CLOSED");led("#ledDoor",S.door==="CLOSED");led("#ledSetter",S.setter==="IN");
+ const st=[["Power",S.power?"ON":"OFF"],["E-stop",S.estop?"PRESSED":"RELEASED"],["Alarms",S.alarms.length],["Mode",modeName(S.mode)],["Cycle",S.cycle],["Door",S.door],
+  ["Clamp",S.clamp],["Pressure",S.clampPress],["Setter",S.setter],["Single blk",S.singleBlock?"ON":"OFF"],["Opt stop",S.optStop?"ON":"OFF"],["Dry run",S.dryRun?"ON":"OFF"],
+  ["Feed ovr",S.feed+"%"],["Rapid ovr",S.rapid===5?"F0":S.rapid+"%"],["Spdl ovr",S.spindleOvr+"%"],["Spindle",Math.round(S.spindle*S.spindleOvr/100)+" rpm"],["Coolant",S.coolant?"ON":"OFF"],
+  ["Homed",(S.homed.x?"X":"-")+(S.homed.y?"Y":"-")+(S.homed.z?"Z":"-")]];
+ $("#stateGrid").innerHTML=st.map(p=>p[0]+": <b>"+p[1]+"</b>").map(s=>"<div>"+s+"</div>").join("");
+}
+function f3(v){const s=Math.abs(v).toFixed(3);return(v<-0.0005?"-":"&nbsp;")+s}
+let lastScr="";
+function screenHTML(){
+ const P=PROGRAMS[S.prog],bi=S.curBlock>=0?S.curBlock:S.block;
+ if(S.screen==="POS"){
+  const dtg=motion?{x:motion.to.x-S.pos.x,y:motion.to.y-S.pos.y,z:motion.to.z-S.pos.z}:{x:0,y:0,z:0};
+  const cutting=motion&&motion.kind==="feed"&&S.cycle==="RUN";
+  const load=S.spindle===0?0:S.chatter&&S.cycle==="RUN"?Math.round(S.load):cutting&&S.tip.z<0.5?54:9;
+  const fr=cutting?Math.round(S.dryRun?1000:motion.f*S.feed/100):0;
+  let h='<table class="pos"><tr><th></th><th>ABSOLUTE</th><th>DIST TO GO</th></tr>';
+  ["x","y","z"].forEach(a=>{h+='<tr><td class="ax">'+a.toUpperCase()+'</td><td>'+f3(S.pos[a])+'</td><td>'+f3(dtg[a])+'</td></tr>'});
+  h+='</table><div class="posinfo">T'+String(S.tool).padStart(2,"0")+' H'+(S.g43?"01":"--")+' &nbsp;F'+fr+' &nbsp;S'+Math.round(S.spindle*S.spindleOvr/100)+' &nbsp;LOAD '+String(load).padStart(3,"0")+'%'+(S.coolantFault?' &nbsp;<b>COOLANT FLOW LOW</b>':'')+'</div><div class="plines">';
+  for(let k=Math.max(0,bi-1);k<Math.min(P.blocks.length,bi+3);k++)h+='<div class="'+(k===bi?"cur":"")+'">'+(k===bi?"&gt; ":"&nbsp; ")+esc(P.blocks[k].t)+'</div>';
+  return h+'</div>';
+ }
+ if(S.screen==="PROG"){
+  let h='<div style="font-weight:bold">PROGRAM '+esc(P.name)+'</div><div class="proglist">';const s0=Math.max(0,Math.min(bi-4,P.blocks.length-12));
+  P.blocks.slice(s0,s0+12).forEach((b,j)=>{const k=s0+j;h+='<div class="'+(k===bi?"cur":"")+'">'+(k===bi?"&gt; ":"&nbsp; ")+esc(b.t)+'</div>'});return h+'</div>';
+ }
+ if(S.screen==="OFS/SET"){
+  let h='<div style="font-weight:bold">TOOL OFFSET (LENGTH)</div><table class="ofs"><tr><th>NO.</th><th>GEOM (H)</th><th>WEAR</th></tr>';
+  [1,2,3,4,5].forEach(k=>{h+='<tr class="r'+(S.cursor===k?" cursor":"")+'" data-row="'+k+'"><td>'+String(k).padStart(3,"0")+'</td><td>'+S.offsets[k].toFixed(3)+'</td><td>0.000</td></tr>'});
+  return h+'</table><div class="scrnote">Click a row to place the cursor. Key in a value, then press INPUT.</div>';
+ }
+ if(S.screen==="MESSAGE")return '<div style="font-weight:bold">ALARM MESSAGE</div>'+(S.alarms.length?S.alarms.map(a=>'<div style="color:#a3150c;margin-top:4px">'+esc(a.text)+'</div>').join(""):'<div style="margin-top:4px">NO ALARM</div>');
+ if(S.screen==="GRAPH"){const sx=x=>20+(x+20)*2.6,sy=y=>150-(y+10)*2.4;
+  return '<div style="font-weight:bold">TOOL PATH (X-Y) '+esc(S.prog)+'</div><svg viewBox="0 0 260 160" style="width:100%;height:150px"><rect x="'+sx(-15)+'" y="'+sy(50)+'" width="'+(80*2.6)+'" height="'+(60*2.4)+'" fill="none" stroke="#516a78"/>'+
+  (S.prog==="O1234"?'<path d="M'+sx(0)+' '+sy(0)+'H'+sx(50)+'V'+sy(40)+'H'+sx(0)+'Z" fill="none" stroke="#1d3a4b" stroke-width="2" stroke-dasharray="4 3"/>':'')+
+  '<circle cx="'+sx(Math.max(-20,Math.min(80,S.tip.x)))+'" cy="'+sy(Math.max(-10,Math.min(55,S.tip.y)))+'" r="5" fill="#c0392b"/></svg>';}
+ if(S.screen==="HELP")return '<div style="font-weight:bold">HELP</div><div>MODE SELECT: EDIT, AUTO, MDI, HANDLE, ZERO RTN.</div><div>ZERO RTN: press X, Y, or Z to home that axis.</div><div>HANDLE: select axis and increment, then JOG.</div><div>OFS/SET: click a row, key in a value, INPUT.</div><div>RESET clears alarms once the cause is fixed.</div>';
+ if(S.screen==="SYSTEM")return '<div style="font-weight:bold">SYSTEM</div><div>TRAINING CONTROL SIMULATION</div><div>AXES: X Y Z &nbsp; UNITS: MM</div><div>NO REAL CNC COMMANDS ARE SENT.</div>';
+ return '<div style="font-weight:bold">'+esc(S.screen)+'</div><div>LOCAL TRAINING DISPLAY</div>';
+}
+function renderScreen(){
+ const titles={"POS":"ACTUAL POSITION","PROG":"PROGRAM","OFS/SET":"OFFSET / SETTING","SYSTEM":"SYSTEM","MESSAGE":"MESSAGE","CUSTOM":"CUSTOM","GRAPH":"GRAPH","HELP":"HELP"};
+ if(!S.power){const off='<div style="padding-top:60px;text-align:center;color:#4b5d68">CONTROL POWER OFF</div>';if(lastScr!==off){$("#scrMain").innerHTML=off;lastScr=off}
+  $("#screenTitle").textContent="";$("#seq").textContent="";$("#scrModeTag").textContent="";$("#scrAlarm").textContent="";$("#scrBuf").textContent="";$("#screen").style.background="#6d7a85";return}
+ $("#screen").style.background="";
+ const h=screenHTML();if(h!==lastScr){$("#scrMain").innerHTML=h;lastScr=h}
+ $("#screenTitle").textContent=titles[S.screen]||S.screen;
+ const P=PROGRAMS[S.prog],bi=S.curBlock>=0?S.curBlock:S.block,b=P.blocks[bi];
+ $("#seq").textContent=S.prog+" N"+(b?b.t.split(" ")[0].slice(1):"0").padStart(5,"0");
+ $("#scrModeTag").textContent=modeName(S.mode)+(S.cycle!=="IDLE"?" "+S.cycle:"");
+ const al=$("#scrAlarm");al.textContent=S.alarms.length?"ALM: "+S.alarms.map(a=>a.text).join(" / "):"";al.classList.toggle("blink",S.alarms.length>0);
+ $("#scrBuf").textContent=S.buf;
+}
+const vx=x=>(x+110)*2,vz=z=>(90-z)*2;
+function renderView(now){
+ const pp=S.partPresent;$("#wzPart").style.display=pp?"":"none";
+ const c=S.cut,pk=$("#wzPocket");
+ if(pp&&c.x0!=null&&c.minZ!=null){pk.setAttribute("x",vx(c.x0-TOOL_R));pk.setAttribute("width",(c.x1-c.x0+2*TOOL_R)*2);pk.setAttribute("y",vz(0));pk.setAttribute("height",Math.max(0,-c.minZ*2))}else pk.setAttribute("width",0);
+ const cz=pp?5:-26;[["#wzClampL",-24],["#wzClampR",60]].forEach(a=>{const e=$(a[0]);e.setAttribute("x",vx(a[1]));e.setAttribute("y",vz(cz))});
+ $("#wzHex").setAttribute("points",S.hexKey?vx(70)+","+vz(-28)+" "+vx(82)+","+vz(-28)+" "+vx(82)+","+vz(-23):"");
+ $("#wzSetter").style.display=S.setter==="IN"?"":"none";
+ const t=S.tip;
+ const set=(id,x,y,w,h)=>{const e=$(id);e.setAttribute("x",x);e.setAttribute("y",y);e.setAttribute("width",w);e.setAttribute("height",h)};
+ set("#wzTool",vx(t.x-5),vz(t.z+45),20,90);set("#wzHolder",vx(t.x-12),vz(t.z+75),48,60);set("#wzSpindle",vx(t.x-20),vz(t.z+200),80,250);
+ const spin=S.spindle>0;$("#wzTool").setAttribute("fill",spin?((Math.floor(now/60)%2)?"#e3e8ec":"#aab3ba"):"#c8ced4");
+ const cl=S.coolant&&!S.coolantFault;$("#wzCool").style.display=cl?"":"none";
+ if(cl){const off=-(now/30)%10;[["#wzC1",-30],["#wzC2",30]].forEach(a=>{const e=$(a[0]);e.setAttribute("x1",vx(t.x+a[1]));e.setAttribute("y1",vz(t.z+55));e.setAttribute("x2",vx(t.x+a[1]/6));e.setAttribute("y2",vz(t.z+2));e.setAttribute("stroke-dashoffset",off)})}
+ const sp=$("#wzSparks");if(S.chatter&&S.cycle==="RUN"){let h="";const n=4+Math.round((S.load-90)/8);for(let k=0;k<n;k++){const a=Math.random()*Math.PI,r=8+Math.random()*22,x0=vx(t.x),y0=vz(t.z);h+='<line x1="'+x0+'" y1="'+y0+'" x2="'+(x0+Math.cos(a)*r*(Math.random()<.5?-1:1))+'" y2="'+(y0-Math.sin(a)*r)+'" stroke="'+(Math.random()<.5?"#ffb02e":"#ff6a2e")+'" stroke-width="2"/>'}sp.innerHTML=h}else sp.innerHTML="";
+ const sm=$("#wzSmoke");if(S.smoke>0){let h="";for(let k=0;k<8;k++){const ph=((now/1400)+k/8)%1;h+='<circle cx="'+(vx(t.x)+Math.sin(k*1.7+now/700)*30)+'" cy="'+(vz(t.z)-ph*150)+'" r="'+(12+ph*30)+'" fill="#9a9a9a" opacity="'+(S.smoke*0.7*(1-ph))+'"/>'}
+  if(SC.F.ev&&SC.F.ev.type==="smoke")h+='<circle cx="'+vx(t.x)+'" cy="'+vz(t.z)+'" r="'+(6+S.smoke*10)+'" fill="#ff7a1a" opacity="'+(0.4+0.4*Math.sin(now/90))+'"/>';sm.innerHTML=h}else sm.innerHTML="";
+ $("#wzInfo").textContent="TOOL TIP  X "+t.x.toFixed(3)+"  Y "+t.y.toFixed(3)+"  Z "+t.z.toFixed(3);
+ $("#wzInfo2").textContent=(spin?"SPINDLE "+Math.round(S.spindle*S.spindleOvr/100)+" RPM":"SPINDLE STOPPED")+(S.door==="OPEN"?"   DOOR OPEN":"")+(S.coolantFault?"   COOLANT FLOW LOW":"");
+ const cr=$("#wzCrash");cr.textContent=S.crashed?"COLLISION":"";cr.setAttribute("opacity",S.crashed?(0.55+0.45*Math.sin(now/120)):1);
+}
+function renderLive(now){renderScreen();renderView(now);renderControls()}
+function renderAll(){renderLive(performance.now());renderScenario()}
+
+/* ===== Module flow ===== */
+function showMsg(kick,title,body,btns){
+ $("#msgKick").textContent=kick;$("#msgTitle").textContent=title;$("#msgBody").innerHTML=body;
+ const bx=$("#msgBtns");bx.innerHTML="";btns.forEach(b=>{const e=document.createElement("button");e.className="btn "+(b.cls||"");e.textContent=b.label;e.addEventListener("click",b.fn);bx.appendChild(e)});
+ $("#ovMsg").classList.remove("hidden");
+}
+function hideMsg(){$("#ovMsg").classList.add("hidden")}
+function introModule(i){
+ SC.active=false;const M=MODULES[i];
+ showMsg("Module "+(i+1)+" of 3",M.title,'<p>'+esc(M.situation)+'</p><p><b>Objective.</b> '+esc(M.objective)+'</p>'+(SC.mode==="assessment"?'<p><i>Assessment mode: no prompts or coaching. One attempt.</i></p>':'<p><i>Practice mode: follow the step list on the right. Coaching appears after each mistake.</i></p>'),[{label:"Begin module",cls:"amber",fn:()=>beginModule(i,false)}]);
+}
+function beginModule(i,retry){
+ hideMsg();SC.mi=i;motion=null;MODULES[i].setup();
+ const m=SC.MR[i];if(retry){m.errors=[];m.completed=false;m.ended=false;m.events=[]}
+ m.attempts++;m.start=Date.now();m.end=null;SC.stepDone=[];SC.lastCoach=null;SC.active=true;lastScr="";
+ logDivider("MODULE "+(i+1)+": "+MODULES[i].title.toUpperCase()+(m.attempts>1?" (ATTEMPT "+m.attempts+")":""));
+ response("Scenario",i===0?"Machine is powered down with the E-stop pressed.":i===1?"Setup in progress. O1234 loaded. Part on fixture.":"Production setup ready. Machine in AUTO.");
+ renderAll();
+}
+function errListHTML(errs){
+ if(!errs.length)return '<p>No errors recorded.</p>';
+ return '<ul class="errlist">'+errs.map(e=>'<li><span class="'+(e.type==="critical"?"crit":"")+'">'+(e.type==="critical"?"CRITICAL: ":"")+esc(e.msg)+'</span>'+(e.coach&&SC.mode==="practice"?'<div class="c">'+esc(e.coach)+'</div>':'')+'</li>').join("")+'</ul>';
+}
+function completeModule(){
+ const i=SC.mi,m=SC.MR[i];if(m.ended)return;m.completed=true;m.ended=true;m.end=Date.now();SC.active=false;motion=null;renderAll();
+ const r=moduleResult(i);
+ const body=SC.mode==="practice"?'<p>Practice result: <b>'+RESULTS[r]+'</b> &middot; Time '+mmss(m.end-m.start)+'</p>'+errListHTML(m.errors):'<p>Module complete. Results are held for the end-of-session record.</p>';
+ const btns=[{label:i<2?"Next module":"View record",cls:"amber",fn:nextModule}];
+ if(SC.mode==="practice")btns.unshift({label:"Retry this module",cls:"sec",fn:()=>beginModule(i,true)});
+ showMsg("Module "+(i+1)+" complete",MODULES[i].title,body,btns);
+}
+function critical(msg,coach){
+ const i=SC.mi,m=SC.MR[i];motion=null;S.cycle="IDLE";S.spindle=0;S.chatter=false;m.ended=true;m.end=Date.now();SC.active=false;renderAll();
+ const body='<p class="crit">'+esc(msg)+'</p>'+(SC.mode==="practice"&&coach?'<p>'+esc(coach)+'</p>':'')+(SC.mode==="assessment"?'<p>This module has ended and is recorded as Not Yet Demonstrated.</p>':'');
+ const btns=SC.mode==="practice"?[{label:"Continue to "+(i<2?"next module":"record"),cls:"sec",fn:nextModule},{label:"Retry this module",cls:"amber",fn:()=>beginModule(i,true)}]:[{label:i<2?"Continue to next module":"View record",cls:"amber",fn:nextModule}];
+ setTimeout(()=>showMsg("Critical error","Module "+(i+1)+" ended",body,btns),900);
+}
+function nextModule(){hideMsg();if(SC.mi<2)introModule(SC.mi+1);else finishSession()}
+function moduleResult(i){
+ const m=SC.MR[i];if(!m.attempts)return 0;
+ const std=m.errors.filter(e=>e.type==="standard").length,crit=m.errors.filter(e=>e.type==="critical").length;
+ if(crit)return 0;if(!m.completed||std>2)return 1;
+ const fast=i!==2||(m.events.length===2&&m.events.every(e=>e.correct&&e.ms!=null&&e.ms<=RESPONSE_TARGET_MS));
+ return std===0&&fast?3:2;
+}
+function finishSession(){
+ const m=SC.MR[SC.mi];if(SC.mi>=0&&m&&m.start&&!m.ended){m.ended=true;m.end=Date.now()}
+ SC.active=false;SC.end=Date.now();motion=null;hideMsg();
+ $("#recordView").innerHTML=recordHTML();$("#ovRecord").classList.remove("hidden");
+}
+$("#endBtn").addEventListener("click",()=>{if(!SC.start||SC.end)return;
+ showMsg("End session","End the session now?","<p>Unfinished modules are recorded as In Progress, and modules not yet started are recorded as Not Yet Demonstrated.</p>",[{label:"Keep working",cls:"sec",fn:hideMsg},{label:"End session and view record",cls:"amber",fn:finishSession}])});
+
+/* ===== Record ===== */
+const REC_CSS=".rec{font-family:Georgia,'Times New Roman',serif;color:#2f3a40;max-width:860px;margin:0 auto;font-size:13px;line-height:1.45}"+
+".rec .org{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a6a1f}"+
+".rec h1{font-size:24px;margin:4px 0 2px;color:#2f3a40}"+
+".rec .sub{font-size:12px;color:#5a666d;padding-bottom:10px;border-bottom:3px solid #c98a1b;margin-bottom:12px}"+
+".rec h2{font-size:15px;color:#a8701a;margin:18px 0 6px;padding-bottom:3px;border-bottom:1px solid #e3c88f}"+
+".rec table{width:100%;border-collapse:collapse;margin:4px 0}"+
+".rec th{background:#2f3a40;color:#fff;text-align:left;font-weight:normal;padding:5px 7px;font-size:12px}"+
+".rec td{padding:5px 7px;border-bottom:1px solid #dfe3e5;vertical-align:top}"+
+".rec tbody tr:nth-child(even) td{background:#f5f2ea}"+
+".rec table.meta td{background:none!important;border-bottom:1px solid #eee}.rec table.meta td.k{color:#5a666d;width:17%}"+
+".rec .overall{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#faf5e8;border-left:5px solid #c98a1b;padding:10px 14px;margin:14px 0;font-size:15px}"+
+".rec .res{font-weight:bold;padding:2px 8px;border-radius:3px;font-family:Arial,sans-serif;font-size:12px;white-space:nowrap}"+
+".rec .r0{background:#f6d5d1;color:#8d1f14}.rec .r1{background:#fbe9c4;color:#7a5307}.rec .r2{background:#d8ebd9;color:#235c2a}.rec .r3{background:#cfe1f2;color:#1d4b79}"+
+".rec .crit{color:#8d1f14;font-weight:bold}.rec ul{margin:4px 0 4px 18px;padding:0}.rec li{margin-bottom:3px}"+
+".rec .note{font-size:11.5px;color:#4a555b;background:#f1f3f4;padding:8px 10px;margin-top:14px}"+
+".rec .sig{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:34px}.rec .sig div{border-top:1px solid #2f3a40;padding-top:4px;font-size:11px;color:#5a666d}"+
+".rec .foot{margin-top:18px;font-size:10px;color:#8a949a;text-align:center}";
+(function(){const st=document.createElement("style");st.textContent=REC_CSS;document.head.appendChild(st)})();
+function fmtDate(t){return t?new Date(t).toLocaleDateString([],{year:"numeric",month:"long",day:"numeric"}):""}
+function fmtTime(t){return t?new Date(t).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}
+function recordHTML(){
+ const prac=SC.mode==="practice",res=[0,1,2].map(moduleResult),overall=Math.min.apply(null,res);
+ const names=["1. Safe Startup and Warm-Up","2. New Program Prove-Out","3. Abnormal Condition Response"];
+ let h='<div class="rec"><div class="org">'+esc(ORG_NAME)+' &middot; '+esc(PROGRAM_NAME)+'</div><h1>Simulation Readiness Record</h1>'+
+ '<div class="sub">'+esc(COURSE)+' &middot; CNC operator scenario: safe startup, program prove-out, abnormal condition response</div>'+
+ '<table class="meta"><tr><td class="k">Trainee</td><td>'+esc(SC.trainee.name)+'</td><td class="k">Employee ID</td><td>'+esc(SC.trainee.id||"Not entered")+'</td></tr>'+
+ '<tr><td class="k">Observer</td><td>'+esc(SC.trainee.evaluator||"None")+'</td><td class="k">Date</td><td>'+fmtDate(SC.start)+'</td></tr>'+
+ '<tr><td class="k">Mode</td><td>'+(prac?"Practice (hints and coaching on)":"Assessment (no prompts, one attempt)")+'</td><td class="k">Session ID</td><td>'+esc(SC.sessionId)+'</td></tr>'+
+ '<tr><td class="k">Start / end</td><td>'+fmtTime(SC.start)+' to '+fmtTime(SC.end)+'</td><td class="k">Total time</td><td>'+mmss(SC.end-SC.start)+'</td></tr></table>'+
+ '<div class="overall"><span>'+(prac?"Practice result (formative only)":"Overall simulation result")+'</span><span class="res r'+overall+'">'+RESULTS[overall]+'</span></div>'+
+ '<h2>Module Results</h2><table><thead><tr><th>Module</th><th>Result</th><th>Attempts</th><th>Standard errors</th><th>Critical errors</th><th>Time</th></tr></thead><tbody>';
+ [0,1,2].forEach(i=>{const m=SC.MR[i];const sd=m.errors.filter(e=>e.type==="standard").length,cr=m.errors.filter(e=>e.type==="critical").length;
+  h+='<tr><td>'+names[i]+'</td><td><span class="res r'+res[i]+'">'+RESULTS[res[i]]+'</span>'+(!m.attempts?'<br><small>Not attempted</small>':!m.completed&&!cr?'<br><small>Not finished</small>':'')+'</td><td>'+m.attempts+'</td><td>'+sd+'</td><td>'+cr+'</td><td>'+(m.start?mmss((m.end||SC.end)-m.start):"--:--")+'</td></tr>'});
+ h+='</tbody></table><h2>Abnormal Condition Responses (Module 3)</h2>';
+ const ev=SC.MR[2].events;
+ if(!ev.length)h+='<p>No abnormal conditions were completed.</p>';
+ else{h+='<table><thead><tr><th>Condition</th><th>Expected stop</th><th>First stop used</th><th>Time to stop</th><th>Assessment</th></tr></thead><tbody>';
+  ev.forEach(e=>{h+='<tr><td>'+(e.type==="chatter"?"Chatter, rising spindle load":"Smoke, loss of coolant")+'</td><td>'+e.expected+'</td><td>'+esc(e.first||"None")+'</td><td>'+(e.ms!=null?(e.ms/1000).toFixed(1)+" s":"--")+'</td><td>'+(e.correct?(e.ms<=RESPONSE_TARGET_MS?"Correct, within target":"Correct, slower than "+RESPONSE_TARGET_MS/1000+" s target"):"Incorrect stop selected")+'</td></tr>'});
+  h+='</tbody></table>'}
+ h+='<h2>Error Detail</h2>';
+ [0,1,2].forEach(i=>{const m=SC.MR[i];h+='<p style="margin:8px 0 2px"><b>'+names[i]+'</b>'+(m.attempts>1?' (final attempt of '+m.attempts+')':'')+'</p>';
+  if(!m.errors.length)h+='<p style="margin:0;color:#5a666d">'+(m.attempts?"None recorded.":"Not attempted.")+'</p>';
+  else h+='<ul>'+m.errors.map(e=>'<li>'+mmss(e.t)+' &middot; '+(e.type==="critical"?'<span class="crit">CRITICAL</span>':'Standard')+': '+esc(e.msg)+'</li>').join("")+'</ul>'});
+ h+='<h2>Scoring Rules</h2><ul><li>Any critical error in a module: <b>Not Yet Demonstrated</b>. Critical errors are a collision, a quality escape (pocket depth outside 5.000 &plusmn; 0.020 mm), tool failure from an unstopped condition, opening the enclosure on smoke, or no emergency stop within the fire response window.</li>'+
+ '<li>Module not finished, or more than two standard errors: <b>In Progress</b>.</li><li>Module finished with one or two standard errors and no critical errors: <b>Demonstrated</b>.</li>'+
+ '<li>Module finished with zero errors, and for Module 3 the correct stop on each condition within '+RESPONSE_TARGET_MS/1000+' seconds: <b>Mastered</b>.</li><li>The overall result is the lowest module result.</li></ul>'+
+ '<div class="note">This record documents performance in a training simulation. It is readiness evidence only and does not replace on-machine demonstration, the signed qualification checklist, or any gate or pay action decision.'+(prac?' Practice sessions use hints and coaching and are formative; only Assessment mode results should be filed as readiness evidence.':'')+'</div>'+
+ '<div class="sig"><div>Trainee signature and date</div><div>Observer / evaluator signature and date</div></div>'+
+ '<div class="foot">'+esc(SC.sessionId)+' &middot; Generated '+new Date(SC.end).toLocaleString()+' &middot; CNC Operator Scenario Trainer v1</div></div>';
+ return h;
+}
+$("#printBtn").addEventListener("click",()=>{$("#printHost").innerHTML=recordHTML();window.print()});
+$("#dlBtn").addEventListener("click",()=>{
+ const html='<!doctype html><html><head><meta charset="utf-8"><title>Simulation Readiness Record</title><style>body{margin:24px}'+REC_CSS+'</style></head><body>'+recordHTML()+'</body></html>';
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));
+ a.download="Simulation_Record_"+(SC.trainee.name||"trainee").replace(/[^A-Za-z0-9]+/g,"_")+"_"+SC.sessionId.slice(4,12)+".html";
+ document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},800);
+});
+$("#newBtn").addEventListener("click",()=>location.reload());
+
+/* ===== Start ===== */
+$$(".modeopt").forEach(o=>o.addEventListener("click",()=>{$$(".modeopt").forEach(x=>x.classList.remove("sel"));o.classList.add("sel");SC.mode=o.dataset.m}));
+$("#beginBtn").addEventListener("click",()=>{
+ const n=$("#fName").value.trim();if(!n){$("#formErr").textContent="Enter the trainee name to begin.";return}
+ SC.trainee={name:n,id:$("#fId").value.trim(),evaluator:$("#fEval").value.trim()};SC.start=Date.now();
+ const d=new Date();SC.sessionId="SIM-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.random().toString(36).slice(2,6).toUpperCase();
+ $("#ovStart").classList.add("hidden");introModule(0);
+});
+setInterval(()=>{if(SC.start&&!SC.end)$("#scnTimer").textContent=mmss(Date.now()-SC.start)},1000);
+MODULES[0].setup();SC.mi=0;renderAll();SC.mi=-1;
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
