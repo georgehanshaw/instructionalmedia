@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 4 Interactive: Precision Clinic</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#1d1d1d;background:#fff;line-height:1.55;font-size:1rem}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px 36px}
+.hero{background:linear-gradient(90deg,#d34147 30%,#892a36 60%,#5b262b 100%);color:#fff;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-radius:0 0 22px 22px}
+.hero svg{flex:0 0 auto}
+.hero h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff}
+.hero p{margin:6px 0 0;color:#fff;max-width:640px}
+.tag{display:inline-block;background:#000;color:#fff;border-radius:10px;padding:2px 12px;font-weight:700;font-size:.85rem;margin-bottom:6px}
+.card{background:#edebe8;border-radius:22px;padding:16px;margin:18px 0}
+.inner{background:#fff;border-radius:16px;padding:18px;margin:0 0 14px}
+.inner:last-child{margin-bottom:0}
+.rule{width:100px;height:6px;background:#d34147;border-radius:5px;margin:0 0 10px}
+h2{margin:0 0 8px;font-size:1.35rem;line-height:1.25}
+h3{margin:0 0 6px;font-size:1.1rem}
+p{margin:0 0 10px}
+button{font:inherit;cursor:pointer;min-height:44px;padding:8px 18px;border-radius:12px;border:2px solid #a8353a;background:#a8353a;color:#fff;font-weight:600}
+button:hover:not(:disabled){background:#892a36;border-color:#892a36}
+button.secondary{background:#fff;color:#a8353a}
+button.secondary:hover:not(:disabled){background:#f6e9ea;color:#892a36}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid #000;outline-offset:2px;box-shadow:0 0 0 6px #fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fb{border-left:6px solid #1f4e8a;border-radius:12px;padding:12px 14px;margin-top:12px;background:#e8f0fb}
+.fb.ok{border-color:#1d6b3a;background:#e8f5ec}
+.fb.no{border-color:#8a1f25;background:#fbeaea}
+.fb p:last-child{margin-bottom:0}
+.fb .lab{font-weight:700;display:block;margin-bottom:2px}
+.bubble{position:relative;background:#fff;border:2px solid #5b262b;border-radius:16px;padding:12px 16px;margin:10px 0}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700;border:2px solid #1d1d1d;background:#fff;color:#1d1d1d}
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0;padding:0;list-style:none}
+.progress li{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:3px solid #a8353a;background:#fff;color:#a8353a}
+.progress li.done{background:#a8353a;color:#fff}
+.progress li.cur{box-shadow:0 0 0 3px #000}
+.meta{color:#4a4a4a;font-size:.95rem}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";display:inline-block;width:1.3em;color:#a8353a}
+details[open] summary::before{content:"▾"}
+.footnote{font-size:.9rem;color:#4a4a4a;margin-top:18px}
+@media (max-width:600px){.hero h1{font-size:1.4rem}.inner{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.steps{display:flex;gap:10px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.steps li{flex:1 1 200px}
+.steps button{width:100%;text-align:left;background:#fff;color:#1d1d1d;border:3px solid #a8353a;display:flex;gap:10px;align-items:center}
+.steps button[aria-current="step"]{background:#a8353a;color:#fff}
+.steps .n{flex:0 0 30px;height:30px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-weight:700}
+.q{border:2px solid #d4cfc7;border-radius:14px;padding:14px;margin-bottom:12px;background:#fff}
+.q.solved{border-color:#1d6b3a;background:#f4fbf6}
+.q legend,.q .stem{font-weight:600;margin-bottom:8px;display:block}
+.blank{display:inline-block;min-width:90px;border-bottom:3px solid #1d1d1d;text-align:center;font-weight:700}
+.choices{display:flex;gap:8px;flex-wrap:wrap}
+.choices button{background:#fff;color:#1d1d1d;border:2px solid #5b262b;font-weight:600}
+.choices button:hover:not(:disabled){background:#f6e9ea;color:#1d1d1d}
+.choices button.right{background:#e8f5ec;border-color:#1d6b3a}
+.choices button.wrong{background:#fbeaea;border-color:#8a1f25;text-decoration:line-through}
+.choices button:disabled{opacity:1}
+.choices.stack{flex-direction:column}
+.choices.stack button{text-align:left;font-weight:500}
+.sw{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0}
+.sw button[role=switch]{background:#fff;color:#1d1d1d;border:3px solid #5b262b;border-radius:999px;padding:6px 16px 6px 8px;display:flex;align-items:center;gap:10px}
+.sw .knob{width:26px;height:26px;border-radius:50%;background:#5b262b;display:inline-block;transition:transform .15s}
+.sw button[aria-checked=true]{background:#f6e9ea}
+.sw button[aria-checked=true] .knob{transform:translateX(4px);background:#a8353a}
+.sent{font-size:1.25rem;font-weight:600;padding:12px 14px;background:#f8f6f2;border-radius:12px;border:2px solid #d4cfc7}
+.sent mark{background:#ffe08a;color:#1d1d1d;padding:0 3px;border-radius:4px;font-size:inherit;font-weight:800;box-shadow:0 2px 0 #b07a00}
+.rd{display:flex;gap:10px;align-items:stretch;margin-top:10px;flex-wrap:wrap}
+.rd div{flex:1 1 180px;background:#e8f0fb;border:2px solid #1f4e8a;border-radius:12px;padding:8px 12px}
+.rd .arrow{flex:0 0 auto;background:none;border:0;align-self:center;font-size:1.6rem;padding:0}
+.done-banner{text-align:center}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="A report page with a magnifying glass">
+    <circle cx="42" cy="42" r="40" fill="#fff" opacity=".18"/>
+    <rect x="18" y="10" width="40" height="52" rx="5" fill="#fff"/>
+    <g stroke="#a8353a" stroke-width="3" stroke-linecap="round"><line x1="25" y1="22" x2="51" y2="22"/><line x1="25" y1="32" x2="51" y2="32"/><line x1="25" y1="42" x2="42" y2="42"/></g>
+    <circle cx="54" cy="54" r="13" fill="#000" opacity=".25"/><circle cx="54" cy="54" r="11" fill="none" stroke="#fff" stroke-width="5"/><line x1="62" y1="62" x2="74" y2="74" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <div>
+    <span class="tag">Week 4 Interactive</span>
+    <h1>Precision Clinic: Clear Reports</h1>
+    <p>Three quick stations on the small details that protect a report’s credibility and treat the people in it with care.</p>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="card" aria-labelledby="sth">
+    <div class="inner">
+      <div class="rule"></div>
+      <h2 id="sth">Stations</h2>
+      <p>Complete all three stations in any order. A station is finished when you answer every item correctly. You can retry as many times as you need.</p>
+      <ol class="steps" id="steps"></ol>
+      <p class="meta" id="overall" style="margin-top:10px" aria-live="polite"></p>
+    </div>
+    <div class="inner" id="station" tabindex="-1"></div>
+  </section>
+  <p class="footnote">Interactive for CRJU 380, Week 4. Scenarios are fictional and written for instruction.</p>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+  /* ---------- DATA ---------- */
+  var S1=[
+    {pre:'The detective set up ',post:' outside the residence.',c:'surveillance',o:['surveillance','surveilance','surveillence'],why:'Surveillance has two l’s, two e’s, and ends in “-ance.”'},
+    {pre:'The suspect was found in ',post:' of a controlled substance.',c:'possession',o:['possession','posession','possesion'],why:'Possession has a double “s” twice: “poss-ess-ion.”'},
+    {pre:'All of the witnesses ',post:' one gave a statement.',c:'except',o:['except','accept'],why:'“Except” means “other than.” “Accept” means “to receive.”'},
+    {pre:'The manager agreed to ',post:' the subpoena.',c:'accept',o:['accept','except'],why:'“Accept” means “to receive.” “Except” means “other than.”'},
+    {pre:'The two witnesses said ',post:' vehicle was blue.',c:'their',o:['their','there','they’re'],why:'“Their” shows ownership. “There” is a place. “They’re” means “they are.”'},
+    {pre:'I asked whether ',post:' were any cameras on the street.',c:'there',o:['their','there','they’re'],why:'“There” is used with “were” to say something exists.'},
+    {pre:'The neighbors told me ',post:' not sure when the noise began.',c:'they’re',o:['their','there','they’re'],why:'“They’re” is short for “they are.” Read it aloud: “they are not sure.”'},
+    {pre:'The dim lighting did not ',post:' my ability to read the license plate.',c:'affect',o:['affect','effect'],why:'“Affect” is usually the verb (to influence). “Effect” is usually the noun (a result).'},
+    {pre:'The anonymous tip ',post:' officers to the warehouse.',c:'led',o:['led','lead'],why:'“Led” is the past tense of “lead.” Reports are written in past tense.'}
+  ];
+  var S2D=[
+    {id:'d1',a:'The witness said the driver was speeding.',b:'The witness, said the driver, was speeding.',ra:'The witness says: the driver was speeding.',rb:'The driver says: the witness was speeding.',lab:'Add commas around “said the driver”'},
+    {id:'d2',a:'The officer said the suspect was lying.',b:'The officer, said the suspect, was lying.',ra:'The officer says: the suspect was lying.',rb:'The suspect says: the officer was lying.',lab:'Add commas around “said the suspect”'},
+    {id:'d3',a:'The officer’s reports were filed.',b:'The officers’ reports were filed.',ra:'One officer wrote the reports.',rb:'Two or more officers wrote the reports.',lab:'Move the apostrophe after the “s”'}
+  ];
+  var S2Q=[
+    {s:'Which sentence tells the reader that the suspect called the officer dishonest?',o:['The officer said the suspect was dishonest.','The officer, said the suspect, was dishonest.'],c:1,why:'The commas set off “said the suspect,” so the suspect is the speaker and the officer is the one described.'},
+    {s:'A report says “the deputies’ statements” but only one deputy took statements. Which version is correct?',o:['the deputy’s statements','the deputies statements','the deputys’ statements'],c:0,why:'For one deputy, add apostrophe + s: deputy’s. A misplaced apostrophe changes how many people the report refers to.'}
+  ];
+  var S3=[
+    {sit:'A victim of an assault is crying and speaking in a shaky voice while she tells you what happened.',o:[
+      {t:'The victim hysterically claimed that she was attacked.',ok:false,fb:'“Hysterically” is a label, and “claimed” signals doubt. Neither is an observable fact.'},
+      {t:'The victim stated she was attacked. She was crying and her voice shook while she spoke.',ok:true,fb:'This records her words as stated and describes what you could see and hear, without judgment.'},
+      {t:'The victim was upset and probably exaggerating what happened.',ok:false,fb:'“Probably exaggerating” is an opinion about her credibility with nothing observable behind it.'}]},
+    {sit:'A shaken witness gives two different times for when he heard the gunshots.',o:[
+      {t:'The witness could not keep his story straight.',ok:false,fb:'This is a conclusion about the witness, not a record of what he said.'},
+      {t:'The witness first said the shots were “around ten,” then said “closer to eleven.” He said he was unsure because he had been shaken up.',ok:true,fb:'Both statements are recorded exactly, along with the reason he gave. A court can weigh it fairly.'},
+      {t:'The witness lied about the time.',ok:false,fb:'“Lied” assumes intent. Nothing in the report supports it.'}]},
+    {sit:'During a domestic-violence call, the victim declines to give a written statement.',o:[
+      {t:'The victim refused to cooperate and was difficult.',ok:false,fb:'“Refused to cooperate” and “difficult” are judgments that can read as blame.'},
+      {t:'The victim was uncooperative.',ok:false,fb:'“Uncooperative” is a vague label with no facts behind it.'},
+      {t:'The victim declined to give a written statement at this time and said she was afraid of retaliation.',ok:true,fb:'It states exactly what she did and the reason she gave in her own words.'}]},
+    {sit:'You are documenting an injury you observed on a victim’s face.',o:[
+      {t:'She had terrible injuries.',ok:false,fb:'“Terrible” is a judgment. A reader cannot tell what you saw.'},
+      {t:'She had some marks that looked like she had been hit.',ok:false,fb:'“Some marks” is vague, and “looked like she had been hit” is a guess about cause.'},
+      {t:'I observed a 2-inch red mark on the left cheek and swelling around the left eye. The victim said she was struck with a closed fist.',ok:true,fb:'It gives the size, location, and appearance of what you saw, and attributes the cause to the victim’s statement.'}]}
+  ];
+  var ST=[{n:'Look-alike words',d:'Spelling and word choice'},{n:'Punctuation shifts meaning',d:'Commas and apostrophes'},{n:'Precise and humane wording',d:'Facts, not labels'}];
+  var done=[false,false,false], cur=0, solved={};
+
+  /* ---------- SHELL ---------- */
+  function drawSteps(){
+    var ol=$('#steps');ol.innerHTML='';
+    ST.forEach(function(s,i){
+      var li=el('li');var b=el('button');b.type='button';
+      if(i===cur)b.setAttribute('aria-current','step');
+      var n=el('span','n',done[i]?'✓':String(i+1));n.setAttribute('aria-hidden','true');
+      var t=el('span');t.appendChild(el('strong',null,s.n));t.appendChild(el('br'));t.appendChild(document.createTextNode(s.d+(done[i]?' (complete)':'')));
+      b.appendChild(n);b.appendChild(t);b.addEventListener('click',function(){go(i)});li.appendChild(b);ol.appendChild(li);
+    });
+    var c=done.filter(Boolean).length;$('#overall').textContent=c+' of 3 stations complete.';
+  }
+  function go(i,noFocus){cur=i;drawSteps();var st=$('#station');st.innerHTML='';[s1,s2,s3][i](st);if(!noFocus)st.focus()}
+  function mark(i){if(!done[i]){done[i]=true;drawSteps();if(done.every(Boolean)){var b=el('div','fb ok done-banner');b.appendChild(el('span','lab','✓ Clinic complete'));b.appendChild(el('p',null,'You checked spelling and word choice, saw how punctuation changes who said what, and practiced writing about people with precision and care. Small details protect a report’s credibility.'));b.appendChild(el('p','meta','Reminder: AI tools can flag many errors, but they can miss context. A look-alike word spelled correctly can still be the wrong word, so always proofread.'));$('#station').appendChild(b)}}}
+  function head(st,t,p){st.appendChild(el('h2',null,t));st.appendChild(el('p',null,p))}
+
+  /* ---------- STATION 1 ---------- */
+  function s1(st){
+    head(st,'Station 1: Look-alike words','Errors can lead a report to be dismissed as evidence. Choose the correct word or spelling for each sentence.');
+    var cnt=el('p','meta',(solved.s1||0)+' of '+S1.length+' correct');cnt.setAttribute('aria-live','polite');st.appendChild(cnt);
+    S1.forEach(function(it,i){
+      var fs=el('fieldset','q');fs.style.margin='0 0 12px';var lg=el('legend');lg.appendChild(document.createTextNode((i+1)+'. '+it.pre));var bl=el('span','blank','______');lg.appendChild(bl);lg.appendChild(document.createTextNode(it.post));fs.appendChild(lg);
+      var ch=el('div','choices');var fb=el('div');fb.setAttribute('aria-live','polite');
+      var isSolved=solved['a'+i];
+      shuffle(it.o).forEach(function(o){var b=el('button',null,o);b.type='button';
+        b.addEventListener('click',function(){
+          if(o===it.c){bl.textContent=o;b.classList.add('right');fs.classList.add('solved');Array.prototype.forEach.call(ch.children,function(x){x.disabled=true});fb.className='fb ok';fb.innerHTML='';fb.appendChild(el('span','lab','✓ Correct'));fb.appendChild(el('p',null,it.why));if(!solved['a'+i]){solved['a'+i]=true;solved.s1=(solved.s1||0)+1;cnt.textContent=solved.s1+' of '+S1.length+' correct';if(solved.s1===S1.length)mark(0)}}
+          else{b.classList.add('wrong');b.disabled=true;fb.className='fb no';fb.innerHTML='';fb.appendChild(el('span','lab','✗ Not that one. Try again.'))}
+        });ch.appendChild(b)});
+      fs.appendChild(ch);fs.appendChild(fb);st.appendChild(fs);
+      if(isSolved){bl.textContent=it.c;fs.classList.add('solved');Array.prototype.forEach.call(ch.children,function(x){x.disabled=true;if(x.textContent===it.c)x.classList.add('right')});fb.className='fb ok';fb.appendChild(el('span','lab','✓ Correct'));fb.appendChild(el('p',null,it.why))}
+    });
+  }
+
+  /* ---------- STATION 2 ---------- */
+  function s2(st){
+    head(st,'Station 2: Punctuation shifts meaning','Flip each switch and watch what happens to who said what. Then answer the two questions.');
+    S2D.forEach(function(d){
+      var box=el('div','q');
+      var sw=el('div','sw');var b=el('button');b.type='button';b.setAttribute('role','switch');b.setAttribute('aria-checked','false');
+      b.appendChild(el('span','knob'));b.appendChild(el('span',null,d.lab));var stt=el('strong','st','Off');stt.setAttribute('aria-hidden','true');b.appendChild(stt);sw.appendChild(b);box.appendChild(sw);
+      var sent=el('div','sent');sent.setAttribute('aria-live','polite');box.appendChild(sent);
+      var rd=el('div','rd');var l=el('div');var arr=el('div','arrow','→');arr.setAttribute('aria-hidden','true');var rr=el('div');rd.appendChild(el('div',null,''));
+      rd.innerHTML='';var meaning=el('div');meaning.style.flex='1 1 100%';rd.appendChild(meaning);box.appendChild(rd);
+      function draw(on){sent.innerHTML='';var txt=on?d.b:d.a;
+        if(d.id==='d3'){var parts=txt.split(on?'officers’':'officer’s');sent.appendChild(document.createTextNode('The '));var m=el('mark',null,on?'officers’':'officer’s');sent.appendChild(m);sent.appendChild(document.createTextNode(parts[1]))}
+        else{var key=on?(d.id==='d1'?', said the driver,':', said the suspect,'):null;if(key){var idx=txt.indexOf(key);sent.appendChild(document.createTextNode(txt.slice(0,idx)));sent.appendChild(el('mark',null,key));sent.appendChild(document.createTextNode(txt.slice(idx+key.length)))}else sent.appendChild(document.createTextNode(txt))}
+        meaning.innerHTML='';meaning.appendChild(el('strong',null,'Meaning: '));meaning.appendChild(document.createTextNode(on?d.rb:d.ra))}
+      draw(false);
+      b.addEventListener('click',function(){var on=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',on?'true':'false');stt.textContent=on?'On':'Off';draw(on)});
+      st.appendChild(box);
+    });
+    var cnt=el('p','meta',(solved.s2||0)+' of '+S2Q.length+' correct');cnt.setAttribute('aria-live','polite');st.appendChild(cnt);
+    S2Q.forEach(function(q,qi){
+      var fs=el('fieldset','q');fs.appendChild(el('legend',null,(qi+1)+'. '+q.s));
+      var ch=el('div','choices stack');var fb=el('div');fb.setAttribute('aria-live','polite');
+      q.o.forEach(function(o,oi){var b=el('button',null,o);b.type='button';
+        b.addEventListener('click',function(){
+          if(oi===q.c){b.classList.add('right');fs.classList.add('solved');Array.prototype.forEach.call(ch.children,function(x){x.disabled=true});fb.className='fb ok';fb.innerHTML='';fb.appendChild(el('span','lab','✓ Correct'));fb.appendChild(el('p',null,q.why));if(!solved['b'+qi]){solved['b'+qi]=true;solved.s2=(solved.s2||0)+1;cnt.textContent=solved.s2+' of '+S2Q.length+' correct';if(solved.s2===S2Q.length)mark(1)}}
+          else{b.classList.add('wrong');b.disabled=true;fb.className='fb no';fb.innerHTML='';fb.appendChild(el('span','lab','✗ Not that one. Try again.'))}
+        });ch.appendChild(b)});
+      fs.appendChild(ch);fs.appendChild(fb);st.appendChild(fs);
+      if(solved['b'+qi]){fs.classList.add('solved');Array.prototype.forEach.call(ch.children,function(x,xi){x.disabled=true;if(xi===q.c)x.classList.add('right')});fb.className='fb ok';fb.appendChild(el('span','lab','✓ Correct'));fb.appendChild(el('p',null,q.why))}
+    });
+  }
+
+  /* ---------- STATION 3 ---------- */
+  function s3(st){
+    head(st,'Station 3: Precise and humane wording','Chapter 6 reminds us that reports document real people in crisis. Choose the version that is accurate, observable, and free of labels or guesses.');
+    var cnt=el('p','meta',(solved.s3||0)+' of '+S3.length+' correct');cnt.setAttribute('aria-live','polite');st.appendChild(cnt);
+    S3.forEach(function(it,i){
+      var fs=el('fieldset','q');var lg=el('legend',null,(i+1)+'. '+it.sit);fs.appendChild(lg);
+      var ch=el('div','choices stack');var fb=el('div');fb.setAttribute('aria-live','polite');
+      shuffle(it.o).forEach(function(o){var b=el('button',null,'“'+o.t+'”');b.type='button';
+        b.addEventListener('click',function(){
+          fb.innerHTML='';
+          if(o.ok){b.classList.add('right');fs.classList.add('solved');Array.prototype.forEach.call(ch.children,function(x){x.disabled=true});fb.className='fb ok';fb.appendChild(el('span','lab','✓ Best version'));fb.appendChild(el('p',null,o.fb));if(!solved['c'+i]){solved['c'+i]=true;solved.s3=(solved.s3||0)+1;cnt.textContent=solved.s3+' of '+S3.length+' correct';if(solved.s3===S3.length)mark(2)}}
+          else{b.classList.add('wrong');b.disabled=true;fb.className='fb no';fb.appendChild(el('span','lab','✗ Not the best choice'));fb.appendChild(el('p',null,o.fb))}
+        });ch.appendChild(b)});
+      fs.appendChild(ch);fs.appendChild(fb);st.appendChild(fs);
+      if(solved['c'+i]){fs.classList.add('solved');var good=it.o.filter(function(o){return o.ok})[0];Array.prototype.forEach.call(ch.children,function(x){x.disabled=true;if(x.textContent==='“'+good.t+'”')x.classList.add('right')});fb.className='fb ok';fb.appendChild(el('span','lab','✓ Best version'));fb.appendChild(el('p',null,good.fb))}
+    });
+  }
+  drawSteps();go(0,true);
+})();
+</script>
+</body>
+</html>

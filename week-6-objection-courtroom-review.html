@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 6 Interactive: Objection! Courtroom Review</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#1d1d1d;background:#fff;line-height:1.55;font-size:1rem}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px 36px}
+.hero{background:linear-gradient(90deg,#d34147 30%,#892a36 60%,#5b262b 100%);color:#fff;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-radius:0 0 22px 22px}
+.hero svg{flex:0 0 auto}
+.hero h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff}
+.hero p{margin:6px 0 0;color:#fff;max-width:640px}
+.tag{display:inline-block;background:#000;color:#fff;border-radius:10px;padding:2px 12px;font-weight:700;font-size:.85rem;margin-bottom:6px}
+.card{background:#edebe8;border-radius:22px;padding:16px;margin:18px 0}
+.inner{background:#fff;border-radius:16px;padding:18px;margin:0 0 14px}
+.inner:last-child{margin-bottom:0}
+.rule{width:100px;height:6px;background:#d34147;border-radius:5px;margin:0 0 10px}
+h2{margin:0 0 8px;font-size:1.35rem;line-height:1.25}
+h3{margin:0 0 6px;font-size:1.1rem}
+p{margin:0 0 10px}
+button{font:inherit;cursor:pointer;min-height:44px;padding:8px 18px;border-radius:12px;border:2px solid #a8353a;background:#a8353a;color:#fff;font-weight:600}
+button:hover:not(:disabled){background:#892a36;border-color:#892a36}
+button.secondary{background:#fff;color:#a8353a}
+button.secondary:hover:not(:disabled){background:#f6e9ea;color:#892a36}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid #000;outline-offset:2px;box-shadow:0 0 0 6px #fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fb{border-left:6px solid #1f4e8a;border-radius:12px;padding:12px 14px;margin-top:12px;background:#e8f0fb}
+.fb.ok{border-color:#1d6b3a;background:#e8f5ec}
+.fb.no{border-color:#8a1f25;background:#fbeaea}
+.fb p:last-child{margin-bottom:0}
+.fb .lab{font-weight:700;display:block;margin-bottom:2px}
+.bubble{position:relative;background:#fff;border:2px solid #5b262b;border-radius:16px;padding:12px 16px;margin:10px 0}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700;border:2px solid #1d1d1d;background:#fff;color:#1d1d1d}
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0;padding:0;list-style:none}
+.progress li{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:3px solid #a8353a;background:#fff;color:#a8353a}
+.progress li.done{background:#a8353a;color:#fff}
+.progress li.cur{box-shadow:0 0 0 3px #000}
+.meta{color:#4a4a4a;font-size:.95rem}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";display:inline-block;width:1.3em;color:#a8353a}
+details[open] summary::before{content:"▾"}
+.footnote{font-size:.9rem;color:#4a4a4a;margin-top:18px}
+@media (max-width:600px){.hero h1{font-size:1.4rem}.inner{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.exhibit{background:#fffdf5;border:2px solid #b9b4ad;border-radius:6px;padding:16px 18px;box-shadow:4px 4px 0 #d4cfc7;margin:10px 0;background-image:repeating-linear-gradient(transparent,transparent 31px,#e6dfcf 32px)}
+.exhibit .lbl{font-size:.85rem;font-weight:700;letter-spacing:.04em;color:#5b262b;display:block;margin-bottom:4px}
+.exhibit blockquote{margin:0;font-size:1.2rem;font-family:Georgia,"Times New Roman",serif;line-height:32px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+button.obj{background:#8a1f25;border-color:#8a1f25;font-size:1.05rem;letter-spacing:.02em}
+button.obj:hover:not(:disabled){background:#5b262b;border-color:#5b262b}
+fieldset.grounds{border:2px solid #d4cfc7;border-radius:14px;padding:10px 14px;margin:10px 0}
+fieldset.grounds legend{font-weight:700;padding:0 6px}
+.gr{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;min-height:44px;border-radius:8px}
+.gr:hover{background:#f6e9ea}
+.gr input{width:22px;height:22px;margin-top:3px;flex:0 0 auto;accent-color:#a8353a}
+.gr label{cursor:pointer;flex:1}
+.gr label small{display:block;color:#4a4a4a}
+.judge{display:flex;gap:14px;align-items:center}
+.judge .bubble{flex:1;margin:0;font-size:1.1rem}
+.score{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.rank{font-size:1.3rem;font-weight:800}
+.rewrite{background:#fff;border:2px dashed #1d6b3a;border-radius:10px;padding:8px 12px;margin-top:8px}
+table.bk{border-collapse:collapse;width:100%;margin-top:8px}
+table.bk th,table.bk td{border:2px solid #d4cfc7;padding:8px 10px;text-align:left}
+table.bk th{background:#f1efec}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="A gavel">
+    <circle cx="42" cy="42" r="40" fill="#fff" opacity=".18"/>
+    <g transform="rotate(-35 42 42)"><rect x="22" y="22" width="40" height="16" rx="4" fill="#fff"/><rect x="38" y="36" width="8" height="34" rx="3" fill="#fff"/></g>
+    <rect x="18" y="64" width="48" height="8" rx="4" fill="#000" opacity=".6"/>
+  </svg>
+  <div>
+    <span class="tag">Week 6 Interactive</span>
+    <h1>Objection! Review Like a Courtroom</h1>
+    <p>Opposing counsel will read every line of an officer’s report. Decide which lines to challenge and why.</p>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="card" aria-labelledby="how">
+    <div class="inner">
+      <div class="rule"></div>
+      <h2 id="how">How it works</h2>
+      <p>You are reviewing excerpts from a fictional officer’s report, line by line. For each line, choose <strong>Objection!</strong> if a courtroom could challenge it, or <strong>Let it stand</strong> if it is solid documentation. If you object, choose the ground. Correct objection with the right ground: 2 points. Correct objection with a different valid ground: 1 point. Correctly letting a solid line stand: 2 points.</p>
+      <details>
+        <summary>Grounds for objection (reference)</summary>
+        <table class="bk" aria-label="Grounds for objection">
+          <tr><th scope="col">Ground</th><th scope="col">What it means</th></tr>
+          <tr><th scope="row">Conclusion without facts</th><td>A label or judgment with no observable facts to back it up.</td></tr>
+          <tr><th scope="row">Passive voice</th><td>Hides who did the action.</td></tr>
+          <tr><th scope="row">No legal justification</th><td>An action is reported, but not the legal basis for it.</td></tr>
+          <tr><th scope="row">Jargon or codes</th><td>Terms a judge, juror, or reader outside the agency may not understand.</td></tr>
+          <tr><th scope="row">Plans instead of actions</th><td>Documents what the officer intends to do rather than what happened.</td></tr>
+          <tr><th scope="row">Missing legal elements</th><td>A charge is named without the facts that satisfy each element.</td></tr>
+          <tr><th scope="row">Opinion or subjective language</th><td>Personal feelings or characterizations instead of observations.</td></tr>
+        </table>
+      </details>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="court">
+    <div class="inner">
+      <h2 id="court" class="sr">Courtroom</h2>
+      <svg viewBox="0 0 640 200" width="100%" role="img" aria-label="Courtroom illustration: a judge behind the bench, a witness stand on the right, and a jury box on the left.">
+        <rect width="640" height="200" rx="14" fill="#f4f1ec"/>
+        <rect y="150" width="640" height="50" fill="#d8cfc0"/>
+        <rect x="230" y="64" width="180" height="86" rx="8" fill="#6f4a33"/><rect x="224" y="58" width="192" height="12" rx="4" fill="#8a6244"/>
+        <circle cx="320" cy="38" r="20" fill="#d9b08c"/><path d="M296 90v-22a24 24 0 0 1 48 0v22z" fill="#1d1d1d"/><circle cx="320" cy="36" r="17" fill="#d9b08c"/><path d="M303 30a17 17 0 0 1 34 0c-6-5-28-5-34 0z" fill="#8f8f8f"/>
+        <rect x="372" y="52" width="26" height="8" rx="2" fill="#8a1f25"/>
+        <rect x="30" y="76" width="150" height="74" rx="8" fill="#a98b6c"/>
+        <g fill="#3b4f6b"><circle cx="58" cy="98" r="11"/><circle cx="92" cy="98" r="11"/><circle cx="126" cy="98" r="11"/><circle cx="160" cy="98" r="11"/><circle cx="58" cy="126" r="11"/><circle cx="92" cy="126" r="11"/><circle cx="126" cy="126" r="11"/><circle cx="160" cy="126" r="11"/></g>
+        <text x="105" y="170" text-anchor="middle" font-size="13" fill="#1d1d1d" font-family="Arial">Jury box</text>
+        <rect x="470" y="90" width="110" height="60" rx="8" fill="#8a6244"/><circle cx="525" cy="74" r="16" fill="#b98763"/><rect x="505" y="86" width="40" height="22" rx="8" fill="#2f6f73"/>
+        <text x="525" y="170" text-anchor="middle" font-size="13" fill="#1d1d1d" font-family="Arial">Witness stand</text>
+        <text x="320" y="170" text-anchor="middle" font-size="13" fill="#1d1d1d" font-family="Arial">Judge</text>
+      </svg>
+      <div class="judge"><div class="bubble" id="ruling" aria-live="polite"><strong>Judge:</strong> Counsel, you may begin your review.</div></div>
+      <div class="score"><p class="meta" style="margin:0" id="prog">Line 1 of 10</p><p class="meta" style="margin:0" id="pts">Score: 0 of 20</p></div>
+    </div>
+    <div class="inner" id="area" tabindex="-1"></div>
+  </section>
+  <p class="footnote">Interactive for CRJU 380, Week 6. Report excerpts are fictional and written for instruction.</p>
+</main>
+
+<script>
+(function(){
+  var G={conclusion:'Conclusion without facts',passive:'Passive voice',legal:'No legal justification',jargon:'Jargon or codes',plans:'Plans instead of actions',elements:'Missing legal elements',opinion:'Opinion or subjective language'};
+  var GD={conclusion:'A label or judgment with no observable facts behind it',passive:'Hides who did the action',legal:'The legal basis for the action is not stated',jargon:'Terms a judge or juror may not understand',plans:'Documents intentions rather than what happened',elements:'The charge is named without the facts that satisfy it',opinion:'Personal characterization instead of observation'};
+  var L=[
+    {t:'The suspect was clearly intoxicated.',g:'conclusion',why:'“Clearly intoxicated” is a conclusion. The report gives no observations to support it, so the defense can argue it is a guess.',fix:'The suspect’s speech was slurred, his eyes were bloodshot, and I smelled alcohol on his breath.'},
+    {t:'The door was opened and the bag was seized.',g:'passive',why:'Passive voice hides who acted. A court needs to know who opened the door and who seized the bag.',fix:'I opened the passenger door and seized the black bag from the floorboard.'},
+    {t:'I searched the trunk.',g:'legal',why:'The action is reported, but not the legal basis (for example consent, a warrant, or probable cause). Without it, the search can be challenged.',fix:'Mr. Lee gave verbal consent at 2114 hours. I then searched the trunk.'},
+    {t:'I 10-97’d at the location and contacted the RP near the 459 scene.',g:'jargon',why:'Codes and abbreviations vary by agency. A judge or juror may not know what “10-97,” “RP,” or “459” mean.',fix:'I arrived at the location and spoke with the reporting person near the burglary scene.'},
+    {t:'At 2:15 p.m. I arrived at 410 Elm Street and saw a broken rear window on the house.',g:null,why:'This line states the time, place, and what the officer observed. It uses active voice and plain language.'},
+    {t:'I plan to interview the neighbor tomorrow.',g:'plans',why:'A report documents what happened, not what the officer intends to do. Plans belong in a supervisor or follow-up note.',fix:'I contacted the neighbor, Ms. Gray, at 1530 hours. She stated she heard glass breaking at about 1400 hours.'},
+    {t:'I arrested him for burglary.',g:'elements',why:'Naming the charge is not enough. The report should state the facts that satisfy each element, such as unlawful entry and intent.',fix:'I arrested him for burglary because he entered the closed garage without permission and was carrying the victim’s tools, which the victim identified.'},
+    {t:'Ms. Chavez stated, “He grabbed my purse and ran east.”',g:null,why:'This is a direct quote with a named source and no added interpretation.'},
+    {t:'I read Mr. Lee his Miranda rights at 2122 hours. He said he understood and agreed to speak with me.',g:null,why:'It records the time, the action, and his response, which shows the legal requirement was met.'},
+    {t:'The guy was a real jerk to me.',g:'opinion',why:'“A real jerk” is a personal characterization. It tells the reader how the officer felt, not what happened.',fix:'He raised his voice, said, “Get away from me,” and clenched his fists.'}
+  ];
+  var MAX=L.length*2;
+  var $=function(s){return document.querySelector(s)};
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  var i=0,pts=0,log=[];
+  function say(t){var r=$('#ruling');r.innerHTML='';r.appendChild(el('strong',null,'Judge: '));r.appendChild(document.createTextNode(t))}
+  function hud(){$('#prog').textContent=i<L.length?'Line '+(i+1)+' of '+L.length:'Review complete';$('#pts').textContent='Score: '+pts+' of '+MAX}
+  function show(){
+    var a=$('#area');a.innerHTML='';hud();
+    a.appendChild(el('h2',null,'Line '+(i+1)+' of '+L.length));
+    var ex=el('div','exhibit');ex.appendChild(el('span','lbl','EXHIBIT A, OFFICER’S REPORT'));var q=el('blockquote',null,'“'+L[i].t+'”');ex.appendChild(q);a.appendChild(ex);
+    var ac=el('div','actions');
+    var ob=el('button','obj','Objection!');ob.type='button';var ls=el('button','secondary','Let it stand');ls.type='button';
+    ac.appendChild(ob);ac.appendChild(ls);a.appendChild(ac);
+    var slot=el('div');slot.id='slot';slot.setAttribute('aria-live','polite');a.appendChild(slot);
+    ob.addEventListener('click',function(){grounds(ob,ls)});
+    ls.addEventListener('click',function(){decide(null,ob,ls)});
+    var h=a.querySelector('h2');h.setAttribute('tabindex','-1');h.focus();
+  }
+  function grounds(ob,ls){
+    ob.disabled=true;ls.disabled=true;var s=$('#slot');s.innerHTML='';
+    var fs=el('fieldset','grounds');fs.appendChild(el('legend',null,'On what ground?'));
+    Object.keys(G).forEach(function(k,n){var d=el('div','gr');var inp=el('input');inp.type='radio';inp.name='g';inp.id='g'+n;inp.value=k;var lb=el('label');lb.htmlFor=inp.id;lb.appendChild(el('strong',null,G[k]));lb.appendChild(el('small',null,GD[k]));d.appendChild(inp);d.appendChild(lb);fs.appendChild(d)});
+    s.appendChild(fs);
+    var sub=el('button',null,'Submit objection');sub.type='button';sub.disabled=true;
+    fs.addEventListener('change',function(){sub.disabled=false});
+    sub.addEventListener('click',function(){var v=fs.querySelector('input:checked').value;decide(v,ob,ls)});
+    var back=el('button','secondary','Cancel');back.type='button';back.style.marginLeft='8px';back.addEventListener('click',function(){s.innerHTML='';ob.disabled=false;ls.disabled=false;ob.focus()});
+    s.appendChild(sub);s.appendChild(back);fs.querySelector('input').focus();
+  }
+  function decide(g,ob,ls){
+    ob.disabled=true;ls.disabled=true;var it=L[i],s=$('#slot');s.innerHTML='';
+    var got=0,ruling,cls,lab;
+    if(g===null){
+      if(it.g===null){got=2;ruling='Overruled. The line is solid.';cls='ok';lab='✓ Correct: let it stand (2 points)'}
+      else{got=0;ruling='The court notes the defense will not miss this.';cls='no';lab='✗ Missed it (0 points)'}
+    }else{
+      if(it.g===null){got=0;ruling='Overruled. Counsel, that line is fine.';cls='no';lab='✗ Overruled: nothing to object to (0 points)'}
+      else if(g===it.g){got=2;ruling='Sustained.';cls='ok';lab='✓ Sustained on the right ground (2 points)'}
+      else{got=1;ruling='Sustained, but on a different ground.';cls='no';lab='◐ Valid objection, different ground (1 point)'}
+    }
+    pts+=got;log.push({g:it.g,got:got,chosen:g});say(ruling);hud();
+    var f=el('div','fb '+cls);f.appendChild(el('span','lab',lab));
+    if(g!==null&&it.g!==null&&g!==it.g)f.appendChild(el('p',null,'You chose “'+G[g]+'.” The strongest ground here is “'+G[it.g]+'.”'));
+    if(g===null&&it.g!==null)f.appendChild(el('p',null,'The ground was “'+G[it.g]+'.”'));
+    f.appendChild(el('p',null,it.why));
+    if(it.fix){var rw=el('div','rewrite');rw.appendChild(el('strong',null,'Stronger version: '));rw.appendChild(document.createTextNode('“'+it.fix+'”'));f.appendChild(rw)}
+    s.appendChild(f);
+    var nx=el('button',null,i<L.length-1?'Next line':'See results');nx.type='button';nx.style.marginTop='12px';nx.addEventListener('click',function(){i++;if(i<L.length){say('Proceed, counsel.');show()}else results()});s.appendChild(nx);nx.focus();
+  }
+  function results(){
+    var a=$('#area');a.innerHTML='';hud();
+    var rank=pts>=17?'Trial-ready reviewer':pts>=12?'Strong, with a few slips':'Keep sharpening';
+    say(pts>=17?'Court is impressed. This report would hold up.':pts>=12?'A solid review, counsel.':'More preparation is needed before trial.');
+    a.appendChild(el('h2',null,'Review complete'));
+    a.appendChild(el('p','rank',rank+': '+pts+' of '+MAX));
+    var missed={};log.forEach(function(x,n){if(x.g&&x.got<2)missed[x.g]=true;if(!x.g&&x.got<2)missed._clean=true});
+    var keys=Object.keys(missed);
+    var f=el('div','fb '+(keys.length?'info':'ok'));
+    if(keys.length){f.appendChild(el('span','lab','Review these'));var ul=el('ul');keys.forEach(function(k){ul.appendChild(el('li',null,k==='_clean'?'Solid lines: not every line needs an objection. Direct quotes, times, and observed facts are good documentation.':G[k]+': '+GD[k]+'.'))});f.appendChild(ul)}
+    else f.appendChild(el('span','lab','✓ You caught every issue on the right ground.'));
+    a.appendChild(f);
+    a.appendChild(el('h3',null,'Take this into your Criminal Case Briefing'));
+    a.appendChild(el('p',null,'Documentation that states facts, names who acted, shows the legal basis, and avoids jargon and opinion is easier to defend and easier to brief.'));
+    var rs=el('button','secondary','Review again');rs.type='button';rs.addEventListener('click',function(){i=0;pts=0;log=[];say('Counsel, you may begin your review.');show()});a.appendChild(rs);
+    var h=a.querySelector('h2');h.setAttribute('tabindex','-1');h.focus();
+  }
+  show();
+})();
+</script>
+</body>
+</html>

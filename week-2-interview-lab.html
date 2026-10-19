@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 2 Interactive: Interview Lab</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#1d1d1d;background:#fff;line-height:1.55;font-size:1rem}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px 36px}
+.hero{background:linear-gradient(90deg,#d34147 30%,#892a36 60%,#5b262b 100%);color:#fff;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-radius:0 0 22px 22px}
+.hero svg{flex:0 0 auto}
+.hero h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff}
+.hero p{margin:6px 0 0;color:#fff;max-width:640px}
+.tag{display:inline-block;background:#000;color:#fff;border-radius:10px;padding:2px 12px;font-weight:700;font-size:.85rem;margin-bottom:6px}
+.card{background:#edebe8;border-radius:22px;padding:16px;margin:18px 0}
+.inner{background:#fff;border-radius:16px;padding:18px;margin:0 0 14px}
+.inner:last-child{margin-bottom:0}
+.rule{width:100px;height:6px;background:#d34147;border-radius:5px;margin:0 0 10px}
+h2{margin:0 0 8px;font-size:1.35rem;line-height:1.25}
+h3{margin:0 0 6px;font-size:1.1rem}
+p{margin:0 0 10px}
+button{font:inherit;cursor:pointer;min-height:44px;padding:8px 18px;border-radius:12px;border:2px solid #a8353a;background:#a8353a;color:#fff;font-weight:600}
+button:hover:not(:disabled){background:#892a36;border-color:#892a36}
+button.secondary{background:#fff;color:#a8353a}
+button.secondary:hover:not(:disabled){background:#f6e9ea;color:#892a36}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid #000;outline-offset:2px;box-shadow:0 0 0 6px #fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fb{border-left:6px solid #1f4e8a;border-radius:12px;padding:12px 14px;margin-top:12px;background:#e8f0fb}
+.fb.ok{border-color:#1d6b3a;background:#e8f5ec}
+.fb.no{border-color:#8a1f25;background:#fbeaea}
+.fb p:last-child{margin-bottom:0}
+.fb .lab{font-weight:700;display:block;margin-bottom:2px}
+.bubble{position:relative;background:#fff;border:2px solid #5b262b;border-radius:16px;padding:12px 16px;margin:10px 0}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700;border:2px solid #1d1d1d;background:#fff;color:#1d1d1d}
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0;padding:0;list-style:none}
+.progress li{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:3px solid #a8353a;background:#fff;color:#a8353a}
+.progress li.done{background:#a8353a;color:#fff}
+.progress li.cur{box-shadow:0 0 0 3px #000}
+.meta{color:#4a4a4a;font-size:.95rem}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";display:inline-block;width:1.3em;color:#a8353a}
+details[open] summary::before{content:"▾"}
+.footnote{font-size:.9rem;color:#4a4a4a;margin-top:18px}
+@media (max-width:600px){.hero h1{font-size:1.4rem}.inner{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.qbtn{display:block;width:100%;text-align:left;margin:0 0 10px;background:#fff;color:#1d1d1d;border:2px solid #5b262b;font-weight:500;padding:12px 16px}
+.qbtn:hover:not(:disabled){background:#f6e9ea;color:#1d1d1d;border-color:#5b262b}
+.qbtn:disabled{opacity:1;background:#f1efec;color:#4a4a4a;border-color:#b9b4ad}
+.qbtn.right{background:#e8f5ec;border-color:#1d6b3a;color:#1d1d1d}
+.hex{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;list-style:none;padding:0;margin:8px 0 0}
+.hex li{border:3px solid #a8353a;border-radius:14px;text-align:center;padding:6px 2px;background:#fff;font-weight:700;color:#a8353a;font-size:.9rem}
+.hex li .m{display:block;font-size:1.2rem;line-height:1.2}
+.hex li.done{background:#a8353a;color:#fff}
+.notes{background:#fffbe6;border:2px solid #d9c36a;border-radius:12px;padding:12px 16px;min-height:60px}
+.notes ul{margin:0;padding-left:20px}
+.notes li{margin-bottom:6px}
+.ord{list-style:none;padding:0;margin:0 0 12px}
+.ord li{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid #5b262b;border-radius:12px;padding:8px 12px;margin-bottom:8px}
+.ord li span.t{flex:1}
+.ord button{min-height:44px;min-width:44px;padding:4px 10px}
+.legend{display:flex;gap:12px;flex-wrap:wrap}
+.legend div{flex:1 1 200px;background:#fff;border-radius:12px;padding:10px 12px;border:2px solid #d4cfc7}
+.check li{margin-bottom:4px}
+#next{margin-top:14px}
+@media (max-width:600px){.hex{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="Two speech bubbles">
+    <circle cx="42" cy="42" r="40" fill="#fff" opacity=".18"/>
+    <path d="M14 20h34a6 6 0 0 1 6 6v18a6 6 0 0 1-6 6H30l-10 9v-9h-6a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#fff"/>
+    <path d="M40 40h30a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6h-4v8l-9-8H40a6 6 0 0 1-6-6V46a6 6 0 0 1 6-6z" fill="#000" opacity=".75"/>
+    <circle cx="24" cy="35" r="3" fill="#a8353a"/><circle cx="34" cy="35" r="3" fill="#a8353a"/><circle cx="44" cy="35" r="3" fill="#a8353a"/>
+  </svg>
+  <div>
+    <span class="tag">Week 2 Interactive</span>
+    <h1>Interview Lab: Interviewing with Intention</h1>
+    <p>Question a witness, collect the facts, and turn your interview notes into a clear report narrative.</p>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="card" aria-labelledby="mission">
+    <div class="inner">
+      <div class="rule"></div>
+      <h2 id="mission">Your mission</h2>
+      <p>On a Saturday evening, a witness called 911 after seeing a man break into a pickup truck in a grocery store parking lot. You are the responding officer. Over six rounds you will ask one question each to cover the <strong>5 W’s and 1 H</strong> (who, what, when, where, why, how). How you ask decides what you learn.</p>
+      <div class="legend" role="list" aria-label="Question types">
+        <div role="listitem"><strong aria-hidden="true">○</strong> <strong>Open-ended</strong><br><span class="meta">Invites a full description in the witness’s own words.</span></div>
+        <div role="listitem"><strong aria-hidden="true">■</strong> <strong>Closed</strong><br><span class="meta">Can be answered with “yes,” “no,” or one word.</span></div>
+        <div role="listitem"><strong aria-hidden="true">➤</strong> <strong>Leading</strong><br><span class="meta">Suggests the answer you expect to hear.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="stageh">
+    <div class="inner">
+      <h2 id="stageh" class="sr">Interview room</h2>
+      <svg viewBox="0 0 640 230" width="100%" role="img" aria-label="Illustration of an interview room: an officer on the left and a witness on the right sit on either side of a table with a notepad.">
+        <rect width="640" height="230" fill="#f4f1ec" rx="14"/>
+        <rect y="170" width="640" height="60" fill="#dcd6cc"/>
+        <rect x="28" y="22" width="120" height="76" rx="6" fill="#cfe3ee" stroke="#8aa7b8" stroke-width="3"/>
+        <line x1="88" y1="22" x2="88" y2="98" stroke="#8aa7b8" stroke-width="3"/><line x1="28" y1="60" x2="148" y2="60" stroke="#8aa7b8" stroke-width="3"/>
+        <rect x="232" y="146" width="176" height="14" rx="4" fill="#8a6a4f"/><rect x="246" y="160" width="10" height="56" fill="#6f533d"/><rect x="384" y="160" width="10" height="56" fill="#6f533d"/>
+        <rect x="290" y="132" width="52" height="14" rx="2" fill="#fff" stroke="#999"/><line x1="296" y1="137" x2="336" y2="137" stroke="#bbb"/><line x1="296" y1="141" x2="330" y2="141" stroke="#bbb"/>
+        <rect x="104" y="112" width="92" height="76" rx="20" fill="#1f3a5f"/><circle cx="150" cy="82" r="26" fill="#e0b894"/><path d="M126 76a24 24 0 0 1 48 0z" fill="#1f3a5f"/>
+        <circle cx="164" cy="132" r="6" fill="#e8c547"/><rect x="108" y="186" width="84" height="8" rx="4" fill="#5b4a3a"/>
+        <rect x="446" y="112" width="92" height="76" rx="20" fill="#2f6f73"/><circle cx="492" cy="82" r="26" fill="#b98763"/><path d="M466 80a26 26 0 0 1 52 0c0 8-4 12-8 14-4-10-36-10-40 0-4-2-4-8-4-14z" fill="#3a2a22"/>
+        <rect x="450" y="186" width="84" height="8" rx="4" fill="#5b4a3a"/>
+        <text x="150" y="214" text-anchor="middle" font-size="14" fill="#1d1d1d" font-family="Arial">You (officer)</text>
+        <text x="492" y="214" text-anchor="middle" font-size="14" fill="#1d1d1d" font-family="Arial">Ms. Reyes (witness)</text>
+      </svg>
+      <p class="meta" style="margin-top:8px">Fictional scenario created for this course. Coverage of the 5 W’s and 1 H:</p>
+      <ol class="hex" id="hex" aria-label="Coverage of the 5 W’s and 1 H"></ol>
+    </div>
+
+    <div class="inner" id="roundArea" aria-live="polite"></div>
+
+    <div class="inner">
+      <h2>Case notes</h2>
+      <div class="notes" id="notes" aria-live="polite"><p class="meta" style="margin:0">Your notes will build here as you collect facts.</p></div>
+    </div>
+  </section>
+
+  <p class="footnote">Interactive for CRJU 380, Week 2. Interview content is fictional and was written for instruction.</p>
+</main>
+
+<script>
+(function(){
+  var KEYS=['Who','What','When','Where','Why','How'];
+  var TL={open:'Open-ended',closed:'Closed (yes/no)',leading:'Leading'};
+  var IC={open:'○',closed:'■',leading:'➤'};
+  var GEN={
+    open:'Open-ended questions invite a full description in the witness’s own words, which gives you facts you can document.',
+    closed:'A closed question gets a one-word answer. It can confirm a detail you already have, but it rarely draws out new information.',
+    leading:'A leading question supplies the answer. The witness may adopt your wording, which can contaminate the account and weaken it in court.'
+  };
+  var ROUNDS=[
+    {k:'Who',goal:'Find out who was involved.',
+     o:[{t:'open',q:'Can you describe the person you saw near the truck?',a:'He was tall, maybe six feet, in a gray hooded sweatshirt and dark jeans, with a red backpack. I never saw his face because his back was to me.'},
+        {t:'closed',q:'Was it a man?',a:'Yes.'},
+        {t:'leading',q:'It was a tall guy in a dark hoodie, right?',a:'Um… I guess? It looked gray to me, but you said dark, so maybe.'}],
+     n:'Male, about 6 ft, gray hooded sweatshirt, dark jeans, red backpack. Face not seen.'},
+    {k:'What',goal:'Find out what happened.',
+     o:[{t:'closed',q:'Did he break into the truck?',a:'I think so. Yes.'},
+        {t:'open',q:'Tell me what you saw him do, from the moment you noticed him.',a:'He walked up to a white pickup, looked around, then used a slim, flat metal tool to open the driver’s door. He grabbed a black duffel bag from the seat and walked off.'},
+        {t:'leading',q:'He smashed the window, didn’t he?',a:'No, I don’t think so. I would have heard that. Was it smashed?'}],
+     n:'Opened driver’s door of a white pickup with a slim, flat metal tool. Took a black duffel bag from the seat.'},
+    {k:'When',goal:'Find out when it happened, and how the witness knows.',
+     o:[{t:'leading',q:'It was about 6:00, wasn’t it?',a:'Uh, sure, if you say so.'},
+        {t:'open',q:'What time did you notice him, and how do you know?',a:'Around 6:40 p.m. I had just checked my phone while waiting for my daughter to text me. It was still light out.'},
+        {t:'closed',q:'Was it around 6:00?',a:'Sure, around then.'}],
+     n:'About 6:40 p.m. Witness had just checked her phone. Still daylight.'},
+    {k:'Where',goal:'Find out where it happened and where the witness was.',
+     o:[{t:'open',q:'Where were you standing, and where was the truck in relation to you?',a:'I was by the cart return near row C. The truck was two rows over, about 40 feet away, facing the store entrance.'},
+        {t:'closed',q:'Were you close to the truck?',a:'Kind of.'},
+        {t:'leading',q:'You had a clear view of the whole thing from where you stood, correct?',a:'I guess so. Mostly.'}],
+     n:'Witness at cart return near row C. Truck two rows over, about 40 ft away, facing the store entrance.'},
+    {k:'Why',goal:'Find out why the witness noticed him, using what she observed rather than guesses about motive.',
+     o:[{t:'closed',q:'Did he look suspicious?',a:'Yeah, he seemed shady.'},
+        {t:'leading',q:'He was obviously casing the lot, right?',a:'I mean… probably.'},
+        {t:'open',q:'What made you notice him?',a:'He kept looking over both shoulders, and he tried the passenger door handle before the driver’s door.'}],
+     n:'Noticed him because he looked over both shoulders and tried the passenger door handle first.'},
+    {k:'How',goal:'Find out how he left the area.',
+     o:[{t:'open',q:'How did he leave the area?',a:'On foot, toward the east exit. Then I lost sight of him behind a delivery van. I didn’t see a vehicle.'},
+        {t:'leading',q:'He drove off in a dark sedan, right?',a:'I don’t remember a car… maybe?'},
+        {t:'closed',q:'Did he leave in a car?',a:'I didn’t see one. Maybe?'}],
+     n:'Left on foot toward the east exit, then out of sight behind a delivery van. No vehicle seen.'}
+  ];
+  var EVENTS=[
+    'Ms. Reyes noticed the man near the white pickup at about 6:40 p.m.',
+    'He looked over both shoulders and tried the passenger door handle.',
+    'He opened the driver’s door with a slim, flat metal tool.',
+    'He took a black duffel bag from the seat.',
+    'He walked east and disappeared behind a delivery van.'
+  ];
+  var $=function(s){return document.querySelector(s)};
+  var r=0, tries=[], firstOpen=0, notes=[], order=[];
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function drawHex(){var h=$('#hex');h.innerHTML='';KEYS.forEach(function(k,i){var li=el('li',i<notes.length?'done':'');var m=el('span','m',i<notes.length?'✓':'?');m.setAttribute('aria-hidden','true');li.appendChild(m);li.appendChild(document.createTextNode(k.toUpperCase()));li.setAttribute('aria-label',k+(i<notes.length?': collected':': not yet collected'));h.appendChild(li)})}
+  function drawNotes(){var n=$('#notes');n.innerHTML='';if(!notes.length){n.appendChild(el('p','meta','Your notes will build here as you collect facts.'));return}var ul=el('ul');notes.forEach(function(x,i){var li=el('li');li.appendChild(el('strong',null,KEYS[i].toUpperCase()+': '));li.appendChild(document.createTextNode(x));ul.appendChild(li)});n.appendChild(ul)}
+  function focusHead(){var h=$('#roundArea h2');if(h){h.setAttribute('tabindex','-1');h.focus()}}
+  function showRound(){
+    var R=ROUNDS[r], a=$('#roundArea'); a.innerHTML=''; tries[r]=tries[r]||0;
+    var h=el('h2',null,'Round '+(r+1)+' of 6: '+R.k.toUpperCase());a.appendChild(h);
+    a.appendChild(el('p',null,R.goal+' Choose the question you would ask.'));
+    var opts=el('div');opts.id='opts';
+    shuffle(R.o).forEach(function(o){var b=el('button','qbtn');b.type='button';var s=el('span',null,'“'+o.q+'”');b.appendChild(s);b.addEventListener('click',function(){pick(o,b)});opts.appendChild(b)});
+    a.appendChild(opts);
+    var w=el('div','bubble');w.id='witness';w.hidden=true;a.appendChild(w);
+    var f=el('div');f.id='fb';a.appendChild(f);
+    var nx=el('button',null,r<5?'Next round':'Continue to the report');nx.type='button';nx.id='next';nx.hidden=true;nx.addEventListener('click',function(){r++;if(r<6)showRound();else showOrder()});a.appendChild(nx);
+    focusHead();
+  }
+  function pick(o,btn){
+    var R=ROUNDS[r]; tries[r]++;
+    var w=$('#witness');w.hidden=false;w.innerHTML='';w.appendChild(el('strong',null,'Ms. Reyes: '));w.appendChild(document.createTextNode('“'+o.a+'”'));
+    var f=$('#fb');f.innerHTML='';
+    var good=o.t==='open';
+    f.className='fb '+(good?'ok':'no');
+    var lab=el('span','lab',(good?'✓ Good question. ':'✗ Try again. ')+IC[o.t]+' '+TL[o.t]);f.appendChild(lab);
+    f.appendChild(el('p',null,GEN[o.t]));
+    if(good){
+      if(tries[r]===1)firstOpen++;
+      notes.push(R.n);drawHex();drawNotes();
+      Array.prototype.forEach.call(document.querySelectorAll('.qbtn'),function(b){b.disabled=true});btn.classList.add('right');
+      f.appendChild(el('p',null,'Added to your notes under '+R.k.toUpperCase()+'.'));
+      $('#next').hidden=false;$('#next').focus();
+    }else{btn.disabled=true;f.appendChild(el('p','meta','That option is now disabled. Choose a different question.'))}
+  }
+  function showOrder(){
+    var a=$('#roundArea');a.innerHTML='';
+    a.appendChild(el('h2',null,'Build the narrative: put the events in order'));
+    a.appendChild(el('p',null,'Reports present events in chronological order. Use the Move up and Move down buttons to arrange what Ms. Reyes saw from first to last.'));
+    do{order=shuffle(EVENTS.map(function(_,i){return i}))}while(order.every(function(v,i){return v===i}));
+    var ul=el('ol','ord');ul.id='ord';a.appendChild(ul);drawOrder();
+    var chk=el('button',null,'Check order');chk.type='button';chk.addEventListener('click',checkOrder);a.appendChild(chk);
+    var f=el('div');f.id='fb';a.appendChild(f);focusHead();
+  }
+  function drawOrder(focusIdx,dir){
+    var ul=$('#ord');ul.innerHTML='';
+    order.forEach(function(ei,pos){
+      var li=el('li');li.appendChild(el('span',null,(pos+1)+'.'));li.appendChild(el('span','t',EVENTS[ei]));
+      var up=el('button','secondary','▲');up.type='button';up.setAttribute('aria-label','Move up: '+EVENTS[ei]);up.disabled=pos===0;
+      var dn=el('button','secondary','▼');dn.type='button';dn.setAttribute('aria-label','Move down: '+EVENTS[ei]);dn.disabled=pos===order.length-1;
+      up.addEventListener('click',function(){mv(pos,-1,'u')});dn.addEventListener('click',function(){mv(pos,1,'d')});
+      li.appendChild(up);li.appendChild(dn);ul.appendChild(li);
+    });
+    if(focusIdx!=null){var items=ul.querySelectorAll('li');var tgt=items[focusIdx];var btns=tgt.querySelectorAll('button');var b=btns[dir==='u'?0:1];if(b.disabled)b=btns[dir==='u'?1:0];b.focus()}
+  }
+  function mv(p,d,dir){var q=p+d;var t=order[p];order[p]=order[q];order[q]=t;drawOrder(q,dir);$('#fb').innerHTML='';$('#fb').className=''}
+  function checkOrder(){
+    var f=$('#fb');f.innerHTML='';var ok=order.every(function(v,i){return v===i});
+    if(ok){finish();return}
+    f.className='fb no';f.appendChild(el('span','lab','✗ Not quite.'));
+    var wrong=order.filter(function(v,i){return v!==i}).length;
+    f.appendChild(el('p',null,wrong+' events are out of place. Ask yourself: what had to happen first before the next thing could happen?'));
+  }
+  function finish(){
+    var a=$('#roundArea');a.innerHTML='';
+    a.appendChild(el('h2',null,'Interview complete'));
+    var pct=firstOpen+' of 6';
+    var s=el('div','fb ok');s.appendChild(el('span','lab','✓ You asked an open-ended question on your first try in '+pct+' rounds.'));
+    s.appendChild(el('p',null,firstOpen===6?'Excellent. Every question invited the witness to describe what she saw.':'Notice how closed and leading questions gave you less information, or information you could not rely on.'));a.appendChild(s);
+    a.appendChild(el('h3',null,'Your report narrative'));
+    var b=el('div','bubble');
+    b.appendChild(el('p',null,'At approximately 6:40 p.m., Ms. Reyes, standing near the cart return by row C, saw a male about six feet tall, wearing a gray hooded sweatshirt, dark jeans, and a red backpack, near a white pickup truck about 40 feet away. She did not see his face. He looked over both shoulders and tried the passenger door handle. He then opened the driver’s door with a slim, flat metal tool, took a black duffel bag from the seat, and walked east toward the exit. He disappeared behind a delivery van. Ms. Reyes did not see a vehicle.'));a.appendChild(b);
+    a.appendChild(el('h3',null,'Why this narrative works'));
+    var ul=el('ul','check');['Chronological order: events appear in the order they happened.','5 W’s and 1 H: who, what, when, where, why (what she observed), and how he left are all covered.','Past tense and active voice: “He opened,” “He took.”','No opinions or guesses: “seemed shady” and “probably casing the lot” stayed out because they are not observable facts.','No hearsay or leading wording: details came from the witness, not from your suggestions.'].forEach(function(t){ul.appendChild(el('li',null,'✓ '+t))});a.appendChild(ul);
+    var rs=el('button','secondary','Start over');rs.type='button';rs.addEventListener('click',reset);a.appendChild(rs);focusHead();
+  }
+  function reset(){r=0;tries=[];firstOpen=0;notes=[];drawHex();drawNotes();showRound()}
+  drawHex();drawNotes();showRound();
+})();
+</script>
+</body>
+</html>

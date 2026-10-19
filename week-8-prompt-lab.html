@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 8 Interactive: Prompt Lab</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:#1d1d1d;background:#fff;line-height:1.55;font-size:1rem}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px 36px}
+.hero{background:linear-gradient(90deg,#d34147 30%,#892a36 60%,#5b262b 100%);color:#fff;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-radius:0 0 22px 22px}
+.hero svg{flex:0 0 auto}
+.hero h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff}
+.hero p{margin:6px 0 0;color:#fff;max-width:640px}
+.tag{display:inline-block;background:#000;color:#fff;border-radius:10px;padding:2px 12px;font-weight:700;font-size:.85rem;margin-bottom:6px}
+.card{background:#edebe8;border-radius:22px;padding:16px;margin:18px 0}
+.inner{background:#fff;border-radius:16px;padding:18px;margin:0 0 14px}
+.inner:last-child{margin-bottom:0}
+.rule{width:100px;height:6px;background:#d34147;border-radius:5px;margin:0 0 10px}
+h2{margin:0 0 8px;font-size:1.35rem;line-height:1.25}
+h3{margin:0 0 6px;font-size:1.1rem}
+p{margin:0 0 10px}
+button{font:inherit;cursor:pointer;min-height:44px;padding:8px 18px;border-radius:12px;border:2px solid #a8353a;background:#a8353a;color:#fff;font-weight:600}
+button:hover:not(:disabled){background:#892a36;border-color:#892a36}
+button.secondary{background:#fff;color:#a8353a}
+button.secondary:hover:not(:disabled){background:#f6e9ea;color:#892a36}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid #000;outline-offset:2px;box-shadow:0 0 0 6px #fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fb{border-left:6px solid #1f4e8a;border-radius:12px;padding:12px 14px;margin-top:12px;background:#e8f0fb}
+.fb.ok{border-color:#1d6b3a;background:#e8f5ec}
+.fb.no{border-color:#8a1f25;background:#fbeaea}
+.fb p:last-child{margin-bottom:0}
+.fb .lab{font-weight:700;display:block;margin-bottom:2px}
+.bubble{position:relative;background:#fff;border:2px solid #5b262b;border-radius:16px;padding:12px 16px;margin:10px 0}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700;border:2px solid #1d1d1d;background:#fff;color:#1d1d1d}
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0;padding:0;list-style:none}
+.progress li{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:3px solid #a8353a;background:#fff;color:#a8353a}
+.progress li.done{background:#a8353a;color:#fff}
+.progress li.cur{box-shadow:0 0 0 3px #000}
+.meta{color:#4a4a4a;font-size:.95rem}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";display:inline-block;width:1.3em;color:#a8353a}
+details[open] summary::before{content:"▾"}
+.footnote{font-size:.9rem;color:#4a4a4a;margin-top:18px}
+@media (max-width:600px){.hero h1{font-size:1.4rem}.inner{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.cols{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+@media (min-width:761px){.cols>.inner:last-child{align-self:start;position:sticky;top:10px}}
+.ing{display:flex;gap:12px;align-items:flex-start;border:3px solid #d4cfc7;border-radius:14px;padding:10px 12px;margin-bottom:10px;background:#fff;cursor:pointer;min-height:44px}
+.ing:hover{background:#faf6f6}
+.ing input{width:24px;height:24px;margin-top:2px;flex:0 0 auto;accent-color:#a8353a}
+.ing.on{border-color:#a8353a;background:#fbf1f1}
+.ing.risk.on{border-color:#8a1f25;background:#fbeaea}
+.ing .k{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.05em;background:#000;color:#fff;border-radius:6px;padding:0 7px;margin-right:6px}
+.ing.risk .k{background:#8a1f25}
+.ing small{display:block;color:#4a4a4a}
+.prompt{background:#1d1d1d;color:#f5f5f5;border-radius:12px;padding:14px;font-family:Consolas,Menlo,monospace;font-size:.92rem;white-space:pre-wrap;word-break:break-word;min-height:90px}
+.prompt .rk{background:#8a1f25;color:#fff;padding:0 3px;border-radius:3px}
+.notesbox{background:#fffbe6;border:2px solid #d9c36a;border-radius:12px;padding:10px 14px}
+.out{background:#fff;border:2px solid #5b262b;border-radius:12px;padding:12px 14px}
+.out mark{background:#ffd0d0;color:#1d1d1d;border-bottom:3px solid #8a1f25;padding:0 2px}
+.out ol{margin:6px 0 0 18px;padding:0}
+.gauge{text-align:center}
+.gauge svg{max-width:300px;width:100%}
+#needle{transform-origin:120px 120px;transition:transform .5s ease}
+.lvl{font-size:1.2rem;font-weight:800;margin:0}
+.ck label{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:6px 4px;cursor:pointer}
+.ck input{width:24px;height:24px;flex:0 0 auto;margin-top:2px;accent-color:#a8353a}
+textarea{width:100%;min-height:110px;font:inherit;padding:10px;border:2px solid #5b262b;border-radius:10px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="A beaker with a spark">
+    <circle cx="42" cy="42" r="40" fill="#fff" opacity=".18"/>
+    <path d="M32 14h20v4h-3v16l14 24a7 7 0 0 1-6 11H27a7 7 0 0 1-6-11l14-24V18h-3z" fill="#fff"/>
+    <path d="M30 52h24l5 9a3 3 0 0 1-3 5H28a3 3 0 0 1-3-5z" fill="#a8353a"/>
+    <path d="M66 14l2.6 6 6 2.6-6 2.6L66 31l-2.6-5.8-6-2.6 6-2.6z" fill="#fff"/>
+  </svg>
+  <div>
+    <span class="tag">Week 8 Interactive</span>
+    <h1>Prompt Lab: Strategic Questions</h1>
+    <p>The questions you ask shape the answers you get, whether you are interviewing a witness or prompting an AI tool. Build a prompt and see what changes.</p>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="card" aria-labelledby="mis">
+    <div class="inner">
+      <div class="rule"></div>
+      <h2 id="mis">Your task</h2>
+      <p>Back in Week 2 you interviewed Ms. Reyes about a pickup truck break-in. You now want an AI tool to help turn your field notes into a draft summary for your supervisor. Choose the ingredients for your prompt. The gauge and sample output respond to your choices.</p>
+      <details open>
+        <summary>Your field notes (fictional)</summary>
+        <div class="notesbox" id="fieldnotes">
+          <ul style="margin:0;padding-left:20px">
+            <li>6:40 p.m.: Witness (Ms. Reyes) saw tall male, gray hooded sweatshirt, dark jeans, red backpack, near white pickup, row E.</li>
+            <li>Opened driver’s door with slim, flat metal tool. Took black duffel bag from seat.</li>
+            <li>Walked east, lost sight behind delivery van. Face not seen. No vehicle seen.</li>
+            <li>Truck owner not yet contacted.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="bld">
+    <div class="cols">
+      <div class="inner">
+        <h2 id="bld">Prompt ingredients</h2>
+        <p class="meta">Select any ingredients you want to include. Some choices carry risk.</p>
+        <div id="ings"></div>
+      </div>
+      <div class="inner">
+        <div class="gauge" aria-live="polite">
+          <svg viewBox="0 0 240 140" role="img" aria-label="Prompt strength gauge" id="gsvg">
+            <path d="M20 120A100 100 0 0 1 74.6 30.9" fill="none" stroke="#8a1f25" stroke-width="22"/>
+            <path d="M74.6 30.9 A100 100 0 0 1 178.8 39.1" fill="none" stroke="#b07a00" stroke-width="22"/>
+            <path d="M178.8 39.1 A100 100 0 0 1 220 120" fill="none" stroke="#1d6b3a" stroke-width="22"/>
+            <g id="needle"><line x1="120" y1="120" x2="120" y2="36" stroke="#1d1d1d" stroke-width="5" stroke-linecap="round"/></g>
+            <circle cx="120" cy="120" r="9" fill="#1d1d1d"/>
+            <text x="20" y="138" font-size="11" font-family="Arial" fill="#1d1d1d">Vague</text>
+            <text x="220" y="138" font-size="11" font-family="Arial" fill="#1d1d1d" text-anchor="end">Strong</text>
+          </svg>
+          <p class="lvl" id="lvl">Vague</p>
+          <p class="meta" id="lvlnote" style="margin:0"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="inner">
+      <h2>Your prompt</h2>
+      <div class="prompt" id="prompt" aria-live="polite"></div>
+    </div>
+
+    <div class="inner">
+      <h2>Sample output <span class="pill">Simulated</span></h2>
+      <p class="meta">This is a simulated illustration of how output quality tends to change. Real AI tools vary, and you must always verify output against your notes.</p>
+      <div class="out" id="out" aria-live="polite"></div>
+      <div id="warn" aria-live="polite"></div>
+    </div>
+
+    <div class="inner">
+      <h2>Before you send</h2>
+      <p>Check each safeguard.</p>
+      <div class="ck" id="ck"></div>
+      <div id="ready" aria-live="polite" style="margin-top:8px"></div>
+    </div>
+
+    <div class="inner">
+      <h2>Reflect for Discussion 8</h2>
+      <p><label for="refl">Choose one concept from this course and describe how you will apply it in a new setting.</label></p>
+      <textarea id="refl"></textarea>
+      <p style="margin-top:8px"><button type="button" id="copy" class="secondary">Copy my reflection</button> <span class="meta" id="copied" aria-live="polite"></span></p>
+    </div>
+  </section>
+  <p class="footnote">Interactive for CRJU 380, Week 8. Scenario is fictional. Follow your university and agency policies on AI use, and never enter sensitive personal information into a public AI tool.</p>
+</main>
+
+<script>
+(function(){
+  var ING=[
+    {id:'task',k:'TASK',t:'Summarize the field notes below into a one-paragraph incident summary.',d:'Tells the tool what you want. Required.',pts:2,req:true},
+    {id:'role',k:'ROLE',t:'Act as a report-writing assistant for a patrol officer.',d:'Sets the purpose and perspective.',pts:1},
+    {id:'facts',k:'FACTS',t:'Use only the facts in the notes below.',d:'Limits the tool to what you actually know.',pts:3},
+    {id:'format',k:'FORMAT',t:'Write for a supervisor in past tense and active voice, in chronological order, in under 120 words.',d:'Defines audience, style, and length.',pts:2},
+    {id:'tone',k:'TONE',t:'Use a neutral, objective tone with no opinions or speculation.',d:'Matches report-writing standards.',pts:1},
+    {id:'gaps',k:'GAPS',t:'If a detail is missing or unclear, list it under “Needs verification” instead of guessing.',d:'Asks the tool to show what it does not know.',pts:2},
+    {id:'priv',k:'RISK',t:'Include the witness’s full name, home address, and phone number so the summary is complete.',d:'Adds personal details to the prompt.',risk:true,warn:'Privacy risk: do not put sensitive personal information into a public AI tool. Names, addresses, and phone numbers can be stored or used beyond your control, and agency or university policy may prohibit it.'},
+    {id:'drama',k:'RISK',t:'Make the summary more dramatic and compelling.',d:'Asks for style over accuracy.',risk:true,warn:'Truthfulness risk: asking for “dramatic” pushes a tool to embellish. A report must contain only observed and verified facts.'}
+  ];
+  var MAXP=ING.filter(function(x){return !x.risk}).reduce(function(a,b){return a+b.pts},0);
+  var $=function(s){return document.querySelector(s)};
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  var on={task:true};
+  var NOTES='Field notes:\n- 6:40 p.m.: Witness (Ms. Reyes) saw tall male, gray hooded sweatshirt, dark jeans, red backpack, near white pickup, row E.\n- Opened driver’s door with slim, flat metal tool. Took black duffel bag from seat.\n- Walked east, lost sight behind delivery van. Face not seen. No vehicle seen.\n- Truck owner not yet contacted.';
+
+  function build(){
+    var box=$('#ings');box.innerHTML='';
+    ING.forEach(function(x){
+      var lb=el('label','ing'+(x.risk?' risk':'')+(on[x.id]?' on':''));
+      var cb=el('input');cb.type='checkbox';cb.checked=!!on[x.id];if(x.req){cb.disabled=true;cb.checked=true}
+      cb.addEventListener('change',function(){on[x.id]=cb.checked;update()});
+      var tx=el('span');var h=el('span');h.appendChild(el('span','k',x.k));h.appendChild(document.createTextNode(x.t));tx.appendChild(h);tx.appendChild(el('small',null,x.d+(x.risk?' (risky choice)':'')));
+      lb.appendChild(cb);lb.appendChild(tx);box.appendChild(lb);
+    });
+    var ck=$('#ck');ck.innerHTML='';
+    ['I removed names, addresses, and other sensitive identifiers.','I will check every statement in the output against my field notes.','I will follow my university or agency AI policy and disclose that I used AI.','I understand that I am responsible for the final report, not the tool.'].forEach(function(t,i){
+      var l=el('label');var c=el('input');c.type='checkbox';c.addEventListener('change',ready);l.appendChild(c);l.appendChild(el('span',null,t));ck.appendChild(l)});
+  }
+  function score(){
+    var g=ING.filter(function(x){return !x.risk&&on[x.id]}).reduce(function(a,b){return a+b.pts},0);
+    var traps=ING.filter(function(x){return x.risk&&on[x.id]}).length;
+    var pct=Math.max(0,Math.round(g/MAXP*100)-traps*25);
+    return {pct:pct,traps:traps};
+  }
+  function update(){
+    Array.prototype.forEach.call(document.querySelectorAll('.ing'),function(l,i){l.classList.toggle('on',!!on[ING[i].id])});
+    var s=score();
+    var lvl=s.pct<35?0:(s.pct<70?1:2);
+    $('#needle').style.transform='rotate('+(-90+s.pct*1.8)+'deg)';
+    var names=['Vague','Getting there','Strong'];
+    $('#lvl').textContent=names[lvl]+' ('+s.pct+'%)';
+    $('#lvlnote').textContent=lvl===0?'The tool has to guess your audience, limits, and facts.':lvl===1?'Better. Look for what is still missing.':(s.traps?'Strong ingredients, but a risky choice is holding this prompt back.':'Specific, bounded, and honest about what is unknown.');
+    $('#gsvg').setAttribute('aria-label','Prompt strength gauge: '+names[lvl]+', '+s.pct+' percent');
+    /* prompt text */
+    var p=$('#prompt');p.innerHTML='';
+    var order=['role','task','facts','format','tone','gaps','priv','drama'];
+    var lines=[];order.forEach(function(id){if(on[id]){var x=ING.filter(function(y){return y.id===id})[0];lines.push({t:x.t,r:!!x.risk})}});
+    lines.forEach(function(l){var d=document.createElement('div');if(l.r){var m=el('span','rk',l.t);d.appendChild(m)}else d.textContent=l.t;p.appendChild(d)});
+    p.appendChild(document.createElement('br'));p.appendChild(document.createTextNode(NOTES));
+    /* simulated output */
+    var o=$('#out');o.innerHTML='';
+    function para(parts){var d=el('p');parts.forEach(function(x){if(typeof x==='string')d.appendChild(document.createTextNode(x));else d.appendChild(el('mark',null,x.m))});return d}
+    if(on.drama)o.appendChild(para([{m:'In a shocking and brazen act of daylight crime,'},' ']));
+    var extra=null;
+    if(lvl===0){
+      o.appendChild(para(['A ',{m:'suspicious'},' man in a hoodie broke into a truck in the parking lot and ',{m:'stole some valuable items'},'. He is ',{m:'probably a repeat offender'},' and ',{m:'fled in a dark car'},'.']));
+      extra=['“suspicious” is an opinion.','“valuable items” is not in the notes (a black duffel bag was taken; contents unknown).','“repeat offender” has no basis in the notes.','“dark car” is not in the notes (no vehicle was seen).'];
+    }else if(lvl===1){
+      o.appendChild(para(['At about 6:40 p.m., a man in a gray hooded sweatshirt opened a white pickup truck and took a black bag. He left on foot toward the east. ',{m:'The suspect appeared nervous.'}]));
+      extra=['“appeared nervous” is not in the notes.','Missing: the witness did not see his face, and several unknowns (such as the truck owner) are not flagged.'];
+    }else{
+      o.appendChild(para(['At approximately 6:40 p.m., Ms. Reyes saw a male about six feet tall, wearing a gray hooded sweatshirt, dark jeans, and a red backpack, open the driver’s door of a white pickup truck with a slim, flat metal tool and take a black duffel bag. He walked east and went out of her sight behind a delivery van. She did not see his face or a vehicle.']));
+      if(on.gaps){var d=el('p');d.appendChild(el('strong',null,'Needs verification: '));d.appendChild(document.createTextNode('truck owner not yet contacted; contents of the duffel bag unknown; exact time of the incident not confirmed.'));o.appendChild(d)}
+      else extra=['Good detail, but the tool was not asked to flag unknowns, so open questions (such as the truck owner) are not listed.'];
+    }
+    if(extra){var h=el('p',null,'What to check:');h.style.margin='8px 0 0';h.style.fontWeight='700';o.appendChild(h);var ol=el('ol');extra.forEach(function(t){ol.appendChild(el('li',null,t))});o.appendChild(ol)}
+    var w=$('#warn');w.innerHTML='';
+    ING.forEach(function(x){if(x.risk&&on[x.id]){var f=el('div','fb no');f.appendChild(el('span','lab','⚠ '+(x.id==='priv'?'Privacy risk':'Truthfulness risk')));f.appendChild(el('p',null,x.warn));w.appendChild(f)}});
+    ready();
+  }
+  function ready(){
+    var all=Array.prototype.every.call(document.querySelectorAll('#ck input'),function(c){return c.checked});
+    var s=score();var r=$('#ready');r.innerHTML='';
+    var f=el('div','fb '+(all&&s.pct>=70&&!s.traps?'ok':'info'));
+    if(all&&s.pct>=70&&!s.traps){f.appendChild(el('span','lab','✓ Ready to send'));f.appendChild(el('p',null,'Your prompt is specific and bounded, and you have a plan to verify the output.'))}
+    else{f.appendChild(el('span','lab','Not ready yet'));var m=[];if(s.pct<70)m.push('strengthen the prompt');if(s.traps)m.push('remove the risky ingredient'+(s.traps>1?'s':''));if(!all)m.push('complete all four safeguards');f.appendChild(el('p',null,'To get ready: '+m.join(', ')+'.'))}
+    r.appendChild(f);
+  }
+  $('#copy').addEventListener('click',function(){
+    var t=$('#refl'),c=$('#copied');
+    function done(){c.textContent='Copied. Paste it into Discussion 8.'}
+    function fallback(){t.focus();t.select();try{document.execCommand('copy');done()}catch(e){c.textContent='Press Ctrl+C (or Cmd+C) to copy the selected text.'}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(done,fallback)}else fallback();
+  });
+  build();update();
+})();
+</script>
+</body>
+</html>
