@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction to Spiritual Development</title>
+<style>
+:root{
+  --ink:#1b1f23; --muted:#46515c; --bg:#ffffff; --panel:#f3f6f9; --panel-2:#e9eff5;
+  --line:#c5ced8; --ctl:#5f6b77;
+  --primary:#0b4f6c; --primary-hover:#083a50; --on-primary:#ffffff;
+  --accent:#9f1d2a; --gold:#ffcf48;
+  --ok:#14663a; --ok-bg:#e6f4ea; --bad:#8a1c1c; --bad-bg:#fdeaea; --warn:#6b4a00; --warn-bg:#fff6dd;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:100%;-webkit-text-size-adjust:100%;scroll-padding-top:1rem}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:1.125rem;line-height:1.6}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--ink);color:#fff;padding:.75rem 1rem;border-radius:0 0 var(--radius) var(--radius);z-index:100;font-weight:600}
+.skip:focus{top:0}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px var(--gold)}
+h2[tabindex="-1"]:focus{outline:none;box-shadow:none}
+.site{background:var(--primary);color:var(--on-primary);padding:1.5rem 1rem}
+.site .inner,main,.foot{max-width:60rem;margin:0 auto}
+.eyebrow{margin:0 0 .25rem;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+h1{margin:0;font-size:clamp(1.6rem,4vw,2.25rem);line-height:1.2}
+main{padding:1.25rem 1rem 3rem}
+h2{font-size:clamp(1.4rem,3.2vw,1.8rem);line-height:1.25;margin:0 0 1rem;color:var(--primary)}
+h3{font-size:1.25rem;line-height:1.3;margin:1.5rem 0 .5rem}
+p,ul,ol{margin:0 0 1rem}
+p,li{max-width:70ch}
+a{color:#0a4a9e;text-decoration:underline;text-underline-offset:.15em}
+strong{font-weight:700}
+.howto{margin:0 0 1rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.howto summary{cursor:pointer;padding:.75rem 1rem;font-weight:600;min-height:44px}
+.howto div{padding:0 1rem 1rem}
+.progress{margin:0 0 1.25rem}
+.progress-label{margin:0 0 .4rem;font-weight:600}
+.bar{height:.6rem;background:var(--panel-2);border:1px solid var(--ctl);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--primary);width:0}
+.outline{margin:.75rem 0 0;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.outline summary{cursor:pointer;padding:.65rem 1rem;font-weight:600;min-height:44px}
+.outline ol{list-style:none;margin:0;padding:0 .5rem .5rem}
+.outline li{max-width:none;margin:0}
+.outline button{width:100%;text-align:left;background:transparent;border:0;border-radius:8px;padding:.6rem .75rem;min-height:44px;font:inherit;color:var(--ink);cursor:pointer;display:flex;gap:.6rem;align-items:baseline}
+.outline button:hover{background:var(--panel)}
+.outline button[aria-current="step"]{background:var(--panel-2);font-weight:700}
+.outline .num{display:inline-block;min-width:1.6rem;font-weight:700;color:var(--primary)}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.25rem}
+.lead{font-size:1.2rem}
+.callout{border-left:6px solid var(--primary);background:var(--panel);padding:.9rem 1rem;border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0}
+.callout p:last-child{margin-bottom:0}
+.callout.note{border-left-color:var(--accent)}
+.callout h3{margin-top:0}
+.btnrow{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.btn{font:inherit;font-weight:600;min-height:44px;min-width:44px;padding:.6rem 1.1rem;border-radius:8px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);cursor:pointer}
+.btn:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn.secondary{background:#fff;color:var(--primary)}
+.btn.secondary:hover{background:var(--panel)}
+.btn[hidden]{display:none}
+.btn[aria-disabled="true"]{background:var(--panel-2);color:#33404b;border-color:var(--ctl);cursor:default}
+.stepbtns{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:1rem 0}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden}
+button.reveal{display:flex;width:100%;justify-content:space-between;align-items:center;gap:.5rem;text-align:left;font:inherit;font-weight:700;padding:.8rem 1rem;min-height:44px;background:var(--panel);border:0;color:var(--ink);cursor:pointer}
+button.reveal:hover{background:var(--panel-2)}
+button.reveal .chev{flex:none;width:1.2rem;height:1.2rem;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg) scale(.6);transition:transform .15s}
+button.reveal[aria-expanded="true"] .chev{transform:rotate(225deg) scale(.6)}
+.reveal-panel{padding:.9rem 1rem;border-top:1px solid var(--line)}
+.reveal-panel[hidden]{display:none}
+.tabs [role="tablist"]{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .75rem}
+.tabs [role="tab"]{font:inherit;font-weight:600;min-height:44px;padding:.5rem 1rem;border:2px solid var(--primary);border-radius:8px;background:#fff;color:var(--primary);cursor:pointer}
+.tabs [role="tab"][aria-selected="true"]{background:var(--primary);color:var(--on-primary)}
+.tabs [role="tabpanel"]{border:1px solid var(--line);border-radius:var(--radius);padding:1rem;background:#fff}
+.tabs [role="tabpanel"][hidden]{display:none}
+.tabs [role="tabpanel"]>:first-child{margin-top:0}
+.tabs [role="tabpanel"]>:last-child{margin-bottom:0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;background:#fff}
+caption{text-align:left;font-weight:700;padding:.5rem 0}
+th,td{border:1px solid var(--ctl);padding:.6rem .75rem;text-align:left;vertical-align:top}
+thead th,tbody th{background:var(--panel-2)}
+.tablewrap{overflow-x:auto}
+fieldset.quiz-q{border:1px solid var(--ctl);border-radius:var(--radius);padding:1rem;margin:1rem 0;min-width:0}
+fieldset.quiz-q legend{font-weight:700;padding:0 .4rem;max-width:100%}
+.opt{display:flex;gap:.6rem;align-items:flex-start;margin:.35rem 0;min-height:44px}
+.opt input{flex:none;width:1.4rem;height:1.4rem;margin:.65rem 0 0;accent-color:var(--primary)}
+.opt label{padding:.5rem 0;cursor:pointer}
+.feedback,.item-fb{margin:.75rem 0 0;font-weight:600}
+.feedback:empty,.item-fb:empty{display:none}
+.fb{padding:.6rem .8rem;border-radius:8px;border:2px solid}
+.fb.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.fb.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.fb.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.fb .ico{font-weight:900;margin-right:.35rem}
+.fb .more{display:block;font-weight:400;color:var(--ink);margin-top:.25rem}
+.sort-list{list-style:none;margin:1rem 0;padding:0;counter-reset:s}
+.sort-item{counter-increment:s;border:1px solid var(--ctl);border-radius:var(--radius);padding:.9rem 1rem;margin:.75rem 0;max-width:none}
+.sort-item label{display:block;font-weight:600;margin-bottom:.5rem}
+.sort-item label::before{content:counter(s) ". "}
+select{font:inherit;min-height:44px;max-width:100%;padding:.4rem .6rem;border:2px solid var(--ctl);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{font:inherit;width:100%;min-height:7rem;padding:.6rem;border:2px solid var(--ctl);border-radius:8px;color:var(--ink);background:#fff}
+.score{margin-top:1rem;font-weight:700}
+.story{border:1px solid var(--line);border-radius:var(--radius);padding:1rem;background:var(--panel);margin:1rem 0}
+.story h3{margin-top:0}
+.beats{list-style:none;margin:0 0 1rem;padding:0;counter-reset:b}
+.beat{counter-increment:b;position:relative;padding:.6rem .8rem .6rem 3rem;margin:.5rem 0;background:#fff;border:1px solid var(--line);border-radius:8px;max-width:none}
+.beat::before{content:counter(b);position:absolute;left:.7rem;top:.55rem;width:1.8rem;height:1.8rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;text-align:center;line-height:1.8rem;font-size:.95rem}
+.beat[hidden]{display:none}
+.quote{font-style:italic}
+.pill{display:inline-block;padding:.15rem .7rem;border-radius:99px;border:2px solid var(--primary);color:var(--primary);font-weight:700;font-size:.95rem;margin:0 .4rem .4rem 0;background:#fff}
+.vis{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:1rem 0}
+.vis svg{flex:0 1 22rem;max-width:100%;height:auto}
+.vis .txt{flex:1 1 14rem}
+figure{margin:1rem 0}
+figcaption{font-size:1rem;color:var(--muted);margin-top:.35rem}
+.chart{max-width:34rem}
+.chart svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.foot{padding:1rem;color:var(--muted);font-size:.95rem}
+.two{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+dl.terms dt{font-weight:700;margin-top:.75rem}
+dl.terms dd{margin:0 0 .25rem}
+select:disabled{color:var(--ink);opacity:1;background:var(--panel);cursor:default}
+@media (max-width:30em){body{font-size:1.05rem}.step{padding:1rem}th,td{padding:.45rem .5rem;font-size:1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (forced-colors:active){.btn,button.reveal,.tabs [role="tab"]{border:2px solid ButtonText}.tabs [role="tab"][aria-selected="true"]{outline:3px solid Highlight}.bar span{background:Highlight}}
+@media print{.skip,.howto,.progress,.outline,.stepbtns,.btnrow,.story button{display:none!important}.step{display:block!important;border:0;page-break-inside:avoid}.reveal-panel,.beat,[role="tabpanel"]{display:block!important}.site{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<a class="skip" href="#lesson">Skip to lesson content</a>
+<header class="site"><div class="inner">
+<p class="eyebrow">Interactive lesson</p>
+<h1>Introduction to Spiritual Development</h1>
+</div></header>
+<main id="lesson" tabindex="-1">
+<details class="howto"><summary>How to use this lesson</summary><div>
+<p>Move through the lesson with the <strong>Previous</strong> and <strong>Next</strong> buttons, or jump to any step from the <strong>Lesson outline</strong>. There is no audio, no timer, and nothing moves on its own, so you can go at your own pace.</p>
+<p>Everything works with a keyboard: use <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move, <kbd>Enter</kbd> or <kbd>Space</kbd> to select, and the arrow keys to switch between tabs. The page works with screen readers, browser zoom, and high-contrast settings.</p>
+</div></details>
+<div class="progress">
+<p class="progress-label" id="progress-label">Step 1 of 9</p>
+<div class="bar" aria-hidden="true"><span id="progress-fill"></span></div>
+<details class="outline"><summary>Lesson outline</summary>
+<nav aria-label="Lesson outline"><ol id="outline">
+<li><button type="button"><span class="num" aria-hidden="true">1</span><span>Stages of Faith: overview<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">2</span><span>Primal Faith<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">3</span><span>Stage 1: Intuitive-Projective<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">4</span><span>Stage 2: Mythic-Literal<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">5</span><span>Stage 3: Synthetic-Conventional<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">6</span><span>Stage 4: Individuative-Reflective<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">7</span><span>Stage 5: Conjunctive<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">8</span><span>Stage 6: Universalizing<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">9</span><span>Review and check<span class="flag sr-only"></span></span></button></li>
+</ol></nav></details>
+</div>
+<section class="step" id="step-1" data-title="Stages of Faith: overview" aria-labelledby="h-1">
+<h2 id="h-1" tabindex="-1">Stages of Faith: overview</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain with a dotted path of seven numbered points, from 0 at the base (primal faith) up to 6 near the summit (universalizing), where a flag flies." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p class="lead">In this module we will explore <strong>James W. Fowler's Stages of Faith</strong>.</p><p>His theory posits that people experience <strong>six different stages</strong> as their faith matures.</p></div></div><p>This theory can be applied to traditional faiths such as Judaism, Islam, and Christianity, as well as alternative worldviews and spiritualities.</p><p>Think of the stages as a climb up a mountain. Before Stage 1, Fowler describes a pre-stage called <strong>primal faith</strong> in infancy, shown as point 0 at the base.</p><div class="callout note"><h3>How to read the stages</h3><p>The stages describe <em>how</em> a person arrives at and applies beliefs, not <em>what</em> they believe. They are not a scale for measuring a person's worth, and people can find wholeness and integrity at any stage.</p></div><h3>Choose where to begin</h3><p>Move through the stages in order with the <strong>Next</strong> button, or jump to one:</p><ul style="list-style:none;padding:0"><li><button type="button" class="btn secondary" data-goto="1" style="margin:.15rem 0">Primal Faith</button></li><li><button type="button" class="btn secondary" data-goto="2" style="margin:.15rem 0">Stage 1: Intuitive-Projective</button></li><li><button type="button" class="btn secondary" data-goto="3" style="margin:.15rem 0">Stage 2: Mythic-Literal</button></li><li><button type="button" class="btn secondary" data-goto="4" style="margin:.15rem 0">Stage 3: Synthetic-Conventional</button></li><li><button type="button" class="btn secondary" data-goto="5" style="margin:.15rem 0">Stage 4: Individuative-Reflective</button></li><li><button type="button" class="btn secondary" data-goto="6" style="margin:.15rem 0">Stage 5: Conjunctive</button></li><li><button type="button" class="btn secondary" data-goto="7" style="margin:.15rem 0">Stage 6: Universalizing</button></li></ul>
+</section>
+<section class="step" id="step-2" data-title="Primal Faith" aria-labelledby="h-2">
+<h2 id="h-2" tabindex="-1">Primal Faith</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 0: Primal Faith. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="50" y="188" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Pre-stage (infancy)</span></p><p class="lead">Faith begins in infancy, before words, as a feeling rather than an idea.</p></div></div><h3>Key ideas</h3><ul><li>In this pre-stage, the seeds of <strong>trust, courage, hope, and love</strong> are planted.</li><li>Trust grows when caregivers respond reliably to a child's needs.</li><li>There are no beliefs to explain yet. The child simply experiences whether the world feels safe.</li></ul><div class="story" data-story><h3>A family in a cave home</h3><ol class="beats"><li class="beat">A young child in a cave home babbles happily: “goo goo ga ga.”</li><li class="beat">The child cries out.</li><li class="beat">A caregiver soothes the child: “It's okay.”</li><li class="beat">A caregiver says, “He's back,” as another family member returns, and the child is safe and cared for again.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div><div class="callout"><p>When comfort arrives reliably, a child learns that the world can be trusted. That early trust becomes the foundation for later faith.</p></div>
+</section>
+<section class="step" id="step-3" data-title="Stage 1: Intuitive-Projective" aria-labelledby="h-3">
+<h2 id="h-3" tabindex="-1">Stage 1: Intuitive-Projective</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 1: Intuitive-Projective. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="95" y="166" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 1 of 6</span></p><p class="lead">As thought and language emerge, imagination and feeling shape a child's first ideas about faith.</p></div></div><h3>Key ideas</h3><ul><li>Faith is shaped by <strong>feelings and perception</strong>: what a child sees, hears, and senses.</li><li>Children begin to develop <strong>moral emotions and standards</strong>.</li><li>Children take in the stories, symbols, and practices of the adults and families around them.</li></ul><div class="story" data-story><h3>Story time</h3><ol class="beats"><li class="beat">A group of children sit together, listening to a story. Their imaginations carry them into it.</li><li class="beat"><strong>Feelings + perception:</strong> what the children feel and notice shapes what they come to believe.</li><li class="beat"><strong>Moral emotions + standards:</strong> the children begin to feel what is fair, kind, or wrong.</li><li class="beat">They also watch families and adults pray, read, and worship in many different traditions, and they absorb what they see.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div>
+</section>
+<section class="step" id="step-4" data-title="Stage 2: Mythic-Literal" aria-labelledby="h-4">
+<h2 id="h-4" tabindex="-1">Stage 2: Mythic-Literal</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 2: Mythic-Literal. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="115" y="138" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 2 of 6</span></p><p class="lead">Children adopt the beliefs, moral rules, and attitudes of their community and understand them literally.</p></div></div><h3>Key ideas</h3><ul><li>Stories and myths are used to explain experience.</li><li>The world is seen as based on <strong>fairness</strong>.</li><li>God may be pictured as having personal, physical, bodily characteristics.</li><li>This stage typically appears in the elementary-school years, although some adults remain at this stage.</li></ul><div class="story" data-story><h3>A day at school</h3><ol class="beats"><li class="beat">A child with a backpack arrives in a classroom.</li><li class="beat">A picture appears of a unicorn riding a bicycle.</li><li class="beat">A teacher shows another picture: a creature that is half cat and half fish.</li><li class="beat">At this stage, children tend to take stories like these literally, and they use stories and myths to make sense of the world.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div><div class="grid" id="grp60"><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv59"><span>Think about it</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv59" hidden><p>Picture a creature that is half cat and half fish. How might a child at the Mythic-Literal stage understand a story about it?</p><p><strong>Likely answer:</strong> literally, as a real creature exactly as described. Children at this stage take stories, symbols, and rules at face value.</p></div></div></div>
+</section>
+<section class="step" id="step-5" data-title="Stage 3: Synthetic-Conventional" aria-labelledby="h-5">
+<h2 id="h-5" tabindex="-1">Stage 3: Synthetic-Conventional</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 3: Synthetic-Conventional. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="150" y="124" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 3 of 6</span></p><p class="lead">Most people move to this stage at adolescence. Faith becomes a shared, unexamined package that holds a community together.</p></div></div><h3>Key ideas</h3><ul><li>Authority is <strong>outside the self</strong>: custom and tradition, friends and family, and holders of official leadership roles.</li><li>Faith is felt deeply and defended, but it is not analyzed. It is “just there, like water for fish.”</li><li>Faith is seen as a <strong>total package</strong> that everyone shares.</li><li>Symbols and rituals are themselves sacred.</li><li>It is a conformist, “don't-rock-the-boat” stage, and many adults remain in it.</li></ul><div class="story" data-story><h3>Finding a place to belong</h3><ol class="beats"><li class="beat">An adolescent begins thinking about how they experience life, and how the pieces of their world fit together.</li><li class="beat">Their faith comes from family and community. Authority sits outside themselves, in custom, tradition, and trusted leaders.</li><li class="beat">Faith feels like one complete package that everyone shares. It is not taken apart or questioned.</li><li class="beat">The symbols of the tradition, such as a cross, candles, or a sacred scroll, are felt to be sacred in themselves.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div>
+</section>
+<section class="step" id="step-6" data-title="Stage 4: Individuative-Reflective" aria-labelledby="h-6">
+<h2 id="h-6" tabindex="-1">Stage 4: Individuative-Reflective</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 4: Individuative-Reflective. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="160" y="91" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 4 of 6</span></p><p class="lead">A person begins to examine the beliefs they inherited and to take responsibility for their own.</p></div></div><h3>Key ideas</h3><ul><li>Often triggered by leaving home (emotionally or physically), reaching midlife, or a big change in a relationship or job.</li><li>Authority moves <strong>inside the self</strong>. The person no longer lets other people define their identity.</li><li>Meanings and values are examined with <strong>critical thinking</strong>.</li><li>The meaning of a symbol is separated from the symbol itself.</li><li>The change can feel frightening, disorienting, and painful, and it can last several years.</li></ul><div class="story" data-story><h3>Questions arise</h3><ol class="beats"><li class="beat">A young adult realizes she has questions: “Why do I believe what I believe?”</li><li class="beat">She works through the maze of beliefs herself, no longer relying only on outside authorities.</li><li class="beat">She examines ideas, documents, and practices one at a time, using critical thinking.</li><li class="beat">Friends and family who have not felt any need to change may call this “backsliding,” even though it can be part of growth.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div>
+</section>
+<section class="step" id="step-7" data-title="Stage 5: Conjunctive" aria-labelledby="h-7">
+<h2 id="h-7" tabindex="-1">Stage 5: Conjunctive</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 5: Conjunctive. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="185" y="68" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="190" y="37" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 5 of 6</span></p><p class="lead">A person puts faith back together with a wider view, comfortable with complexity and open to other traditions.</p></div></div><h3>Key ideas</h3><ul><li>This move rarely happens before midlife.</li><li>The person sees how things are <strong>interrelated</strong> and can hold both sides, or many sides, of an issue at once.</li><li>Past experiences are reclaimed and reworked.</li><li>Symbols, myths, and rituals are appreciated again, with deeper meaning.</li><li>The person is open to truth in other traditions while staying confident in their own.</li></ul><div class="story" data-story><h3>Putting it back together</h3><ol class="beats"><li class="beat">A person looks at the bigger picture and sees how many parts of life are connected.</li><li class="beat">She revisits her past and sees both sides, or many sides, of important questions.</li><li class="beat">She appreciates the symbols, stories, and rituals of many traditions, including her own.</li><li class="beat">She stays confident in her own tradition while expecting that truth may also be found in others.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div>
+</section>
+<section class="step" id="step-8" data-title="Stage 6: Universalizing" aria-labelledby="h-8">
+<h2 id="h-8" tabindex="-1">Stage 6: Universalizing</h2>
+<div class="vis"><svg viewBox="0 -12 360 210" role="img" aria-label="Illustration of a mountain path. The highlighted point is 6: Universalizing. The path climbs from 0 at the base to 6 near the summit." focusable="false">
+<rect x="0" y="-12" width="360" height="210" fill="#fdf3d8"/>
+<circle cx="250" cy="40" r="34" fill="#ffcf48"/>
+<polygon points="150,198 262,60 360,198" fill="#6f9aa0"/>
+<polygon points="20,198 190,25 352,198" fill="#4b4a5a"/>
+<polygon points="190,25 168,52 190,46 208,56" fill="#e9f5f7"/>
+<polygon points="0,198 0,176 60,170 130,190 200,198" fill="#3a8c63"/>
+<line x1="190" y1="26" x2="190" y2="-8" stroke="#1b1f23" stroke-width="3"/>
+<polygon points="190,-8 222,0 190,8" fill="#d6402b"/>
+<polyline points="50,182 95,160 115,132 150,118 160,85 185,62 190,32" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<circle cx="50" cy="182" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="50" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">0</text><circle cx="95" cy="160" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="95" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">1</text><circle cx="115" cy="132" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="115" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">2</text><circle cx="150" cy="118" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="150" y="123" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">3</text><circle cx="160" cy="85" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="160" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">4</text><circle cx="185" cy="62" r="11" fill="#ffffff" stroke="#1b1f23" stroke-width="2"/><text x="185" y="67" text-anchor="middle" font-size="14" font-weight="700" fill="#1b1f23">5</text><circle cx="190" cy="32" r="15" fill="#ffcf48" stroke="#1b1f23" stroke-width="3"/><text x="190" y="38" text-anchor="middle" font-size="17" font-weight="700" fill="#1b1f23">6</text>
+</svg><div class="txt"><p><span class="pill">Stage 6 of 6</span></p><p class="lead">Very few people reach this stage. Their lives are marked by devotion to a love and justice that reach beyond any one group.</p></div></div><h3>Key ideas</h3><ul><li>Faith is lived out as <strong>devotion to others</strong> rather than self-fulfillment.</li><li>Fowler describes these people as “spending and being spent” to make real the vision they hold.</li><li>They are so rare that finding one in a congregation is very unlikely.</li></ul><div class="story" data-story><h3>A fork in the road</h3><ol class="beats"><li class="beat">A signpost offers two directions: “Self-fulfillment” and “Devoted.”</li><li class="beat">A person at this stage chooses devotion, giving herself to the needs of others.</li><li class="beat">Along the “Devoted” road are people in need of care: an older couple, a person in a wheelchair, and others.</li><li class="beat">Few people reach this stage, but it shows where the climb can lead.</li></ol><button type="button" class="btn story-next">Show next moment</button><button type="button" class="btn secondary story-reset" hidden>Replay scenario</button><p class="sr-only story-status" role="status" aria-live="polite"></p></div>
+</section>
+<section class="step" id="step-9" data-title="Review and check" aria-labelledby="h-9">
+<h2 id="h-9" tabindex="-1">Review and check</h2>
+<p>Match each example to the stage that fits best. Remember that the stages describe how a person holds faith, not what they believe.</p><div class="sorter" data-hint="Ask who the person looks to for authority, and whether their faith is felt, inherited, examined, or lived out for others."><ol class="sort-list"><li class="sort-item" data-answer="p0" data-explain="Trust planted through reliable care, before language, is primal faith."><label for="so61">An infant is comforted every time she cries and learns that the world is safe.</label><select id="so61" aria-describedby="so61-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so61-fb"></div></li><li class="sort-item" data-answer="s1" data-explain="Imagination, feelings, and perception shape faith at the Intuitive-Projective stage."><label for="so62">A five-year-old pictures God from a bedtime story and from the feelings she notices during her family&#x27;s prayers.</label><select id="so62" aria-describedby="so62-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so62-fb"></div></li><li class="sort-item" data-answer="s2" data-explain="Taking stories literally and seeing the world as fair are marks of the Mythic-Literal stage."><label for="so63">A nine-year-old insists that a story from his tradition happened exactly as told and believes good deeds are always rewarded.</label><select id="so63" aria-describedby="so63-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so63-fb"></div></li><li class="sort-item" data-answer="s3" data-explain="Faith as an unexamined, shared package with authority outside the self is Synthetic-Conventional."><label for="so64">A teenager follows the practices of her congregation because her family and friends do, and cannot imagine questioning them.</label><select id="so64" aria-describedby="so64-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so64-fb"></div></li><li class="sort-item" data-answer="s4" data-explain="Moving authority inside the self and examining beliefs critically is Individuative-Reflective."><label for="so65">A man who has moved away from home begins to question what he was taught and decides which beliefs are truly his own.</label><select id="so65" aria-describedby="so65-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so65-fb"></div></li><li class="sort-item" data-answer="s5" data-explain="Seeing interrelatedness and openness to other traditions is the Conjunctive stage."><label for="so66">A woman in midlife values insights from her own tradition and from others, and is comfortable with paradox.</label><select id="so66" aria-describedby="so66-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so66-fb"></div></li><li class="sort-item" data-answer="s6" data-explain="Devotion to universal love and justice, “spending and being spent,” is the Universalizing stage."><label for="so67">A person devotes her life to caring for others and working for justice, even at great personal cost.</label><select id="so67" aria-describedby="so67-fb"><option value="">Choose a category&hellip;</option><option value="p0">Primal Faith</option><option value="s1">Stage 1: Intuitive-Projective</option><option value="s2">Stage 2: Mythic-Literal</option><option value="s3">Stage 3: Synthetic-Conventional</option><option value="s4">Stage 4: Individuative-Reflective</option><option value="s5">Stage 5: Conjunctive</option><option value="s6">Stage 6: Universalizing</option></select><div class="item-fb" id="so67-fb"></div></li></ol><div class="btnrow" style="margin-top:0"><button type="button" class="btn check-all">Check my answers</button><button type="button" class="btn secondary reset">Start over</button></div><p class="score sorter-score" role="status" aria-live="polite"></p></div><fieldset class="quiz-q" data-correct="a" data-right="The stages describe how people arrive at and apply their beliefs. They are not a scale for measuring a person&#x27;s worth." data-hint="Look back at the overview step."><legend>According to the lesson, what do Fowler&#x27;s stages describe?</legend><div class="opt"><input type="radio" name="q68" id="q68a" value="a"><label for="q68a">How a person arrives at and applies beliefs, not what the person believes</label></div><div class="opt"><input type="radio" name="q68" id="q68b" value="b"><label for="q68b">Which religion is the best one to follow</label></div><div class="opt"><input type="radio" name="q68" id="q68c" value="c"><label for="q68c">A ranking of how worthy people are</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><fieldset class="quiz-q" data-correct="b" data-right="The theory can be applied to traditional faiths and also to alternative worldviews and spiritualities." data-hint="Review the lesson and try again."><legend>To which kinds of faith can Fowler&#x27;s theory be applied?</legend><div class="opt"><input type="radio" name="q69" id="q69a" value="a"><label for="q69a">Only Christianity</label></div><div class="opt"><input type="radio" name="q69" id="q69b" value="b"><label for="q69b">Traditional faiths such as Judaism, Islam, and Christianity, and alternative worldviews and spiritualities</label></div><div class="opt"><input type="radio" name="q69" id="q69c" value="c"><label for="q69c">Only people who belong to a congregation</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><p class="score" data-score role="status" aria-live="polite"></p><div class="callout note"><h3>Reflect</h3><p><label for="rf70">Optional: Think about how people&#x27;s ways of understanding meaning and beliefs can change over a lifetime. What do you notice?</label></p><textarea id="rf70" rows="4" aria-describedby="rf70-n"></textarea><p id="rf70-n" style="font-size:1rem;color:var(--muted);margin:.4rem 0 0">Your notes stay on this page. They are not saved or submitted.</p></div>
+</section>
+<div class="stepbtns">
+<button type="button" class="btn secondary" id="prev">&larr; Previous</button>
+<button type="button" class="btn" id="next">Next &rarr;</button>
+<button type="button" class="btn" id="restart" hidden>Start over</button>
+</div>
+</main>
+<footer class="foot"><p>Accessible HTML version of the Introduction to Spiritual Development lesson (James W. Fowler's Stages of Faith). See also the course readings on faith development theories and Fowler's stages.</p></footer>
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+document.documentElement.classList.add('js');
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Stepper ---------- */
+var steps=$$('.step'),outBtns=$$('#outline button'),prev=$('#prev'),next=$('#next'),restart=$('#restart');
+var label=$('#progress-label'),fill=$('#progress-fill'),titles=steps.map(function(s){return s.getAttribute('data-title')});
+var visited={},cur=0;
+function show(i,focus){
+  cur=Math.max(0,Math.min(steps.length-1,i)); visited[cur]=true;
+  steps.forEach(function(s,k){s.hidden=(k!==cur)});
+  outBtns.forEach(function(b,k){
+    if(k===cur){b.setAttribute('aria-current','step')}else{b.removeAttribute('aria-current')}
+    var f=$('.flag',b); if(f){f.textContent=(visited[k]&&k!==cur)?' (visited)':''}
+  });
+  label.textContent='Step '+(cur+1)+' of '+steps.length+': '+titles[cur];
+  fill.style.width=((cur+1)/steps.length*100)+'%';
+  prev.hidden=(cur===0); next.hidden=(cur===steps.length-1); restart.hidden=(cur!==steps.length-1);
+  if(focus){var h=$('h2',steps[cur]); if(h){h.focus({preventScroll:true}); $('#lesson').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}}
+}
+prev.addEventListener('click',function(){show(cur-1,true)});
+next.addEventListener('click',function(){show(cur+1,true)});
+restart.addEventListener('click',function(){show(0,true)});
+outBtns.forEach(function(b,k){b.addEventListener('click',function(){
+  show(k,true); var d=b.closest('details'); if(d&&window.innerWidth<900){d.open=false}
+})});
+$$('[data-goto]').forEach(function(b){b.addEventListener('click',function(){show(parseInt(b.getAttribute('data-goto'),10),true)})});
+
+/* ---------- Reveal (disclosure) ---------- */
+function setReveal(b,open){
+  var p=document.getElementById(b.getAttribute('aria-controls'));
+  b.setAttribute('aria-expanded',String(open)); if(p){p.hidden=!open}
+}
+$$('button.reveal').forEach(function(b){b.addEventListener('click',function(){
+  setReveal(b,b.getAttribute('aria-expanded')!=='true')})});
+$$('button[data-toggle-all]').forEach(function(t){t.addEventListener('click',function(){
+  var group=$$('button.reveal',document.getElementById(t.getAttribute('data-toggle-all')));
+  var open=t.getAttribute('data-state')!=='open';
+  group.forEach(function(b){setReveal(b,open)});
+  t.setAttribute('data-state',open?'open':'closed');
+  t.textContent=open?'Collapse all':'Expand all';
+})});
+
+/* ---------- Tabs ---------- */
+$$('[data-tabs]').forEach(function(root){
+  var tabs=$$('[role="tab"]',root),panels=$$('[role="tabpanel"]',root);
+  function sel(i,focus){
+    tabs.forEach(function(t,k){var on=(k===i);t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;panels[k].hidden=!on});
+    if(focus){tabs[i].focus()}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){sel(i,false)});
+    t.addEventListener('keydown',function(e){
+      var n=tabs.length,k=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){k=(i+1)%n}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){k=(i-1+n)%n}
+      else if(e.key==='Home'){k=0}else if(e.key==='End'){k=n-1}
+      if(k!==null){e.preventDefault();sel(k,true)}
+    });
+  });
+  sel(0,false);
+});
+
+/* ---------- Story (step-through scenario) ---------- */
+$$('[data-story]').forEach(function(root){
+  var beats=$$('.beat',root),nextB=$('.story-next',root),reset=$('.story-reset',root),status=$('.story-status',root),n=1;
+  function paint(){beats.forEach(function(b,i){b.hidden=(i>=n)})}
+  paint();
+  nextB.addEventListener('click',function(){
+    if(n<beats.length){n++;paint();status.textContent='Moment '+n+' of '+beats.length+': '+beats[n-1].textContent}
+    if(n>=beats.length){nextB.hidden=true;reset.hidden=false;reset.focus()}
+  });
+  reset.addEventListener('click',function(){n=1;paint();reset.hidden=true;nextB.hidden=false;status.textContent='Scenario restarted. Moment 1 of '+beats.length+': '+beats[0].textContent;nextB.focus()});
+  if(beats.length<2){nextB.hidden=true}
+});
+
+/* ---------- Knowledge checks ---------- */
+var scoreEls=$$('[data-score]'),qTotal=$$('fieldset.quiz-q').length+$$('.sorter').length,qDone=0,qRight=0;
+function updateScore(){
+  scoreEls.forEach(function(el){
+    el.textContent='Practice activities completed: '+qDone+' of '+qTotal+'. Answered correctly: '+qRight+' of '+qTotal+'.';
+  });
+}
+function fb(el,type,msg,more){
+  var ico={ok:'\u2713 ',bad:'\u2717 ',warn:'! '}[type];
+  el.innerHTML='';
+  var d=document.createElement('div');d.className='fb '+type;
+  var i=document.createElement('span');i.className='ico';i.setAttribute('aria-hidden','true');i.textContent=ico;
+  d.appendChild(i);d.appendChild(document.createTextNode(msg));
+  if(more){var m=document.createElement('span');m.className='more';m.textContent=more;d.appendChild(m)}
+  el.appendChild(d);
+}
+$$('fieldset.quiz-q').forEach(function(f){
+  var btn=$('button.check',f),out=$('.feedback',f),tries=0,done=false;
+  btn.addEventListener('click',function(){
+    if(done){return}
+    var chosen=$('input:checked',f);
+    if(!chosen){fb(out,'warn','Choose an answer, then select Check answer.');return}
+    tries++;
+    var good=(chosen.value===f.getAttribute('data-correct'));
+    if(good){done=true;qDone++;qRight++;fb(out,'ok','Correct.',f.getAttribute('data-right'))}
+    else if(tries>=2){
+      done=true;qDone++;
+      var c=$('input[value="'+f.getAttribute('data-correct')+'"]',f);
+      var ct=document.querySelector('label[for="'+c.id+'"]').textContent;
+      fb(out,'bad','Not quite. The correct answer is: '+ct,f.getAttribute('data-right'));
+    } else {
+      fb(out,'bad','Not quite.',(f.getAttribute('data-hint')||'Review the lesson and try again.')+' You can choose a different answer and check again.');
+    }
+    if(done){
+      var cc=$('input[value="'+f.getAttribute('data-correct')+'"]',f);cc.checked=true;
+      $$('input',f).forEach(function(i){i.disabled=true});
+      btn.setAttribute('aria-disabled','true');btn.textContent='Answer checked';updateScore();
+    }
+  });
+});
+
+/* ---------- Sorting / matching activity ---------- */
+$$('.sorter').forEach(function(root){
+  var items=$$('.sort-item',root),sum=$('.sorter-score',root),finished=false,perfect=false;
+  var tries=items.map(function(){return 0}),shown=items.map(function(){return false}),good=items.map(function(){return false});
+  function check(){
+    var blank=0,pend=0;
+    items.forEach(function(li,i){
+      var sel=$('select',li),out=$('.item-fb',li);
+      if(shown[i]){return}
+      if(!sel.value){blank++;out.innerHTML='';sel.removeAttribute('aria-invalid');return}
+      tries[i]++;
+      if(sel.value===li.getAttribute('data-answer')){
+        shown[i]=true;good[i]=true;sel.removeAttribute('aria-invalid');sel.disabled=true;
+        fb(out,'ok','Correct.',li.getAttribute('data-explain'));
+      } else if(tries[i]>=2){
+        shown[i]=true;sel.setAttribute('aria-invalid','true');
+        var o=$('option[value="'+li.getAttribute('data-answer')+'"]',sel);
+        sel.value=li.getAttribute('data-answer');sel.disabled=true;
+        fb(out,'bad','Not quite. Best match: '+o.textContent+'.',li.getAttribute('data-explain'));
+      } else {
+        pend++;sel.setAttribute('aria-invalid','true');
+        fb(out,'bad','Not quite. Change your choice and check again.');
+      }
+    });
+    var total=items.length,resolved=shown.filter(Boolean).length,nGood=good.filter(Boolean).length;
+    var msg=nGood+' of '+total+' matched correctly.';
+    if(blank){msg+=' '+blank+' still need a choice.'}
+    if(pend){msg+=' '+pend+' to try again. Feedback appears below each item. Hint: '+(root.getAttribute('data-hint')||'Look back at the lesson.')}
+    if(resolved===total&&!finished){
+      finished=true;perfect=(nGood===total);qDone++;if(perfect){qRight++}
+      msg+=perfect?' Well done.':' Read the explanations above, then use Start over to try again.';
+      updateScore();
+    }
+    sum.textContent=msg;
+  }
+  $('.check-all',root).addEventListener('click',check);
+  $('.reset',root).addEventListener('click',function(){
+    items.forEach(function(li,i){
+      var sel=$('select',li);sel.disabled=false;sel.value='';sel.removeAttribute('aria-invalid');
+      $('.item-fb',li).innerHTML='';tries[i]=0;shown[i]=false;good[i]=false;
+    });
+    if(finished){qDone=Math.max(0,qDone-1);if(perfect){qRight=Math.max(0,qRight-1)}}
+    finished=false;perfect=false;
+    sum.textContent='Activity reset. Choose a category for each item.';updateScore();
+  });
+});
+updateScore();
+
+show(0,false);
+})();
+</script>
+</body>
+</html>

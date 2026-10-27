@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cultural Differences in Development</title>
+<style>
+:root{
+  --ink:#1b1f23; --muted:#46515c; --bg:#ffffff; --panel:#f3f6f9; --panel-2:#e9eff5;
+  --line:#c5ced8; --ctl:#5f6b77;
+  --primary:#0b4f6c; --primary-hover:#083a50; --on-primary:#ffffff;
+  --accent:#9f1d2a; --gold:#ffcf48;
+  --ok:#14663a; --ok-bg:#e6f4ea; --bad:#8a1c1c; --bad-bg:#fdeaea; --warn:#6b4a00; --warn-bg:#fff6dd;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:100%;-webkit-text-size-adjust:100%;scroll-padding-top:1rem}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:1.125rem;line-height:1.6}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--ink);color:#fff;padding:.75rem 1rem;border-radius:0 0 var(--radius) var(--radius);z-index:100;font-weight:600}
+.skip:focus{top:0}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px var(--gold)}
+h2[tabindex="-1"]:focus{outline:none;box-shadow:none}
+.site{background:var(--primary);color:var(--on-primary);padding:1.5rem 1rem}
+.site .inner,main,.foot{max-width:60rem;margin:0 auto}
+.eyebrow{margin:0 0 .25rem;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+h1{margin:0;font-size:clamp(1.6rem,4vw,2.25rem);line-height:1.2}
+main{padding:1.25rem 1rem 3rem}
+h2{font-size:clamp(1.4rem,3.2vw,1.8rem);line-height:1.25;margin:0 0 1rem;color:var(--primary)}
+h3{font-size:1.25rem;line-height:1.3;margin:1.5rem 0 .5rem}
+p,ul,ol{margin:0 0 1rem}
+p,li{max-width:70ch}
+a{color:#0a4a9e;text-decoration:underline;text-underline-offset:.15em}
+strong{font-weight:700}
+.howto{margin:0 0 1rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.howto summary{cursor:pointer;padding:.75rem 1rem;font-weight:600;min-height:44px}
+.howto div{padding:0 1rem 1rem}
+.progress{margin:0 0 1.25rem}
+.progress-label{margin:0 0 .4rem;font-weight:600}
+.bar{height:.6rem;background:var(--panel-2);border:1px solid var(--ctl);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--primary);width:0}
+.outline{margin:.75rem 0 0;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.outline summary{cursor:pointer;padding:.65rem 1rem;font-weight:600;min-height:44px}
+.outline ol{list-style:none;margin:0;padding:0 .5rem .5rem}
+.outline li{max-width:none;margin:0}
+.outline button{width:100%;text-align:left;background:transparent;border:0;border-radius:8px;padding:.6rem .75rem;min-height:44px;font:inherit;color:var(--ink);cursor:pointer;display:flex;gap:.6rem;align-items:baseline}
+.outline button:hover{background:var(--panel)}
+.outline button[aria-current="step"]{background:var(--panel-2);font-weight:700}
+.outline .num{display:inline-block;min-width:1.6rem;font-weight:700;color:var(--primary)}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.25rem}
+.lead{font-size:1.2rem}
+.callout{border-left:6px solid var(--primary);background:var(--panel);padding:.9rem 1rem;border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0}
+.callout p:last-child{margin-bottom:0}
+.callout.note{border-left-color:var(--accent)}
+.callout h3{margin-top:0}
+.btnrow{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.btn{font:inherit;font-weight:600;min-height:44px;min-width:44px;padding:.6rem 1.1rem;border-radius:8px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);cursor:pointer}
+.btn:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn.secondary{background:#fff;color:var(--primary)}
+.btn.secondary:hover{background:var(--panel)}
+.btn[hidden]{display:none}
+.btn[aria-disabled="true"]{background:var(--panel-2);color:#33404b;border-color:var(--ctl);cursor:default}
+.stepbtns{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:1rem 0}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden}
+button.reveal{display:flex;width:100%;justify-content:space-between;align-items:center;gap:.5rem;text-align:left;font:inherit;font-weight:700;padding:.8rem 1rem;min-height:44px;background:var(--panel);border:0;color:var(--ink);cursor:pointer}
+button.reveal:hover{background:var(--panel-2)}
+button.reveal .chev{flex:none;width:1.2rem;height:1.2rem;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg) scale(.6);transition:transform .15s}
+button.reveal[aria-expanded="true"] .chev{transform:rotate(225deg) scale(.6)}
+.reveal-panel{padding:.9rem 1rem;border-top:1px solid var(--line)}
+.reveal-panel[hidden]{display:none}
+.tabs [role="tablist"]{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .75rem}
+.tabs [role="tab"]{font:inherit;font-weight:600;min-height:44px;padding:.5rem 1rem;border:2px solid var(--primary);border-radius:8px;background:#fff;color:var(--primary);cursor:pointer}
+.tabs [role="tab"][aria-selected="true"]{background:var(--primary);color:var(--on-primary)}
+.tabs [role="tabpanel"]{border:1px solid var(--line);border-radius:var(--radius);padding:1rem;background:#fff}
+.tabs [role="tabpanel"][hidden]{display:none}
+.tabs [role="tabpanel"]>:first-child{margin-top:0}
+.tabs [role="tabpanel"]>:last-child{margin-bottom:0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;background:#fff}
+caption{text-align:left;font-weight:700;padding:.5rem 0}
+th,td{border:1px solid var(--ctl);padding:.6rem .75rem;text-align:left;vertical-align:top}
+thead th,tbody th{background:var(--panel-2)}
+.tablewrap{overflow-x:auto}
+fieldset.quiz-q{border:1px solid var(--ctl);border-radius:var(--radius);padding:1rem;margin:1rem 0;min-width:0}
+fieldset.quiz-q legend{font-weight:700;padding:0 .4rem;max-width:100%}
+.opt{display:flex;gap:.6rem;align-items:flex-start;margin:.35rem 0;min-height:44px}
+.opt input{flex:none;width:1.4rem;height:1.4rem;margin:.65rem 0 0;accent-color:var(--primary)}
+.opt label{padding:.5rem 0;cursor:pointer}
+.feedback,.item-fb{margin:.75rem 0 0;font-weight:600}
+.feedback:empty,.item-fb:empty{display:none}
+.fb{padding:.6rem .8rem;border-radius:8px;border:2px solid}
+.fb.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.fb.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.fb.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.fb .ico{font-weight:900;margin-right:.35rem}
+.fb .more{display:block;font-weight:400;color:var(--ink);margin-top:.25rem}
+.sort-list{list-style:none;margin:1rem 0;padding:0;counter-reset:s}
+.sort-item{counter-increment:s;border:1px solid var(--ctl);border-radius:var(--radius);padding:.9rem 1rem;margin:.75rem 0;max-width:none}
+.sort-item label{display:block;font-weight:600;margin-bottom:.5rem}
+.sort-item label::before{content:counter(s) ". "}
+select{font:inherit;min-height:44px;max-width:100%;padding:.4rem .6rem;border:2px solid var(--ctl);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{font:inherit;width:100%;min-height:7rem;padding:.6rem;border:2px solid var(--ctl);border-radius:8px;color:var(--ink);background:#fff}
+.score{margin-top:1rem;font-weight:700}
+.story{border:1px solid var(--line);border-radius:var(--radius);padding:1rem;background:var(--panel);margin:1rem 0}
+.story h3{margin-top:0}
+.beats{list-style:none;margin:0 0 1rem;padding:0;counter-reset:b}
+.beat{counter-increment:b;position:relative;padding:.6rem .8rem .6rem 3rem;margin:.5rem 0;background:#fff;border:1px solid var(--line);border-radius:8px;max-width:none}
+.beat::before{content:counter(b);position:absolute;left:.7rem;top:.55rem;width:1.8rem;height:1.8rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;text-align:center;line-height:1.8rem;font-size:.95rem}
+.beat[hidden]{display:none}
+.quote{font-style:italic}
+.pill{display:inline-block;padding:.15rem .7rem;border-radius:99px;border:2px solid var(--primary);color:var(--primary);font-weight:700;font-size:.95rem;margin:0 .4rem .4rem 0;background:#fff}
+.vis{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:1rem 0}
+.vis svg{flex:0 1 22rem;max-width:100%;height:auto}
+.vis .txt{flex:1 1 14rem}
+figure{margin:1rem 0}
+figcaption{font-size:1rem;color:var(--muted);margin-top:.35rem}
+.chart{max-width:34rem}
+.chart svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.foot{padding:1rem;color:var(--muted);font-size:.95rem}
+.two{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+dl.terms dt{font-weight:700;margin-top:.75rem}
+dl.terms dd{margin:0 0 .25rem}
+select:disabled{color:var(--ink);opacity:1;background:var(--panel);cursor:default}
+@media (max-width:30em){body{font-size:1.05rem}.step{padding:1rem}th,td{padding:.45rem .5rem;font-size:1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (forced-colors:active){.btn,button.reveal,.tabs [role="tab"]{border:2px solid ButtonText}.tabs [role="tab"][aria-selected="true"]{outline:3px solid Highlight}.bar span{background:Highlight}}
+@media print{.skip,.howto,.progress,.outline,.stepbtns,.btnrow,.story button{display:none!important}.step{display:block!important;border:0;page-break-inside:avoid}.reveal-panel,.beat,[role="tabpanel"]{display:block!important}.site{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<a class="skip" href="#lesson">Skip to lesson content</a>
+<header class="site"><div class="inner">
+<p class="eyebrow">Interactive lesson</p>
+<h1>Cultural Differences in Development</h1>
+</div></header>
+<main id="lesson" tabindex="-1">
+<details class="howto"><summary>How to use this lesson</summary><div>
+<p>Move through the lesson with the <strong>Previous</strong> and <strong>Next</strong> buttons, or jump to any step from the <strong>Lesson outline</strong>. There is no audio, no timer, and nothing moves on its own, so you can go at your own pace.</p>
+<p>Everything works with a keyboard: use <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move, <kbd>Enter</kbd> or <kbd>Space</kbd> to select, and the arrow keys to switch between tabs. The page works with screen readers, browser zoom, and high-contrast settings.</p>
+</div></details>
+<div class="progress">
+<p class="progress-label" id="progress-label">Step 1 of 7</p>
+<div class="bar" aria-hidden="true"><span id="progress-fill"></span></div>
+<details class="outline"><summary>Lesson outline</summary>
+<nav aria-label="Lesson outline"><ol id="outline">
+<li><button type="button"><span class="num" aria-hidden="true">1</span><span>What is culture?<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">2</span><span>Independence and social inhibition<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">3</span><span>Cooperation and competition<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">4</span><span>Similarities: prosocial behavior<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">5</span><span>Similarities: friendliness<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">6</span><span>Putting it together<span class="flag sr-only"></span></span></button></li>
+<li><button type="button"><span class="num" aria-hidden="true">7</span><span>Check your understanding<span class="flag sr-only"></span></span></button></li>
+</ol></nav></details>
+</div>
+<section class="step" id="step-1" data-title="What is culture?" aria-labelledby="h-1">
+<h2 id="h-1" tabindex="-1">What is culture?</h2>
+
+<p class="lead">Culture has been described as <strong>the values, beliefs, and behaviors that are passed down from generation to generation.</strong></p>
+<p>These areas have an effect on the way people develop during their lifespan. In this module, we will examine some of the differences and similarities in various cultures.</p>
+<dl class="terms">
+<dt>Values</dt><dd>What a group considers important.</dd>
+<dt>Beliefs</dt><dd>What a group holds to be true.</dd>
+<dt>Behaviors</dt><dd>How members of a group typically act.</dd>
+</dl>
+<div class="callout note"><h3>Reflect</h3><p><label for="rf15">Think of one value, belief, or tradition that was passed down in your family or community. What is it?</label></p><textarea id="rf15" rows="4" aria-describedby="rf15-n"></textarea><p id="rf15-n" style="font-size:1rem;color:var(--muted);margin:.4rem 0 0">Your notes stay on this page. They are not saved or submitted.</p></div>
+</section>
+<section class="step" id="step-2" data-title="Independence and social inhibition" aria-labelledby="h-2">
+<h2 id="h-2" tabindex="-1">Independence and social inhibition</h2>
+<p>There are vast cultural differences that affect how individuals are influenced in childhood, but there are also similarities. One difference is how a culture views independence and shyness. Select a tab to compare.</p><div class="tabs" data-tabs><div role="tablist" aria-label="Western and Eastern cultures"><button type="button" role="tab" id="tb16-t0" aria-controls="tb16-p0" aria-selected="true" tabindex="0">Western cultures</button><button type="button" role="tab" id="tb16-t1" aria-controls="tb16-p1" aria-selected="false" tabindex="-1">Eastern cultures</button></div><div role="tabpanel" id="tb16-p0" aria-labelledby="tb16-t0" tabindex="0"><h3>Western cultures</h3><p><strong>Good traits:</strong> Children are raised to be independent and to show assertive behavior.</p><p><strong>Unfavorable traits:</strong> Socially-inhibited and reticent behavior is looked at as being fearful, shy, and socially unacceptable.</p></div><div role="tabpanel" id="tb16-p1" aria-labelledby="tb16-t1" tabindex="0" hidden><h3>Eastern cultures</h3><p><strong>Good traits:</strong> Inhibited behavior and social wariness are considered good traits. Children are seen as well-mannered and obedient, which shows growth in social maturity.</p></div></div><div class="tablewrap" role="region" aria-label="Table: how each culture views children's behavior (scrollable)" tabindex="0"><table>
+<caption>Quick comparison: how each culture views children's behavior</caption>
+<thead><tr><th scope="col">Behavior</th><th scope="col">Western cultures</th><th scope="col">Eastern cultures</th></tr></thead>
+<tbody>
+<tr><th scope="row">Independent and assertive</th><td>Viewed as a good trait</td><td>Not emphasized in this lesson</td></tr>
+<tr><th scope="row">Socially inhibited, reticent, or wary</th><td>Viewed as fearful, shy, and socially unacceptable</td><td>Viewed as a good trait: well-mannered, obedient, socially mature</td></tr>
+</tbody></table></div><fieldset class="quiz-q" data-correct="a" data-right="Eastern cultures consider inhibited behavior and social wariness good traits, showing that a child is well-mannered, obedient, and socially mature." data-hint="Look back at the Eastern cultures tab."><legend>In Eastern cultures, how is inhibited behavior and social wariness viewed?</legend><div class="opt"><input type="radio" name="q17" id="q17a" value="a"><label for="q17a">As a good trait that shows growth in social maturity</label></div><div class="opt"><input type="radio" name="q17" id="q17b" value="b"><label for="q17b">As socially unacceptable</label></div><div class="opt"><input type="radio" name="q17" id="q17c" value="c"><label for="q17c">As a sign of weak character</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset>
+</section>
+<section class="step" id="step-3" data-title="Cooperation and competition" aria-labelledby="h-3">
+<h2 id="h-3" tabindex="-1">Cooperation and competition</h2>
+<p>Another example of cultural difference is in the area of cooperation and competition. Select a tab to explore three comparisons.</p><div class="tabs" data-tabs><div role="tablist" aria-label="Cooperation and competition"><button type="button" role="tab" id="tb18-t0" aria-controls="tb18-p0" aria-selected="true" tabindex="0">Interdependent and Western cultures</button><button type="button" role="tab" id="tb18-t1" aria-controls="tb18-p1" aria-selected="false" tabindex="-1">East Asia</button><button type="button" role="tab" id="tb18-t2" aria-controls="tb18-p2" aria-selected="false" tabindex="-1">Mexican Americans</button></div><div role="tabpanel" id="tb18-p0" aria-labelledby="tb18-t0" tabindex="0"><h3>Interdependent and Western cultures</h3><p>In <strong>interdependent cultures</strong>, cooperation is emphasized more than competition.</p><p>In <strong>Western cultures</strong>, the opposite tends to be true: competition is emphasized more than cooperation.</p></div><div role="tabpanel" id="tb18-p1" aria-labelledby="tb18-t1" tabindex="0" hidden><h3>East Asia</h3><p>Children in East Asian nations tend to be more <strong>cooperative</strong> with family and friends.</p><p>In education, however, they are more <strong>competitive</strong>.</p></div><div role="tabpanel" id="tb18-p2" aria-labelledby="tb18-t2" tabindex="0" hidden><h3>Mexican Americans</h3><p>There can also be generational differences. Third-generation Mexican Americans tend to have a much stronger competitive desire than the second generation.</p><p><strong>Cooperative:</strong> 2nd generation<br><strong>Competitive:</strong> 3rd generation</p></div></div><div class="tablewrap" role="region" aria-label="Table: cooperation and competition (scrollable)" tabindex="0"><table>
+<caption>Summary: cooperation and competition</caption>
+<thead><tr><th scope="col">Group</th><th scope="col">Cooperation</th><th scope="col">Competition</th></tr></thead>
+<tbody>
+<tr><th scope="row">Interdependent cultures</th><td>Emphasized more</td><td>Emphasized less than cooperation</td></tr>
+<tr><th scope="row">Western cultures</th><td>Emphasized less than competition</td><td>Emphasized more</td></tr>
+<tr><th scope="row">East Asian children</th><td>With family and friends</td><td>In education</td></tr>
+<tr><th scope="row">Mexican Americans</th><td>Second generation</td><td>Third generation (a much stronger desire)</td></tr>
+</tbody></table></div><fieldset class="quiz-q" data-correct="a" data-right="Children in East Asian nations tend to be more cooperative with family and friends, but in education they are more competitive." data-hint="Think about where cooperation and competition each show up."><legend>Which statement about East Asian children is supported by the lesson?</legend><div class="opt"><input type="radio" name="q19" id="q19a" value="a"><label for="q19a">They are cooperative with family and friends but more competitive in education.</label></div><div class="opt"><input type="radio" name="q19" id="q19b" value="b"><label for="q19b">They are competitive in every area of life.</label></div><div class="opt"><input type="radio" name="q19" id="q19c" value="c"><label for="q19c">They avoid cooperation altogether.</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset>
+</section>
+<section class="step" id="step-4" data-title="Similarities: prosocial behavior" aria-labelledby="h-4">
+<h2 id="h-4" tabindex="-1">Similarities: prosocial behavior</h2>
+<p class="lead">Similarities also exist between cultures. <strong>Prosocial behavior</strong> is an example of these similarities.</p><p>Select each behavior to read more.</p><p><button type="button" class="btn secondary" data-toggle-all="grp23" data-state="closed">Expand all</button></p><div class="grid" id="grp23"><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv20"><span>Caring for others</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv20" hidden><p>Caring for others is a behavior that is homogeneous (the same) across cultures.</p></div></div><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv21"><span>Being polite</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv21" hidden><p>Being polite is a behavior that is homogeneous across cultures.</p></div></div><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv22"><span>Being helpful</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv22" hidden><p>Being helpful is a behavior that is homogeneous across cultures.</p></div></div></div><div class="callout"><p>Among Asian cultures these behaviors seem to be more prevalent. Asian parents encourage their preschool children to help and share with other children as a way of promoting social conventions.</p></div><fieldset class="quiz-q" data-correct="a" data-right="Caring for others, being polite, and being helpful are prosocial behaviors found across cultures, and they seem to be even more prevalent among Asian cultures." data-hint="Look for the behaviors that help other people."><legend>Which set of behaviors does the lesson describe as similar across cultures?</legend><div class="opt"><input type="radio" name="q24" id="q24a" value="a"><label for="q24a">Caring for others, being polite, and being helpful</label></div><div class="opt"><input type="radio" name="q24" id="q24b" value="b"><label for="q24b">Competing, withdrawing, and obeying</label></div><div class="opt"><input type="radio" name="q24" id="q24c" value="c"><label for="q24c">Independence, assertiveness, and risk-taking</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset>
+</section>
+<section class="step" id="step-5" data-title="Similarities: friendliness" aria-labelledby="h-5">
+<h2 id="h-5" tabindex="-1">Similarities: friendliness</h2>
+<p>There are other similarities between cultures, such as <strong>being friendly</strong>. Select each card to see how teachers and peers respond.</p><p><button type="button" class="btn secondary" data-toggle-all="grp27" data-state="closed">Expand all</button></p><div class="grid" id="grp27"><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv25"><span>Children who maintain positive relationships</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv25" hidden><p>Children who have skills in maintaining positive relationships are perceived by their teachers and peers as:</p><ul><li>Sociable</li><li>Sensitive</li><li>Cooperative</li></ul></div></div><div class="card"><h3 style="margin:0;font-size:inherit"><button type="button" class="reveal" aria-expanded="false" aria-controls="rv26"><span>Children who are not socially skilled</span><span class="chev" aria-hidden="true"></span></button></h3><div class="reveal-panel" id="rv26" hidden><p>On the other hand, another similar behavior across cultures is that children who are not socially skilled and are immature tend to be <strong>rejected</strong>.</p></div></div></div><fieldset class="quiz-q" data-correct="a" data-right="Teachers and peers tend to see children with strong relationship skills as sociable, sensitive, and cooperative." data-hint="Reopen the first card in this step."><legend>According to the lesson, how are children with skills in maintaining positive relationships perceived?</legend><div class="opt"><input type="radio" name="q28" id="q28a" value="a"><label for="q28a">As sociable, sensitive, and cooperative</label></div><div class="opt"><input type="radio" name="q28" id="q28b" value="b"><label for="q28b">As immature</label></div><div class="opt"><input type="radio" name="q28" id="q28c" value="c"><label for="q28c">As rejected by their peers</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset>
+</section>
+<section class="step" id="step-6" data-title="Putting it together" aria-labelledby="h-6">
+<h2 id="h-6" tabindex="-1">Putting it together</h2>
+
+<p class="lead">The development of a child's behavior is influenced by their culture.</p>
+<ul>
+<li>While there are <strong>differences</strong> between cultures, there are also some <strong>universal norms</strong>.</li>
+<li>These behaviors can also differ in <strong>children of immigrants</strong>, who are affected by the introduction of new cultural influences.</li>
+</ul>
+<div class="callout"><h3>Differences you explored</h3>
+<ul><li>Independence and assertiveness compared with social wariness</li><li>Cooperation and competition, including generational differences</li></ul>
+<h3>Similarities you explored</h3>
+<ul><li>Prosocial behavior: caring, polite, helpful</li><li>Friendliness and positive relationships</li></ul></div>
+
+</section>
+<section class="step" id="step-7" data-title="Check your understanding" aria-labelledby="h-7">
+<h2 id="h-7" tabindex="-1">Check your understanding</h2>
+<p>Answer these questions to check what you learned.</p><fieldset class="quiz-q" data-correct="a" data-right="Culture is the values, beliefs, and behaviors that are passed down from generation to generation." data-hint="Review the lesson and try again."><legend>What is culture, according to this lesson?</legend><div class="opt"><input type="radio" name="q29" id="q29a" value="a"><label for="q29a">The values, beliefs, and behaviors passed down from generation to generation</label></div><div class="opt"><input type="radio" name="q29" id="q29b" value="b"><label for="q29b">The rules a government writes down</label></div><div class="opt"><input type="radio" name="q29" id="q29c" value="c"><label for="q29c">The things a person buys</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><fieldset class="quiz-q" data-correct="a" data-right="Western cultures raise children to be independent and assertive, while socially-inhibited behavior is looked at as fearful, shy, and socially unacceptable." data-hint="Review the lesson and try again."><legend>In Western cultures, which behavior is typically seen as a good trait in children?</legend><div class="opt"><input type="radio" name="q30" id="q30a" value="a"><label for="q30a">Being independent and assertive</label></div><div class="opt"><input type="radio" name="q30" id="q30b" value="b"><label for="q30b">Being socially inhibited</label></div><div class="opt"><input type="radio" name="q30" id="q30c" value="c"><label for="q30c">Being obedient above all else</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><fieldset class="quiz-q" data-correct="a" data-right="Third-generation Mexican Americans tend to have a much stronger competitive desire than the second generation." data-hint="Review the lesson and try again."><legend>Which group tends to show a much stronger competitive desire than the generation before it?</legend><div class="opt"><input type="radio" name="q31" id="q31a" value="a"><label for="q31a">Third-generation Mexican Americans</label></div><div class="opt"><input type="radio" name="q31" id="q31b" value="b"><label for="q31b">Second-generation Mexican Americans</label></div><div class="opt"><input type="radio" name="q31" id="q31c" value="c"><label for="q31c">East Asian preschoolers</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><fieldset class="quiz-q" data-correct="a" data-right="Children of immigrants are affected by the introduction of new cultural influences, so their behavior can differ." data-hint="Review the lesson and try again."><legend>Why might the behavior of children of immigrants differ from that of other children?</legend><div class="opt"><input type="radio" name="q32" id="q32a" value="a"><label for="q32a">They are affected by the introduction of new cultural influences.</label></div><div class="opt"><input type="radio" name="q32" id="q32b" value="b"><label for="q32b">Culture has no effect on children&#x27;s behavior.</label></div><div class="opt"><input type="radio" name="q32" id="q32c" value="c"><label for="q32c">They do not share any norms with other children.</label></div><button type="button" class="btn check">Check answer</button><div class="feedback" role="status" aria-live="polite"></div></fieldset><p class="score" data-score role="status" aria-live="polite"></p>
+</section>
+<div class="stepbtns">
+<button type="button" class="btn secondary" id="prev">&larr; Previous</button>
+<button type="button" class="btn" id="next">Next &rarr;</button>
+<button type="button" class="btn" id="restart" hidden>Start over</button>
+</div>
+</main>
+<footer class="foot"><p>Accessible HTML version of the Cultural Differences in Development lesson.</p></footer>
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+document.documentElement.classList.add('js');
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Stepper ---------- */
+var steps=$$('.step'),outBtns=$$('#outline button'),prev=$('#prev'),next=$('#next'),restart=$('#restart');
+var label=$('#progress-label'),fill=$('#progress-fill'),titles=steps.map(function(s){return s.getAttribute('data-title')});
+var visited={},cur=0;
+function show(i,focus){
+  cur=Math.max(0,Math.min(steps.length-1,i)); visited[cur]=true;
+  steps.forEach(function(s,k){s.hidden=(k!==cur)});
+  outBtns.forEach(function(b,k){
+    if(k===cur){b.setAttribute('aria-current','step')}else{b.removeAttribute('aria-current')}
+    var f=$('.flag',b); if(f){f.textContent=(visited[k]&&k!==cur)?' (visited)':''}
+  });
+  label.textContent='Step '+(cur+1)+' of '+steps.length+': '+titles[cur];
+  fill.style.width=((cur+1)/steps.length*100)+'%';
+  prev.hidden=(cur===0); next.hidden=(cur===steps.length-1); restart.hidden=(cur!==steps.length-1);
+  if(focus){var h=$('h2',steps[cur]); if(h){h.focus({preventScroll:true}); $('#lesson').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}}
+}
+prev.addEventListener('click',function(){show(cur-1,true)});
+next.addEventListener('click',function(){show(cur+1,true)});
+restart.addEventListener('click',function(){show(0,true)});
+outBtns.forEach(function(b,k){b.addEventListener('click',function(){
+  show(k,true); var d=b.closest('details'); if(d&&window.innerWidth<900){d.open=false}
+})});
+$$('[data-goto]').forEach(function(b){b.addEventListener('click',function(){show(parseInt(b.getAttribute('data-goto'),10),true)})});
+
+/* ---------- Reveal (disclosure) ---------- */
+function setReveal(b,open){
+  var p=document.getElementById(b.getAttribute('aria-controls'));
+  b.setAttribute('aria-expanded',String(open)); if(p){p.hidden=!open}
+}
+$$('button.reveal').forEach(function(b){b.addEventListener('click',function(){
+  setReveal(b,b.getAttribute('aria-expanded')!=='true')})});
+$$('button[data-toggle-all]').forEach(function(t){t.addEventListener('click',function(){
+  var group=$$('button.reveal',document.getElementById(t.getAttribute('data-toggle-all')));
+  var open=t.getAttribute('data-state')!=='open';
+  group.forEach(function(b){setReveal(b,open)});
+  t.setAttribute('data-state',open?'open':'closed');
+  t.textContent=open?'Collapse all':'Expand all';
+})});
+
+/* ---------- Tabs ---------- */
+$$('[data-tabs]').forEach(function(root){
+  var tabs=$$('[role="tab"]',root),panels=$$('[role="tabpanel"]',root);
+  function sel(i,focus){
+    tabs.forEach(function(t,k){var on=(k===i);t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;panels[k].hidden=!on});
+    if(focus){tabs[i].focus()}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){sel(i,false)});
+    t.addEventListener('keydown',function(e){
+      var n=tabs.length,k=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){k=(i+1)%n}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){k=(i-1+n)%n}
+      else if(e.key==='Home'){k=0}else if(e.key==='End'){k=n-1}
+      if(k!==null){e.preventDefault();sel(k,true)}
+    });
+  });
+  sel(0,false);
+});
+
+/* ---------- Story (step-through scenario) ---------- */
+$$('[data-story]').forEach(function(root){
+  var beats=$$('.beat',root),nextB=$('.story-next',root),reset=$('.story-reset',root),status=$('.story-status',root),n=1;
+  function paint(){beats.forEach(function(b,i){b.hidden=(i>=n)})}
+  paint();
+  nextB.addEventListener('click',function(){
+    if(n<beats.length){n++;paint();status.textContent='Moment '+n+' of '+beats.length+': '+beats[n-1].textContent}
+    if(n>=beats.length){nextB.hidden=true;reset.hidden=false;reset.focus()}
+  });
+  reset.addEventListener('click',function(){n=1;paint();reset.hidden=true;nextB.hidden=false;status.textContent='Scenario restarted. Moment 1 of '+beats.length+': '+beats[0].textContent;nextB.focus()});
+  if(beats.length<2){nextB.hidden=true}
+});
+
+/* ---------- Knowledge checks ---------- */
+var scoreEls=$$('[data-score]'),qTotal=$$('fieldset.quiz-q').length+$$('.sorter').length,qDone=0,qRight=0;
+function updateScore(){
+  scoreEls.forEach(function(el){
+    el.textContent='Practice activities completed: '+qDone+' of '+qTotal+'. Answered correctly: '+qRight+' of '+qTotal+'.';
+  });
+}
+function fb(el,type,msg,more){
+  var ico={ok:'\u2713 ',bad:'\u2717 ',warn:'! '}[type];
+  el.innerHTML='';
+  var d=document.createElement('div');d.className='fb '+type;
+  var i=document.createElement('span');i.className='ico';i.setAttribute('aria-hidden','true');i.textContent=ico;
+  d.appendChild(i);d.appendChild(document.createTextNode(msg));
+  if(more){var m=document.createElement('span');m.className='more';m.textContent=more;d.appendChild(m)}
+  el.appendChild(d);
+}
+$$('fieldset.quiz-q').forEach(function(f){
+  var btn=$('button.check',f),out=$('.feedback',f),tries=0,done=false;
+  btn.addEventListener('click',function(){
+    if(done){return}
+    var chosen=$('input:checked',f);
+    if(!chosen){fb(out,'warn','Choose an answer, then select Check answer.');return}
+    tries++;
+    var good=(chosen.value===f.getAttribute('data-correct'));
+    if(good){done=true;qDone++;qRight++;fb(out,'ok','Correct.',f.getAttribute('data-right'))}
+    else if(tries>=2){
+      done=true;qDone++;
+      var c=$('input[value="'+f.getAttribute('data-correct')+'"]',f);
+      var ct=document.querySelector('label[for="'+c.id+'"]').textContent;
+      fb(out,'bad','Not quite. The correct answer is: '+ct,f.getAttribute('data-right'));
+    } else {
+      fb(out,'bad','Not quite.',(f.getAttribute('data-hint')||'Review the lesson and try again.')+' You can choose a different answer and check again.');
+    }
+    if(done){
+      var cc=$('input[value="'+f.getAttribute('data-correct')+'"]',f);cc.checked=true;
+      $$('input',f).forEach(function(i){i.disabled=true});
+      btn.setAttribute('aria-disabled','true');btn.textContent='Answer checked';updateScore();
+    }
+  });
+});
+
+/* ---------- Sorting / matching activity ---------- */
+$$('.sorter').forEach(function(root){
+  var items=$$('.sort-item',root),sum=$('.sorter-score',root),finished=false,perfect=false;
+  var tries=items.map(function(){return 0}),shown=items.map(function(){return false}),good=items.map(function(){return false});
+  function check(){
+    var blank=0,pend=0;
+    items.forEach(function(li,i){
+      var sel=$('select',li),out=$('.item-fb',li);
+      if(shown[i]){return}
+      if(!sel.value){blank++;out.innerHTML='';sel.removeAttribute('aria-invalid');return}
+      tries[i]++;
+      if(sel.value===li.getAttribute('data-answer')){
+        shown[i]=true;good[i]=true;sel.removeAttribute('aria-invalid');sel.disabled=true;
+        fb(out,'ok','Correct.',li.getAttribute('data-explain'));
+      } else if(tries[i]>=2){
+        shown[i]=true;sel.setAttribute('aria-invalid','true');
+        var o=$('option[value="'+li.getAttribute('data-answer')+'"]',sel);
+        sel.value=li.getAttribute('data-answer');sel.disabled=true;
+        fb(out,'bad','Not quite. Best match: '+o.textContent+'.',li.getAttribute('data-explain'));
+      } else {
+        pend++;sel.setAttribute('aria-invalid','true');
+        fb(out,'bad','Not quite. Change your choice and check again.');
+      }
+    });
+    var total=items.length,resolved=shown.filter(Boolean).length,nGood=good.filter(Boolean).length;
+    var msg=nGood+' of '+total+' matched correctly.';
+    if(blank){msg+=' '+blank+' still need a choice.'}
+    if(pend){msg+=' '+pend+' to try again. Feedback appears below each item. Hint: '+(root.getAttribute('data-hint')||'Look back at the lesson.')}
+    if(resolved===total&&!finished){
+      finished=true;perfect=(nGood===total);qDone++;if(perfect){qRight++}
+      msg+=perfect?' Well done.':' Read the explanations above, then use Start over to try again.';
+      updateScore();
+    }
+    sum.textContent=msg;
+  }
+  $('.check-all',root).addEventListener('click',check);
+  $('.reset',root).addEventListener('click',function(){
+    items.forEach(function(li,i){
+      var sel=$('select',li);sel.disabled=false;sel.value='';sel.removeAttribute('aria-invalid');
+      $('.item-fb',li).innerHTML='';tries[i]=0;shown[i]=false;good[i]=false;
+    });
+    if(finished){qDone=Math.max(0,qDone-1);if(perfect){qRight=Math.max(0,qRight-1)}}
+    finished=false;perfect=false;
+    sum.textContent='Activity reset. Choose a category for each item.';updateScore();
+  });
+});
+updateScore();
+
+show(0,false);
+})();
+</script>
+</body>
+</html>
