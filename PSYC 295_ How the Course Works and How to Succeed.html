@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PSYC 295: How the Course Works and How to Succeed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Literata:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F3F5F7; --surface:#FFFFFF; --surface2:#E9EEF3; --ink:#16233B; --muted:#4F5C74; --line:#CFD7E2;
+  --c1:#1F6F8B; --c2:#C98A12; --c3:#B5446E; --c4:#3F7D4B; --c5:#6B52BD;
+  --on-c:#FFFFFF; --focus:#1F6F8B;
+  --head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0F1623; --surface:#172236; --surface2:#1F2D45; --ink:#E8EDF5; --muted:#9FADC4; --line:#2B3A55;
+    --c1:#4FB3D1; --c2:#F0B64E; --c3:#E079A3; --c4:#7CC088; --c5:#A08CF0;
+    --on-c:#0F1623; --focus:#4FB3D1; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0F1623; --surface:#172236; --surface2:#1F2D45; --ink:#E8EDF5; --muted:#9FADC4; --line:#2B3A55;
+  --c1:#4FB3D1; --c2:#F0B64E; --c3:#E079A3; --c4:#7CC088; --c5:#A08CF0;
+  --on-c:#0F1623; --focus:#4FB3D1; color-scheme: dark;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:1.0625rem; line-height:1.65; }
+.wrap { max-width:62rem; margin:0 auto; padding:0 1.25rem; }
+h1,h2,h3 { font-family:var(--head); line-height:1.12; margin:0; letter-spacing:-0.01em; }
+h1 { font-size:clamp(2.2rem,6vw,3.7rem); font-weight:800; max-width:15em; }
+h2 { font-size:clamp(1.6rem,3.6vw,2.2rem); font-weight:700; }
+h3 { font-size:1.15rem; font-weight:700; }
+p { margin:0 0 .8rem; max-width:62ch; }
+section { padding:3.5rem 0 0; }
+.lede { color:var(--muted); font-size:1.15rem; margin-top:1rem; }
+button { font:inherit; color:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--focus); outline-offset:3px; border-radius:6px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:1.4rem; }
+
+/* draft banner */
+.draft { background:var(--surface2); border-bottom:1px solid var(--line); font-size:.95rem; }
+.draft .wrap { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding-top:.6rem; padding-bottom:.6rem; }
+.draft button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.3rem .8rem; flex:none; }
+
+/* hero */
+.hero { padding-top:3rem; }
+.trail-box { margin-top:2rem; }
+.trail-box svg { width:100%; height:auto; display:block; }
+.trail-bg { stroke:var(--line); }
+.trail-fg { stroke:var(--c1); transition:stroke-dashoffset .5s ease; }
+.node { cursor:pointer; }
+.node circle.body { fill:var(--surface); stroke:var(--c1); stroke-width:4; transition:fill .2s; }
+.node.milestone circle.body { stroke:var(--c2); }
+.node text { font-family:var(--head); font-weight:700; font-size:26px; fill:var(--ink); text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+.node.done circle.body { fill:var(--surface2); }
+.node.active circle.body { fill:var(--c1); }
+.node.active.milestone circle.body { fill:var(--c2); }
+.node.active text { fill:var(--on-c); }
+.node:focus-visible { outline:none; }
+.node:focus-visible circle.ring { stroke:var(--focus); stroke-width:3; }
+.node circle.ring { fill:none; stroke:transparent; }
+.chips { display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0; }
+.chip { border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:.35rem .9rem; font-family:var(--head); font-weight:500; }
+.chip[aria-pressed="true"] { background:var(--c1); border-color:var(--c1); color:var(--on-c); }
+.panel { display:grid; gap:1.25rem; grid-template-columns:1fr; }
+@media (min-width:760px){ .panel { grid-template-columns:1.1fr 1fr; } }
+.panel h3 { font-size:1.5rem; margin-bottom:.5rem; }
+.tag { display:inline-block; font-family:var(--head); font-weight:500; font-size:.9rem; border:1.5px solid var(--c2); border-radius:6px; padding:0 .5rem; margin-bottom:.6rem; }
+.panel ul { margin:.25rem 0 0; padding-left:1.2rem; }
+.panel li { margin-bottom:.35rem; }
+.pn { display:flex; gap:.6rem; margin-top:1rem; }
+.pn button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.4rem .9rem; font-family:var(--head); font-weight:500; }
+.pn button:disabled { opacity:.4; cursor:default; }
+
+/* rhythm */
+.loop { display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem; margin-top:1.5rem; }
+@media (min-width:760px){ .loop { grid-template-columns:repeat(4,1fr); } }
+.step { text-align:left; border:2px solid var(--line); background:var(--surface); border-radius:12px; padding:.8rem 1rem; }
+.step b { font-family:var(--head); font-size:1.1rem; display:block; }
+.step span { color:var(--muted); font-size:.92rem; }
+.step[aria-pressed="true"] { border-color:var(--sc); box-shadow:inset 0 0 0 1px var(--sc); }
+.week { display:grid; grid-template-columns:repeat(7,1fr); gap:.4rem; margin-top:1rem; }
+.day { text-align:center; font-family:var(--head); font-weight:500; font-size:.9rem; }
+.day .cell { height:84px; margin-top:.3rem; border-radius:10px; background:var(--surface2); display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line); }
+.day .seg { flex:1; transition:opacity .25s; }
+.dim .seg { opacity:.18; }
+.dim .seg.on { opacity:1; }
+.step-note { margin-top:1rem; min-height:3.2rem; }
+.hours { margin-top:2rem; }
+.hours label { font-family:var(--head); font-weight:500; display:block; margin-bottom:.4rem; }
+input[type=range] { width:100%; accent-color:var(--c1); height:1.6rem; }
+.bar { display:flex; height:3rem; border-radius:10px; overflow:hidden; margin-top:.8rem; border:1px solid var(--line); }
+.bar div { display:flex; align-items:center; justify-content:center; font-family:var(--head); font-weight:700; font-size:.95rem; color:var(--on-c); transition:flex-grow .3s; min-width:0; }
+.bar-legend { display:flex; flex-wrap:wrap; gap:.4rem 1.2rem; margin-top:.6rem; font-size:.95rem; color:var(--muted); }
+.sw { display:inline-block; width:.8rem; height:.8rem; border-radius:3px; margin-right:.4rem; vertical-align:-1px; }
+
+/* grades */
+.grades { display:grid; gap:1.5rem; grid-template-columns:1fr; margin-top:1.5rem; }
+@media (min-width:820px){ .grades { grid-template-columns:1fr 1fr; align-items:start; } }
+.donut-wrap { position:relative; max-width:20rem; margin:0 auto; }
+.donut-wrap svg { width:100%; height:auto; display:block; transform:rotate(-90deg); }
+.seg-arc { fill:none; stroke-width:30; cursor:pointer; transition:stroke-width .2s, opacity .2s; }
+.seg-arc.dim { opacity:.3; }
+.seg-arc.sel { stroke-width:38; }
+.seg-arc:focus-visible { outline:none; stroke:var(--ink); }
+.donut-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; pointer-events:none; padding:30%; }
+.donut-center b { font-family:var(--head); font-size:2.4rem; line-height:1; }
+.donut-center span { font-size:.9rem; color:var(--muted); line-height:1.25; margin-top:.3rem; }
+.cat-desc { margin-top:1rem; min-height:4.2rem; text-align:center; margin-left:auto; margin-right:auto; }
+.whatif h3 { margin-bottom:.2rem; }
+.row { margin-top:1rem; }
+.row .top { display:flex; justify-content:space-between; font-family:var(--head); font-weight:500; }
+.result { margin-top:1.2rem; display:flex; align-items:baseline; gap:1rem; border-top:1px solid var(--line); padding-top:1rem; }
+.result .big { font-family:var(--head); font-size:3rem; font-weight:800; line-height:1; }
+.result .pct { color:var(--muted); }
+
+/* habits */
+.meter { height:10px; background:var(--surface2); border-radius:99px; overflow:hidden; margin:1rem 0 .4rem; max-width:24rem; border:1px solid var(--line); }
+.meter div { height:100%; background:var(--c4); width:0; transition:width .3s; }
+.habits { display:grid; gap:.8rem; grid-template-columns:1fr; margin-top:1.2rem; }
+@media (min-width:760px){ .habits { grid-template-columns:1fr 1fr; } }
+.habit { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; border-left:6px solid var(--hc); }
+.habit .hd { display:flex; justify-content:space-between; gap:.8rem; align-items:flex-start; }
+.habit h3 { font-size:1.05rem; }
+.habit .why { color:var(--muted); font-size:.95rem; margin:.4rem 0 0; }
+.habit .more { display:none; margin-top:.6rem; padding-top:.6rem; border-top:1px dashed var(--line); font-size:.97rem; }
+.habit.open .more { display:block; }
+.habit .acts { display:flex; gap:.5rem; margin-top:.7rem; flex-wrap:wrap; }
+.habit .acts button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.25rem .7rem; font-family:var(--head); font-weight:500; font-size:.92rem; }
+.habit .acts button[aria-pressed="true"] { background:var(--c4); border-color:var(--c4); color:var(--on-c); }
+
+/* help */
+.help { display:grid; gap:.8rem; grid-template-columns:1fr; margin-top:1.2rem; }
+@media (min-width:700px){ .help { grid-template-columns:repeat(2,1fr); } }
+.help .card { padding:1.1rem; }
+.help h3 { font-size:1.05rem; margin-bottom:.3rem; }
+.help p { margin:0; color:var(--muted); font-size:.97rem; }
+footer { padding:3rem 0 3rem; color:var(--muted); font-size:.9rem; }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="draft" id="draft">
+  <div class="wrap">
+    <span>Draft with sample content. Dates, grade weights, and policies are placeholders until they are checked against the syllabus.</span>
+    <button id="hideDraft">Hide</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+<header class="hero">
+  <h1>Your path through PSYC 295</h1>
+  <p class="lede">Eight weeks, one weekly rhythm that repeats. Select a week on the trail to see what it asks of you and when it is due.</p>
+
+  <div class="trail-box">
+    <svg id="trail" viewBox="0 0 800 310" role="group" aria-label="Eight-week course trail"></svg>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Choose a week"></div>
+  <div class="card panel" id="weekPanel" aria-live="polite"></div>
+</header>
+
+<section id="rhythm">
+  <h2>Every week runs on the same loop</h2>
+  <p class="lede">Once you learn the loop in Week 1, the rest of the course is repetition. Select a step to see where it lands in your week.</p>
+  <div class="loop" id="loop"></div>
+  <div class="week" id="weekStrip"></div>
+  <p class="step-note" id="stepNote" aria-live="polite"></p>
+
+  <div class="hours card">
+    <label for="hrs">Time you can give each week: <b id="hrsOut">9 hours</b></label>
+    <input type="range" id="hrs" min="6" max="15" step="1" value="9">
+    <div class="bar" id="hoursBar" role="img" aria-label="Suggested split of study time"></div>
+    <div class="bar-legend" id="hoursLegend"></div>
+  </div>
+</section>
+
+<section id="grades">
+  <h2>How your grade is built</h2>
+  <p class="lede">Select a slice to see what it covers. Then move the sliders to test how your scores add up.</p>
+  <div class="grades">
+    <div>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 200 200" id="donut" role="group" aria-label="Grade weights"></svg>
+        <div class="donut-center"><b id="dPct">100%</b><span id="dName">of your grade</span></div>
+      </div>
+      <p class="cat-desc" id="catDesc"></p>
+    </div>
+    <div class="card whatif">
+      <h3>What-if calculator</h3>
+      <p style="color:var(--muted);margin:0">Set the score you expect in each category.</p>
+      <div id="sliders"></div>
+      <div class="result" aria-live="polite">
+        <span class="big" id="letter">B</span>
+        <span class="pct"><b id="total">85.0</b>% projected</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="habits">
+  <h2>Habits that make the difference</h2>
+  <p class="lede">Open a card for the reasoning and a first step. Mark the ones you commit to.</p>
+  <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="meterWrap"><div id="meter"></div></div>
+  <div id="meterText" style="color:var(--muted);font-size:.95rem"></div>
+  <div class="habits" id="habitList"></div>
+</section>
+
+<section id="help">
+  <h2>When you need help</h2>
+  <p class="lede">Reach out early. Most problems are easy to fix in Week 2 and hard to fix in Week 7.</p>
+  <div class="help" id="helpList"></div>
+</section>
+
+<footer>PSYC 295 student guide. Confirm all dates and policies in your syllabus and Canvas course.</footer>
+</main>
+
+<script>
+/* ======= EDIT THIS BLOCK: all page content lives here (sample values) ======= */
+const WEEKS = [
+  { title:"Get oriented", milestone:false, focus:"Learn how the course is organized and set up your weekly routine.",
+    do:["Read the syllabus and course overview","Introduce yourself in the first discussion","Complete the orientation quiz"], due:"Orientation quiz due Sunday" },
+  { title:"Build the foundation", milestone:false, focus:"Core concepts and vocabulary that every later week builds on.",
+    do:["Work through the readings and videos","Post in the weekly discussion","Submit Application Assignment 1"], due:"Discussion post Thursday, assignment Sunday" },
+  { title:"Go deeper", milestone:false, focus:"Apply the foundation to real examples and case studies.",
+    do:["Complete the check-in quiz","Reply to two classmates","Submit Application Assignment 2"], due:"Replies and assignment due Sunday" },
+  { title:"Midpoint check-in", milestone:true, focus:"Pause, review your progress, and adjust before the second half.",
+    do:["Review your grades in Canvas","Complete the midpoint reflection","Pick your project topic"], due:"Reflection and topic due Sunday" },
+  { title:"Plan your project", milestone:false, focus:"Turn your topic into a plan with sources and an outline.",
+    do:["Submit your project outline","Give feedback on a peer outline","Complete the weekly quiz"], due:"Outline due Wednesday, peer feedback Sunday" },
+  { title:"Draft and revise", milestone:true, focus:"Write a full draft and use feedback to strengthen it.",
+    do:["Submit your project draft","Use instructor feedback to revise","Submit Application Assignment 3"], due:"Draft due Friday" },
+  { title:"Polish and connect", milestone:false, focus:"Finish the project and connect the course ideas together.",
+    do:["Submit your final project","Complete the final quiz","Start the final reflection"], due:"Project due Sunday" },
+  { title:"Wrap up", milestone:true, focus:"Reflect on what changed in how you think and what comes next.",
+    do:["Submit the final reflection","Complete the course survey","Check that every item is graded"], due:"Final reflection due Sunday" }
+];
+
+const STEPS = [
+  { id:"learn",    name:"Learn",    color:"--c1", days:[0,1],   share:35, note:"Monday and Tuesday: read, watch, and take notes on the week’s materials. Start here so the rest of the week makes sense." },
+  { id:"practice", name:"Practice", color:"--c2", days:[2],     share:15, note:"Wednesday: test yourself with the check-in quiz. A low score now tells you what to review while there is still time." },
+  { id:"apply",    name:"Apply",    color:"--c3", days:[3,4,5], share:35, note:"Thursday to Saturday: post in the discussion by Thursday, then draft and submit the week’s assignment." },
+  { id:"reflect",  name:"Reflect",  color:"--c5", days:[5,6],   share:15, note:"Saturday and Sunday: reply to classmates, review feedback, and write down one thing to carry into next week." }
+];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const GRADES = [
+  { name:"Weekly discussions",     weight:20, color:"--c1", desc:"Short posts and replies each week. Graded on depth and on how you respond to classmates, not on length." },
+  { name:"Quizzes",                weight:15, color:"--c2", desc:"Short check-ins on readings and videos. They show you what to review before assignments." },
+  { name:"Application assignments",weight:30, color:"--c3", desc:"Three assignments where you apply course ideas to a real situation. This is the largest part of your grade." },
+  { name:"Course project",         weight:25, color:"--c4", desc:"A multi-week project with an outline, a draft, and a final version. Early drafts earn feedback you can use." },
+  { name:"Final reflection",       weight:10, color:"--c5", desc:"A closing essay on how your thinking changed across the course." }
+];
+const SCALE = [["A",90],["B",80],["C",70],["D",60]];
+
+const HABITS = [
+  { t:"Log in on Monday, not Wednesday", c:"--c1", why:"Early starts leave room for surprises.", tip:"Put a recurring Monday reminder on your phone that opens the Canvas course home page." },
+  { t:"Block time on your calendar", c:"--c2", why:"Online courses fail quietly when study time has no home.", tip:"Schedule two or three study blocks at the same time each week, and treat them like class meetings." },
+  { t:"Read the assignment before the reading", c:"--c3", why:"Knowing the task tells you what to look for.", tip:"Skim the prompt and rubric first, then read the materials with two or three questions in mind." },
+  { t:"Post early, reply thoughtfully", c:"--c4", why:"Early posts give classmates time to respond to you.", tip:"Add one new idea, example, or question in every reply instead of only agreeing." },
+  { t:"Use the rubric as a checklist", c:"--c5", why:"The rubric is the grading plan, in writing.", tip:"Before you submit, check each rubric row and note where in your work it is met." },
+  { t:"Ask for help within 24 hours", c:"--c1", why:"Small confusions compound across weeks.", tip:"Send your instructor a short message with what you tried and where you got stuck." }
+];
+
+const HELP = [
+  { t:"Your instructor", d:"Questions about content, feedback, or deadlines. Use Canvas messages or office hours." },
+  { t:"Tutoring and writing support", d:"Help with writing, APA style, and study strategies. Book early in the week." },
+  { t:"Library and research help", d:"Finding peer-reviewed sources for your project and checking citations." },
+  { t:"Technical support", d:"Canvas, login, or file problems. Take a screenshot and report it right away." },
+  { t:"Accessibility and disability services", d:"Accommodations and accessible formats. Contact them as soon as you know you need support." },
+  { t:"Student success advising", d:"Pacing, workload, or life events that affect your coursework." }
+];
+/* ======= END EDIT BLOCK ======= */
+
+const $ = (s) => document.querySelector(s);
+const css = (v) => `var(${v})`;
+function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v);}catch(e){ return null; } }
+
+$("#hideDraft").onclick = () => $("#draft").style.display = "none";
+
+/* ---------- trail ---------- */
+const XS = [100,300,500,700,700,500,300,100], YS = [80,80,80,80,230,230,230,230];
+const FRAC = [0,200,400,600,830,1030,1230,1430].map(n => n/1430);
+const svg = $("#trail");
+let cur = 0;
+svg.innerHTML = `
+  <path class="trail-bg" d="M100,80 H700 C790,80 790,230 700,230 H100" fill="none" stroke-width="10" stroke-linecap="round"/>
+  <path id="prog" class="trail-fg" d="M100,80 H700 C790,80 790,230 700,230 H100" fill="none" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+  ${WEEKS.map((w,i)=>`
+  <g class="node ${w.milestone?"milestone":""}" data-i="${i}" role="button" tabindex="0" aria-label="Week ${i+1}: ${w.title}">
+    <circle class="ring" cx="${XS[i]}" cy="${YS[i]}" r="42" stroke-width="3"/>
+    <circle class="body" cx="${XS[i]}" cy="${YS[i]}" r="34"/>
+    <text x="${XS[i]}" y="${YS[i]}">${i+1}</text>
+  </g>`).join("")}
+  <text x="400" y="30" text-anchor="middle" style="font-family:var(--head);font-size:17px;fill:var(--muted)">Amber rings mark milestone weeks</text>
+`;
+svg.querySelectorAll(".node").forEach(n => {
+  n.addEventListener("click", () => setWeek(+n.dataset.i));
+  n.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setWeek(+n.dataset.i);} });
+});
+$("#chips").innerHTML = WEEKS.map((w,i)=>`<button class="chip" data-i="${i}" aria-pressed="false">Week ${i+1}</button>`).join("");
+$("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(b) setWeek(+b.dataset.i); });
+
+function setWeek(i){
+  cur = i;
+  const w = WEEKS[i];
+  svg.querySelectorAll(".node").forEach((n,k)=>{ n.classList.toggle("active", k===i); n.classList.toggle("done", k<i); });
+  $("#prog").style.strokeDashoffset = 100 - FRAC[i]*100;
+  document.querySelectorAll(".chip").forEach((c,k)=>c.setAttribute("aria-pressed", k===i));
+  $("#weekPanel").innerHTML = `
+    <div>
+      ${w.milestone?`<span class="tag">Milestone week</span>`:""}
+      <h3>Week ${i+1}: ${w.title}</h3>
+      <p>${w.focus}</p>
+      <div class="pn">
+        <button id="prev" ${i===0?"disabled":""}>Previous week</button>
+        <button id="next" ${i===WEEKS.length-1?"disabled":""}>Next week</button>
+      </div>
+    </div>
+    <div>
+      <b style="font-family:var(--head)">What you will do</b>
+      <ul>${w.do.map(d=>`<li>${d}</li>`).join("")}</ul>
+      <p style="margin-top:.8rem;color:var(--muted)"><b style="color:var(--ink)">Due:</b> ${w.due}</p>
+    </div>`;
+  const p=$("#prev"), n=$("#next");
+  if(p) p.onclick=()=>setWeek(cur-1);
+  if(n) n.onclick=()=>setWeek(cur+1);
+}
+
+/* ---------- weekly loop ---------- */
+let activeStep = null;
+$("#loop").innerHTML = STEPS.map(s=>`<button class="step" data-id="${s.id}" style="--sc:${css(s.color)}" aria-pressed="false"><b>${s.name}</b><span>${DAYS[s.days[0]]}${s.days.length>1?" to "+DAYS[s.days[s.days.length-1]]:""}</span></button>`).join("");
+$("#weekStrip").innerHTML = DAYS.map((d,i)=>{
+  const segs = STEPS.filter(s=>s.days.includes(i));
+  return `<div class="day">${d}<div class="cell" data-d="${i}">${segs.map(s=>`<div class="seg" data-id="${s.id}" style="background:${css(s.color)}"></div>`).join("")}</div></div>`;
+}).join("");
+function setStep(id){
+  activeStep = activeStep===id ? null : id;
+  document.querySelectorAll(".step").forEach(b=>b.setAttribute("aria-pressed", b.dataset.id===activeStep));
+  $("#weekStrip").classList.toggle("dim", !!activeStep);
+  document.querySelectorAll("#weekStrip .seg").forEach(s=>s.classList.toggle("on", s.dataset.id===activeStep));
+  const s = STEPS.find(x=>x.id===activeStep);
+  $("#stepNote").textContent = s ? s.note : "Select a step above to highlight its days.";
+}
+$("#loop").addEventListener("click", e=>{ const b=e.target.closest(".step"); if(b) setStep(b.dataset.id); });
+setStep(null); $("#stepNote").textContent = "Select a step above to highlight its days.";
+
+/* ---------- hours ---------- */
+function renderHours(){
+  const h = +$("#hrs").value;
+  $("#hrsOut").textContent = h + " hours";
+  $("#hoursBar").innerHTML = STEPS.map(s=>`<div style="flex-grow:${s.share};background:${css(s.color)}">${(h*s.share/100).toFixed(1)}</div>`).join("");
+  $("#hoursLegend").innerHTML = STEPS.map(s=>`<span><i class="sw" style="background:${css(s.color)}"></i>${s.name} ${(h*s.share/100).toFixed(1)} hrs</span>`).join("");
+}
+$("#hrs").addEventListener("input", renderHours); renderHours();
+
+/* ---------- grades ---------- */
+const R = 70, C = 2*Math.PI*R;
+let selCat = null, off = 0;
+$("#donut").innerHTML = GRADES.map((g,i)=>{
+  const len = C*g.weight/100, gap = 3;
+  const el = `<circle class="seg-arc" data-i="${i}" cx="100" cy="100" r="${R}" stroke="${css(g.color)}" stroke-dasharray="${len-gap} ${C-len+gap}" stroke-dashoffset="${-off}" tabindex="0" role="button" aria-label="${g.name}, ${g.weight} percent"/>`;
+  off += len; return el;
+}).join("");
+function selectCat(i){
+  selCat = (selCat===i) ? null : i;
+  document.querySelectorAll(".seg-arc").forEach((a,k)=>{ a.classList.toggle("sel", k===selCat); a.classList.toggle("dim", selCat!==null && k!==selCat); });
+  const g = GRADES[selCat ?? 0];
+  $("#dPct").textContent = selCat===null ? "100%" : g.weight + "%";
+  $("#dName").textContent = selCat===null ? "of your grade" : g.name;
+  $("#catDesc").textContent = selCat===null ? "Select a slice to see what it covers." : g.desc;
+}
+document.querySelectorAll(".seg-arc").forEach(a=>{
+  a.addEventListener("click",()=>selectCat(+a.dataset.i));
+  a.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectCat(+a.dataset.i);} });
+});
+selectCat(null);
+
+$("#sliders").innerHTML = GRADES.map((g,i)=>`
+  <div class="row"><div class="top"><label for="s${i}"><i class="sw" style="background:${css(g.color)}"></i>${g.name} <span style="color:var(--muted);font-weight:400">(${g.weight}%)</span></label><span id="v${i}">85%</span></div>
+  <input type="range" id="s${i}" min="0" max="100" value="85" data-i="${i}"></div>`).join("");
+function calc(){
+  let t = 0;
+  GRADES.forEach((g,i)=>{ const v=+$("#s"+i).value; $("#v"+i).textContent=v+"%"; t += v*g.weight/100; });
+  const total = t / GRADES.reduce((a,g)=>a+g.weight,0) * 100;
+  $("#total").textContent = total.toFixed(1);
+  const L = SCALE.find(s=>total>=s[1]);
+  $("#letter").textContent = L ? L[0] : "F";
+}
+document.querySelectorAll("#sliders input").forEach(i=>i.addEventListener("input",calc)); calc();
+
+/* ---------- habits ---------- */
+let pledged = [];
+try { pledged = JSON.parse(store("psyc295-habits") || "[]"); } catch(e){ pledged = []; }
+$("#habitList").innerHTML = HABITS.map((h,i)=>`
+  <div class="habit" style="--hc:${css(h.c)}" data-i="${i}">
+    <div class="hd"><h3>${h.t}</h3></div>
+    <p class="why">${h.why}</p>
+    <div class="more"><b>Try this:</b> ${h.tip}</div>
+    <div class="acts">
+      <button class="tog" aria-expanded="false">Show how</button>
+      <button class="plg" aria-pressed="${pledged.includes(i)}">I will do this</button>
+    </div>
+  </div>`).join("");
+function meter(){
+  const n = pledged.length;
+  $("#meter").style.width = (n/HABITS.length*100) + "%";
+  $("#meterWrap").setAttribute("aria-valuenow", n);
+  $("#meterText").textContent = n===0 ? "Choose the habits you will start this week." : `${n} of ${HABITS.length} habits chosen.`;
+}
+$("#habitList").addEventListener("click", e=>{
+  const card = e.target.closest(".habit"); if(!card) return;
+  const i = +card.dataset.i;
+  if(e.target.closest(".tog")){
+    const open = card.classList.toggle("open");
+    e.target.closest(".tog").setAttribute("aria-expanded", open);
+    e.target.closest(".tog").textContent = open ? "Hide" : "Show how";
+  }
+  if(e.target.closest(".plg")){
+    pledged = pledged.includes(i) ? pledged.filter(x=>x!==i) : pledged.concat(i);
+    e.target.closest(".plg").setAttribute("aria-pressed", pledged.includes(i));
+    store("psyc295-habits", JSON.stringify(pledged)); meter();
+  }
+});
+meter();
+
+/* ---------- help ---------- */
+$("#helpList").innerHTML = HELP.map(h=>`<div class="card"><h3>${h.t}</h3><p>${h.d}</p></div>`).join("");
+
+setWeek(0);
+</script>
+</body>
+</html>
