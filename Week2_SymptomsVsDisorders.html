@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 2 Interactive: Symptoms, Disorders, and Social Media</title>
+<style>
+:root{--accent:#4338ca;--soft:#eef2ff;--line-a:#c7d2fe;--ink:#162b29;--muted:#45605c;--paper:#f7fbf9;--card:#fff;--line:#d6e4df;--ok:#14532d;--ok-bg:#dcfce7;--warn:#7c2d12;--warn-bg:#ffedd5;--radius:14px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
+h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:0 0 .9em}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;background:#fff;padding:8px 14px;border-radius:8px;z-index:50;border:2px solid var(--accent)}
+:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{background:var(--soft);border-bottom:1px solid var(--line-a)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding-top:30px;padding-bottom:30px}
+.hero .course{font-weight:600;color:var(--accent);margin:0 0 .4em}
+.hero h1{font-size:clamp(1.9rem,4.2vw,2.85rem);margin-bottom:.4em}
+.hero .lede{font-size:1.12rem;max-width:34em;color:#27413e;margin:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);margin-top:26px}
+.tab{appearance:none;border:0;background:none;font:inherit;font-weight:600;color:var(--muted);padding:12px 18px;border-bottom:4px solid transparent;margin-bottom:-2px;cursor:pointer;border-radius:10px 10px 0 0}
+.tab:hover{background:var(--soft)}
+.tab[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent);background:var(--card)}
+.panel{padding:26px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.btn{appearance:none;font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:#fff;color:var(--accent)}
+.btn.ghost:hover{background:var(--soft);filter:none}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.callout{border-left:6px solid var(--accent);background:var(--soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:20px 0}
+.callout p:last-child{margin:0}
+.fb{border-radius:12px;padding:14px 16px;margin-top:14px;border:2px solid transparent}
+.fb.good{background:var(--ok-bg);color:var(--ok);border-color:#86efac}
+.fb.bad{background:var(--warn-bg);color:var(--warn);border-color:#fdba74}
+.fb strong{display:block;margin-bottom:2px}
+.chip{display:inline-block;background:var(--soft);color:var(--accent);border:1px solid var(--line-a);padding:3px 12px;border-radius:999px;font-size:.92rem;font-weight:600}
+.muted{color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.progress{height:8px;background:#e3ece8;border-radius:99px;overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+.verse{margin:36px 0 0;padding:22px 0 8px;border-top:1px solid var(--line);color:var(--muted);font-family:Georgia,serif;font-style:italic}
+.verse cite{display:block;font-style:normal;font-family:inherit;margin-top:4px;font-size:.92rem}
+.help{font-size:.95rem;color:var(--muted);padding:6px 0 34px}
+@media(max-width:780px){.hero .wrap{grid-template-columns:1fr}.hero-art{max-width:380px;margin:0 auto;order:-1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.person{display:flex;flex-direction:column}
+.person .top{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+.person svg.av{width:76px;height:76px;flex:none}
+.person h3{margin:0}
+.person ul{margin:.3em 0 1em;padding-left:1.2em}
+.person li{margin-bottom:.3em}
+.meterlabel{display:flex;justify-content:space-between;font-size:.92rem;font-weight:600;margin-bottom:4px}
+.meter{height:12px;border-radius:99px;background:#e5e7eb;overflow:hidden;margin-bottom:14px}
+.meter>span{display:block;height:100%;width:80%;background:#be123c;border-radius:99px;transition:width .5s,background .5s}
+.person.on .meter>span{background:#15803d}
+.supporttext{background:#f0fdf4;border:1px solid #86efac;color:#14532d;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.96rem}
+.miss{font-size:.95rem;background:var(--soft);padding:10px 12px;border-radius:10px;margin-top:auto}
+.person .btn{margin-bottom:14px;align-self:flex-start}
+.stage{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:30px;align-items:start}
+.phone{background:#312e81;border-radius:38px;padding:14px;box-shadow:0 14px 30px rgba(49,46,129,.25)}
+.phone .notch{width:70px;height:8px;border-radius:4px;background:#6366f1;opacity:.6;margin:0 auto 10px}
+.screen{background:#fff;border-radius:24px;padding:16px;min-height:290px}
+.who{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+.handle{font-weight:700;line-height:1.2}
+.bio{font-size:.85rem;color:var(--muted);line-height:1.2}
+.posttext{font-size:1.05rem;margin:0 0 14px}
+.reactions{display:flex;gap:18px;font-size:.9rem;color:var(--muted);align-items:center}
+.reactions svg{width:18px;height:18px;vertical-align:-3px;margin-right:4px}
+.answers{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
+.answers .btn{flex:1 1 200px}
+.stepline{display:flex;justify-content:space-between;font-weight:600;margin-bottom:6px}
+.habits{counter-reset:h;list-style:none;padding:0;margin:0}
+.habits li{padding:12px 0 12px 0;border-bottom:1px solid var(--line)}
+.habits li:last-child{border:0}
+.score{font-family:Georgia,serif;font-size:2.4rem;color:var(--accent);margin:0}
+@media(max-width:780px){.stage{grid-template-columns:1fr}.phone{max-width:340px;margin:0 auto}}
+.answers .btn.picked{background:var(--accent);color:#fff;opacity:1}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the activity</a>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <p class="course">PSYC 285, Week 2 interactive</p>
+      <h1>Same diagnosis, different people</h1>
+      <p class="lede">Explore how neurodevelopmental conditions vary from person to person, then practice fact-checking what you see online.</p>
+    </div>
+    <div class="hero-art"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-labelledby="herot herod">
+  <title id="herot">A phone feed under a magnifying glass</title>
+  <desc id="herod">A smartphone showing social media posts, with a magnifying glass checking one post, beside three overlapping people shapes in different colors representing variation within one diagnosis.</desc>
+  <circle cx="260" cy="190" r="165" fill="#e0e7ff"/>
+  <circle cx="95" cy="262" r="34" fill="#fbbf24"/><circle cx="95" cy="228" r="20" fill="#fde68a"/>
+  <circle cx="138" cy="282" r="30" fill="#34d399"/><circle cx="138" cy="250" r="17" fill="#a7f3d0"/>
+  <circle cx="60" cy="312" r="28" fill="#f472b6"/><circle cx="60" cy="283" r="16" fill="#fbcfe8"/>
+  <rect x="190" y="22" width="170" height="316" rx="30" fill="#312e81"/>
+  <rect x="200" y="40" width="150" height="280" rx="20" fill="#ffffff"/>
+  <rect x="244" y="28" width="62" height="8" rx="4" fill="#4338ca" opacity=".5"/>
+  <g>
+    <rect x="210" y="52" width="130" height="66" rx="10" fill="#eef2ff"/>
+    <circle cx="226" cy="68" r="8" fill="#818cf8"/><rect x="240" y="63" width="60" height="6" rx="3" fill="#a5b4fc"/>
+    <rect x="218" y="82" width="114" height="6" rx="3" fill="#c7d2fe"/><rect x="218" y="94" width="86" height="6" rx="3" fill="#c7d2fe"/>
+    <path d="M222 108 l4 -4 l4 4 l-4 6z" fill="#f43f5e"/>
+    <rect x="210" y="128" width="130" height="66" rx="10" fill="#eef2ff"/>
+    <circle cx="226" cy="144" r="8" fill="#34d399"/><rect x="240" y="139" width="52" height="6" rx="3" fill="#a5b4fc"/>
+    <rect x="218" y="158" width="114" height="6" rx="3" fill="#c7d2fe"/><rect x="218" y="170" width="96" height="6" rx="3" fill="#c7d2fe"/>
+    <rect x="210" y="204" width="130" height="66" rx="10" fill="#eef2ff"/>
+    <circle cx="226" cy="220" r="8" fill="#fbbf24"/><rect x="240" y="215" width="68" height="6" rx="3" fill="#a5b4fc"/>
+    <rect x="218" y="234" width="114" height="6" rx="3" fill="#c7d2fe"/><rect x="218" y="246" width="70" height="6" rx="3" fill="#c7d2fe"/>
+    <rect x="210" y="280" width="130" height="30" rx="10" fill="#eef2ff"/>
+  </g>
+  <circle cx="378" cy="214" r="56" fill="#ffffff" fill-opacity=".55" stroke="#4338ca" stroke-width="12"/>
+  <line x1="418" y1="256" x2="470" y2="308" stroke="#4338ca" stroke-width="20" stroke-linecap="round"/>
+  <path d="M352 214 l18 18 l34 -38" fill="none" stroke="#15803d" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <div class="tabs" role="tablist" aria-label="Activity sections"><button class="tab" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0">Same diagnosis, different people</button><button class="tab" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1">Fact-check the feed</button></div>
+  <section id="p1" class="panel" role="tabpanel" aria-labelledby="tab1">
+  <h2>One diagnosis, three different people</h2>
+  <p class="muted" style="max-width:46em">These three fictional people each have ADHD. Look at what shows up for each, then choose <em>Add a good-fit support</em> to see how the right match changes daily life. They are illustrative composites, not real people or data.</p>
+  <div class="grid3" style="margin-top:18px">
+    <article class="card person" id="pc0">
+      <div class="top">
+        <svg class="av" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="48" fill="#d1fae5"/><path d="M14 96c2-22 16-30 34-30s32 8 34 30z" fill="#10b981"/><circle cx="48" cy="44" r="20" fill="#e0ac69"/><path d="M27 40c0-14 10-20 22-20s21 7 21 20c-6-6-14-9-22-9s-15 3-21 9z" fill="#3b2f2f"/><circle cx="41" cy="46" r="2.4" fill="#2b2118"/><circle cx="55" cy="46" r="2.4" fill="#2b2118"/><path d="M42 54q6 5 12 0" stroke="#2b2118" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+        <div><h3>Marcus, age 8</h3><span class="chip">Second grade</span></div>
+      </div>
+      <p class="sr">What you might see:</p>
+      <ul>
+        <li>Leaves his seat during seatwork and blurts out answers.</li>
+        <li>Has trouble waiting his turn at recess.</li>
+        <li>Struggles at home and at school, not in one place only.</li>
+      </ul>
+      <div class="meterlabel"><span>Daily friction</span><span class="lvl" id="lvl0">High</span></div>
+      <div class="meter" aria-hidden="true"><span id="m0"></span></div>
+      <div class="supporttext" id="s0" hidden>Predictable routines, movement breaks, and parent training in behavior strategies give Marcus structure that fits how he works.</div>
+      <button class="btn ghost sup" data-i="0" aria-pressed="false">Add a good-fit support</button>
+      <p class="miss"><strong>What a stereotype misses:</strong> This is more than “a busy boy.” A diagnosis looks at whether symptoms last, show up in more than one setting, and interfere with learning and friendships.</p>
+    </article>
+    <article class="card person" id="pc1">
+      <div class="top">
+        <svg class="av" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="48" fill="#e0e7ff"/><path d="M14 96c2-22 16-30 34-30s32 8 34 30z" fill="#6366f1"/><ellipse cx="48" cy="52" rx="27" ry="31" fill="#1f1f1f"/><circle cx="48" cy="44" r="20" fill="#c68642"/><path d="M27 40c2-12 11-18 21-18s19 6 21 18c-6-5-13-8-21-8s-15 3-21 8z" fill="#1f1f1f"/><circle cx="41" cy="46" r="2.4" fill="#2b2118"/><circle cx="55" cy="46" r="2.4" fill="#2b2118"/><path d="M42 54q6 5 12 0" stroke="#2b2118" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+        <div><h3>Priya, age 15</h3><span class="chip">Tenth grade</span></div>
+      </div>
+      <p class="sr">What you might see:</p>
+      <ul>
+        <li>Seems to daydream in class and rarely disrupts anyone.</li>
+        <li>Loses homework she actually finished.</li>
+        <li>Works much harder than peers to look “fine.”</li>
+      </ul>
+      <div class="meterlabel"><span>Daily friction</span><span class="lvl" id="lvl1">High</span></div>
+      <div class="meter" aria-hidden="true"><span id="m1"></span></div>
+      <div class="supporttext" id="s1" hidden>An evaluation that looks for the inattentive presentation, plus planning tools and extended time, helps Priya show what she knows.</div>
+      <button class="btn ghost sup" data-i="1" aria-pressed="false">Add a good-fit support</button>
+      <p class="miss"><strong>What a stereotype misses:</strong> No hyperactivity does not mean no ADHD. The inattentive presentation is often noticed later, especially in girls.</p>
+    </article>
+    <article class="card person" id="pc2">
+      <div class="top">
+        <svg class="av" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="48" fill="#fef3c7"/><path d="M14 96c2-22 16-30 34-30s32 8 34 30z" fill="#f59e0b"/><path d="M22 58c-4-26 6-40 26-40s30 14 26 40c-3 6-8 8-10 2l-32 0c-2 6-7 4-10-2z" fill="#8b5e34"/><circle cx="48" cy="46" r="19" fill="#f1c27d"/><path d="M29 42c4-12 12-16 19-16s16 4 19 16c-8-4-12-8-19-8s-11 4-19 8z" fill="#8b5e34"/><circle cx="41" cy="47" r="2.4" fill="#2b2118"/><circle cx="55" cy="47" r="2.4" fill="#2b2118"/><path d="M42 55q6 5 12 0" stroke="#2b2118" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+        <div><h3>Elena, age 34</h3><span class="chip">Project coordinator</span></div>
+      </div>
+      <p class="sr">What you might see:</p>
+      <ul>
+        <li>Restlessness is mostly inner, not visible.</li>
+        <li>Misses deadlines despite real effort.</li>
+        <li>Thrives in a crisis and with new ideas.</li>
+      </ul>
+      <div class="meterlabel"><span>Daily friction</span><span class="lvl" id="lvl2">High</span></div>
+      <div class="meter" aria-hidden="true"><span id="m2"></span></div>
+      <div class="supporttext" id="s2" hidden>Workplace accommodations, coaching, and a conversation with a clinician about treatment options help Elena use her strengths.</div>
+      <button class="btn ghost sup" data-i="2" aria-pressed="false">Add a good-fit support</button>
+      <p class="miss"><strong>What a stereotype misses:</strong> Adults can have ADHD that was never recognized in childhood. Real strengths and real impairments can exist together.</p>
+    </article>
+  </div>
+  <div class="callout" role="note">
+    <p><strong>Takeaway:</strong> Two people with the same diagnosis can look very different by age, strengths, environment, and support. That is why diagnosis rests on careful evaluation of the whole person, not on a familiar stereotype.</p>
+  </div>
+  <p id="p1done" class="muted" aria-live="polite"></p>
+</section>
+
+<section id="p2" class="panel" role="tabpanel" aria-labelledby="tab2" hidden>
+  <h2>Fact-check the feed</h2>
+  <p class="muted" style="max-width:46em">Six posts are about to scroll by. For each one, decide whether it is clinically grounded or oversimplified and misleading. You will get a reason after every answer.</p>
+  <div class="stage" id="game">
+    <div class="phone" aria-hidden="false">
+      <div class="notch" aria-hidden="true"></div>
+      <div class="screen" id="screen">
+        <div class="who"><div class="avatar" id="av"></div><div><div class="handle" id="hd"></div><div class="bio" id="bio"></div></div></div>
+        <p class="posttext" id="pt"></p>
+        <div class="reactions" aria-hidden="true">
+          <span><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.700 4.200 7.200C19.500 16.300 12 21 12 21z" fill="#e11d48"/></svg><span id="lk"></span></span>
+          <span><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z" fill="none" stroke="#64748b" stroke-width="2" stroke-linejoin="round"/></svg>Comments</span>
+          <span><svg viewBox="0 0 24 24"><path d="M4 12h12m-5-5 5 5-5 5" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="stepline"><span id="stepno">Post 1 of 6</span><span id="scoreline">0 correct so far</span></div>
+      <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+      <h3 style="margin-top:18px" id="q">How would you rate this post?</h3>
+      <div class="answers" id="answers">
+        <button class="btn ghost" data-a="true">Clinically grounded</button>
+        <button class="btn ghost" data-a="false">Oversimplified or misleading</button>
+      </div>
+      <div id="feedback" aria-live="polite"></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="next" hidden>Next post</button></div>
+    </div>
+  </div>
+  <div id="summary" hidden class="card" style="margin-top:8px">
+    <p class="score" id="sc"></p>
+    <p id="scmsg"></p>
+    <h3>Three habits to carry into Discussion 2</h3>
+    <ol class="habits">
+      <li><strong>Check the source.</strong> Who is speaking, what are their credentials, and do they point to evidence or an evaluation?</li>
+      <li><strong>Separate symptom from pattern.</strong> Relating to a symptom is not meeting criteria. Ask how long, how often, and how much it interferes with life.</li>
+      <li><strong>Respond with humility.</strong> People’s experiences vary. Absolute claims and “diagnose yourself” quizzes are warning signs.</li>
+    </ol>
+    <div class="callout"><p><strong>Reflect:</strong> Think of one post or video you saw this week. Which of the three habits would change how you read it?</p></div>
+    <button class="btn" id="again">Play again</button>
+  </div>
+</section>
+
+  <figure class="verse"><blockquote style="margin:0">“Turn from evil and do good; seek peace and pursue it.”</blockquote><cite>Psalm 34:14 (NIV, 1978/2011)</cite></figure>
+  <p class="help">This activity is for learning and is not a diagnostic tool. If you or someone you know is struggling, reach out to a licensed professional or your campus counseling services. In the U.S., you can call or text 988 at any time.</p>
+</main>
+<div id="live" class="sr" aria-live="polite" role="status"></div>
+<script>
+function say(m){var l=document.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=m},30)}
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function select(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on})}
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(t)});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+      if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+      if(e.key==='Home')n=tabs[0];
+      if(e.key==='End')n=tabs[tabs.length-1];
+      if(n){e.preventDefault();select(n);n.focus()}
+    });
+  });
+})();
+</script>
+<script>
+/* Tab 1: supports toggle */
+(function(){
+  var used={};
+  [].forEach.call(document.querySelectorAll('.sup'),function(b){
+    b.addEventListener('click',function(){
+      var i=b.dataset.i,on=b.getAttribute('aria-pressed')!=='true';
+      b.setAttribute('aria-pressed',on);
+      b.textContent=on?'Remove support':'Add a good-fit support';
+      document.getElementById('pc'+i).classList.toggle('on',on);
+      document.getElementById('s'+i).hidden=!on;
+      document.getElementById('m'+i).style.width=on?'35%':'80%';
+      document.getElementById('lvl'+i).textContent=on?'Lower':'High';
+      if(on)used[i]=1;
+      var n=Object.keys(used).length;
+      document.getElementById('p1done').textContent=n===3?'You explored all three. Notice that the support is matched to the person, not to the label.':'';
+      say(on?'Support added. Daily friction is lower.':'Support removed. Daily friction is high.');
+    });
+  });
+})();
+
+/* Tab 2: fact-check game */
+(function(){
+  var POSTS=[
+   {h:'@maya.moments',a:'M',c:'#b45309',bio:'Lifestyle and mindset',lk:'12.4K',t:'I lose my keys every week and zone out in meetings. Honestly I think I have ADHD 😂 Who else??',ok:false,
+    why:'Relating to a symptom is not the same as meeting criteria. Clinicians look at how long, how often, and how much a pattern interferes with daily life across settings, and they rule out other explanations such as stress, sleep loss, or medical issues.',look:'Symptom versus pattern with impairment'},
+   {h:'@truth.bomb.tom',a:'T',c:'#4338ca',bio:'Hot takes, daily',lk:'8.1K',t:'People with autism don’t feel empathy and can’t have real friendships. Period.',ok:false,
+    why:'Autism varies widely from person to person. Many autistic people feel empathy deeply and build close relationships, though they may communicate or show it differently. Absolute claims about everyone with a diagnosis are a warning sign.',look:'Absolute claims about everyone with a diagnosis'},
+   {h:'@parenting.with.dr.park',a:'P',c:'#0f766e',bio:'Pediatric psychologist (fictional account)',lk:'3.2K',t:'Worried about your toddler’s speech or play? Developmental screening is quick, and early support such as speech-language therapy can help. Start by talking with your child’s pediatrician.',ok:true,
+    why:'This is specific, credible, and action-oriented. It matches the Deep Dive: early identification and evidence-based intervention can improve long-term functioning, and it points to a professional rather than offering a diagnosis.',look:'Credentialed source with a concrete next step'},
+   {h:'@quiz.queen',a:'Q',c:'#be185d',bio:'Personality quizzes',lk:'21.9K',t:'Take my 5-question quiz! Answer yes to 4 or more and you officially have autism. Drop your score below 👇',ok:false,
+    why:'A short quiz cannot diagnose. Diagnosis requires a trained clinician, a developmental history, observation, and a check for other explanations. Quizzes can spark curiosity, but “officially” overstates what they can do.',look:'A quiz presented as a diagnosis'},
+   {h:'@brain.notes.daily',a:'B',c:'#15803d',bio:'Learning and attention',lk:'5.7K',t:'ADHD is often recognized later in girls and women because quieter, inattentive symptoms get missed. If this sounds familiar, an evaluation can help.',ok:true,
+    why:'This reflects how presentation varies by gender and context, so some people are identified late. Notice what it does not do: it does not tell you that you have ADHD, and it points toward an evaluation.',look:'Acknowledges variation and points to evaluation'},
+   {h:'@neurodiverse.notes',a:'N',c:'#7c3aed',bio:'Writer and ADHD advocate',lk:'9.6K',t:'Neurodiversity means human brains naturally vary, and my strengths are real. It doesn’t cancel my need for supports. A strengths-based view and real accommodations can go together.',ok:true,
+    why:'This captures the balance in the Deep Dive: a strengths-based view can sit alongside clinical care that addresses real difficulties.',look:'Balances strengths and needs'}
+  ];
+  var i=0,score=0,locked=false;
+  var $=function(id){return document.getElementById(id)};
+  function show(){
+    var p=POSTS[i];locked=false;
+    $('av').textContent=p.a;$('av').style.background=p.c;
+    $('hd').textContent=p.h;$('bio').textContent=p.bio;$('pt').textContent=p.t;$('lk').textContent=p.lk;
+    $('stepno').textContent='Post '+(i+1)+' of '+POSTS.length;
+    $('scoreline').textContent=score+' correct so far';
+    $('bar').style.width=(i/POSTS.length*100)+'%';
+    $('feedback').innerHTML='';$('next').hidden=true;
+    [].forEach.call($('answers').children,function(b){b.disabled=false;b.classList.remove('picked')});
+    $('q').textContent='How would you rate this post?';
+  }
+  $('answers').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b||locked)return;locked=true;
+    var p=POSTS[i],pick=b.dataset.a==='true',right=pick===p.ok;
+    if(right)score++;
+    [].forEach.call($('answers').children,function(x){x.disabled=true});b.classList.add('picked');
+    $('feedback').innerHTML='<div class="fb '+(right?'good':'bad')+'"><strong>'+(right?'Correct.':'Not quite.')+' This post is '+(p.ok?'clinically grounded':'oversimplified or misleading')+'.</strong>'+p.why+'<div style="margin-top:8px"><span class="chip">Look for: '+p.look+'</span></div></div>';
+    $('scoreline').textContent=score+' correct so far';
+    $('next').hidden=false;$('next').textContent=i===POSTS.length-1?'See my results':'Next post';
+    $('next').focus();
+  });
+  $('next').addEventListener('click',function(){
+    if(i<POSTS.length-1){i++;show();}
+    else{
+      $('game').hidden=true;$('summary').hidden=false;
+      $('sc').textContent=score+' of '+POSTS.length+' correct';
+      $('scmsg').textContent=score>=5?'Sharp eye. You are separating symptoms from disorders and spotting oversimplified claims.':score>=3?'A solid start. Review the “Look for” signals and try again to sharpen them.':'This is hard, and that is the point. Every feed blends accurate and misleading claims. Try again with the signals in mind.';
+      $('bar').style.width='100%';
+      say('Results: '+score+' of '+POSTS.length+' correct.');
+      $('sc').scrollIntoView({block:'nearest'});
+    }
+  });
+  $('again').addEventListener('click',function(){i=0;score=0;$('summary').hidden=true;$('game').hidden=false;show();});
+  show();
+})();
+
+</script>
+</body>
+</html>

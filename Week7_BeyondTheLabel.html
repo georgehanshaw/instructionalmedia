@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 7 Interactive: Risk, Protection, and Reframing the Label</title>
+<style>
+:root{--accent:#be185d;--soft:#fdf2f8;--line-a:#fbcfe8;--ink:#162b29;--muted:#45605c;--paper:#f7fbf9;--card:#fff;--line:#d6e4df;--ok:#14532d;--ok-bg:#dcfce7;--warn:#7c2d12;--warn-bg:#ffedd5;--radius:14px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
+h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:0 0 .9em}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;background:#fff;padding:8px 14px;border-radius:8px;z-index:50;border:2px solid var(--accent)}
+:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{background:var(--soft);border-bottom:1px solid var(--line-a)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding-top:30px;padding-bottom:30px}
+.hero .course{font-weight:600;color:var(--accent);margin:0 0 .4em}
+.hero h1{font-size:clamp(1.9rem,4.2vw,2.85rem);margin-bottom:.4em}
+.hero .lede{font-size:1.12rem;max-width:34em;color:#27413e;margin:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);margin-top:26px}
+.tab{appearance:none;border:0;background:none;font:inherit;font-weight:600;color:var(--muted);padding:12px 18px;border-bottom:4px solid transparent;margin-bottom:-2px;cursor:pointer;border-radius:10px 10px 0 0}
+.tab:hover{background:var(--soft)}
+.tab[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent);background:var(--card)}
+.panel{padding:26px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.btn{appearance:none;font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:#fff;color:var(--accent)}
+.btn.ghost:hover{background:var(--soft);filter:none}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.callout{border-left:6px solid var(--accent);background:var(--soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:20px 0}
+.callout p:last-child{margin:0}
+.fb{border-radius:12px;padding:14px 16px;margin-top:14px;border:2px solid transparent}
+.fb.good{background:var(--ok-bg);color:var(--ok);border-color:#86efac}
+.fb.bad{background:var(--warn-bg);color:var(--warn);border-color:#fdba74}
+.fb strong{display:block;margin-bottom:2px}
+.chip{display:inline-block;background:var(--soft);color:var(--accent);border:1px solid var(--line-a);padding:3px 12px;border-radius:999px;font-size:.92rem;font-weight:600}
+.muted{color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.progress{height:8px;background:#e3ece8;border-radius:99px;overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+.verse{margin:36px 0 0;padding:22px 0 8px;border-top:1px solid var(--line);color:var(--muted);font-family:Georgia,serif;font-style:italic}
+.verse cite{display:block;font-style:normal;font-family:inherit;margin-top:4px;font-size:.92rem}
+.help{font-size:.95rem;color:var(--muted);padding:6px 0 34px}
+@media(max-width:780px){.hero .wrap{grid-template-columns:1fr}.hero-art{max-width:380px;margin:0 auto;order:-1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.scalewrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start}
+.scalebox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.scalebox svg{width:100%;height:auto;display:block}
+.chips h3{margin:0 0 8px;font-size:1.05rem}
+.chiplist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.fchip{appearance:none;font:inherit;text-align:left;border:2px solid #475569;background:#fff;color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:600;display:flex;gap:10px;align-items:center}
+.fchip:before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:2px solid currentColor}
+.fchip[aria-pressed=true]:before{background:currentColor;box-shadow:inset 0 0 0 3px #fff}
+.fchip.prot{border-color:var(--accent)}
+.fchip.risk[aria-pressed=true]{background:#e2e8f0;border-color:#334155}
+.fchip.prot[aria-pressed=true]{background:var(--soft)}
+.fchip:hover{filter:brightness(.97)}
+.status{font-weight:700;font-size:1.05rem;margin:10px 0 4px}
+.studio{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start}
+.para{font-family:Georgia,serif;font-size:1.3rem;line-height:2.1;margin:0}
+.slot{display:inline;font-weight:700;border-bottom:3px dotted var(--accent);background:var(--soft);color:var(--ink);padding:2px 6px;border-radius:6px;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.slot:hover{background:#fbcfe8}
+.slot.active{box-shadow:0 0 0 3px var(--accent)}
+.slot.done{background:#dcfce7;border-bottom:3px solid #15803d;color:#14532d}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{appearance:none;font:inherit;text-align:left;border:2px solid var(--accent);background:#fff;color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:600}
+.opt:hover:not([disabled]){background:var(--soft)}
+.opt[disabled]{opacity:.6;cursor:not-allowed}
+.shifts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0}
+.shifts div{background:var(--soft);border-radius:12px;padding:12px 14px}
+@media(max-width:860px){.scalewrap,.studio{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the activity</a>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <p class="course">PSYC 285, Week 7 interactive</p>
+      <h1>Beyond the label</h1>
+      <p class="lede">Weigh the risk and protective factors behind disruptive, substance-related, and personality disorders, then practice replacing stigmatizing language with evidence and compassion.</p>
+    </div>
+    <div class="hero-art"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-labelledby="herot herod">
+  <title id="herot">A balance scale weighing risk and protective factors</title>
+  <desc id="herod">A balance scale tipped toward the protective side. The heavier right pan holds hearts and a person shape for protective factors, while the left pan holds two small gray weights for risk factors.</desc>
+  <circle cx="260" cy="185" r="165" fill="#fce7f3"/>
+  <rect x="244" y="96" width="32" height="226" rx="10" fill="#831843"/>
+  <rect x="170" y="316" width="180" height="24" rx="12" fill="#831843"/>
+  <line x1="92.1" y1="69.4" x2="427.9" y2="122.6" stroke="#be185d" stroke-width="14" stroke-linecap="round"/>
+  <line x1="92.1" y1="69.4" x2="26.1" y2="169.4" stroke="#831843" stroke-width="3"/><line x1="92.1" y1="69.4" x2="158.1" y2="169.4" stroke="#831843" stroke-width="3"/><circle cx="74.1" cy="153.4" r="12" fill="#475569"/><circle cx="110.1" cy="153.4" r="12" fill="#475569"/><path d="M22.1 169.4 H162.1 A70 42 0 0 1 22.1 169.4Z" fill="#9d174d"/>
+  <line x1="427.9" y1="122.6" x2="361.9" y2="222.6" stroke="#831843" stroke-width="3"/><line x1="427.9" y1="122.6" x2="493.9" y2="222.6" stroke="#831843" stroke-width="3"/><path d="M0 9 C-18 -4 -11 -17 0 -8 C11 -17 18 -4 0 9Z" fill="#be185d" transform="translate(391.9 202.6)"/><g transform="translate(427.9 202.6)" fill="#be185d"><circle cx="0" cy="-8" r="6"/><path d="M-11 12 q11 -22 22 0z"/></g><path d="M0 9 C-18 -4 -11 -17 0 -8 C11 -17 18 -4 0 9Z" fill="#be185d" transform="translate(463.9 202.6)"/><path d="M357.9 222.6 H497.9 A70 42 0 0 1 357.9 222.6Z" fill="#9d174d"/>
+  <circle cx="260" cy="96" r="20" fill="#831843"/><circle cx="260" cy="96" r="7" fill="#fce7f3"/>
+</svg></div>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <div class="tabs" role="tablist" aria-label="Activity sections"><button class="tab" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0">Balance the scale</button><button class="tab" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1">Reframe the label</button></div>
+  <section id="p1" class="panel" role="tabpanel" aria-labelledby="tab1">
+  <h2>Balance the scale</h2>
+  <p class="muted" style="max-width:46em">Disruptive, substance-related, and personality disorders have many contributing factors, and also many protective ones. Select factors to place them on the scale and watch how the balance shifts.</p>
+  <div class="scalewrap">
+    <div>
+      <div class="scalebox"><svg id="scale" viewBox="0 0 520 380" role="img" aria-labelledby="sct scd"><title id="sct">Risk and protective factors scale</title><desc id="scd">A balance scale. Risk factors you select are added to the left pan and protective factors to the right pan. The beam tips toward the heavier side.</desc></svg></div>
+      <p class="status" id="status" role="status">Select factors to begin.</p>
+      <p class="muted" style="font-size:.93rem;margin:0">This scale is a picture, not a measurement. Risk factors raise the odds of a problem. They do not decide anyone’s outcome.</p>
+      <div class="row" style="margin-top:12px"><button class="btn ghost" id="reset">Clear the scale</button></div>
+    </div>
+    <div class="chips">
+      <h3>Risk factors</h3>
+      <div class="chiplist" id="risks"></div>
+      <h3>Protective factors</h3>
+      <div class="chiplist" id="prots"></div>
+      <div class="callout" id="fdetail" aria-live="polite"><p>Select a factor to read how it matters.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="p2" class="panel" role="tabpanel" aria-labelledby="tab2" hidden>
+  <h2>Reframe the label</h2>
+  <p class="muted" style="max-width:46em">Read the passage below. Each highlighted phrase is a label or a moral judgment. Select one, learn why it misleads, then choose a better phrase.</p>
+  <div class="studio">
+    <div class="card"><p class="para" id="para"></p>
+      <div class="row" style="margin-top:14px"><span class="chip" id="prog">0 of 5 reframed</span><button class="btn ghost" id="compare" hidden aria-pressed="false">Show the original</button></div>
+    </div>
+    <div class="card" id="side" aria-live="polite"><h3>How this works</h3><p class="muted" style="margin:0">Start with any highlighted phrase. You will see why it falls short and three options for replacing it.</p></div>
+  </div>
+  <div id="wrap" hidden>
+    <div class="callout"><p><strong>Well done. Read the reframed passage aloud once.</strong> Notice that it says the same things about the situation, but it no longer blames or labels anyone.</p></div>
+    <div class="shifts">
+      <div><strong>Labels to people</strong><br>Person-first language keeps the person ahead of the condition.</div>
+      <div><strong>Judgment to evidence</strong><br>Moral language hides contributing factors and effective treatments.</div>
+      <div><strong>Stigma to support</strong><br>Protective factors and early help improve outcomes.</div>
+    </div>
+    <div class="callout"><p><strong>Reflect for Discussion 7:</strong> Which of these labels have you heard or used? What would it take to swap in the reframed version in a real conversation?</p></div>
+  </div>
+</section>
+
+  <figure class="verse"><blockquote style="margin:0">“Shout for joy, you heavens; rejoice, you earth; burst into song, you mountains! For the Lord comforts his people and will have compassion on his afflicted ones.”</blockquote><cite>Isaiah 49:13 (NIV, 1978/2011)</cite></figure>
+  <p class="help">This activity is for learning and is not a diagnostic tool. If you or someone you know is struggling, reach out to a licensed professional or your campus counseling services. In the U.S., you can call or text 988 at any time.</p>
+</main>
+<div id="live" class="sr" aria-live="polite" role="status"></div>
+<script>
+function say(m){var l=document.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=m},30)}
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function select(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on})}
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(t)});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+      if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+      if(e.key==='Home')n=tabs[0];
+      if(e.key==='End')n=tabs[tabs.length-1];
+      if(n){e.preventDefault();select(n);n.focus()}
+    });
+  });
+})();
+</script>
+<script>
+/* Tab 1: risk and protective scale */
+(function(){
+  var NS='http://www.w3.org/2000/svg',svg=document.getElementById('scale');
+  var $=function(id){return document.getElementById(id)};
+  var RISK=[
+   ['Difficult early temperament','Temperament is one contributing factor. It shapes how a child reacts to stress, not what the child will become.'],
+   ['Early trauma or adversity','Trauma and harsh early environments can affect emotion regulation and stress responses.'],
+   ['Family conflict and instability','Chaotic or hostile home environments can raise risk for conduct and substance problems.'],
+   ['Peers who use substances','Peer norms and easy access can make substance use more likely.'],
+   ['An unsafe or under-resourced community','Community stress and limited resources can raise risk and make help harder to reach.']];
+  var PROT=[
+   ['A steady, supportive adult','Caring relationships buffer stress and make it easier to seek and stay in treatment.'],
+   ['Early, skills-based intervention','Programs such as parent management training teach skills early, when they work best.'],
+   ['Effective treatment','Approaches such as dialectical behavior therapy and motivational approaches have evidence behind them.'],
+   ['Engagement in school or work','Meaningful roles, structure, and a sense of purpose protect against many risks.'],
+   ['A caring community','Belonging and practical support reduce isolation and stigma. A faith community can show grace and compassion alongside evidence-based care.']];
+  var sel={risk:{},prot:{}};
+  function build(id,list,kind){
+    list.forEach(function(f,i){
+      var b=document.createElement('button');b.className='fchip '+kind;b.type='button';b.setAttribute('aria-pressed','false');b.textContent=f[0];
+      b.addEventListener('click',function(){
+        var on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);
+        if(on)sel[kind][i]=1;else delete sel[kind][i];
+        $('fdetail').innerHTML='<p><strong>'+f[0]+'.</strong> '+f[1]+'</p>';
+        go();
+      });
+      $(id).appendChild(b);
+    });
+  }
+  build('risks',RISK,'risk');build('prots',PROT,'prot');
+  var ang=0,target=0,raf=null;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+  function draw(th){
+    while(svg.children.length>2)svg.removeChild(svg.lastChild);
+    var PX=260,PY=96,HL=170,r=th*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+    el('rect',{x:244,y:PY,width:32,height:230,rx:10,fill:'#831843'});
+    el('rect',{x:170,y:318,width:180,height:24,rx:12,fill:'#831843'});
+    var L=[PX-HL*c,PY-HL*s],R=[PX+HL*c,PY+HL*s];
+    el('line',{x1:L[0],y1:L[1],x2:R[0],y2:R[1],stroke:'#be185d','stroke-width':14,'stroke-linecap':'round'});
+    pan(L,'Risk factors',Object.keys(sel.risk).length,false);
+    pan(R,'Protective factors',Object.keys(sel.prot).length,true);
+    el('circle',{cx:PX,cy:PY,r:20,fill:'#831843'});el('circle',{cx:PX,cy:PY,r:7,fill:'#fce7f3'});
+  }
+  function pan(e,label,n,prot){
+    var cy=e[1]+100,cx=e[0];
+    el('line',{x1:e[0],y1:e[1],x2:cx-66,y2:cy,stroke:'#831843','stroke-width':3});el('line',{x1:e[0],y1:e[1],x2:cx+66,y2:cy,stroke:'#831843','stroke-width':3});
+    for(var i=0;i<n;i++){
+      var row=Math.floor(i/3),col=i%3,cols=Math.min(3,n-row*3),x=cx+(col-(cols-1)/2)*34,y=cy-14-row*30;
+      if(prot)el('path',{d:'M0 9 C-18 -4 -11 -17 0 -8 C11 -17 18 -4 0 9Z',fill:'#be185d',transform:'translate('+x+' '+(y-6)+')'});
+      else el('circle',{cx:x,cy:y-4,r:12,fill:'#475569'});
+    }
+    el('path',{d:'M'+(cx-70)+' '+cy+' H'+(cx+70)+' A70 42 0 0 1 '+(cx-70)+' '+cy+'Z',fill:'#9d174d'});
+    var t=el('text',{x:cx,y:cy+66,'text-anchor':'middle','font-size':15,'font-weight':700,fill:'#162b29'});t.textContent=label;
+  }
+  function tick(){
+    var d=target-ang;
+    if(Math.abs(d)<.2||reduce){ang=target;draw(ang);raf=null;return}
+    ang+=d*.14;draw(ang);raf=requestAnimationFrame(tick);
+  }
+  function go(){
+    var r=Object.keys(sel.risk).length,p=Object.keys(sel.prot).length;
+    target=Math.max(-17,Math.min(17,(p-r)*5));
+    var msg=(r===0&&p===0)?'Select factors to begin.':r+' risk '+(r===1?'factor':'factors')+', '+p+' protective '+(p===1?'factor':'factors')+'. '+(p>r?'The scale tips toward protection.':p<r?'The scale tips toward risk.':'The scale is balanced.');
+    $('status').textContent=msg;
+    if(!raf)raf=requestAnimationFrame(tick);
+  }
+  $('reset').addEventListener('click',function(){
+    sel={risk:{},prot:{}};[].forEach.call(document.querySelectorAll('.fchip'),function(b){b.setAttribute('aria-pressed','false')});
+    $('fdetail').innerHTML='<p>Select a factor to read how it matters.</p>';go();
+  });
+  draw(0);
+})();
+
+/* Tab 2: reframe studio */
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var S=[
+   {o:'an addict',r:'a person with a substance use disorder',why:'Casual labels reduce a whole person to a condition. Person-first language keeps the person ahead of the label.',
+    opts:[['an addict, but said with compassion',0,'Kind intent, but it keeps the same label. Put the person first and name the condition.'],['a person with a substance use disorder',1,'Person-first and clinically accurate. It names a pattern of impaired control and continued use despite harm, with severity from mild to severe.'],['someone who made bad choices',0,'This is still moral language. It hides the role of the brain’s reward and self-control systems.']]},
+   {o:'weak-willed',r:'facing a condition that affects reward and self-control',why:'Moral language hides what research shows: repeated use affects brain reward and self-control systems.',
+    opts:[['facing a condition that affects reward and self-control',1,'Accurate and non-blaming. It points toward treatment instead of judgment.'],['lacking discipline',0,'Another moral judgment, not an explanation.'],['just unlucky',0,'It removes blame but ignores real contributing factors and the effective treatments that exist.']]},
+   {o:'a bad kid',r:'a child who struggled to regulate emotions and behavior',why:'Moral labels hide contributing factors such as temperament, family environment, trauma, and community. Early, skills-based intervention works best.',
+    opts:[['a troublemaker',0,'A label that predicts nothing and invites blame.'],['a product of bad parenting',0,'This blames without evidence. Temperament, family environment, trauma, and community all contribute.'],['a child who struggled to regulate emotions and behavior',1,'It describes the difficulty rather than judging the child, and it points toward skills-based help.']]},
+   {o:'a narcissist',r:'someone whose traits strain relationships',why:'Casual labels such as “narcissist” oversimplify and stigmatize. A personality disorder is a rigid, pervasive, impairing pattern, and only a clinician can diagnose it.',
+    opts:[['a textbook narcissist',0,'Still a casual label. Traits exist on a continuum, and a diagnosis needs the full clinical picture.'],['a toxic person',0,'Another label that blames and closes the door on understanding.'],['someone whose traits strain relationships',1,'It describes the impact without diagnosing. Having traits is not the same as having a disorder.']]},
+   {o:'difficult people',r:'a family that could use support',why:'Writing people off as “difficult” discourages help-seeking. Protective factors and effective treatments improve outcomes.',
+    opts:[['hopeless cases',0,'Hopelessness contradicts the evidence. Supportive relationships, early intervention, and treatment help.'],['a family that could use support',1,'Hope-focused and practical. It names what helps rather than who to blame.'],['better left alone',0,'Stigma pushes people away from the help that works.']]}
+  ];
+  var PRE=['Everyone on our street knows the Parkers’ son is ','. He’s ',', he was always ',', and his dad is ','. Honestly, they’re ','.'];
+  var done=[],active=-1,showOrig=false;
+  function render(){
+    var h=PRE[0];
+    S.forEach(function(s,i){
+      var d=done[i]&&!showOrig;
+      h+='<span role="button" tabindex="0" class="slot'+(done[i]?' done':'')+(active===i?' active':'')+'" data-i="'+i+'" aria-label="'+(done[i]?'Reframed: '+s.r:'Label: '+s.o)+'. Select to '+(done[i]?'review':'reframe')+'.">'+(d?s.r:s.o)+'</span>'+PRE[i+1];
+    });
+    $('para').innerHTML=h;
+    var n=done.filter(Boolean).length;
+    $('prog').textContent=n+' of 5 reframed';
+    $('compare').hidden=n===0;
+    $('wrap').hidden=n<5;
+  }
+  function side(i){
+    var s=S[i];
+    if(done[i]){$('side').innerHTML='<h3>Reframed: “'+s.r+'”</h3><p class="muted" style="margin:0">'+s.why+'</p>';return}
+    var h='<h3>Why “'+s.o+'” misleads</h3><p>'+s.why+'</p><p style="font-weight:700;margin-bottom:0">Choose a better phrase:</p><div class="opts" id="opts">';
+    s.opts.forEach(function(o,k){h+='<button class="opt" data-k="'+k+'">'+o[0]+'</button>'});
+    $('side').innerHTML=h+'</div><div id="ofb" aria-live="polite"></div>';
+  }
+  $('para').addEventListener('click',function(e){
+    var b=e.target.closest('.slot');if(!b)return;active=+b.dataset.i;render();side(active);
+    var again=document.querySelector('.slot.active');if(again)again.focus();
+  });
+  $('para').addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;var b=e.target.closest('.slot');if(!b)return;e.preventDefault();b.click();
+  });
+  $('side').addEventListener('click',function(e){
+    var b=e.target.closest('.opt');if(!b||active<0)return;
+    var o=S[active].opts[+b.dataset.k];
+    if(o[1]){
+      done[active]=true;showOrig=false;$('compare').setAttribute('aria-pressed','false');$('compare').textContent='Show the original';
+      var i=active;render();side(i);
+      $('side').insertAdjacentHTML('beforeend','<div class="fb good"><strong>Better.</strong>'+o[2]+'</div>');
+      say('Reframed. '+document.getElementById('prog').textContent+'.');
+      var again=document.querySelector('.slot.active');if(again)again.focus();
+    }else{
+      b.disabled=true;$('ofb').innerHTML='<div class="fb bad"><strong>Not yet.</strong>'+o[2]+'</div>';
+    }
+  });
+  $('compare').addEventListener('click',function(){
+    showOrig=!showOrig;this.setAttribute('aria-pressed',showOrig);this.textContent=showOrig?'Show the reframed version':'Show the original';render();
+  });
+  render();
+})();
+
+</script>
+</body>
+</html>

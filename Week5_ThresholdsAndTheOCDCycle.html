@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 5 Interactive: Clinical Thresholds and the OCD Cycle</title>
+<style>
+:root{--accent:#b45309;--soft:#fffbeb;--line-a:#fde68a;--ink:#162b29;--muted:#45605c;--paper:#f7fbf9;--card:#fff;--line:#d6e4df;--ok:#14532d;--ok-bg:#dcfce7;--warn:#7c2d12;--warn-bg:#ffedd5;--radius:14px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
+h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:0 0 .9em}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px}.skip:focus{left:12px;background:#fff;padding:8px 14px;border-radius:8px;z-index:50;border:2px solid var(--accent)}
+:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{background:var(--soft);border-bottom:1px solid var(--line-a)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding-top:30px;padding-bottom:30px}
+.hero .course{font-weight:600;color:var(--accent);margin:0 0 .4em}
+.hero h1{font-size:clamp(1.9rem,4.2vw,2.85rem);margin-bottom:.4em}
+.hero .lede{font-size:1.12rem;max-width:34em;color:#27413e;margin:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);margin-top:26px}
+.tab{appearance:none;border:0;background:none;font:inherit;font-weight:600;color:var(--muted);padding:12px 18px;border-bottom:4px solid transparent;margin-bottom:-2px;cursor:pointer;border-radius:10px 10px 0 0}
+.tab:hover{background:var(--soft)}
+.tab[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent);background:var(--card)}
+.panel{padding:26px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.btn{appearance:none;font:inherit;font-weight:600;border-radius:999px;padding:10px 20px;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:#fff;color:var(--accent)}
+.btn.ghost:hover{background:var(--soft);filter:none}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.callout{border-left:6px solid var(--accent);background:var(--soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:20px 0}
+.callout p:last-child{margin:0}
+.fb{border-radius:12px;padding:14px 16px;margin-top:14px;border:2px solid transparent}
+.fb.good{background:var(--ok-bg);color:var(--ok);border-color:#86efac}
+.fb.bad{background:var(--warn-bg);color:var(--warn);border-color:#fdba74}
+.fb strong{display:block;margin-bottom:2px}
+.chip{display:inline-block;background:var(--soft);color:var(--accent);border:1px solid var(--line-a);padding:3px 12px;border-radius:999px;font-size:.92rem;font-weight:600}
+.muted{color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.progress{height:8px;background:#e3ece8;border-radius:99px;overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+.verse{margin:36px 0 0;padding:22px 0 8px;border-top:1px solid var(--line);color:var(--muted);font-family:Georgia,serif;font-style:italic}
+.verse cite{display:block;font-style:normal;font-family:inherit;margin-top:4px;font-size:.92rem}
+.help{font-size:.95rem;color:var(--muted);padding:6px 0 34px}
+@media(max-width:780px){.hero .wrap{grid-template-columns:1fr}.hero-art{max-width:380px;margin:0 auto;order:-1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:30px;align-items:start}
+fieldset{border:0;padding:0;margin:0 0 16px}
+legend{font-weight:700;margin-bottom:8px;padding:0}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pills label{position:relative}
+.pills input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0}
+.pills span{display:block;border:2px solid var(--accent);border-radius:999px;padding:8px 14px;font-weight:600;background:#fff;color:var(--ink)}
+.pills input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
+.pills input:focus-visible+span{outline:3px solid #1d4ed8;outline-offset:3px}
+.pills input:not(:checked):hover+span{background:var(--soft)}
+.ctl{margin-bottom:16px}
+.ctl label{display:flex;justify-content:space-between;font-weight:700;margin-bottom:4px;gap:12px}
+.ctl .val{font-weight:600;color:var(--accent);text-align:right}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+select{font:inherit;padding:10px 12px;border-radius:10px;border:2px solid var(--accent);background:#fff;width:100%;color:var(--ink)}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.presets button{font-size:.95rem;padding:7px 14px}
+.gaugebox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px 18px}
+.gaugebox svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto}
+#needle{transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-origin:200px 210px}
+.zone{font-family:Georgia,serif;font-size:1.45rem;text-align:center;margin:4px 0 0}
+.zonesub{text-align:center;margin:0 0 10px}
+.weigh{margin:10px 0 0;padding:0;list-style:none}
+.weigh li{padding:9px 0;border-top:1px solid var(--line);font-size:.97rem}
+.weigh b{display:block}
+.zonebar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;font-size:.88rem;margin-top:4px}
+.zonebar span{padding:2px 10px;border-radius:999px;border:1px solid var(--line)}
+.cyc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.cycbox,.curvebox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.cycbox svg,.curvebox svg{width:100%;height:auto;display:block}
+.node{cursor:pointer}
+.node circle.nb{stroke-width:4;transition:fill .4s}
+.node:hover circle.nb,.node:focus circle.nb{stroke:#1d4ed8}
+.node.sel circle.nb{stroke:#1d4ed8;stroke-width:6}
+@media(max-width:860px){.lab,.cyc{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the activity</a>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <p class="course">PSYC 285, Week 5 interactive</p>
+      <h1>Where does everyday end and a disorder begin?</h1>
+      <p class="lede">Test how duration, intensity, and impairment shape the clinical threshold, then trace the obsession and compulsion cycle in OCD.</p>
+    </div>
+    <div class="hero-art"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-labelledby="herot herod">
+  <title id="herot">A threshold gauge and a looping cycle arrow</title>
+  <desc id="herod">A half-circle gauge with three colored zones and a needle pointing to the middle zone, next to a circular looping arrow representing the obsession and compulsion cycle.</desc>
+  <circle cx="260" cy="180" r="165" fill="#fef3c7"/>
+  <g transform="translate(240 215)">
+    <path d="M-150 0 A150 150 0 0 1 -75 -130" fill="none" stroke="#65a30d" stroke-width="36"/>
+    <path d="M-75 -130 A150 150 0 0 1 75 -130" fill="none" stroke="#f59e0b" stroke-width="36"/>
+    <path d="M75 -130 A150 150 0 0 1 150 0" fill="none" stroke="#b91c1c" stroke-width="36"/>
+    <g transform="rotate(-18)"><line x1="0" y1="0" x2="0" y2="-112" stroke="#7c2d12" stroke-width="9" stroke-linecap="round"/></g>
+    <circle r="17" fill="#7c2d12"/><circle r="6" fill="#fef3c7"/>
+  </g>
+  <g transform="translate(390 100)">
+    <circle r="46" fill="#fff" stroke="#b45309" stroke-width="3"/>
+    <path d="M-24 -10 A27 27 0 0 1 22 -17" fill="none" stroke="#b45309" stroke-width="7" stroke-linecap="round"/>
+    <path d="M22 -30 L24 -12 L6 -16" fill="none" stroke="#b45309" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M24 10 A27 27 0 0 1 -22 17" fill="none" stroke="#b45309" stroke-width="7" stroke-linecap="round"/>
+    <path d="M-22 30 L-24 12 L-6 16" fill="none" stroke="#b45309" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <rect x="120" y="262" width="260" height="14" rx="7" fill="#fff"/>
+  <rect x="120" y="262" width="150" height="14" rx="7" fill="#b45309"/>
+  <rect x="120" y="292" width="200" height="10" rx="5" fill="#fff" opacity=".8"/>
+</svg>
+</div>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <div class="tabs" role="tablist" aria-label="Activity sections"><button class="tab" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0">Clinical threshold lab</button><button class="tab" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1">The OCD cycle</button></div>
+  <section id="p1" class="panel" role="tabpanel" aria-labelledby="tab1">
+  <h2>The clinical threshold lab</h2>
+  <p class="muted" style="max-width:46em">Everyone feels sad or worried at times. Choose a scenario or adjust the sliders to see how duration, intensity, and impairment shift where a pattern lands, and why no single factor decides.</p>
+  <div class="lab">
+    <div>
+      <fieldset>
+        <legend>Try a scenario</legend>
+        <div class="presets" id="presets">
+          <button class="btn ghost" data-p="exam">Exam-week worry</button>
+          <button class="btn ghost" data-p="loss">Weeks after a loss</button>
+          <button class="btn ghost" data-p="low">Persistent low mood</button>
+          <button class="btn ghost" data-p="rit">Daily rituals</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>What is the main concern?</legend>
+        <div class="pills" id="types">
+          <label><input type="radio" name="type" value="mood" checked><span>Low mood</span></label>
+          <label><input type="radio" name="type" value="worry"><span>Worry or fear</span></label>
+          <label><input type="radio" name="type" value="ocd"><span>Intrusive thoughts and rituals</span></label>
+        </div>
+      </fieldset>
+      <div class="ctl"><label for="dur"><span>How long has it lasted?</span><span class="val" id="durv"></span></label><input type="range" id="dur" min="1" max="200" value="5"></div>
+      <div class="ctl"><label for="int"><span>How intense does it feel?</span><span class="val" id="intv"></span></label><input type="range" id="int" min="1" max="10" value="5"></div>
+      <div class="ctl"><label for="imp"><span>How much does it interfere with daily life?</span><span class="val" id="impv"></span></label><input type="range" id="imp" min="0" max="10" value="2"></div>
+      <div class="ctl"><label for="ctx"><span>Context that matters</span></label>
+        <select id="ctx">
+          <option value="none">Nothing in particular</option>
+          <option value="stress">A clear, short-term stressor (exam, move, new job)</option>
+          <option value="grief">A recent loss</option>
+          <option value="med">A possible medical or substance cause</option>
+        </select>
+      </div>
+    </div>
+    <div class="gaugebox">
+      <svg viewBox="0 0 400 250" role="img" aria-labelledby="gt gd">
+        <title id="gt">Threshold gauge</title>
+        <desc id="gd">A half-circle gauge with three zones: everyday range, worth watching and supporting, and worth a professional evaluation. A needle points to the current zone.</desc>
+        <path d="M60 210 A140 140 0 0 1 136.4 85.3" fill="none" stroke="#4d7c0f" stroke-width="34"/>
+        <path d="M136.4 85.3 A140 140 0 0 1 243.3 76.9" fill="none" stroke="#d97706" stroke-width="34"/>
+        <path d="M243.3 76.9 A140 140 0 0 1 340 210" fill="none" stroke="#b91c1c" stroke-width="34"/>
+        <g id="needle" style="transform:rotate(-70deg)"><line x1="200" y1="210" x2="200" y2="102" stroke="#3b1d0b" stroke-width="8" stroke-linecap="round"/></g>
+        <circle cx="200" cy="210" r="16" fill="#3b1d0b"/><circle cx="200" cy="210" r="5" fill="#fff"/>
+        <text x="60" y="236" text-anchor="middle" font-size="13" fill="#334155">Everyday</text>
+        <text x="340" y="236" text-anchor="middle" font-size="13" fill="#334155">Evaluate</text>
+      </svg>
+      <p class="zone" id="zone" role="status"></p>
+      <p class="zonesub muted" id="zonesub"></p>
+      <ul class="weigh" id="weigh"></ul>
+      <p class="muted" style="font-size:.9rem;margin:12px 0 0">Teaching model only. It cannot diagnose, and clinicians weigh many more details than these three sliders.</p>
+    </div>
+  </div>
+</section>
+
+<section id="p2" class="panel" role="tabpanel" aria-labelledby="tab2" hidden>
+  <h2>The OCD cycle</h2>
+  <p class="muted" style="max-width:46em">Select any step to read about it. Then switch on <em>exposure and response prevention</em> to see how the cycle changes when the ritual is resisted.</p>
+  <div class="row" style="margin-bottom:14px"><button class="btn" id="erp" aria-pressed="false">Try exposure and response prevention</button></div>
+  <div class="cyc">
+    <div class="cycbox"><svg id="cycle" viewBox="0 0 440 440" role="group" aria-labelledby="cyt cyd"><title id="cyt">The obsession and compulsion cycle</title><desc id="cyd">Four steps in a loop: obsession, distress, compulsion, short-term relief, then back to obsession. Select a step for details.</desc></svg></div>
+    <div>
+      <div class="card" id="ndetail" aria-live="polite" style="margin-bottom:16px"></div>
+      <div class="curvebox">
+        <svg viewBox="0 0 460 260" role="img" aria-labelledby="cvt cvd" id="curve">
+          <title id="cvt">Anxiety over time with compulsions and with exposure and response prevention</title>
+          <desc id="cvd">With compulsions, anxiety drops quickly after each ritual but spikes return more often and the baseline creeps upward. With exposure and response prevention, anxiety rises, peaks, then gradually eases, and later spikes are lower and shorter.</desc>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><p><strong>More than neatness:</strong> Liking things tidy is a preference. OCD involves unwanted, intrusive thoughts and rituals that are time-consuming and impairing. Exposure and response prevention is delivered with a trained clinician, and this graphic is a teaching model, not a treatment guide.</p></div>
+</section>
+
+  <figure class="verse"><blockquote style="margin:0">“Gracious words are a honeycomb, sweet to the soul and healing to the bones.”</blockquote><cite>Proverbs 16:24 (NIV, 1978/2011)</cite></figure>
+  <p class="help">This activity is for learning and is not a diagnostic tool. If you or someone you know is struggling, reach out to a licensed professional or your campus counseling services. In the U.S., you can call or text 988 at any time.</p>
+</main>
+<div id="live" class="sr" aria-live="polite" role="status"></div>
+<script>
+function say(m){var l=document.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=m},30)}
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function select(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on})}
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(t)});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+      if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+      if(e.key==='Home')n=tabs[0];
+      if(e.key==='End')n=tabs[tabs.length-1];
+      if(n){e.preventDefault();select(n);n.focus()}
+    });
+  });
+})();
+</script>
+<script>
+/* Tab 1: threshold lab */
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var REF={
+    mood:{name:'Low mood',txt:'Major depressive disorder requires depressed mood or loss of interest most of the day, nearly every day, for at least 2 weeks, along with other symptoms.',days:14},
+    worry:{name:'Worry or fear',txt:'Generalized anxiety disorder involves excessive worry more days than not for at least 6 months that is hard to control. Other anxiety disorders have their own criteria.',days:180},
+    ocd:{name:'Intrusive thoughts and rituals',txt:'Obsessions or compulsions count when they are time-consuming (often more than an hour a day) or cause significant distress or impairment. Duration alone is not the main criterion.',days:null}
+  };
+  var CTX={
+    none:'No special context was noted, so a clinician would still ask about history, other symptoms, and what else could explain the pattern.',
+    stress:'A time-limited response to a clear stressor may be an adjustment reaction rather than a disorder. Severity and impairment still matter.',
+    grief:'Grief is a normal response to loss. Clinicians weigh how severe and long-lasting it is, how impairing, and what is expected in the person’s culture.',
+    med:'Medical conditions, medications, and substances can mimic or worsen symptoms, so a medical review comes first.'
+  };
+  var PRE={exam:{t:'worry',d:5,i:7,p:2,c:'stress'},loss:{t:'mood',d:30,i:7,p:5,c:'grief'},low:{t:'mood',d:60,i:6,p:7,c:'none'},rit:{t:'ocd',d:90,i:7,p:8,c:'none'}};
+  function dur(d){return d<14?d+(d===1?' day':' days'):d<60?Math.round(d/7)+' weeks':(d/30).toFixed(1).replace('.0','')+' months'}
+  function lvl(v,w){return w[v<=0?0:v<=3?1:v<=6?2:v<=8?3:4]}
+  var INT=['','mild','mild','mild','moderate','moderate','moderate','strong','strong','intense','intense'];
+  function imp(v){return v===0?'none':v<=3?'a little':v<=6?'noticeable':v<=8?'major':'severe'}
+  function update(){
+    var t=document.querySelector('input[name=type]:checked').value,d=+$('dur').value,i=+$('int').value,p=+$('imp').value,c=$('ctx').value;
+    $('durv').textContent=dur(d);$('intv').textContent=INT[i]+' ('+i+' of 10)';$('impv').textContent=imp(p)+' ('+p+' of 10)';
+    var idx=.35*Math.min(d,60)/60+.25*i/10+.4*p/10;
+    var z=idx<.35?0:idx<.6?1:2;
+    var names=['Everyday range','Worth watching and supporting','Worth a professional evaluation'];
+    var subs=['This looks like the ordinary ups and downs of life.','This deserves attention, support, and a plan to check in.','The pattern is long-lasting and impairing enough that a licensed professional can help.'];
+    $('needle').style.transform='rotate('+(-90+idx*180)+'deg)';
+    $('zone').textContent=names[z];$('zonesub').textContent=subs[z];
+    var R=REF[t],durNote;
+    if(R.days===null)durNote='Duration is not the main test for obsessive-compulsive symptoms. Clinicians ask how much time they take each day and how much they interfere.';
+    else durNote=(d>=R.days?'Your duration is at or past the reference point. ':'Your duration is shorter than the reference point. ')+R.txt;
+    $('weigh').innerHTML='<li><b>Duration and criteria</b>'+durNote+'</li><li><b>Impairment</b>Interference with daily life is '+imp(p)+'. Clinicians ask about school or work, relationships, and self-care.</li><li><b>Context</b>'+CTX[c]+'</li>';
+  }
+  ['dur','int','imp','ctx'].forEach(function(id){$(id).addEventListener('input',update)});
+  [].forEach.call(document.querySelectorAll('input[name=type]'),function(r){r.addEventListener('change',update)});
+  $('presets').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;var s=PRE[b.dataset.p];
+    document.querySelector('input[name=type][value='+s.t+']').checked=true;
+    $('dur').value=s.d;$('int').value=s.i;$('imp').value=s.p;$('ctx').value=s.c;update();
+  });
+  update();
+})();
+
+/* Tab 2: OCD cycle */
+(function(){
+  var NS='http://www.w3.org/2000/svg',svg=document.getElementById('cycle'),erp=false,sel='obs';
+  var $=function(id){return document.getElementById(id)};
+  var NODES=[
+   {k:'obs',a:-90,l:['Obsession'],n:{t:'Obsession',b:'An unwanted, intrusive thought, image, or urge that feels distressing and hard to dismiss.',ex:'“What if I left the stove on and the house burns down?”'}},
+   {k:'dis',a:0,l:['Distress'],n:{t:'Distress',b:'Anxiety, disgust, or a feeling that something is “not right” rises quickly and feels urgent.',ex:'A racing heart and a strong sense that something terrible could happen if nothing is done.'}},
+   {k:'com',a:90,l:['Compulsion'],e:['Resist','the urge'],n:{t:'Compulsion',b:'A repetitive behavior or mental act done to reduce distress or prevent a feared outcome.',ex:'Driving back to check the stove again and again, or silently repeating a phrase.'},
+     ne:{t:'Resist the urge',b:'With a trained clinician, the person gradually faces the feared situation (exposure) and chooses not to do the ritual (response prevention).',ex:'Leaving the house after checking the stove once, and not going back.'}},
+   {k:'rel',a:180,l:['Short-term','relief'],e:['Anxiety','eases'],n:{t:'Short-term relief',b:'Distress drops for a little while. That brief relief teaches the brain that the ritual was necessary, so the obsession returns and the urge grows stronger.',ex:'The relief feels real, which is exactly why the cycle keeps going.'},
+     ne:{t:'Anxiety peaks, then eases',b:'Without the ritual, anxiety rises, peaks, and gradually comes down on its own. The brain learns the feared outcome is less likely than it seemed and that anxiety can be tolerated.',ex:'Each repetition tends to be easier than the last.'}}
+  ];
+  var CX=220,CY=220,RR=150,NR=56;
+  function pt(a,r){var t=a*Math.PI/180;return [CX+r*Math.cos(t),CY+r*Math.sin(t)]}
+  function el(n,at,p){var e=document.createElementNS(NS,n);for(var k in at)e.setAttribute(k,at[k]);(p||svg).appendChild(e);return e}
+  function arc(a1,a2,weak){
+    var s=pt(a1,RR),e=pt(a2,RR);
+    el('path',{d:'M'+s[0]+' '+s[1]+' A'+RR+' '+RR+' 0 0 1 '+e[0]+' '+e[1],fill:'none',stroke:weak?'#94a3b8':'#7c2d12','stroke-width':weak?4:6,'stroke-dasharray':weak?'3 10':'0','stroke-linecap':'round','marker-end':weak?'url(#ah2)':'url(#ah1)'});
+  }
+  function render(){
+    while(svg.lastChild&&svg.lastChild.nodeName!=='desc'&&svg.children.length>2)svg.removeChild(svg.lastChild);
+    var defs=el('defs',{});
+    [['ah1','#7c2d12'],['ah2','#64748b']].forEach(function(m){var mk=el('marker',{id:m[0],viewBox:'0 0 10 10',refX:6,refY:5,markerWidth:5,markerHeight:5,orient:'auto-start-reverse'},defs);el('path',{d:'M0 0 L10 5 L0 10z',fill:m[1]},mk)});
+    var off=25;
+    arc(-90+off,0-off);arc(0+off,90-off);arc(90+off,180-off);arc(180+off,270-off,erp);
+    var ct=el('text',{x:CX,y:CY-4,'text-anchor':'middle','font-size':17,'font-family':'Georgia,serif','font-weight':700,fill:'#3b1d0b'});ct.textContent=erp?'The cycle':'The cycle';
+    var ct2=el('text',{x:CX,y:CY+18,'text-anchor':'middle','font-size':14,fill:'#3b1d0b'});ct2.textContent=erp?'weakens over time':'keeps itself going';
+    NODES.forEach(function(n){
+      var p=pt(n.a,RR),changed=erp&&n.e;
+      var g=el('g',{class:'node'+(sel===n.k?' sel':''),tabindex:0,role:'button','aria-pressed':sel===n.k,'aria-label':(changed?n.e.join(' '):n.l.join(' '))+'. Select for details.'});
+      el('circle',{class:'nb',cx:p[0],cy:p[1],r:NR,fill:changed?'#99f6e4':'#fde68a',stroke:changed?'#0f766e':'#b45309'},g);
+      var lines=changed?n.e:n.l;
+      lines.forEach(function(s,i){var y=p[1]+4+(i-(lines.length-1)/2)*17;var t=el('text',{x:p[0],y:y,'text-anchor':'middle','font-size':14.5,'font-weight':700,fill:'#3b1d0b'},g);t.textContent=s});
+      var go=function(){sel=n.k;render();detail();say((changed?n.e.join(' '):n.l.join(' '))+' selected.');var again=svg.querySelector('.node.sel');if(again)again.focus()};
+      g.addEventListener('click',go);g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+    });
+  }
+  function detail(){
+    var n=NODES.filter(function(x){return x.k===sel})[0],d=(erp&&n.ne)?n.ne:n.n;
+    $('ndetail').innerHTML='<h3>'+d.t+'</h3><p>'+d.b+'</p><p class="muted" style="margin:0"><strong>Example:</strong> '+d.ex+'</p>';
+  }
+  /* anxiety curve */
+  var cv=$('curve');
+  function cel(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);cv.appendChild(e);return e}
+  var CX0=52,CW=390,CY0=212,CH=170;
+  var tx=function(t){return CX0+CW*t/100},ay=function(a){return CY0-CH*a/10};
+  var RIT=[[0,2],[6,8],[8,2.5],[18,3],[23,8.5],[25,2.8],[33,3.2],[37,9],[39,3.4],[46,3.8],[49,9.2],[51,3.8],[57,4.2],[59,9.4],[61,4.2],[66,4.5],[68,9.5],[70,4.5],[77,4.8],[79,9.6],[81,4.8],[88,5.1],[90,9.7],[92,5.1],[100,5.4]];
+  var ERP=[[0,2],[6,8],[20,8.2],[40,5.5],[55,3.5],[62,3],[66,5.6],[76,4.2],[88,2.6],[92,2.2],[95,3.4],[100,1.8]];
+  function smooth(p){var d='M'+tx(p[0][0])+' '+ay(p[0][1]);for(var i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;var c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];d+=' C'+tx(c1[0])+' '+ay(c1[1])+','+tx(c2[0])+' '+ay(c2[1])+','+tx(p2[0])+' '+ay(p2[1])}return d}
+  function curve(){
+    [].slice.call(cv.querySelectorAll(':not(title):not(desc)')).forEach(function(n){n.remove()});
+    cel('line',{x1:CX0,x2:CX0,y1:ay(0),y2:ay(10),stroke:'#64748b','stroke-width':2});cel('line',{x1:CX0,x2:CX0+CW,y1:ay(0),y2:ay(0),stroke:'#64748b','stroke-width':2});
+    var yl=cel('text',{x:14,y:ay(5),'text-anchor':'middle','font-size':13,fill:'#334155',transform:'rotate(-90 14 '+ay(5)+')'});yl.textContent='Anxiety';
+    var xl=cel('text',{x:CX0+CW/2,y:248,'text-anchor':'middle','font-size':13,fill:'#334155'});xl.textContent='Time';
+    cel('polyline',{points:RIT.map(function(p){return tx(p[0])+','+ay(p[1])}).join(' '),fill:'none',stroke:'#7c2d12','stroke-width':erp?2.5:4.5,'stroke-linejoin':'round',opacity:erp?.45:1});
+    cel('path',{d:smooth(ERP),fill:'none',stroke:'#0f766e','stroke-width':erp?5:2.5,'stroke-dasharray':'9 6',opacity:erp?1:.45});
+    var a=cel('text',{x:tx(60),y:ay(10.6),'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:'#7c2d12'});a.textContent='With rituals: quick relief, stronger cycle';
+    var b=cel('text',{x:tx(52),y:ay(1),'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:'#0f766e'});b.textContent='With ERP: peak, then ease';
+  }
+  $('erp').addEventListener('click',function(){
+    erp=!erp;this.setAttribute('aria-pressed',erp);this.textContent=erp?'Back to the ritual cycle':'Try exposure and response prevention';
+    render();detail();curve();say(erp?'Exposure and response prevention is on. The cycle weakens.':'Showing the ritual cycle.');
+  });
+  render();detail();curve();
+})();
+
+</script>
+</body>
+</html>
