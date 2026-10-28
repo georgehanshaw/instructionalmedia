@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HSCI 105 Nutrition and Wellness: How the Course Works and How to Succeed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Literata:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F3F5F7; --surface:#FFFFFF; --surface2:#E9EEF3; --ink:#16233B; --muted:#4F5C74; --line:#CFD7E2;
+  --c1:#B3262C; --c2:#9A5F00; --c3:#1F6F8B; --c4:#3F7D4B; --c5:#6B52BD;
+  --on-c:#FFFFFF; --focus:#1A5FB4;
+  --head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0F1623; --surface:#172236; --surface2:#1F2D45; --ink:#E8EDF5; --muted:#9FADC4; --line:#2B3A55;
+    --c1:#F2868B; --c2:#F0B64E; --c3:#4FB3D1; --c4:#7CC088; --c5:#A08CF0;
+    --on-c:#0F1623; --focus:#7DB4F0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0F1623; --surface:#172236; --surface2:#1F2D45; --ink:#E8EDF5; --muted:#9FADC4; --line:#2B3A55;
+  --c1:#F2868B; --c2:#F0B64E; --c3:#4FB3D1; --c4:#7CC088; --c5:#A08CF0;
+  --on-c:#0F1623; --focus:#7DB4F0; color-scheme: dark;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:1.0625rem; line-height:1.65; }
+.wrap { max-width:62rem; margin:0 auto; padding:0 1.25rem; }
+h1,h2,h3 { font-family:var(--head); line-height:1.12; margin:0; letter-spacing:-0.01em; }
+h1 { font-size:clamp(2.2rem,6vw,3.7rem); font-weight:800; max-width:15em; }
+h2 { font-size:clamp(1.6rem,3.6vw,2.2rem); font-weight:700; }
+h3 { font-size:1.15rem; font-weight:700; }
+p { margin:0 0 .8rem; max-width:62ch; }
+section { padding:3.5rem 0 0; }
+.lede { color:var(--muted); font-size:1.15rem; margin-top:1rem; }
+button { font:inherit; color:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--focus); outline-offset:3px; border-radius:6px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:1.4rem; }
+
+/* draft banner */
+.draft { background:var(--surface2); border-bottom:1px solid var(--line); font-size:.95rem; }
+.draft .wrap { display:flex; gap:1rem; align-items:center; justify-content:space-between; padding-top:.6rem; padding-bottom:.6rem; }
+.draft button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.3rem .8rem; flex:none; }
+
+/* hero */
+.hero { padding-top:3rem; }
+.trail-box { margin-top:2rem; }
+.trail-box svg { width:100%; height:auto; display:block; }
+.trail-bg { stroke:var(--line); }
+.trail-fg { stroke:var(--c1); transition:stroke-dashoffset .5s ease; }
+.node { cursor:pointer; }
+.node circle.body { fill:var(--surface); stroke:var(--c1); stroke-width:4; transition:fill .2s; }
+.node.milestone circle.body { stroke:var(--c2); }
+.node text { font-family:var(--head); font-weight:700; font-size:26px; fill:var(--ink); text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+.node.done circle.body { fill:var(--surface2); }
+.node.active circle.body { fill:var(--c1); }
+.node.active.milestone circle.body { fill:var(--c2); }
+.node.active text { fill:var(--on-c); }
+.node:focus-visible { outline:none; }
+.node:focus-visible circle.ring { stroke:var(--focus); stroke-width:3; }
+.node circle.ring { fill:none; stroke:transparent; }
+.chips { display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0; }
+.chip { border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:.35rem .9rem; font-family:var(--head); font-weight:500; }
+.chip[aria-pressed="true"] { background:var(--c1); border-color:var(--c1); color:var(--on-c); }
+.panel { display:grid; gap:1.25rem; grid-template-columns:1fr; }
+@media (min-width:760px){ .panel { grid-template-columns:1.1fr 1fr; } }
+.panel h3 { font-size:1.5rem; margin-bottom:.5rem; }
+.tag { display:inline-block; font-family:var(--head); font-weight:500; font-size:.9rem; border:1.5px solid var(--c2); border-radius:6px; padding:0 .5rem; margin-bottom:.6rem; }
+.panel ul { margin:.25rem 0 0; padding-left:1.2rem; }
+.panel li { margin-bottom:.35rem; }
+.pn { display:flex; gap:.6rem; margin-top:1rem; }
+.pn button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.4rem .9rem; font-family:var(--head); font-weight:500; }
+.pn button:disabled { opacity:.4; cursor:default; }
+
+/* rhythm */
+.loop { display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem; margin-top:1.5rem; }
+@media (min-width:760px){ .loop { grid-template-columns:repeat(4,1fr); } }
+.step { text-align:left; border:2px solid var(--line); background:var(--surface); border-radius:12px; padding:.8rem 1rem; }
+.step b { font-family:var(--head); font-size:1.1rem; display:block; }
+.step span { color:var(--muted); font-size:.92rem; }
+.step[aria-pressed="true"] { border-color:var(--sc); box-shadow:inset 0 0 0 1px var(--sc); }
+.week { display:grid; grid-template-columns:repeat(7,1fr); gap:.4rem; margin-top:1rem; }
+.day { text-align:center; font-family:var(--head); font-weight:500; font-size:.9rem; }
+.day .cell { height:84px; margin-top:.3rem; border-radius:10px; background:var(--surface2); display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line); }
+.day .seg { flex:1; transition:opacity .25s; }
+.dim .seg { opacity:.18; }
+.dim .seg.on { opacity:1; }
+.step-note { margin-top:1rem; min-height:3.2rem; }
+.hours { margin-top:2rem; }
+.hours label { font-family:var(--head); font-weight:500; display:block; margin-bottom:.4rem; }
+input[type=range] { width:100%; accent-color:var(--c1); height:1.6rem; }
+.bar { display:flex; height:3rem; border-radius:10px; overflow:hidden; margin-top:.8rem; border:1px solid var(--line); }
+.bar div { display:flex; align-items:center; justify-content:center; font-family:var(--head); font-weight:700; font-size:.95rem; color:var(--on-c); transition:flex-grow .3s; min-width:0; }
+.bar-legend { display:flex; flex-wrap:wrap; gap:.4rem 1.2rem; margin-top:.6rem; font-size:.95rem; color:var(--muted); }
+.sw { display:inline-block; width:.8rem; height:.8rem; border-radius:3px; margin-right:.4rem; vertical-align:-1px; }
+
+/* grades */
+.grades { display:grid; gap:1.5rem; grid-template-columns:1fr; margin-top:1.5rem; }
+@media (min-width:820px){ .grades { grid-template-columns:1fr 1fr; align-items:start; } }
+.donut-wrap { position:relative; max-width:20rem; margin:0 auto; }
+.donut-wrap svg { width:100%; height:auto; display:block; transform:rotate(-90deg); }
+.seg-arc { fill:none; stroke-width:30; cursor:pointer; transition:stroke-width .2s, opacity .2s; }
+.seg-arc.dim { opacity:.3; }
+.seg-arc.sel { stroke-width:38; }
+.seg-arc:focus-visible { outline:none; stroke:var(--ink); }
+.donut-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; pointer-events:none; padding:30%; }
+.donut-center b { font-family:var(--head); font-size:2.4rem; line-height:1; }
+.donut-center span { font-size:.9rem; color:var(--muted); line-height:1.25; margin-top:.3rem; }
+.cat-desc { margin-top:1rem; min-height:4.2rem; text-align:center; margin-left:auto; margin-right:auto; }
+.whatif h3 { margin-bottom:.2rem; }
+.row { margin-top:1rem; }
+.row .top { display:flex; justify-content:space-between; font-family:var(--head); font-weight:500; }
+.result { margin-top:1.2rem; display:flex; align-items:baseline; gap:1rem; border-top:1px solid var(--line); padding-top:1rem; }
+.result .big { font-family:var(--head); font-size:3rem; font-weight:800; line-height:1; }
+.result .pct { color:var(--muted); }
+
+/* habits */
+.meter { height:10px; background:var(--surface2); border-radius:99px; overflow:hidden; margin:1rem 0 .4rem; max-width:24rem; border:1px solid var(--line); }
+.meter div { height:100%; background:var(--c4); width:0; transition:width .3s; }
+.habits { display:grid; gap:.8rem; grid-template-columns:1fr; margin-top:1.2rem; }
+@media (min-width:760px){ .habits { grid-template-columns:1fr 1fr; } }
+.habit { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; border-left:6px solid var(--hc); }
+.habit .hd { display:flex; justify-content:space-between; gap:.8rem; align-items:flex-start; }
+.habit h3 { font-size:1.05rem; }
+.habit .why { color:var(--muted); font-size:.95rem; margin:.4rem 0 0; }
+.habit .more { display:none; margin-top:.6rem; padding-top:.6rem; border-top:1px dashed var(--line); font-size:.97rem; }
+.habit.open .more { display:block; }
+.habit .acts { display:flex; gap:.5rem; margin-top:.7rem; flex-wrap:wrap; }
+.habit .acts button { border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:.25rem .7rem; font-family:var(--head); font-weight:500; font-size:.92rem; }
+.habit .acts button[aria-pressed="true"] { background:var(--c4); border-color:var(--c4); color:var(--on-c); }
+
+/* record timeline */
+.rec-box svg{width:100%;height:auto;display:block}
+.rbar{cursor:pointer;transition:opacity .2s}
+.rbar rect{stroke-width:0}
+.rec-dim .rbar{opacity:.35}
+.rec-dim .rbar.sel{opacity:1}
+.rbar.sel rect{stroke:var(--ink);stroke-width:3}
+.rbar:focus-visible{outline:none}
+.rbar:focus-visible rect{stroke:var(--focus);stroke-width:4}
+.recpanel{margin-top:1rem}
+.recpanel h3{font-size:1.3rem;margin-bottom:.4rem}
+.recpanel ul{margin:.3rem 0 0;padding-left:1.2rem}
+/* help */
+.help { display:grid; gap:.8rem; grid-template-columns:1fr; margin-top:1.2rem; }
+@media (min-width:700px){ .help { grid-template-columns:repeat(2,1fr); } }
+.help .card { padding:1.1rem; }
+.help h3 { font-size:1.05rem; margin-bottom:.3rem; }
+.help p { margin:0; color:var(--muted); font-size:.97rem; }
+footer { padding:3rem 0 3rem; color:var(--muted); font-size:.9rem; }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="draft" id="draft">
+  <div class="wrap">
+    <span>Built from the HSCI 105 course export. Exact due dates and times are set in Canvas, so always confirm them there.</span>
+    <button id="hideDraft">Hide</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+<header class="hero">
+  <h1>Your path through HSCI 105 Nutrition and Wellness</h1>
+  <p class="lede">Eight weeks, one weekly rhythm that repeats. Select a week on the trail to see the topic, the readings, and what you submit.</p>
+
+  <div class="trail-box">
+    <svg id="trail" viewBox="0 0 800 310" role="group" aria-label="Eight-week course trail"></svg>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Choose a week"></div>
+  <div class="card panel" id="weekPanel" aria-live="polite"></div>
+</header>
+
+<section id="rhythm">
+  <h2>Every week runs on the same loop</h2>
+  <p class="lede">Each week follows the same path: a Deep Dive page, readings, a topic video, a discussion, and work on your assignment. This is a suggested pace. Select a step to see where it could land in your week.</p>
+  <div class="loop" id="loop"></div>
+  <div class="week" id="weekStrip"></div>
+  <p class="step-note" id="stepNote" aria-live="polite"></p>
+
+  <div class="hours card">
+    <label for="hrs">Time you can give each week: <b id="hrsOut">9 hours</b></label>
+    <input type="range" id="hrs" min="6" max="15" step="1" value="9">
+    <div class="bar" id="hoursBar" role="img" aria-label="Suggested split of study time"></div>
+    <div class="bar-legend" id="hoursLegend"></div>
+  </div>
+</section>
+
+<section id="record">
+  <h2>The Diet Exercise Record: one set of data, three essays</h2>
+  <p class="lede">You track your own food and activity once, then reuse that data across the course. Select a bar to see what each piece asks for.</p>
+  <div class="card rec-box"><svg id="recsvg" viewBox="0 0 800 250" role="group" aria-label="Timeline of the four major assignments across eight weeks"></svg></div>
+  <div class="card recpanel" id="recPanel" aria-live="polite"></div>
+</section>
+
+<section id="grades">
+  <h2>How your 1,000 points add up</h2>
+  <p class="lede">Select a slice to see what it covers. Then move the sliders to test how your scores could add up. Letter grades follow the course grading scale.</p>
+  <div class="grades">
+    <div>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 200 200" id="donut" role="group" aria-label="Grade weights"></svg>
+        <div class="donut-center"><b id="dPct">100%</b><span id="dName">of your grade</span></div>
+      </div>
+      <p class="cat-desc" id="catDesc"></p>
+    </div>
+    <div class="card whatif">
+      <h3>What-if calculator</h3>
+      <p style="color:var(--muted);margin:0">Set the score you expect in each category.</p>
+      <div id="sliders"></div>
+      <div class="result" aria-live="polite">
+        <span class="big" id="letter">B</span>
+        <span class="pct"><b id="total">85.0</b>% projected (<span id="ptsOut">850</span> of 1,000 points)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="habits">
+  <h2>Habits that make the difference</h2>
+  <p class="lede">Open a card for the reasoning and a first step. Mark the ones you commit to this week.</p>
+  <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="meterWrap"><div id="meter"></div></div>
+  <div id="meterText" style="color:var(--muted);font-size:.95rem"></div>
+  <div class="habits" id="habitList"></div>
+</section>
+
+<section id="help">
+  <h2>When you need help</h2>
+  <p class="lede">Reach out early. Most problems are easy to fix in Week 2 and hard to fix in Week 7. Missing work is scored as a zero, so tell your instructor about problems before a deadline.</p>
+  <div class="help" id="helpList"></div>
+</section>
+
+<footer>HSCI 105 student guide. Confirm all dates and policies in your syllabus and Canvas course.</footer>
+</main>
+
+<script>
+/* ======= EDIT THIS BLOCK: all page content lives here (taken from the HSCI 105 course export) ======= */
+const WEEKS = [
+  { title:"Basic concepts of nutrition and tools for healthy eating", milestone:false, focus:"Learn the six classes of nutrients, the principles of a healthy diet, and the tools used to plan and track what you eat.",
+    do:["Watch the Course Introduction Video and visit the Professor’s Corner","Read Unit 1, “Designing a Healthy Diet,” and Human Nutrition Chapter 12","Explore the Health Tracking App Infographic and watch the topic video","Post in Discussion 1: Food Analysis and Nutrition (40 points)","Begin your 7-day tracking for the Diet Exercise Record"], due:"Discussion 1. Diet Exercise Record tracking begins." },
+  { title:"Digestion and carbohydrates", milestone:false, focus:"Follow food through the digestive system and take a closer look at carbohydrates.",
+    do:["Read the Unit 3 sections “The Digestive System” and “Disorders of the GI Tract”","Read Human Nutrition Chapter 4, “Carbohydrates”","Watch the topic videos","Post in Discussion 2: Digestion Journey (40 points)","Continue working on Part 1 of the Diet Exercise Record"], due:"Discussion 2. Part 1 is in progress." },
+  { title:"Lipids and protein", milestone:true, focus:"Explore the types and functions of fats and proteins, and compare MyPlate with the new food pyramid.",
+    do:["Read Unit 5, “Lipids,” and Unit 6, “Proteins”","Review MyPlate and realfood.gov","Post in Discussion 3: Digestion, Dietary Fat, and the New Food Pyramid (40 points)","Submit Diet Exercise Record | Part 1: Activity Record (120 points)","Begin Part 2, the Macronutrient Analysis Essay"], due:"Discussion 3 and Part 1 (Activity Record)." },
+  { title:"Vitamins, minerals, and water", milestone:true, focus:"Learn what micronutrients and water do, and how to use Dietary Reference Intakes to judge your own intake.",
+    do:["Read Unit 8 and Unit 9, “Vitamins and Minerals,” and Human Nutrition Chapter 3, “Water and Electrolytes”","Watch the topic videos","Post in Discussion 4: Role of Vitamins, Minerals, & Water (40 points)","Submit Diet Exercise Record | Part 2: Macronutrient Analysis Essay (180 points)"], due:"Discussion 4 and Part 2 (Macronutrient Analysis Essay)." },
+  { title:"Energy balance and physical activity", milestone:false, focus:"Connect energy in and energy out to weight, health, and chronic disease, and consider how faith can inform care of the body.",
+    do:["Read Chapter 7, “Body Weight and Health,” and Chapter 8, “Nutrition and Physical Activity”","Read the Chapter 18 sections on calories, health and disease, and threats to health","Post in Discussion 5: Weight Management (40 points)","Begin Part 3, the Micronutrient Analysis Essay"], due:"Discussion 5. Part 3 is in progress." },
+  { title:"Food safety and food insecurity", milestone:true, focus:"Examine how food is kept safe and why many people lack consistent access to enough nutritious food.",
+    do:["Read Human Nutrition Chapter 17, “Food Safety,” and the Chapter 18 sections on malnutrition and food insecurity","Watch the topic videos","Post in Discussion 6: Access to Food (40 points)","Submit Diet Exercise Record | Part 3: Micronutrient Analysis Essay (180 points)","Begin the Lifespan Case Study"], due:"Discussion 6 and Part 3 (Micronutrient Analysis Essay)." },
+  { title:"Nutrition through the lifecycle", milestone:true, focus:"See how nutritional needs change from pregnancy through older adulthood.",
+    do:["Read Chapter 13 and Chapter 14 on lifespan nutrition","Post in Discussion 7: Nutritional Needs Through the Lifespan (40 points)","Submit the Week 7 Lifespan Case Study (200 points)","Watch your university email on Friday for the End of Course Survey"], due:"Discussion 7 and the Lifespan Case Study." },
+  { title:"Food choices and culture", milestone:false, focus:"Explore how culture, access, and community shape what, when, and how we eat.",
+    do:["Read the two articles on the factors that influence food choices","Watch the two topic videos","Post in Discussion 8: Culture, Food Choices, and Nutrition (40 points)","Complete the End of Course Survey before its end date"], due:"Discussion 8 and the End of Course Survey." }
+];
+
+const STEPS = [
+  { id:"preview", name:"Preview", color:"--c3", days:[0],       share:15, note:"Start of the week: read the Deep Dive page and watch the topic video. You will see the big picture before the details." },
+  { id:"read",    name:"Read",    color:"--c1", days:[0,1,2],   share:30, note:"Early in the week: work through the assigned units and chapters, and note where each one connects to the discussion questions." },
+  { id:"discuss", name:"Discuss", color:"--c2", days:[2,3,4],   share:25, note:"Midweek: write your initial post, then return to answer classmates. Full credit for responses means 3 or more substantive replies, so leave time for them." },
+  { id:"apply",   name:"Apply",   color:"--c4", days:[4,5,6],   share:30, note:"Late week: work on the Diet Exercise Record or the Lifespan Case Study, and check your work against the rubric before you submit." }
+];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const GRADES = [
+  { name:"Weekly discussions",   weight:32, color:"--c3", desc:"320 points: eight discussions at 40 points each. Each is scored on your initial post (20), your responses to colleagues (15), and communication skills (5)." },
+  { name:"Part 1: Activity Record", weight:12, color:"--c2", desc:"120 points: seven days of food, drink, and activity tracking, submitted as your “7-Day Average” report." },
+  { name:"Part 2: Macronutrient essay", weight:18, color:"--c1", desc:"180 points: an essay comparing your carbohydrate, protein, and fat intake with guidelines, with recommended improvements." },
+  { name:"Part 3: Micronutrient essay", weight:18, color:"--c5", desc:"180 points: an essay on your vitamin, mineral, and hydration intake with food-based recommendations." },
+  { name:"Lifespan Case Study",  weight:20, color:"--c4", desc:"200 points: one age group, one peer-reviewed article, a key nutrient, three foods, and how culture shapes food choices. The largest single assignment." }
+];
+const SCALE = [["A",92.5],["A-",89.5],["B+",86.5],["B",82.5],["B-",79.5],["C+",76.5],["C",72.5],["C-",69.5],["D+",66.5],["D",62.5],["D-",59.5],["F",0]];
+
+const RECORD = [
+  { name:"Part 1: Activity Record", start:1, due:3, pts:120, color:"--c2", what:"Track everything you eat and drink, plus your activity, for 7 consecutive days in HealthWatch360. Download your “7-Day Average” report and submit it.",
+    tips:["Log as you go. Add every food and drink with an accurate quantity and serving size.","The mobile app cannot download the report. Use a desktop or laptop web browser for that step.","You are not graded on exercise, but record it, including duration. It feeds later analysis."] },
+  { name:"Part 2: Macronutrient essay", start:3, due:4, pts:180, color:"--c1", what:"Use the same 7-day report to analyze your protein, carbohydrate, and fat intake. Compare it with recommended guidelines and recommend improvements.",
+    tips:["Do not re-track. This part builds on the report you already submitted.","Compare each macronutrient with its recommended range, and say what the data show.","Check each rubric row before you submit."] },
+  { name:"Part 3: Micronutrient essay", start:5, due:6, pts:180, color:"--c5", what:"Analyze your vitamin, mineral, and hydration intake against recommended levels. Identify deficiencies or excesses and recommend food-based changes.",
+    tips:["Use Dietary Reference Intakes: RDA and AI for adequacy, UL for the upper limit.","Recommend foods, not only supplements.","Start in Week 5 so Week 6 is for finishing."] },
+  { name:"Lifespan Case Study", start:6, due:7, pts:200, color:"--c4", what:"Choose one age group (children 2 to 8, adolescents 12 to 18, adults 19 to 64, or older adults 65 and older). Summarize a peer-reviewed article, identify a key nutrient and three age-appropriate foods, and analyze how culture shapes food choices.",
+    tips:["Find your peer-reviewed article early using the APU Global library database or Google Scholar.","Include the article’s limitations and how you would apply it to diet planning.","Pick one specific culture and one nutritional issue within that culture and age group."] }
+];
+
+const HABITS = [
+  { t:"Start your 7-day tracking in Week 1", c:"--c1", why:"Parts 1, 2, and 3 all depend on the same data.", tip:"Pick seven consecutive days soon, create your HealthWatch360 account, and log meals and drinks right after you have them." },
+  { t:"Use a computer for the report", c:"--c2", why:"The mobile app tracks food but cannot download the report.", tip:"Plan one session on a desktop or laptop to download the “7-Day Average” report. Public libraries offer free computer access." },
+  { t:"Preview, then read", c:"--c3", why:"A quick preview makes the readings easier to follow.", tip:"Open the Deep Dive page and watch the topic video before you start the assigned units and chapters." },
+  { t:"Answer all the discussion questions", c:"--c4", why:"The initial post is worth 20 of the 40 points.", tip:"Respond to every question in the prompt and use the weekly resources as evidence, giving credit for any source you use." },
+  { t:"Reply to at least three colleagues", c:"--c5", why:"Three or more substantive replies earn the top band for responses.", tip:"Add a fresh idea, example, or connection in each reply instead of only agreeing." },
+  { t:"Check the rubric before you submit", c:"--c1", why:"The rubric is the grading plan in writing.", tip:"Open the rubric for the assignment, go through each row, and note where your work meets it." }
+];
+
+const HELP = [
+  { t:"Ask the Prof", d:"An ungraded discussion board for general course questions. Check it first, since your question may already be answered." },
+  { t:"Professor’s Corner", d:"Your instructor’s background, office hours, and the best ways to reach out during the term." },
+  { t:"Canvas Resources for Students", d:"Help with navigating Canvas, and the Canvas Student App for mobile course access." },
+  { t:"Library database", d:"APU Global library resources for finding the peer-reviewed article for your Lifespan Case Study." },
+  { t:"Career Corner and Career Services", d:"Transferable skills from this course, plus career resources available 24/7 with your student email login. Contact careerservices@apuglobal.edu." },
+  { t:"Course evaluator", d:"If your End of Course Survey invitation does not arrive, check your spam or junk folder, then email the course evaluator." }
+];
+/* ======= END EDIT BLOCK ======= */
+
+const $ = (s) => document.querySelector(s);
+const css = (v) => `var(${v})`;
+function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v);}catch(e){ return null; } }
+
+$("#hideDraft").onclick = () => $("#draft").style.display = "none";
+
+/* ---------- trail ---------- */
+const XS = [100,300,500,700,700,500,300,100], YS = [80,80,80,80,230,230,230,230];
+const FRAC = [0,200,400,600,830,1030,1230,1430].map(n => n/1430);
+const svg = $("#trail");
+let cur = 0;
+svg.innerHTML = `
+  <path class="trail-bg" d="M100,80 H700 C790,80 790,230 700,230 H100" fill="none" stroke-width="10" stroke-linecap="round"/>
+  <path id="prog" class="trail-fg" d="M100,80 H700 C790,80 790,230 700,230 H100" fill="none" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+  ${WEEKS.map((w,i)=>`
+  <g class="node ${w.milestone?"milestone":""}" data-i="${i}" role="button" tabindex="0" aria-label="Week ${i+1}: ${w.title}">
+    <circle class="ring" cx="${XS[i]}" cy="${YS[i]}" r="42" stroke-width="3"/>
+    <circle class="body" cx="${XS[i]}" cy="${YS[i]}" r="34"/>
+    <text x="${XS[i]}" y="${YS[i]}">${i+1}</text>
+  </g>`).join("")}
+  <text x="400" y="30" text-anchor="middle" style="font-family:var(--head);font-size:17px;fill:var(--muted)">Amber rings mark weeks with a major assignment due</text>
+`;
+svg.querySelectorAll(".node").forEach(n => {
+  n.addEventListener("click", () => setWeek(+n.dataset.i));
+  n.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setWeek(+n.dataset.i);} });
+});
+$("#chips").innerHTML = WEEKS.map((w,i)=>`<button class="chip" data-i="${i}" aria-pressed="false">Week ${i+1}</button>`).join("");
+$("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(b) setWeek(+b.dataset.i); });
+
+function setWeek(i){
+  cur = i;
+  const w = WEEKS[i];
+  svg.querySelectorAll(".node").forEach((n,k)=>{ n.classList.toggle("active", k===i); n.classList.toggle("done", k<i); });
+  $("#prog").style.strokeDashoffset = 100 - FRAC[i]*100;
+  document.querySelectorAll(".chip").forEach((c,k)=>c.setAttribute("aria-pressed", k===i));
+  $("#weekPanel").innerHTML = `
+    <div>
+      ${w.milestone?`<span class="tag">Milestone week</span>`:""}
+      <h3>Week ${i+1}: ${w.title}</h3>
+      <p>${w.focus}</p>
+      <div class="pn">
+        <button id="prev" ${i===0?"disabled":""}>Previous week</button>
+        <button id="next" ${i===WEEKS.length-1?"disabled":""}>Next week</button>
+      </div>
+    </div>
+    <div>
+      <b style="font-family:var(--head)">What you will do</b>
+      <ul>${w.do.map(d=>`<li>${d}</li>`).join("")}</ul>
+      <p style="margin-top:.8rem;color:var(--muted)"><b style="color:var(--ink)">Due:</b> ${w.due}</p>
+    </div>`;
+  const p=$("#prev"), n=$("#next");
+  if(p) p.onclick=()=>setWeek(cur-1);
+  if(n) n.onclick=()=>setWeek(cur+1);
+}
+
+/* ---------- weekly loop ---------- */
+let activeStep = null;
+$("#loop").innerHTML = STEPS.map(s=>`<button class="step" data-id="${s.id}" style="--sc:${css(s.color)}" aria-pressed="false"><b>${s.name}</b><span>${DAYS[s.days[0]]}${s.days.length>1?" to "+DAYS[s.days[s.days.length-1]]:""}</span></button>`).join("");
+$("#weekStrip").innerHTML = DAYS.map((d,i)=>{
+  const segs = STEPS.filter(s=>s.days.includes(i));
+  return `<div class="day">${d}<div class="cell" data-d="${i}">${segs.map(s=>`<div class="seg" data-id="${s.id}" style="background:${css(s.color)}"></div>`).join("")}</div></div>`;
+}).join("");
+function setStep(id){
+  activeStep = activeStep===id ? null : id;
+  document.querySelectorAll(".step").forEach(b=>b.setAttribute("aria-pressed", b.dataset.id===activeStep));
+  $("#weekStrip").classList.toggle("dim", !!activeStep);
+  document.querySelectorAll("#weekStrip .seg").forEach(s=>s.classList.toggle("on", s.dataset.id===activeStep));
+  const s = STEPS.find(x=>x.id===activeStep);
+  $("#stepNote").textContent = s ? s.note : "Select a step above to highlight its days.";
+}
+$("#loop").addEventListener("click", e=>{ const b=e.target.closest(".step"); if(b) setStep(b.dataset.id); });
+setStep(null); $("#stepNote").textContent = "Select a step above to highlight its days.";
+
+/* ---------- hours ---------- */
+function renderHours(){
+  const h = +$("#hrs").value;
+  $("#hrsOut").textContent = h + " hours";
+  $("#hoursBar").innerHTML = STEPS.map(s=>`<div style="flex-grow:${s.share};background:${css(s.color)}">${(h*s.share/100).toFixed(1)}</div>`).join("");
+  $("#hoursLegend").innerHTML = STEPS.map(s=>`<span><i class="sw" style="background:${css(s.color)}"></i>${s.name} ${(h*s.share/100).toFixed(1)} hrs</span>`).join("");
+}
+$("#hrs").addEventListener("input", renderHours); renderHours();
+
+/* ---------- grades ---------- */
+const R = 70, C = 2*Math.PI*R;
+let selCat = null, off = 0;
+$("#donut").innerHTML = GRADES.map((g,i)=>{
+  const len = C*g.weight/100, gap = 3;
+  const el = `<circle class="seg-arc" data-i="${i}" cx="100" cy="100" r="${R}" stroke="${css(g.color)}" stroke-dasharray="${len-gap} ${C-len+gap}" stroke-dashoffset="${-off}" tabindex="0" role="button" aria-label="${g.name}, ${g.weight*10} points, ${g.weight} percent"/>`;
+  off += len; return el;
+}).join("");
+function selectCat(i){
+  selCat = (selCat===i) ? null : i;
+  document.querySelectorAll(".seg-arc").forEach((a,k)=>{ a.classList.toggle("sel", k===selCat); a.classList.toggle("dim", selCat!==null && k!==selCat); });
+  const g = GRADES[selCat ?? 0];
+  $("#dPct").textContent = selCat===null ? "1,000" : (g.weight*10) + " pts";
+  $("#dName").textContent = selCat===null ? "total points" : g.name;
+  $("#catDesc").textContent = selCat===null ? "Select a slice to see what it covers." : g.desc;
+}
+document.querySelectorAll(".seg-arc").forEach(a=>{
+  a.addEventListener("click",()=>selectCat(+a.dataset.i));
+  a.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectCat(+a.dataset.i);} });
+});
+selectCat(null);
+
+$("#sliders").innerHTML = GRADES.map((g,i)=>`
+  <div class="row"><div class="top"><label for="s${i}"><i class="sw" style="background:${css(g.color)}"></i>${g.name} <span style="color:var(--muted);font-weight:400">(${g.weight*10} pts)</span></label><span id="v${i}">85%</span></div>
+  <input type="range" id="s${i}" min="0" max="100" value="85" data-i="${i}"></div>`).join("");
+function calc(){
+  let t = 0;
+  GRADES.forEach((g,i)=>{ const v=+$("#s"+i).value; $("#v"+i).textContent=v+"%"; t += v*g.weight/100; });
+  const total = t / GRADES.reduce((a,g)=>a+g.weight,0) * 100;
+  $("#total").textContent = total.toFixed(1); $("#ptsOut").textContent = Math.round(total*10);
+  const L = SCALE.find(s=>total>=s[1]-1e-9);
+  $("#letter").textContent = L ? L[0] : "F";
+}
+document.querySelectorAll("#sliders input").forEach(i=>i.addEventListener("input",calc)); calc();
+
+/* ---------- habits ---------- */
+let pledged = [];
+try { pledged = JSON.parse(store("hsci105-habits") || "[]"); } catch(e){ pledged = []; }
+$("#habitList").innerHTML = HABITS.map((h,i)=>`
+  <div class="habit" style="--hc:${css(h.c)}" data-i="${i}">
+    <div class="hd"><h3>${h.t}</h3></div>
+    <p class="why">${h.why}</p>
+    <div class="more"><b>Try this:</b> ${h.tip}</div>
+    <div class="acts">
+      <button class="tog" aria-expanded="false">Show how</button>
+      <button class="plg" aria-pressed="${pledged.includes(i)}">I will do this</button>
+    </div>
+  </div>`).join("");
+function meter(){
+  const n = pledged.length;
+  $("#meter").style.width = (n/HABITS.length*100) + "%";
+  $("#meterWrap").setAttribute("aria-valuenow", n);
+  $("#meterText").textContent = n===0 ? "Choose the habits you will start this week." : `${n} of ${HABITS.length} habits chosen.`;
+}
+$("#habitList").addEventListener("click", e=>{
+  const card = e.target.closest(".habit"); if(!card) return;
+  const i = +card.dataset.i;
+  if(e.target.closest(".tog")){
+    const open = card.classList.toggle("open");
+    e.target.closest(".tog").setAttribute("aria-expanded", open);
+    e.target.closest(".tog").textContent = open ? "Hide" : "Show how";
+  }
+  if(e.target.closest(".plg")){
+    pledged = pledged.includes(i) ? pledged.filter(x=>x!==i) : pledged.concat(i);
+    e.target.closest(".plg").setAttribute("aria-pressed", pledged.includes(i));
+    store("hsci105-habits", JSON.stringify(pledged)); meter();
+  }
+});
+meter();
+
+/* ---------- help ---------- */
+$("#helpList").innerHTML = HELP.map(h=>`<div class="card"><h3>${h.t}</h3><p>${h.d}</p></div>`).join("");
+
+/* ---------- Diet Exercise Record timeline ---------- */
+(function(){
+  const NS="http://www.w3.org/2000/svg";const svg=$("#recsvg");const x0=60,cw=90;
+  const X=w=>x0+(w-1)*cw;
+  let h='';
+  for(let w=1;w<=8;w++){h+=`<text x="${X(w)+cw/2-5}" y="26" text-anchor="middle" style="font-family:var(--head);font-weight:700;font-size:15px;fill:var(--muted)">Week ${w}</text><line x1="${X(w)}" x2="${X(w)}" y1="38" y2="240" stroke="var(--line)"/>`;}
+  h+=`<line x1="${X(9)}" x2="${X(9)}" y1="38" y2="240" stroke="var(--line)"/>`;
+  RECORD.forEach((r,i)=>{const y=52+i*48,x=X(r.start)+4,w=(r.due-r.start+1)*cw-8;
+    h+=`<g class="rbar" data-i="${i}" role="button" tabindex="0" aria-label="${r.name}, ${r.pts} points, weeks ${r.start} to ${r.due}"><rect x="${x}" y="${y}" width="${w}" height="38" rx="10" fill="var(${r.color})"/><text x="${x+(w-26)/2+4}" y="${y+24}" text-anchor="middle" style="font-family:var(--head);font-weight:700;font-size:13px;fill:var(--on-c)">${r.name.split(":")[0].replace("Lifespan ","")} · ${r.pts} pts</text><circle cx="${x+w-14}" cy="${y+19}" r="6" fill="var(--on-c)"/></g>`;});
+  svg.innerHTML=h;
+  let sel=null;
+  function show(i){
+    sel=(sel===i)?null:i;
+    svg.classList.toggle("rec-dim",sel!==null);
+    svg.querySelectorAll(".rbar").forEach((b,k)=>b.classList.toggle("sel",k===sel));
+    const p=$("#recPanel");
+    if(sel===null){p.innerHTML='<p style="margin:0;color:var(--muted)">Select a bar to see what it asks for. The white dot marks the week it is due.</p>';return;}
+    const r=RECORD[sel];
+    p.innerHTML=`<span class="tag" style="border-color:var(${r.color})">${r.pts} points · work begins Week ${r.start}, due Week ${r.due}</span><h3>${r.name}</h3><p>${r.what}</p><b style="font-family:var(--head)">Keep in mind</b><ul>${r.tips.map(t=>`<li>${t}</li>`).join("")}</ul>`;
+  }
+  svg.querySelectorAll(".rbar").forEach(b=>{b.addEventListener("click",()=>show(+b.dataset.i));b.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show(+b.dataset.i);}});});
+  show(0);
+})();
+
+setWeek(0);
+</script>
+</body>
+</html>
