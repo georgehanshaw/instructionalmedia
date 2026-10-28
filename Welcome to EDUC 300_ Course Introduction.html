@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Welcome to EDUC 300: Course Introduction</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--ink:#2a2422;--muted:#645b56;--paper:#f6f3ef;--card:#ffffff;--line:#e2dcd5;--warm:#edebe8;--red:#c63840;--red-text:#a8353a;--teal:#1f6f78;--teal-text:#1a5d65;--gold:#d99a1f;--gold-text:#8a5d06;--ok:#25704a;--ok-bg:#e4f3ea;--bad:#a8261e;--bad-bg:#fbe9e7;--focus:#1a5fb4;--panel:#fbf1e6;--serif:"Literata",Georgia,"Times New Roman",serif;--sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.55 var(--sans)}
+.wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:.5em 0}
+.rule{width:100px;height:6px;border-radius:5px;background:var(--red);margin-bottom:.9rem}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:center;margin-bottom:1.75rem}
+.lede{font-size:1.15rem;max-width:34em;margin-top:.8rem}
+.src{color:var(--muted);font-size:.95rem;margin-top:.6rem}
+.hero-art{background:var(--panel);border-radius:20px;padding:.75rem;border:1px solid var(--line)}
+.hero-art svg{display:block;width:100%;height:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem}
+.btn{font:700 1rem var(--sans);padding:.6rem 1.15rem;border-radius:999px;border:2px solid var(--red);background:transparent;color:var(--red-text);cursor:pointer}
+.btn:hover{background:var(--warm)}
+.btn.primary{background:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red-text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.foot{margin-top:2rem;color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+:root{--wr:#c63840;--pj:#1f6f78;--pc:#b8830f}
+.hero-art p{margin:.4rem .3rem .1rem;text-align:center;color:#4a3a2c;font-size:.92rem}
+.seg{display:flex;flex-wrap:wrap;border:2px solid var(--red);border-radius:18px;overflow:hidden;margin-bottom:1.25rem}
+.seg button{flex:1 1 auto;font:700 1rem var(--sans);padding:.6rem 1.1rem;border:0;background:transparent;color:var(--red-text);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--red);color:#fff}
+.two{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:1.25rem;align-items:start}
+.desc{font-family:var(--serif);font-size:1.15rem;line-height:1.55}
+.objs{display:grid;gap:.5rem}
+.obj{display:flex;gap:.7rem;align-items:flex-start;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:.65rem .8rem;font:inherit;cursor:pointer}
+.obj:hover{background:var(--warm)}
+.obj[aria-pressed="true"]{border-color:var(--red);background:var(--warm)}
+.obj .n{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--red);color:#fff;font:700 .95rem/1.7rem var(--sans);text-align:center}
+.strip{display:grid;grid-template-columns:repeat(8,1fr);gap:.4rem}
+.wk{display:flex;flex-direction:column;align-items:center;gap:.2rem;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:.4rem .15rem;font:inherit;font-size:.85rem;cursor:pointer;position:relative}
+.wk svg{width:100%;max-width:48px;height:auto}
+.wk.on{border-color:var(--red);background:var(--warm);font-weight:700}
+.wk.dim{opacity:.4}
+.wk.seen::after{content:"";position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#e0a21f;border:1.5px solid var(--card)}
+.wk[aria-pressed="true"]{border-color:var(--red);box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 28%,transparent)}
+.cap{margin:.7rem 0 0;min-height:3.2em}
+.weeks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem}
+.weeks-grid .wk{font-size:.9rem;padding:.55rem .3rem;text-align:center}
+.weeks-grid .wk b{font-family:var(--serif)}
+.weeks-grid .wk small{color:var(--muted);line-height:1.25;font-size:.78rem}
+.detail{display:grid;grid-template-columns:120px 1fr;gap:1.2rem}
+.detail .big{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:.5rem;align-self:start}
+.detail .big svg{display:block;width:100%;height:auto}
+.detail h2{margin-bottom:.6rem}
+.rows{display:grid;gap:.55rem}
+.row{display:grid;grid-template-columns:5.2em 1fr;gap:.7rem}
+.row b{color:var(--c);font-family:var(--serif)}
+.row ul{margin:0;padding-left:1.1rem}
+.tag{display:inline-block;border-radius:999px;padding:.05rem .65rem;font-size:.85rem;font-weight:700;color:#fff;background:var(--c);margin-right:.3rem}
+.mapwrap{overflow-x:auto;margin-top:1.25rem}
+.map{display:grid;grid-template-columns:150px repeat(8,minmax(64px,1fr));gap:.35rem;align-items:center;min-width:700px}
+.map .lane{font-weight:700;font-size:.92rem;color:var(--c)}
+.map .hd{text-align:center;font-weight:700;color:var(--muted);font-size:.85rem}
+.map .cell{height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--warm)}
+.mk{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;border:0;border-radius:10px;background:var(--c);color:#fff;font:700 .78rem var(--sans);cursor:pointer;line-height:1.15}
+.mk[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:1px}
+.help{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:1.25rem;align-items:start}
+.sit{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:.6rem .85rem;font:inherit;cursor:pointer;margin-bottom:.5rem}
+.sit:hover{background:var(--warm)}
+.sit[aria-pressed="true"]{border-color:var(--red);background:var(--warm);font-weight:700}
+.res{display:grid;grid-template-columns:84px 1fr;gap:1rem}
+.res .pic{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:.35rem;align-self:start}
+.res .pic svg{display:block;width:100%;height:auto}
+.res h3{font-size:1.25rem;margin-bottom:.3rem}
+.res .note{background:var(--warm);border-radius:10px;padding:.5rem .75rem;margin-top:.7rem;font-size:.95rem}
+.check{display:grid;grid-template-columns:200px 1fr;gap:1.5rem;align-items:start}
+.ringbox{text-align:center}
+.ringbox svg{width:100%;max-width:200px;height:auto}
+.ringbox .pct{font:700 1.6rem var(--serif);margin:0}
+.items{display:grid;gap:.5rem}
+.it{display:flex;gap:.75rem;align-items:flex-start;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:.6rem .8rem;font:inherit;cursor:pointer;width:100%}
+.it:hover{background:var(--warm)}
+.box{flex:none;width:1.5rem;height:1.5rem;border-radius:7px;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;margin-top:.1rem}
+.box svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.it[aria-checked="true"]{border-color:var(--ok);background:var(--ok-bg)}
+.it[aria-checked="true"] .box{background:var(--ok);border-color:var(--ok)}
+.it[aria-checked="true"] .box svg{opacity:1}
+.it small{display:block;color:var(--muted)}
+.ready{margin-top:1rem;border-radius:14px;padding:1rem 1.1rem;background:var(--ok-bg);border:1px solid var(--ok)}
+.nav{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-top:1.5rem}
+@media(max-width:820px){.two,.help,.check{grid-template-columns:1fr}.detail{grid-template-columns:1fr}.detail .big{max-width:100px}.strip{grid-template-columns:repeat(4,1fr)}.weeks-grid{grid-template-columns:repeat(2,1fr)}.ringbox svg{max-width:150px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="kid" viewBox="0 0 40 60"><circle cx="20" cy="14" r="10" fill="var(--skin,#c98f6b)"/><path d="M5 58V36a15 15 0 0 1 30 0v22z" fill="currentColor"/></symbol>
+</defs></svg>
+<main class="wrap">
+<header class="hero">
+  <div>
+    <div class="rule"></div>
+    <h1>Welcome to EDUC 300</h1>
+    <p class="lede">Take a short tour of how this course is organized, what each week asks of you, and where to go for help. Visit each week to light up a window in the schoolhouse.</p>
+    <p class="src">Introduction to Elementary Education</p>
+  </div>
+  <div class="hero-art">
+    <div role="img" aria-label="A red schoolhouse with a bell tower and eight windows. Windows light up as you visit each week.">
+    <svg viewBox="0 0 420 210" aria-hidden="true" id="house"></svg></div>
+    <p id="lit" aria-live="polite"></p>
+  </div>
+</header>
+
+<div class="seg" role="tablist" aria-label="Course tour">
+  <button role="tab" id="t0" aria-selected="true" aria-controls="p0">Welcome</button>
+  <button role="tab" id="t1" aria-selected="false" aria-controls="p1">Your eight weeks</button>
+  <button role="tab" id="t2" aria-selected="false" aria-controls="p2">Where to get help</button>
+  <button role="tab" id="t3" aria-selected="false" aria-controls="p3">Your Week 1 checklist</button>
+</div>
+
+<section id="p0" role="tabpanel" aria-labelledby="t0">
+  <div class="two">
+    <div>
+      <h2 style="margin-bottom:.5rem">What this course is about</h2>
+      <p class="desc">You will study the historical and philosophical foundations of education in America, and how those foundations shape current practices and policies. Along the way you will reflect on the purposes of education, the pathway to becoming a teacher, and the role education plays in society.</p>
+      <p class="muted">Two assignment strands run through the term: a two-part Writing Assignment and a three-part Reflective Practitioner Project.</p>
+    </div>
+    <div>
+      <h2 style="margin-bottom:.5rem" id="objh">By the end, you will be able to…</h2>
+      <div class="objs" id="objs" role="group" aria-labelledby="objh"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1.25rem">
+    <h3 style="margin-bottom:.7rem">Where you will meet it</h3>
+    <div class="strip" id="strip"></div>
+    <p class="cap" id="cap" aria-live="polite"></p>
+  </div>
+  <div class="nav"><span></span><button class="btn primary" data-go="1">See your eight weeks</button></div>
+</section>
+
+<section id="p1" role="tabpanel" aria-labelledby="t1" hidden>
+  <p class="muted" style="margin-top:0">Select a week to see what you will read, discuss, and create. Weeks you have opened get a gold dot.</p>
+  <div class="weeks-grid" id="wgrid"></div>
+  <div class="card detail" id="detail" aria-live="polite"></div>
+  <div class="mapwrap"><div class="map" id="map" role="group" aria-label="When assignments and podcasts happen"></div></div>
+  <p class="muted" style="font-size:.92rem">Select any marker to jump to that week.</p>
+  <div class="nav"><button class="btn" data-go="0">Back</button><button class="btn primary" data-go="2">Where to get help</button></div>
+</section>
+
+<section id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <h2 style="margin-bottom:.3rem">Where do I go when…?</h2>
+  <p class="muted" style="margin-top:0">Choose the situation closest to yours.</p>
+  <div class="help">
+    <div id="sits" role="group" aria-label="Situations"></div>
+    <div class="card res" id="res" aria-live="polite"></div>
+  </div>
+  <div class="nav"><button class="btn" data-go="1">Back</button><button class="btn primary" data-go="3">Your Week 1 checklist</button></div>
+</section>
+
+<section id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+  <h2 style="margin-bottom:.3rem">Get ready for Week 1</h2>
+  <p class="muted" style="margin-top:0">Check off each step as you finish it. Your progress stays on this device.</p>
+  <div class="check">
+    <div class="ringbox" id="ring"></div>
+    <div>
+      <div class="items" id="items" role="group" aria-label="Week 1 steps"></div>
+      <div id="ready" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="nav"><button class="btn" data-go="2">Back</button><button class="btn" id="restart">Restart the tour</button></div>
+</section>
+
+<p class="foot">Built from the EDUC 300 course overview, weekly resources, Career Corner, and Canvas support pages.</p>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const COL=["#1f6f78","#c63840","#b8830f"];
+
+/* ---------- data ---------- */
+const WEEKS=[
+ {t:"Becoming a Teacher: Calling and Credentials",s:"Calling and credentials",ch:"Teachers and the Teaching Profession",
+  topics:["Teaching as a calling","The many roles and qualities of successful teachers","The pathway to a teaching credential"],
+  disc:"Why Do You Want to Be a Teacher?",kind:"w",create:"Part 1: describe your educational, personal, and spiritual path, compare your strengths with those of successful teachers, and explain how you have been “called” to teach.",
+  pod:["The “Calling” to Be a Teacher"],extra:["Explore the California teaching credential requirements.","Take the StrengthsFinder survey. You may use your results in Part 1."]},
+ {t:"School Systems: The Big Picture",s:"School systems",ch:"School Laws and Organization",
+  topics:["Federal, state, and local governance","How schools are funded","Teacher and student rights and responsibilities"],
+  disc:"Challenges of Teaching",create:null},
+ {t:"Learning Theory 101",s:"Learning theory",ch:"Philosophies and Theories in Education",
+  topics:["Philosophies of education","Behaviorism, cognitive, and constructivist theories","Social learning, motivation, and a Christian perspective"],
+  disc:"Most Valid Learning Theory",kind:"w",create:"Part 2: research one learning theory in at least two academic sources and apply it to a real classroom activity.",
+  pod:["What Does the Bible Say About Teaching and Learning? (3:24)"]},
+ {t:"All Students Can Learn",s:"All students",ch:"Students",
+  topics:["A strengths-based lens","IEPs and Section 504 plans","Differentiated instruction and Universal Design for Learning"],
+  disc:"Methods for Teaching to Every Student",create:null,note:"Begin working on the Reflective Practitioner Project, Part 1, which is due in a later week."},
+ {t:"Managing the Learning Environment",s:"Learning environment",ch:"Creating a Positive Learning Environment",
+  topics:["The physical environment and emotional climate","Routines and procedures","Your identity as a teacher"],
+  disc:"Creating a Learning Environment",kind:"p",create:"Part 1: design your ideal classroom with a picture-driven tool such as Piktochart or Canva, then write a narrative explaining your choices.",
+  pod:["Consider Your Identity as a Teacher (3:58)"]},
+ {t:"Are You Teaching If Students Are Not Learning?",s:"Barriers to learning",ch:"Learning",
+  topics:["How learning happens","Barriers to learning and how to respond","Motivation, mindset, and partnering with families"],
+  disc:"Barriers to Learning",kind:"p",create:"Part 2: research how to engage every learner, choose two resources, and describe how you would apply them. Share your Part 1 classroom design in the sharing forum."},
+ {t:"Curriculum and Instruction",s:"Curriculum",ch:"Curriculum and Instruction",
+  topics:["Standards, curriculum, and instruction","Backward design and Bloom’s taxonomy","Evaluating lesson plans"],
+  disc:"Challenges of Modern Curriculum Design",kind:"p",create:"Part 3: set goals for 1 year, 5 years, 10 years, and a lifetime, and reflect on why lifelong learning matters.",
+  pod:["Why Teachers Teach (5:02)"],extra:["Review the Common Core State Standards and a lesson plan website for this week’s discussion.","Watch your university email for the end-of-course survey invitation."]},
+ {t:"Assessment in the Classroom",s:"Assessment",ch:"Assessment",
+  topics:["Diagnostic, formative, and summative assessment","Quality and fairness","Lifelong learning and professional development"],
+  disc:"Lifelong Learning and Professional Development",create:null,extra:["Review the Smarter Balanced Assessment System for this week’s discussion.","Complete the end-of-course survey if you have not already."]}
+];
+const OBJ=[
+ {t:"Outline the path to becoming a credentialed teacher.",w:[1],c:"Week 1 walks through the steps to a credential and compares your strengths with the traits of successful teachers."},
+ {t:"Explain the theoretical underpinnings of modern education.",w:[2,3,6],c:"Weeks 2, 3, and 6 cover how schools are governed, the major learning theories, and how learning actually happens."},
+ {t:"Articulate the role of a teacher as a spiritual calling.",w:[1,3,5,8],c:"Faith and calling come up in Weeks 1, 3, 5, and 8, from your own story to your identity as a teacher and lifelong learner."},
+ {t:"Create positive learning environments that support a diverse group of students.",w:[4,5,6],c:"Weeks 4, 5, and 6 focus on diverse learners, the classroom environment, and removing barriers to learning."},
+ {t:"Apply state-mandated curricular and assessment frameworks to a classroom learning plan.",w:[7,8],c:"Weeks 7 and 8 bring in standards, curriculum frameworks, and assessment systems such as Smarter Balanced."}
+];
+const SITS=[
+ {q:"I am stuck on an idea or a draft",ic:"spark",h:"Spark, your 24/7 course assistant",d:"Spark has been trained on your course topics and activity instructions. It can explain complex concepts, brainstorm discussion and assignment ideas, strengthen your writing, connect course material to your life and goals, and help you explore the intersection of faith, life, and learning.",where:"Look for the Spark link in the Weekly Resources pages.",note:"Keep the university’s policy on AI usage in mind while you chat with Spark."},
+ {q:"I do not understand the directions for an assignment",ic:"board",h:"Ask the Prof",d:"An ungraded question board in the Welcome module for general class questions, such as unclear directions or assignments. Post your question there so your professor, and your classmates, can see the answer.",where:"Welcome module, Ask the Prof.",note:"Questions about a grade or other personal matters do not belong here. Contact your professor directly instead."},
+ {q:"I have a question about my grade or something personal",ic:"person",h:"Professor Corner",d:"Your professor’s background, interests, and the best ways to reach out, including contact information and office hours.",where:"Welcome module, Professor Corner."},
+ {q:"Canvas is confusing or something is not working",ic:"buoy",h:"Canvas Resources and the Help button",d:"Canvas Resources for Students has videos, guides, and instructions on getting started with Canvas, assignments, and discussions, quizzes, and grades. For a problem in Canvas, select the Help button in the left-side Global Navigation menu, or contact 24/7 tech support.",where:"Welcome module, Canvas Resources for Students.",note:"The Canvas Student App lets you reach your course on a mobile device."},
+ {q:"I want to know how this course helps my career",ic:"case",h:"Career Corner",d:"The five transferable skills you will gain: instructional planning and assessment, applying learning theory, creating positive learning environments, presentation and communication, and reflective practice and lifelong learning.",where:"Welcome module, Career Corner.",note:"APU Global students and alumni can use Career Services 24/7 with their student email login. Questions: careerservices@apuglobal.edu."},
+ {q:"I want to know how to become a credentialed teacher",ic:"cert",h:"Teaching credential requirements",d:"Week 1 links to the steps to earn a teaching credential in California, and the Week 1 Deep Dive explains the general pathway: a bachelor’s degree and preparation program, supervised classroom experience, and your state’s testing and application requirements.",where:"Week 1 Resources and the Week 1 Deep Dive."},
+ {q:"I cannot find the end-of-course survey",ic:"mail",h:"Your university email",d:"The invitation to the end-of-course survey arrives in your university email account. If you do not see it, check your SPAM or JUNK folder, and if necessary contact the course evaluator.",where:"Weeks 7 and 8, End of Course Evaluation.",note:"The survey takes only a few minutes, and it closes after the end date, so please complete it on time."}
+];
+const STEPS=[
+ {t:"Read Education 2010, Chapter 1",s:"“Teachers and the Teaching Profession”"},
+ {t:"Open the Week 1 Deep Dive",s:"Becoming a Teacher: Calling and Credentials"},
+ {t:"Listen to the podcast",s:"The “Calling” to Be a Teacher"},
+ {t:"Explore the credential requirements",s:"The steps to earn a teaching credential in California"},
+ {t:"Take the StrengthsFinder survey",s:"You may use your results in Writing Assignment, Part 1"},
+ {t:"Meet Spark",s:"Review the university’s AI usage policy first"},
+ {t:"Post in Discussion 1",s:"Why Do You Want to Be a Teacher?"},
+ {t:"Begin Writing Assignment, Part 1",s:"Describe your path and why you want to teach"}
+];
+
+/* ---------- state ---------- */
+const S={tab:0,obj:0,wk:0,sit:0,seen:new Set(),done:new Set()};
+const KEY="educ300-intro";
+try{const r=JSON.parse(localStorage.getItem(KEY)||"{}");(r.seen||[]).forEach(n=>S.seen.add(n));(r.done||[]).forEach(n=>S.done.add(n));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({seen:[...S.seen],done:[...S.done]}))}catch(e){}}
+
+/* ---------- graphics ---------- */
+function wkIcon(n){
+  const c=COL[(n-1)%3];
+  const g={
+   1:`<path d="M24 9l20 9-20 9L4 18z" fill="${c}"/><path d="M12 24v8c0 4 24 4 24 0v-8l-12 6z" fill="${c}" opacity=".75"/><path d="M42 20v12" stroke="#e0a21f" stroke-width="2.5"/><path d="M24 44c-6-4-8-7-6-9 1.5-1.5 4-.5 6 2 2-2.5 4.5-3.5 6-2 2 2 0 5-6 9z" fill="#e0a21f" transform="translate(0,-2) scale(.9) translate(2.5,3)"/>`,
+   2:`<path d="M24 6l20 10H4z" fill="${c}"/><g fill="#fff" stroke="${c}" stroke-width="2"><rect x="9" y="19" width="6" height="18"/><rect x="21" y="19" width="6" height="18"/><rect x="33" y="19" width="6" height="18"/></g><rect x="5" y="38" width="38" height="5" fill="${c}"/>`,
+   3:`<circle cx="24" cy="20" r="12" fill="#f3c04a" stroke="${c}" stroke-width="3"/><path d="M18 33h12v6a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3z" fill="${c}"/><path d="M24 4v-1M7 11l-2-2M41 11l2-2M3 22H1M47 22h-2" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`,
+   4:`<use href="#kid" x="4" y="14" width="14" height="21" style="color:${c};--skin:#8d5a3b"/><use href="#kid" x="16" y="6" width="18" height="27" style="color:#6a4c93;--skin:#e2b48c"/><use href="#kid" x="32" y="16" width="13" height="19" style="color:#b8830f;--skin:#c98f6b"/><rect x="3" y="36" width="42" height="4" rx="2" fill="${c}"/>`,
+   5:`<rect x="4" y="6" width="40" height="36" rx="3" fill="#fff" stroke="${c}" stroke-width="3"/><g fill="${c}"><rect x="10" y="12" width="9" height="7" rx="1"/><rect x="24" y="12" width="9" height="7" rx="1"/><rect x="10" y="24" width="9" height="7" rx="1"/><rect x="24" y="24" width="9" height="7" rx="1"/></g><rect x="36" y="14" width="5" height="16" rx="2" fill="#e0a21f"/>`,
+   6:`<path d="M6 8h36a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H22l-9 8v-8H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z" fill="${c}"/><text x="24" y="28" text-anchor="middle" font-size="22" font-weight="700" fill="#fff" font-family="Nunito Sans,sans-serif">?</text>`,
+   7:`<path d="M24 12c-5-4-12-4-18-2v28c6-2 13-2 18 2 5-4 12-4 18-2V10c-6-2-13-2-18 2z" fill="#fff" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="M24 12v28" stroke="${c}" stroke-width="3"/><path d="M11 18c3-1 6-1 9 0M11 25c3-1 6-1 9 0M28 18c3-1 6-1 9 0M28 25c3-1 6-1 9 0" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>`,
+   8:`<rect x="8" y="8" width="26" height="34" rx="4" fill="#fff" stroke="${c}" stroke-width="3"/><path d="M14 20l3 3 5-6M14 32l3 3 5-6" stroke="${c}" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 21h4M26 33h4" stroke="#bbb" stroke-width="2.5" stroke-linecap="round"/><path d="M32 40l3 .6L46 20l-4-3L31 37z" fill="#e0a21f" stroke="#8a5d06" stroke-width="1.5" stroke-linejoin="round"/>`
+  }[n];
+  return `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" fill="#fbf1e6"/><g transform="translate(24 24) scale(.82) translate(-24 -24)">${g}</g></svg>`;
+}
+function resIcon(k){
+  const g={
+   spark:`<path d="M32 6l6 20 20 6-20 6-6 20-6-20-20-6 20-6z" fill="#e0a21f"/><path d="M50 8l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#c63840"/>`,
+   board:`<rect x="6" y="8" width="36" height="26" rx="7" fill="#1f6f78"/><path d="M14 34l-2 10 12-10z" fill="#1f6f78"/><rect x="22" y="26" width="36" height="24" rx="7" fill="#c63840"/><path d="M50 50l4 9-12-9z" fill="#c63840"/><g fill="#fff"><circle cx="32" cy="38" r="2.5"/><circle cx="40" cy="38" r="2.5"/><circle cx="48" cy="38" r="2.5"/></g>`,
+   person:`<use href="#kid" x="16" y="16" width="32" height="48" style="color:#6a4c93;--skin:#e2b48c"/><path d="M32 4l22 9-22 9-22-9z" fill="#2a2422"/><path d="M20 20v6c0 4 24 4 24 0v-6" fill="#2a2422"/><path d="M52 14v12" stroke="#e0a21f" stroke-width="3"/>`,
+   buoy:`<circle cx="32" cy="32" r="22" fill="none" stroke="#c63840" stroke-width="12"/><circle cx="32" cy="32" r="22" fill="none" stroke="#fff" stroke-width="12" stroke-dasharray="17.3 17.3" stroke-dashoffset="8.6"/><circle cx="32" cy="32" r="16" fill="none" stroke="#a8353a" stroke-width="1.5"/>`,
+   case:`<path d="M24 22v-6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v6" fill="none" stroke="#7a5428" stroke-width="4"/><rect x="6" y="22" width="52" height="34" rx="6" fill="#b8830f"/><path d="M6 36h52" stroke="#7a5428" stroke-width="3"/><rect x="28" y="32" width="8" height="9" rx="2" fill="#e0a21f" stroke="#7a5428" stroke-width="2"/>`,
+   cert:`<rect x="6" y="10" width="52" height="38" rx="3" fill="#fff" stroke="#1f6f78" stroke-width="3"/><path d="M14 20h36M14 28h26M14 36h18" stroke="#bbb" stroke-width="3" stroke-linecap="round"/><path d="M42 44l-4 14 8-5 8 5-4-14z" fill="#c63840"/><circle cx="46" cy="40" r="9" fill="#e0a21f" stroke="#8a5d06" stroke-width="2"/>`,
+   mail:`<rect x="6" y="14" width="52" height="38" rx="5" fill="#fff" stroke="#c63840" stroke-width="3"/><path d="M8 18l24 20 24-20" fill="none" stroke="#c63840" stroke-width="3" stroke-linejoin="round"/><circle cx="52" cy="14" r="8" fill="#e0a21f"/>`
+  }[k];
+  return `<svg viewBox="0 0 64 64" aria-hidden="true">${g}</svg>`;
+}
+function house(){
+  const lit=S.seen.size, open=S.done.size===STEPS.length;
+  const pos=[[84,108],[124,108],[84,142],[124,142],[262,108],[302,108],[262,142],[302,142]];
+  let w='';
+  pos.forEach((p,i)=>{const on=S.seen.has(i+1);
+    w+=`<g><rect x="${p[0]}" y="${p[1]}" width="32" height="28" rx="2" fill="${on?'#ffd76a':'#cfe3e8'}" stroke="#fff" stroke-width="3"/><path d="M${p[0]+16} ${p[1]}v28M${p[0]} ${p[1]+14}h32" stroke="#fff" stroke-width="2"/>${on?`<text x="${p[0]+16}" y="${p[1]+19}" text-anchor="middle" font-size="12" font-weight="700" fill="#8a5d06" font-family="Nunito Sans,sans-serif">${i+1}</text>`:''}</g>`;});
+  const door=open?`<rect x="192" y="152" width="36" height="42" fill="#3a2a1a"/><path d="M192 152l-14 4v42l14-4z" fill="#7a5428"/><rect x="198" y="170" width="24" height="24" fill="#ffd76a" opacity=".5"/>`:`<rect x="192" y="152" width="36" height="42" rx="2" fill="#7a5428"/><circle cx="222" cy="174" r="2.5" fill="#e0a21f"/><path d="M210 152v42" stroke="#5e3f1e" stroke-width="2"/>`;
+  $('#house').innerHTML=`<rect width="420" height="210" fill="#fbf1e6"/><circle cx="52" cy="40" r="18" fill="#ffe3a3"/>
+   <rect y="194" width="420" height="16" fill="#8fc7a0"/>
+   <rect x="70" y="100" width="280" height="94" fill="#c63840" stroke="#a8353a" stroke-width="3"/>
+   <path d="M56 100L210 52 364 100z" fill="#5b262b"/>
+   <rect x="192" y="20" width="36" height="34" fill="#a8353a"/><path d="M186 22L210 4l24 18z" fill="#5b262b"/><path d="M203 44c0-8 3-12 7-12s7 4 7 12z" fill="#e0a21f"/><circle cx="210" cy="46" r="2.5" fill="#8a5d06"/>
+   <rect x="168" y="70" width="84" height="22" rx="4" fill="#fff"/><text x="210" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#a8353a" font-family="Nunito Sans,sans-serif">EDUC 300</text>
+   ${w}${door}<rect x="180" y="192" width="60" height="5" fill="#d8c8b4"/>
+   <rect x="386" y="104" width="3" height="90" fill="#7a5428"/><path d="M389 104h22l-6 8 6 8h-22z" fill="#1f6f78"/>
+   <rect x="22" y="158" width="7" height="36" fill="#7a5428"/><circle cx="26" cy="146" r="22" fill="#3f8a56"/>`;
+  $('#lit').textContent = open ? `${lit} of 8 windows lit, and the schoolhouse door is open.` : `${lit} of 8 windows lit`;
+}
+
+/* ---------- render ---------- */
+function weekBtn(n,extra=''){return `<button class="wk ${extra}" data-w="${n}" aria-label="Week ${n}: ${WEEKS[n-1].s}">${wkIcon(n)}<span>Week ${n}</span></button>`}
+function renderObj(){
+  $('#objs').innerHTML=OBJ.map((o,i)=>`<button class="obj" data-o="${i}" aria-pressed="${i===S.obj}"><span class="n">${i+1}</span><span>${o.t}</span></button>`).join('');
+  const o=OBJ[S.obj];
+  $('#strip').innerHTML=WEEKS.map((w,i)=>weekBtn(i+1,(o.w.includes(i+1)?'on':'dim')+(S.seen.has(i+1)?' seen':''))).join('');
+  $('#cap').textContent=o.c;
+  document.querySelectorAll('.obj').forEach(b=>b.addEventListener('click',()=>{S.obj=+b.dataset.o;renderObj();const nb=document.querySelector(`.obj[data-o="${S.obj}"]`);nb&&nb.focus();}));
+  document.querySelectorAll('#strip .wk').forEach(b=>b.addEventListener('click',()=>{S.wk=+b.dataset.w-1;showTab(1);}));
+}
+function renderWeeks(){
+  $('#wgrid').innerHTML=WEEKS.map((w,i)=>`<button class="wk ${S.seen.has(i+1)?'seen':''}" data-w="${i+1}" aria-pressed="${i===S.wk}">${wkIcon(i+1)}<b>Week ${i+1}</b><small>${w.s}</small></button>`).join('');
+  document.querySelectorAll('#wgrid .wk').forEach(b=>b.addEventListener('click',()=>{selectWeek(+b.dataset.w-1);const nb=document.querySelector(`#wgrid .wk[data-w="${S.wk+1}"]`);nb&&nb.focus();}));
+  const w=WEEKS[S.wk],n=S.wk+1;
+  const c=w.kind==='w'?'var(--wr)':(w.kind==='p'?'var(--pj)':'var(--muted)');
+  const rows=[
+   ['Read','var(--red-text)',`Education 2010, Chapter ${n}: “${w.ch}”`],
+   ['Explore','var(--red-text)',`<ul>${w.topics.map(t=>`<li>${t}</li>`).join('')}</ul>`],
+   ['Discuss','var(--red-text)',`Discussion ${n}: ${w.disc}`],
+   ['Create','var(--red-text)', w.create? `<span class="tag" style="--c:${c}">${w.kind==='w'?'Writing Assignment':'Reflective Practitioner Project'}</span><br>${w.create}` : (w.note||'No new assignment is due this week.')]
+  ];
+  if(w.pod) rows.push(['Listen','var(--red-text)',`Podcast: ${w.pod[0]}`]);
+  if(w.extra) rows.push(['Also','var(--red-text)',`<ul>${w.extra.map(t=>`<li>${t}</li>`).join('')}</ul>`]);
+  $('#detail').innerHTML=`<div class="big" role="img" aria-label="Icon for Week ${n}">${wkIcon(n)}</div>
+   <div><h2>Week ${n}: ${w.t}</h2><div class="rows">${rows.map(r=>`<div class="row" style="--c:${r[1]}"><b>${r[0]}</b><div>${r[2]}</div></div>`).join('')}</div></div>`;
+  /* map */
+  const lanes=[
+   ['Writing Assignment','var(--wr)',{1:'Part 1',3:'Part 2'}],
+   ['Reflective Practitioner Project','var(--pj)',{5:'Part 1',6:'Part 2',7:'Part 3'}],
+   ['Podcast','var(--pc)',{1:'Listen',3:'Listen',5:'Listen',7:'Listen'}]
+  ];
+  let m='<div></div>'+WEEKS.map((_,i)=>`<div class="hd">Week ${i+1}</div>`).join('');
+  lanes.forEach(L=>{m+=`<div class="lane" style="--c:${L[1]}">${L[0]}</div>`;
+    for(let i=1;i<=8;i++){m+=`<div class="cell">${L[2][i]?`<button class="mk" style="--c:${L[1]}" data-w="${i}" aria-pressed="${i-1===S.wk}" aria-label="${L[0]}, ${L[2][i]}, Week ${i}">${L[2][i]}</button>`:''}</div>`}});
+  $('#map').innerHTML=m;
+  document.querySelectorAll('.mk').forEach(b=>b.addEventListener('click',()=>selectWeek(+b.dataset.w-1)));
+}
+function selectWeek(i){S.wk=i;S.seen.add(i+1);save();house();renderWeeks();}
+function renderHelp(){
+  $('#sits').innerHTML=SITS.map((s,i)=>`<button class="sit" data-s="${i}" aria-pressed="${i===S.sit}">${s.q}</button>`).join('');
+  const s=SITS[S.sit];
+  $('#res').innerHTML=`<div class="pic" role="img" aria-label="${s.h}">${resIcon(s.ic)}</div><div><h3>${s.h}</h3><p>${s.d}</p><p><b>Where to find it:</b> ${s.where}</p>${s.note?`<div class="note">${s.note}</div>`:''}</div>`;
+  document.querySelectorAll('.sit').forEach(b=>b.addEventListener('click',()=>{S.sit=+b.dataset.s;renderHelp();const nb=document.querySelector(`.sit[data-s="${S.sit}"]`);nb&&nb.focus();}));
+}
+function renderCheck(){
+  const n=S.done.size,N=STEPS.length,r=70,c=2*Math.PI*r,col=n===N?'#25704a':'#c63840';
+  $('#ring').innerHTML=`<svg viewBox="0 0 180 180" role="img" aria-label="${n} of ${N} steps complete"><circle cx="90" cy="90" r="${r}" fill="none" stroke="#eadfd2" stroke-width="14"/><circle cx="90" cy="90" r="${r}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" ${n===0?'opacity="0"':''} stroke-dasharray="${c*n/N} ${c}" transform="rotate(-90 90 90)" style="transition:stroke-dasharray .4s"/><g transform="translate(58 52) scale(1.1)"><rect x="4" y="6" width="44" height="52" rx="5" fill="#fff" stroke="${col}" stroke-width="3"/><rect x="16" y="1" width="20" height="9" rx="3" fill="${col}"/><path d="M12 24l4 4 8-9M12 38l4 4 8-9" stroke="${col}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 25h12M30 39h12" stroke="#bbb" stroke-width="3" stroke-linecap="round"/></g></svg><p class="pct" style="color:${n===N?'var(--ok)':'var(--ink)'}">${n} of ${N}</p>`;
+  $('#items').innerHTML=STEPS.map((s,i)=>`<button class="it" role="checkbox" aria-checked="${S.done.has(i)}" data-i="${i}"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></span><span><b>${s.t}</b><small>${s.s}</small></span></button>`).join('');
+  $('#ready').innerHTML= n===N ? `<div class="ready"><h3 style="margin-bottom:.2rem">You are ready for Week 1</h3><p style="margin:0">The schoolhouse door is open. Welcome to the course.</p></div>`:'';
+  document.querySelectorAll('.it').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.i;S.done.has(i)?S.done.delete(i):S.done.add(i);save();house();renderCheck();const nb=document.querySelector(`.it[data-i="${i}"]`);nb&&nb.focus();}));
+}
+function showTab(n){
+  S.tab=n;
+  [0,1,2,3].forEach(i=>{$('#t'+i).setAttribute('aria-selected',i===n);$('#p'+i).hidden=i!==n});
+  if(n===1){S.seen.add(S.wk+1);save();house();renderWeeks();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+[0,1,2,3].forEach(i=>$('#t'+i).addEventListener('click',()=>showTab(i)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showTab(+b.dataset.go)));
+$('#restart').addEventListener('click',()=>{S.seen.clear();S.done.clear();S.wk=0;S.obj=0;S.sit=0;save();house();renderObj();renderHelp();renderCheck();showTab(0);});
+house();renderObj();renderWeeks();renderHelp();renderCheck();
+</script>
+</body>
+</html>
