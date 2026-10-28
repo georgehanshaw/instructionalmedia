@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 6 Interactive | Food Safety Detective</title>
+<meta name="description" content="Interactive food safety activities for HSCI 105 Week 6">
+<style>
+:root{--red:#d34147;--dred:#b3262c;--ink:#262626;--mute:#555;--bg:#edebe8;--line:#e4e1dc;--ok:#17653a;--okbg:#e4f4ea;--warn:#7a4a00;--warnbg:#fff3da;--bad:#9d1f26;--badbg:#fdeaeb;--blue:#1a5fb4}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.banner{border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#b3262c,#8c1b21);color:#fff;display:flex;align-items:center;gap:22px;padding:20px 28px;flex-wrap:wrap}
+.banner svg{flex:0 0 auto;width:120px;height:120px}
+.banner .txt{flex:1 1 300px}
+.banner h1{margin:0;font-size:1.7rem;line-height:1.2}
+.banner p{margin:8px 0 0}
+.tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:600;margin-bottom:8px}
+.card{background:#fff;border-radius:20px;padding:24px 26px;margin-top:18px}
+.card h2{margin:0 0 6px;font-size:1.3rem}
+.rule{width:100px;height:6px;background:var(--red);border-radius:5px;margin:0 0 12px;border:0}
+.lead{margin:0 0 14px;color:var(--mute)}
+.grid{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.fig{flex:1 1 340px;min-width:280px;background:#faf8f5;border:1px solid var(--line);border-radius:16px;padding:10px}
+.fig svg{display:block;width:100%;height:auto}
+.panel{flex:1 1 300px;min-width:260px;border:1px solid #eee;border-left:6px solid var(--red);border-radius:15px;padding:16px 20px;background:#fcfcfc}
+.panel h3{margin:0 0 4px;color:var(--dred);font-size:1.15rem}
+.panel ul{padding-left:20px;margin:8px 0}
+.kicker{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#fff;background:#6b4a8a;border-radius:6px;padding:1px 8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--dred);color:#fff;border:2px solid var(--dred);border-radius:10px;padding:8px 16px;font-weight:600}
+.btn:hover{background:#8c1b21;border-color:#8c1b21}
+.btn.alt{background:#fff;color:var(--dred)}
+.btn.alt:hover{background:#fdeaeb}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.note{font-size:.88rem;color:var(--mute);margin-top:10px}
+.msg{border-radius:12px;padding:10px 14px;margin-top:10px;font-weight:500}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.bad{background:var(--badbg);color:var(--bad)}
+.msg.info{background:var(--warnbg);color:var(--warn)}
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border:2px dashed #c9c4bb;border-radius:14px;background:#faf8f5}
+.buckets{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.bucket{flex:1 1 200px;border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+.bucket h4{margin:0 0 2px;font-size:1rem}
+.bucket p{margin:0 0 8px;font-size:.85rem;color:var(--mute)}
+.bucket .put{width:100%;margin-bottom:8px;font-size:.88rem;padding:5px 8px}
+.zone{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #b9b3a8;border-radius:999px;padding:5px 12px 5px 8px;font-weight:600;color:var(--ink)}
+.item svg{width:26px;height:26px;flex:0 0 auto}
+.item[aria-pressed=true]{border-color:var(--blue);background:#e8f0fb;box-shadow:0 0 0 2px var(--blue)}
+.item.ok{border-color:var(--ok);background:var(--okbg)}
+.item.bad{border-color:var(--bad);background:var(--badbg)}
+/* quiz */
+.q{border:0;border-top:1px solid var(--line);padding:14px 0 6px;margin:0}
+.q legend{font-weight:700;padding:0 0 6px;float:left;width:100%}
+.opts{clear:both;display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:#fff;border:2px solid #cfc9bf;border-radius:10px;padding:8px 12px}
+.opt:hover:not([disabled]){border-color:var(--red);background:#fff7f7}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.score{font-weight:700;margin-top:12px}
+input[type=range]{width:100%;accent-color:#b3262c}
+label{font-weight:600}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #cfc9bf;background:#fff;max-width:100%}
+.sel-organ{filter:drop-shadow(0 0 5px #1a5fb4)}
+.hot{cursor:pointer}
+.hot:hover{opacity:.9}
+.sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="banner">
+<svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a food thermometer">
+<circle cx="60" cy="60" r="56" fill="#fff" opacity=".18"/>
+<rect x="52" y="14" width="16" height="64" rx="8" fill="#fff"/><circle cx="60" cy="86" r="16" fill="#fff"/>
+<rect x="56" y="40" width="8" height="40" rx="4" fill="#ffd166"/><circle cx="60" cy="86" r="10" fill="#ffd166"/>
+<g stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M76,24 L88,24"/><path d="M76,38 L84,38"/><path d="M76,52 L88,52"/></g>
+</svg>
+<div class="txt"><span class="tag">Week 6 &middot; Food Safety &amp; Food Insecurity</span><h1>Food Safety Detective</h1><p>See the danger zone in action, find hazards in a kitchen, and learn safe cooking temperatures.</p></div>
+</header>
+
+<section class="card" aria-labelledby="h-a">
+<hr class="rule"><h2 id="h-a">Part 1 &middot; The Temperature Danger Zone</h2>
+<p class="lead">Bacteria multiply quickly between <strong>40&deg;F and 140&deg;F</strong>. Set a food temperature and how long it sits out, then watch what happens in the dish.</p>
+<div class="grid">
+<div class="fig" style="flex:1 1 440px">
+<svg id="zone" viewBox="0 0 460 330" role="img" aria-labelledby="zonetitle"><title id="zonetitle">Temperature danger zone</title></svg>
+<div id="zmsg" class="msg info" aria-live="polite"></div>
+</div>
+<div class="panel">
+<label for="temp">Food temperature: <span id="vt"></span>&deg;F</label>
+<input type="range" id="temp" min="0" max="220" step="1" value="72">
+<br><br><label for="time">Time at that temperature: <span id="vtime"></span></label>
+<input type="range" id="time" min="0" max="240" step="10" value="60">
+<br><label><input type="checkbox" id="hot"> Hot day or outdoor event (above 90&deg;F)</label>
+<p class="note" style="margin-top:12px">Quick settings</p>
+<div class="row">
+<button class="btn alt" type="button" data-p="38|0">Refrigerator</button>
+<button class="btn alt" type="button" data-p="72|120">Kitchen counter</button>
+<button class="btn alt" type="button" data-p="140|120">Buffet warmer</button>
+<button class="btn alt" type="button" data-p="165|10">Fully cooked chicken</button>
+</div>
+<p class="note">Simplified illustration: real growth depends on the organism, the food, and starting contamination. The 2-hour rule (1 hour above 90&deg;F) is the practical guideline for perishable food.</p>
+</div>
+</div>
+</section>
+
+<section class="card" aria-labelledby="h-b">
+<hr class="rule"><h2 id="h-b">Part 2 &middot; Kitchen Hazard Hunt</h2>
+<p class="lead">This kitchen has <strong>6 food safety problems</strong>. Select each one you can find. Use Tab and Enter if you prefer the keyboard. Each problem links to one of the four habits: <strong>Clean, Separate, Cook, Chill</strong>.</p>
+<div class="row" id="cs" aria-label="Four food safety habits progress" role="group" style="margin:6px 0"></div>
+<div class="fig"><svg id="kitchen" viewBox="0 0 640 360" role="group" aria-label="Kitchen scene with five food safety hazards. Each hazard is a button.">
+<title>Kitchen scene</title>
+<rect width="640" height="360" fill="#f7f2ea"/>
+<rect x="0" y="296" width="640" height="64" fill="#d8cdb9"/>
+<rect x="40" y="26" width="120" height="76" rx="6" fill="#cfe6f3" stroke="#8a8174" stroke-width="4"/><line x1="100" y1="26" x2="100" y2="102" stroke="#8a8174" stroke-width="3"/><line x1="40" y1="64" x2="160" y2="64" stroke="#8a8174" stroke-width="3"/>
+<!-- fridge -->
+<rect x="14" y="84" width="124" height="250" rx="10" fill="#eef1f3" stroke="#aab2b8" stroke-width="3"/><line x1="14" y1="170" x2="138" y2="170" stroke="#aab2b8" stroke-width="3"/>
+<rect x="120" y="100" width="6" height="50" rx="3" fill="#8a949b"/><rect x="120" y="190" width="6" height="60" rx="3" fill="#8a949b"/>
+<!-- counter + cabinets -->
+<rect x="150" y="238" width="490" height="20" fill="#c9b79c"/><rect x="150" y="258" width="490" height="78" fill="#b89a77"/>
+<g stroke="#9a7e5d" stroke-width="2"><line x1="270" y1="258" x2="270" y2="336"/><line x1="390" y1="258" x2="390" y2="336"/><line x1="510" y1="258" x2="510" y2="336"/></g>
+<!-- hazard: fridge display -->
+<g class="hz" id="h-fridge" role="button" tabindex="0" aria-label="Refrigerator display"><rect x="34" y="104" width="76" height="40" rx="6" fill="#262626"/><text x="72" y="132" text-anchor="middle" font-size="22" font-weight="700" fill="#ff6b5e" font-family="Segoe UI,Arial">50&deg;F</text></g>
+<!-- hazard: cutting board -->
+<g class="hz" id="h-board" role="button" tabindex="0" aria-label="Cutting board with raw chicken and vegetables"><rect x="165" y="226" width="150" height="14" rx="4" fill="#e3c48f"/><ellipse cx="205" cy="216" rx="30" ry="12" fill="#f2b5a7" stroke="#d98a79" stroke-width="2"/><circle cx="268" cy="218" r="10" fill="#e5483d"/><circle cx="290" cy="220" r="9" fill="#e5483d"/><path d="M240,224 q10,-18 22,-4 q-8,8 -22,4Z" fill="#6fae3f"/><rect x="226" y="208" width="34" height="5" rx="2" fill="#aab2b8" transform="rotate(-14 243 210)"/></g>
+<!-- hazard: chili pot + clock -->
+<g class="hz" id="h-pot" role="button" tabindex="0" aria-label="Pot of leftovers on the counter next to a clock"><rect x="340" y="190" width="76" height="48" rx="8" fill="#6e6a64"/><ellipse cx="378" cy="190" rx="38" ry="9" fill="#a8492f"/><rect x="330" y="196" width="12" height="6" rx="3" fill="#6e6a64"/><rect x="414" y="196" width="12" height="6" rx="3" fill="#6e6a64"/><circle cx="378" cy="150" r="26" fill="#fff" stroke="#262626" stroke-width="3"/><line x1="378" y1="150" x2="378" y2="132" stroke="#262626" stroke-width="3"/><line x1="378" y1="150" x2="394" y2="156" stroke="#262626" stroke-width="3"/><text x="378" y="186" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Segoe UI,Arial" style="paint-order:stroke" stroke="#262626" stroke-width="0">&nbsp;</text><text x="378" y="119" text-anchor="middle" font-size="12" font-weight="700" fill="#9d1f26" font-family="Segoe UI,Arial">3 hours</text></g>
+<!-- hazard: chicken thermometer -->
+<g class="hz" id="h-temp" role="button" tabindex="0" aria-label="Cooked chicken with thermometer"><ellipse cx="480" cy="236" rx="40" ry="8" fill="#fff" stroke="#b9b3a8" stroke-width="2"/><path d="M450,232 C455,208 500,204 510,232 C500,242 460,242 450,232Z" fill="#d9a05b"/><line x1="494" y1="215" x2="512" y2="186" stroke="#6e6a64" stroke-width="4"/><circle cx="518" cy="176" r="18" fill="#fff" stroke="#262626" stroke-width="3"/><text x="518" y="181" text-anchor="middle" font-size="12" font-weight="700" fill="#262626" font-family="Segoe UI,Arial">150&deg;</text></g>
+<!-- hazard: sink rinsing -->
+<g class="hz" id="h-sink" role="button" tabindex="0" aria-label="Sink where raw chicken is being rinsed"><rect x="548" y="216" width="82" height="24" rx="6" fill="#aab2b8"/><path d="M596,170 q0,-20 -20,-20 L560,150" stroke="#8a949b" stroke-width="8" fill="none" stroke-linecap="round"/><g fill="#7fc4e8"><circle cx="560" cy="170" r="3"/><circle cx="562" cy="186" r="3"/><circle cx="558" cy="202" r="3"/></g><ellipse cx="590" cy="214" rx="22" ry="9" fill="#f2b5a7" stroke="#d98a79" stroke-width="2"/><g fill="#7fc4e8" opacity=".8"><circle cx="618" cy="206" r="3"/><circle cx="624" cy="196" r="2.5"/><circle cx="614" cy="192" r="2.5"/></g></g>
+<!-- towel (clean hazard) -->
+<g class="hz" id="h-towel" role="button" tabindex="0" aria-label="Dish towel hanging on a cabinet with stains"><rect x="295" y="268" width="40" height="62" rx="4" fill="#9fc5e8" stroke="#7aa6cc" stroke-width="2"/><circle cx="310" cy="296" r="6" fill="#d9534f" opacity=".75"/><circle cx="324" cy="310" r="5" fill="#d9534f" opacity=".75"/><circle cx="305" cy="316" r="4" fill="#d9534f" opacity=".75"/></g>
+<!-- hint labels decor -->
+<g id="marks"></g>
+</svg></div>
+<div class="grid" style="margin-top:12px"><div class="panel" id="hinfo" aria-live="polite"><span class="kicker">Hazards found: 0 of 6</span><h3>Look closely</h3><p>Select a spot in the kitchen that does not follow safe food handling.</p></div></div>
+<div class="row"><button class="btn alt" type="button" id="hint">Give me a hint</button><button class="btn alt" type="button" id="hreset">Start over</button></div>
+<style>.hz{cursor:pointer}.hz:hover{opacity:.85}.hz.found{filter:drop-shadow(0 0 4px #17653a)}</style>
+</section>
+
+<section class="card" aria-labelledby="h-c">
+<hr class="rule"><h2 id="h-c">Part 3 &middot; Safe Cooking Temperatures</h2>
+<p class="lead">Match each food to its minimum safe internal temperature. Select a food, then choose a temperature group.</p>
+<div id="sort-temp"></div>
+<p class="note">Based on USDA/FoodSafety.gov guidance. Whole cuts of beef, pork, lamb, and veal also need a 3-minute rest time. Use a food thermometer; color is not a reliable indicator.</p>
+</section>
+
+<section class="card" aria-labelledby="h-d">
+<hr class="rule"><h2 id="h-d">Part 4 &middot; Check Your Understanding</h2>
+<div id="quiz"></div>
+</section>
+
+<p class="note" style="text-align:center;margin:18px 0 4px">HSCI 105 Nutrition and Wellness &middot; Interactive learning activity. Content adapted from the course Deep Dive pages; sources listed in each week&rsquo;s Deep Dive.</p>
+</div>
+<script>
+function el(tag,attrs,...kids){const e=document.createElement(tag);for(const k in (attrs||{})){if(k==='class')e.className=attrs[k];else if(k==='html')e.innerHTML=attrs[k];else e.setAttribute(k,attrs[k]);}kids.forEach(c=>e.append(c));return e;}
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Quiz: immediate feedback, one try per question ---------- */
+function makeQuiz(rootId,qs){
+  const root=document.getElementById(rootId);let right=0,done=0;
+  const score=el('p',{class:'score','aria-live':'polite'});
+  qs.forEach((q,i)=>{
+    const fs=el('fieldset',{class:'q'});fs.append(el('legend',{},(i+1)+'. '+q.q));
+    const box=el('div',{class:'opts',role:'group','aria-label':'Answer choices for question '+(i+1)});
+    const fb=el('div',{class:'msg',style:'display:none','aria-live':'polite'});
+    const btns=q.o.map((t,j)=>{const b=el('button',{class:'opt',type:'button'},t);
+      b.onclick=()=>{btns.forEach(x=>x.disabled=true);done++;
+        if(j===q.a){b.classList.add('ok');right++;fb.className='msg ok';fb.textContent='Correct. '+q.why;}
+        else{b.classList.add('bad');btns[q.a].classList.add('ok');fb.className='msg bad';fb.textContent='Not quite. '+q.why;}
+        fb.style.display='block';
+        score.textContent=done===qs.length?('You answered '+right+' of '+qs.length+' correctly.'+(right===qs.length?' Excellent work!':' Review the explanations above and try the interactive again.')):'';};
+      return b;});
+    btns.forEach(b=>box.append(b));fs.append(box,fb);root.append(fs);});
+  root.append(score);
+}
+
+/* ---------- Sorter: click an item, then click a bucket ---------- */
+function makeSorter(rootId,cfg){
+  const root=document.getElementById(rootId);const place={};let sel=null;
+  cfg.items.forEach(i=>place[i.id]=null);
+  const live=el('div',{class:'msg info','aria-live':'polite',style:'display:none'});
+  const pool=el('div',{class:'pool',role:'group','aria-label':'Items to sort'});
+  const bwrap=el('div',{class:'buckets'});const zones={};const puts={};
+  cfg.buckets.forEach(b=>{
+    const z=el('div',{class:'zone',role:'group','aria-label':b.label+' items'});zones[b.id]=z;
+    const p=el('button',{class:'btn alt put',type:'button'},'Place selected item here');puts[b.id]=p;
+    p.onclick=()=>{if(!sel){say('Select an item first, then choose a group.');return;}place[sel]=b.id;clearMarks();sel=null;render();};
+    bwrap.append(el('div',{class:'bucket'},el('h4',{},b.label),el('p',{},b.desc||''),p,z));});
+  const fb=el('div',{style:'display:none','aria-live':'polite'});
+  const check=el('button',{class:'btn',type:'button'},'Check my answers');
+  const reset=el('button',{class:'btn alt',type:'button'},'Reset');
+  function say(t){live.textContent=t;live.style.display='block';}
+  function clearMarks(){fb.style.display='none';live.style.display='none';}
+  const chips={};
+  cfg.items.forEach(it=>{const c=el('button',{class:'item',type:'button','aria-pressed':'false'});
+    c.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';chips[it.id]=c;
+    c.onclick=()=>{clearMarks();Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));
+      if(place[it.id]){place[it.id]=null;sel=it.id;render();say(it.label+' returned to the item pool and selected.');return;}
+      sel=(sel===it.id)?null:it.id;render();if(sel)say(it.label+' selected. Now choose a group.');};});
+  function render(){pool.innerHTML='';Object.values(zones).forEach(z=>z.innerHTML='');
+    cfg.items.forEach(it=>{const c=chips[it.id];c.setAttribute('aria-pressed',sel===it.id?'true':'false');
+      (place[it.id]?zones[place[it.id]]:pool).append(c);});
+    if(!pool.children.length)pool.append(el('span',{class:'note'},'All items placed. Select Check my answers.'));}
+  check.onclick=()=>{if(cfg.items.some(i=>!place[i.id])){say('Place every item in a group before checking.');return;}
+    let r=0;const wrong=[];cfg.items.forEach(it=>{const ok=place[it.id]===it.bucket;chips[it.id].classList.remove('ok','bad');chips[it.id].classList.add(ok?'ok':'bad');if(ok)r++;else wrong.push(it);});
+    live.style.display='none';fb.style.display='block';
+    fb.className='msg '+(r===cfg.items.length?'ok':'bad');
+    fb.innerHTML='<strong>'+r+' of '+cfg.items.length+' correct.</strong>'+(wrong.length?'<ul>'+wrong.map(w=>'<li><strong>'+w.label+':</strong> '+w.why+'</li>').join('')+'</ul><span>Tap a red item to move it, then check again.</span>':' '+(cfg.done||''));};
+  reset.onclick=()=>{cfg.items.forEach(i=>place[i.id]=null);sel=null;Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));clearMarks();render();};
+  root.append(pool,bwrap,el('div',{class:'row'},check,reset),live,fb);render();
+}
+
+
+const $=id=>document.getElementById(id);
+/* ---- Danger zone ---- */
+const rnd=(s=>()=>(s=(s*16807)%2147483647)/2147483647)(7);
+const SPOTS=Array.from({length:180},()=>({a:rnd()*Math.PI*2,r:Math.sqrt(rnd())*50}));
+function fmtN(n){return n>=1e6?'millions':n>=1e3?Math.round(n/1000)+',000+':Math.round(n)}
+function zoneUpdate(){
+  const t=+$('temp').value,m=+$('time').value,hot=$('hot').checked;
+  $('vt').textContent=t;$('vtime').textContent=m===0?'just now':(m>=60?Math.floor(m/60)+' h '+(m%60?m%60+' min':''):m+' min');
+  const inZone=t>=40&&t<140, kill=t>=165, hold=t>=140&&t<165;
+  let n=2;
+  if(inZone){const dt=(t>=70&&t<=110)?20:40;n=2*Math.pow(2,m/dt);}
+  else if(kill)n=0; else if(hold||t<40)n=2;
+  const shown=kill?0:Math.min(180,Math.round(Math.log2(Math.max(n,2))*14+2));
+  // thermometer geometry: 0..220F maps to y 290..30
+  const Y=v=>290-(v/220)*260;
+  let s='<title id="zonetitle">Temperature danger zone. Food at '+t+' degrees for '+m+' minutes.</title>';
+  s+='<rect x="30" y="'+Y(40)+'" width="24" height="'+(Y(0)-Y(40))+'" fill="#7fc4e8"/>';
+  s+='<rect x="30" y="'+Y(140)+'" width="24" height="'+(Y(40)-Y(140))+'" fill="#f4a259"/>';
+  s+='<rect x="30" y="'+Y(165)+'" width="24" height="'+(Y(140)-Y(165))+'" fill="#f7d17a"/>';
+  s+='<rect x="30" y="'+Y(220)+'" width="24" height="'+(Y(165)-Y(220))+'" fill="#e5645a"/>';
+  s+='<rect x="26" y="26" width="32" height="268" rx="6" fill="none" stroke="#262626" stroke-width="3"/>';
+  [['40\u00b0F','Refrigerate at or below',40],['140\u00b0F','Keep hot at or above',140],['165\u00b0F','Poultry safe temperature',165]].forEach(l=>{
+    s+='<line x1="58" x2="76" y1="'+Y(l[2])+'" y2="'+Y(l[2])+'" stroke="#262626" stroke-width="2"/><text x="82" y="'+(Y(l[2])+4)+'" font-size="12" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">'+l[0]+' <tspan font-weight="400">'+l[1]+'</tspan></text>';});
+  s+='<text x="82" y="'+(Y(90)+4)+'" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#9d1f26">DANGER ZONE</text>';
+  s+='<polygon points="62,'+Y(t)+' 84,'+(Y(t)-9)+' 84,'+(Y(t)+9)+'" fill="#262626" transform="translate(0,0)"/><circle cx="42" cy="'+Y(t)+'" r="9" fill="#262626"/>';
+  // petri dish
+  const cx=340,cy=170;
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="64" fill="#faf6ee" stroke="#8a8174" stroke-width="4"/><text x="'+cx+'" y="52" text-anchor="middle" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Bacteria in the food</text>';
+  for(let i=0;i<shown;i++){const p=SPOTS[i];s+='<circle cx="'+(cx+Math.cos(p.a)*p.r)+'" cy="'+(cy+Math.sin(p.a)*p.r)+'" r="3.2" fill="#6b4a8a"/>';}
+  s+='<text x="'+cx+'" y="262" text-anchor="middle" font-size="14" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">'+(kill?'Killed by heat':'About '+fmtN(n/2)+'\u00d7 the starting number')+'</text>';
+  if(!kill&&inZone)s+='<text x="'+cx+'" y="282" text-anchor="middle" font-size="12" font-family="Segoe UI,Arial" fill="#555">(population can double in 20 to 40 minutes)</text>';
+  $('zone').innerHTML=s;
+  const z=$('zmsg');
+  const limit=hot?60:120;
+  if(kill){z.className='msg ok';z.textContent='At 165\u00b0F or higher, heat kills bacteria. Poultry is safe at this internal temperature.';}
+  else if(inZone){
+    if(m>limit){z.className='msg bad';z.textContent='Danger. Perishable food in the danger zone for more than '+(hot?'1 hour':'2 hours')+' should be discarded.';}
+    else{z.className='msg info';z.textContent='In the danger zone. Bacteria are multiplying. Perishable food should not stay here longer than '+(hot?'1 hour (above 90\u00b0F)':'2 hours')+'.';}}
+  else if(hold){z.className='msg ok';z.textContent='Hot-holding range. Bacteria do not multiply well here, but food is not yet at a poultry-safe cooking temperature.';}
+  else{z.className='msg ok';z.textContent='Cold storage. Refrigeration slows bacterial growth. It does not kill bacteria, so keep food at 40\u00b0F or below.';}
+}
+['temp','time','hot'].forEach(i=>$(i).addEventListener('input',zoneUpdate));
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const [t,m]=b.dataset.p.split('|');$('temp').value=t;$('time').value=m;zoneUpdate();});
+zoneUpdate();
+
+/* ---- Hazard hunt ---- */
+document.querySelectorAll('.hz').forEach(g=>{const bb=g.getBBox();const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x',bb.x-6);r.setAttribute('y',bb.y-6);r.setAttribute('width',bb.width+12);r.setAttribute('height',bb.height+12);r.setAttribute('fill','transparent');g.insertBefore(r,g.firstChild);});
+const HZ={
+ board:{c:'Separate',t:'Raw chicken next to ready-to-eat vegetables',b:'Raw poultry juices can spread bacteria to foods that will not be cooked. Use separate cutting boards and utensils, and keep raw meat apart from produce.'},
+ pot:{c:'Chill',t:'Leftovers left out for 3 hours',b:'Perishable food should be refrigerated within 2 hours (1 hour above 90\u00b0F). Divide large batches into shallow containers so they cool quickly.'},
+ fridge:{c:'Chill',t:'Refrigerator at 50\u00b0F',b:'The refrigerator should be 40\u00b0F or below. At 50\u00b0F, bacteria multiply in the danger zone.'},
+ temp:{c:'Cook',t:'Chicken only at 150\u00b0F',b:'Poultry must reach 165\u00b0F internal temperature. Check with a food thermometer in the thickest part.'},
+ sink:{c:'Separate',t:'Rinsing raw chicken in the sink',b:'Washing raw poultry splashes bacteria onto the sink and counters. Cooking kills bacteria, so rinsing is not needed.'},
+ towel:{c:'Clean',t:'Stained towel after handling raw meat',b:'Wash hands with soap for 20 seconds after handling raw meat, and do not wipe hands on a shared towel. Wash towels and sponges often.'}
+};
+const found=new Set();const COL={Clean:'#1a5fb4',Separate:'#6b4a8a',Cook:'#b3262c',Chill:'#17653a'};
+function csRender(){const cs=$('cs');cs.innerHTML='';['Clean','Separate','Cook','Chill'].forEach(c=>{const got=[...found].some(k=>HZ[k].c===c);
+  const e=document.createElement('span');e.className='item '+(got?'ok':'');e.style.cursor='default';e.textContent=(got?'\u2713 ':'')+c;cs.append(e);});}
+const info=$('hinfo');
+function hazard(k){
+  if(!HZ[k])return;
+  const first=!found.has(k);found.add(k);
+  document.getElementById('h-'+k).classList.add('found');
+  const h=HZ[k];info.innerHTML='<span class="kicker" style="background:'+COL[h.c]+'">Hazards found: '+found.size+' of 6 &middot; '+h.c+'</span><h3>'+h.t+'</h3><p>'+h.b+'</p>'+(found.size===6?'<p class="msg ok">You found them all. Remember the four habits: Clean, Separate, Cook, Chill.</p>':'');
+  csRender();
+}
+Object.keys(HZ).forEach(k=>{const g=document.getElementById('h-'+k);g.addEventListener('click',()=>hazard(k));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hazard(k);}});});
+$('hint').onclick=()=>{const left=Object.keys(HZ).filter(k=>!found.has(k));if(!left.length){return;}
+  const k=left[0];const lbl={Clean:'something to do with keeping hands and cloths clean',Separate:'cross-contamination between raw and ready-to-eat foods',Cook:'a temperature reading',Chill:'time or temperature in the cold chain'}[HZ[k].c];
+  info.innerHTML='<span class="kicker">Hint</span><h3>Think about '+HZ[k].c+'</h3><p>Look for '+lbl+'.</p>';};
+$('hreset').onclick=()=>{found.clear();document.querySelectorAll('.hz').forEach(g=>g.classList.remove('found'));info.innerHTML='<span class="kicker">Hazards found: 0 of 6</span><h3>Look closely</h3><p>Select a spot in the kitchen that does not follow safe food handling.</p>';csRender();};
+csRender();
+info.querySelector('.kicker').textContent='Hazards found: 0 of 6';
+
+/* ---- Temperature sorter ---- */
+makeSorter('sort-temp',{
+ buckets:[{id:'t145',label:'145\u00b0F',desc:'Whole cuts + 3 min rest, and fish'},{id:'t160',label:'160\u00b0F',desc:'Ground meats and egg dishes'},{id:'t165',label:'165\u00b0F',desc:'Poultry and reheated leftovers'}],
+ items:[
+  {id:'steak',label:'Beef steak',bucket:'t145',why:'Whole cuts of beef, pork, lamb, and veal: 145\u00b0F plus a 3-minute rest.'},
+  {id:'fish',label:'Fish fillet',bucket:'t145',why:'Fish should reach 145\u00b0F.'},
+  {id:'burger',label:'Ground beef burger',bucket:'t160',why:'Ground meats should reach 160\u00b0F because grinding mixes surface bacteria throughout.'},
+  {id:'egg',label:'Egg casserole',bucket:'t160',why:'Egg dishes should reach 160\u00b0F.'},
+  {id:'chicken',label:'Chicken breast',bucket:'t165',why:'All poultry should reach 165\u00b0F.'},
+  {id:'turkey',label:'Ground turkey',bucket:'t165',why:'Ground poultry should reach 165\u00b0F.'},
+  {id:'left',label:'Reheated leftovers',bucket:'t165',why:'Leftovers should be reheated to 165\u00b0F.'}],
+ done:'You know your safe temperatures.'});
+
+makeQuiz('quiz',[
+ {q:'What temperature range is called the danger zone?',o:['0\u201332\u00b0F','40\u2013140\u00b0F','140\u2013200\u00b0F','200\u2013250\u00b0F'],a:1,why:'Bacteria multiply rapidly between 40\u00b0F and 140\u00b0F.'},
+ {q:'Which are the four food safety habits?',o:['Clean, separate, cook, chill','Wash, wait, bake, store','Buy, store, cook, serve','Rinse, soak, boil, freeze'],a:0,why:'Clean, separate, cook, and chill are the four widely taught habits.'},
+ {q:'Food insecurity is best described as:',o:['Eating spoiled food','Limited or uncertain access to enough food for an active, healthy life','Choosing to skip meals','Having too many food choices'],a:1,why:'It reflects income, geography, transportation, and community conditions, not individual willpower alone.'},
+ {q:'Which group is at higher risk from foodborne illness?',o:['Healthy teens only','Young children, pregnant people, older adults, and people with weakened immune systems','No one in particular','Only people who eat out'],a:1,why:'These groups face higher risk of serious illness.'}
+]);
+
+</script>
+</body>
+</html>

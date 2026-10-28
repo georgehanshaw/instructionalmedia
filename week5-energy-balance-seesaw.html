@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 5 Interactive | Energy Balance Seesaw</title>
+<meta name="description" content="Interactive energy balance model for HSCI 105 Week 5">
+<style>
+:root{--red:#d34147;--dred:#b3262c;--ink:#262626;--mute:#555;--bg:#edebe8;--line:#e4e1dc;--ok:#17653a;--okbg:#e4f4ea;--warn:#7a4a00;--warnbg:#fff3da;--bad:#9d1f26;--badbg:#fdeaeb;--blue:#1a5fb4}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.banner{border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#b3262c,#8c1b21);color:#fff;display:flex;align-items:center;gap:22px;padding:20px 28px;flex-wrap:wrap}
+.banner svg{flex:0 0 auto;width:120px;height:120px}
+.banner .txt{flex:1 1 300px}
+.banner h1{margin:0;font-size:1.7rem;line-height:1.2}
+.banner p{margin:8px 0 0}
+.tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:600;margin-bottom:8px}
+.card{background:#fff;border-radius:20px;padding:24px 26px;margin-top:18px}
+.card h2{margin:0 0 6px;font-size:1.3rem}
+.rule{width:100px;height:6px;background:var(--red);border-radius:5px;margin:0 0 12px;border:0}
+.lead{margin:0 0 14px;color:var(--mute)}
+.grid{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.fig{flex:1 1 340px;min-width:280px;background:#faf8f5;border:1px solid var(--line);border-radius:16px;padding:10px}
+.fig svg{display:block;width:100%;height:auto}
+.panel{flex:1 1 300px;min-width:260px;border:1px solid #eee;border-left:6px solid var(--red);border-radius:15px;padding:16px 20px;background:#fcfcfc}
+.panel h3{margin:0 0 4px;color:var(--dred);font-size:1.15rem}
+.panel ul{padding-left:20px;margin:8px 0}
+.kicker{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#fff;background:#6b4a8a;border-radius:6px;padding:1px 8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--dred);color:#fff;border:2px solid var(--dred);border-radius:10px;padding:8px 16px;font-weight:600}
+.btn:hover{background:#8c1b21;border-color:#8c1b21}
+.btn.alt{background:#fff;color:var(--dred)}
+.btn.alt:hover{background:#fdeaeb}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.note{font-size:.88rem;color:var(--mute);margin-top:10px}
+.msg{border-radius:12px;padding:10px 14px;margin-top:10px;font-weight:500}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.bad{background:var(--badbg);color:var(--bad)}
+.msg.info{background:var(--warnbg);color:var(--warn)}
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border:2px dashed #c9c4bb;border-radius:14px;background:#faf8f5}
+.buckets{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.bucket{flex:1 1 200px;border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+.bucket h4{margin:0 0 2px;font-size:1rem}
+.bucket p{margin:0 0 8px;font-size:.85rem;color:var(--mute)}
+.bucket .put{width:100%;margin-bottom:8px;font-size:.88rem;padding:5px 8px}
+.zone{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #b9b3a8;border-radius:999px;padding:5px 12px 5px 8px;font-weight:600;color:var(--ink)}
+.item svg{width:26px;height:26px;flex:0 0 auto}
+.item[aria-pressed=true]{border-color:var(--blue);background:#e8f0fb;box-shadow:0 0 0 2px var(--blue)}
+.item.ok{border-color:var(--ok);background:var(--okbg)}
+.item.bad{border-color:var(--bad);background:var(--badbg)}
+/* quiz */
+.q{border:0;border-top:1px solid var(--line);padding:14px 0 6px;margin:0}
+.q legend{font-weight:700;padding:0 0 6px;float:left;width:100%}
+.opts{clear:both;display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:#fff;border:2px solid #cfc9bf;border-radius:10px;padding:8px 12px}
+.opt:hover:not([disabled]){border-color:var(--red);background:#fff7f7}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.score{font-weight:700;margin-top:12px}
+input[type=range]{width:100%;accent-color:#b3262c}
+label{font-weight:600}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #cfc9bf;background:#fff;max-width:100%}
+.sel-organ{filter:drop-shadow(0 0 5px #1a5fb4)}
+.hot{cursor:pointer}
+.hot:hover{opacity:.9}
+.sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="banner">
+<svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a balance scale">
+<circle cx="60" cy="60" r="56" fill="#fff" opacity=".18"/>
+<polygon points="60,50 44,104 76,104" fill="#fff" opacity=".9"/>
+<line x1="18" y1="44" x2="102" y2="52" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+<path d="M12,66 L24,66 L18,44Z M96,74 L108,74 L102,52Z" fill="none" stroke="#fff" stroke-width="2"/>
+<ellipse cx="18" cy="68" rx="14" ry="5" fill="#ffd166"/><ellipse cx="102" cy="76" rx="14" ry="5" fill="#ffd166"/>
+</svg>
+<div class="txt"><span class="tag">Week 5 &middot; Energy Balance &amp; Physical Activity</span><h1>Energy Balance Seesaw</h1><p>Balance energy in and energy out, see where the energy goes, and explore the limits of common health measures.</p></div>
+</header>
+
+<section class="card" aria-labelledby="h-a">
+<hr class="rule"><h2 id="h-a">Part 1 &middot; Energy Balance Seesaw</h2>
+<p class="lead">Body weight is influenced by the energy you take in and the energy you use. Adjust the controls to see how a typical day&rsquo;s energy in and out compare. This is a teaching model, not a personal recommendation.</p>
+<div class="grid">
+<div class="fig" style="flex:1 1 420px">
+<svg id="see" viewBox="0 0 440 340" role="img" aria-labelledby="seetitle"><title id="seetitle">Energy balance seesaw</title>
+<polygon points="220,150 190,262 250,262" fill="#b9b3a8"/><rect x="170" y="262" width="100" height="10" rx="4" fill="#8a8174"/>
+<line id="beam" x1="80" y1="150" x2="360" y2="150" stroke="#6e6a64" stroke-width="9" stroke-linecap="round"/>
+<circle cx="220" cy="150" r="9" fill="#b3262c"/>
+<g id="panL"><polyline id="ropeL" fill="none" stroke="#8a8174" stroke-width="2"/>
+<g id="plateL"><path d="M-48,0 Q0,34 48,0Z" fill="#fff" stroke="#b3262c" stroke-width="3"/>
+<circle cx="-14" cy="-10" r="11" fill="#d9534f"/><path d="M-14,-21 q4,-8 9,-6" stroke="#5f8f2e" stroke-width="3" fill="none"/>
+<path d="M4,-4 q8,-22 22,-10 q6,8 0,10Z" fill="#e5b96b"/>
+<text x="0" y="52" text-anchor="middle" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Energy in</text>
+<text id="tIn" x="0" y="70" text-anchor="middle" font-size="16" font-weight="700" font-family="Segoe UI,Arial" fill="#b3262c"></text></g></g>
+<g id="panR"><polyline id="ropeR" fill="none" stroke="#8a8174" stroke-width="2"/>
+<g id="plateR"><path d="M-48,0 Q0,34 48,0Z" fill="#fff" stroke="#1a5fb4" stroke-width="3"/>
+<circle cx="0" cy="-34" r="6" fill="#1a5fb4"/><path d="M0,-28 L0,-10 M0,-22 L-10,-14 M0,-22 L10,-26 M0,-10 L-8,0 M0,-10 L8,-2" stroke="#1a5fb4" stroke-width="4" stroke-linecap="round" fill="none"/>
+<text x="0" y="52" text-anchor="middle" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Energy out</text>
+<text id="tOut" x="0" y="70" text-anchor="middle" font-size="16" font-weight="700" font-family="Segoe UI,Arial" fill="#1a5fb4"></text></g></g>
+</svg>
+<div id="verdict" class="msg info" aria-live="polite"></div>
+</div>
+<div class="panel" style="flex:1 1 320px">
+<label for="cin">Energy in: <span id="vin"></span> kcal/day</label>
+<input type="range" id="cin" min="1200" max="3600" step="50" value="2200">
+<br><br><label for="bmr">Resting energy (basal metabolism)</label><br>
+<select id="bmr"><option value="1400">Example A &middot; about 1,400 kcal</option><option value="1700" selected>Example B &middot; about 1,700 kcal</option><option value="2000">Example C &middot; about 2,000 kcal</option></select>
+<br><br><label for="mov">Everyday movement (outside of exercise)</label><br>
+<select id="mov"><option value="300">Mostly seated</option><option value="500" selected>Some walking and standing</option><option value="800">On my feet most of the day</option></select>
+<br><br><label for="act">Exercise type</label><br>
+<select id="act"><option value="4.5|mod|aer">Brisk walking</option><option value="7|mod|aer" selected>Cycling (moderate)</option><option value="10|vig|aer">Jogging (vigorous)</option><option value="3.7|mod|str">Strength training</option></select>
+<br><br><label for="mins">Minutes per session: <span id="vmin"></span></label>
+<input type="range" id="mins" min="0" max="120" step="5" value="30">
+<label for="days">Sessions per week: <span id="vday"></span></label>
+<input type="range" id="days" min="0" max="7" step="1" value="3">
+</div>
+</div>
+</section>
+
+<section class="card" aria-labelledby="h-b">
+<hr class="rule"><h2 id="h-b">Part 2 &middot; Where Does the Energy Go?</h2>
+<p class="lead">Total energy expenditure has four parts: resting metabolism, the thermic effect of food (energy used to digest and process food, about 10% of intake), everyday movement, and exercise.</p>
+<div class="grid">
+<div class="fig"><svg id="stack" viewBox="0 0 440 220" role="img" aria-labelledby="stacktitle"><title id="stacktitle">Energy expenditure breakdown</title></svg></div>
+<div class="panel" style="border-left-color:#1a5fb4"><h3>Weekly activity check</h3>
+<svg id="wk" viewBox="0 0 300 56" role="img" aria-labelledby="wktitle" style="width:100%"><title id="wktitle">Weekly aerobic activity progress</title></svg>
+<p id="wkmsg" aria-live="polite" style="margin:6px 0"></p>
+<p class="note">General adult guidance: at least 150 minutes of moderate-intensity aerobic activity per week (vigorous minutes count double), plus muscle-strengthening on 2 or more days. Any movement is better than none.</p></div>
+</div>
+</section>
+
+<section class="card" aria-labelledby="h-c">
+<hr class="rule"><h2 id="h-c">Part 3 &middot; Measures Have Limits</h2>
+<p class="lead">Select each measure to see what it tells you and what it misses.</p>
+<div class="row" id="meas" role="group" aria-label="Health measures">
+<button class="btn" data-m="bmi" type="button" aria-pressed="true">BMI</button>
+<button class="btn alt" data-m="waist" type="button" aria-pressed="false">Waist circumference</button>
+<button class="btn alt" data-m="comp" type="button" aria-pressed="false">Body composition</button>
+</div>
+<div class="grid">
+<div class="fig"><svg viewBox="0 0 440 200" role="img" aria-label="Two figures with the same height and weight but different proportions of muscle and fat, illustrating that BMI cannot distinguish body composition">
+<g font-family="Segoe UI,Arial" font-size="13" font-weight="700" fill="#262626">
+<g transform="translate(40,0)"><circle cx="60" cy="38" r="20" fill="#f0d9c6"/><rect x="30" y="62" width="60" height="80" rx="26" fill="#f2c2a8"/><rect x="30" y="112" width="60" height="30" rx="14" fill="#e9a98c"/><text x="60" y="164" text-anchor="middle">Person 1</text><text x="60" y="181" text-anchor="middle" font-weight="400">BMI 27, more body fat</text></g>
+<g transform="translate(260,0)"><circle cx="60" cy="38" r="20" fill="#f0d9c6"/><rect x="26" y="62" width="68" height="80" rx="22" fill="#b3262c"/><rect x="34" y="72" width="52" height="14" rx="6" fill="#d34147"/><text x="60" y="164" text-anchor="middle">Person 2</text><text x="60" y="181" text-anchor="middle" font-weight="400">BMI 27, more muscle</text></g>
+<text x="224" y="100" text-anchor="middle" font-size="26">=</text></g></svg></div>
+<div class="panel" id="mpanel" aria-live="polite"></div>
+</div>
+<p class="note"><strong>Reflect:</strong> Passages such as 1 Corinthians 6:19&ndash;20 encourage caring for the body as a way of honoring God. How might balance, gratitude, and intentional choices (rather than extremes) shape the habits you track in your Diet Exercise Record?</p>
+</section>
+
+<section class="card" aria-labelledby="h-d">
+<hr class="rule"><h2 id="h-d">Part 4 &middot; Check Your Understanding</h2>
+<div id="quiz"></div>
+</section>
+
+<p class="note" style="text-align:center;margin:18px 0 4px">HSCI 105 Nutrition and Wellness &middot; Interactive learning activity. Content adapted from the course Deep Dive pages; sources listed in each week&rsquo;s Deep Dive.</p>
+</div>
+<script>
+function el(tag,attrs,...kids){const e=document.createElement(tag);for(const k in (attrs||{})){if(k==='class')e.className=attrs[k];else if(k==='html')e.innerHTML=attrs[k];else e.setAttribute(k,attrs[k]);}kids.forEach(c=>e.append(c));return e;}
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Quiz: immediate feedback, one try per question ---------- */
+function makeQuiz(rootId,qs){
+  const root=document.getElementById(rootId);let right=0,done=0;
+  const score=el('p',{class:'score','aria-live':'polite'});
+  qs.forEach((q,i)=>{
+    const fs=el('fieldset',{class:'q'});fs.append(el('legend',{},(i+1)+'. '+q.q));
+    const box=el('div',{class:'opts',role:'group','aria-label':'Answer choices for question '+(i+1)});
+    const fb=el('div',{class:'msg',style:'display:none','aria-live':'polite'});
+    const btns=q.o.map((t,j)=>{const b=el('button',{class:'opt',type:'button'},t);
+      b.onclick=()=>{btns.forEach(x=>x.disabled=true);done++;
+        if(j===q.a){b.classList.add('ok');right++;fb.className='msg ok';fb.textContent='Correct. '+q.why;}
+        else{b.classList.add('bad');btns[q.a].classList.add('ok');fb.className='msg bad';fb.textContent='Not quite. '+q.why;}
+        fb.style.display='block';
+        score.textContent=done===qs.length?('You answered '+right+' of '+qs.length+' correctly.'+(right===qs.length?' Excellent work!':' Review the explanations above and try the interactive again.')):'';};
+      return b;});
+    btns.forEach(b=>box.append(b));fs.append(box,fb);root.append(fs);});
+  root.append(score);
+}
+
+/* ---------- Sorter: click an item, then click a bucket ---------- */
+function makeSorter(rootId,cfg){
+  const root=document.getElementById(rootId);const place={};let sel=null;
+  cfg.items.forEach(i=>place[i.id]=null);
+  const live=el('div',{class:'msg info','aria-live':'polite',style:'display:none'});
+  const pool=el('div',{class:'pool',role:'group','aria-label':'Items to sort'});
+  const bwrap=el('div',{class:'buckets'});const zones={};const puts={};
+  cfg.buckets.forEach(b=>{
+    const z=el('div',{class:'zone',role:'group','aria-label':b.label+' items'});zones[b.id]=z;
+    const p=el('button',{class:'btn alt put',type:'button'},'Place selected item here');puts[b.id]=p;
+    p.onclick=()=>{if(!sel){say('Select an item first, then choose a group.');return;}place[sel]=b.id;clearMarks();sel=null;render();};
+    bwrap.append(el('div',{class:'bucket'},el('h4',{},b.label),el('p',{},b.desc||''),p,z));});
+  const fb=el('div',{style:'display:none','aria-live':'polite'});
+  const check=el('button',{class:'btn',type:'button'},'Check my answers');
+  const reset=el('button',{class:'btn alt',type:'button'},'Reset');
+  function say(t){live.textContent=t;live.style.display='block';}
+  function clearMarks(){fb.style.display='none';live.style.display='none';}
+  const chips={};
+  cfg.items.forEach(it=>{const c=el('button',{class:'item',type:'button','aria-pressed':'false'});
+    c.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';chips[it.id]=c;
+    c.onclick=()=>{clearMarks();Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));
+      if(place[it.id]){place[it.id]=null;sel=it.id;render();say(it.label+' returned to the item pool and selected.');return;}
+      sel=(sel===it.id)?null:it.id;render();if(sel)say(it.label+' selected. Now choose a group.');};});
+  function render(){pool.innerHTML='';Object.values(zones).forEach(z=>z.innerHTML='');
+    cfg.items.forEach(it=>{const c=chips[it.id];c.setAttribute('aria-pressed',sel===it.id?'true':'false');
+      (place[it.id]?zones[place[it.id]]:pool).append(c);});
+    if(!pool.children.length)pool.append(el('span',{class:'note'},'All items placed. Select Check my answers.'));}
+  check.onclick=()=>{if(cfg.items.some(i=>!place[i.id])){say('Place every item in a group before checking.');return;}
+    let r=0;const wrong=[];cfg.items.forEach(it=>{const ok=place[it.id]===it.bucket;chips[it.id].classList.remove('ok','bad');chips[it.id].classList.add(ok?'ok':'bad');if(ok)r++;else wrong.push(it);});
+    live.style.display='none';fb.style.display='block';
+    fb.className='msg '+(r===cfg.items.length?'ok':'bad');
+    fb.innerHTML='<strong>'+r+' of '+cfg.items.length+' correct.</strong>'+(wrong.length?'<ul>'+wrong.map(w=>'<li><strong>'+w.label+':</strong> '+w.why+'</li>').join('')+'</ul><span>Tap a red item to move it, then check again.</span>':' '+(cfg.done||''));};
+  reset.onclick=()=>{cfg.items.forEach(i=>place[i.id]=null);sel=null;Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));clearMarks();render();};
+  root.append(pool,bwrap,el('div',{class:'row'},check,reset),live,fb);render();
+}
+
+
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString();
+function update(){
+  const cin=+$('cin').value,bmr=+$('bmr').value,mov=+$('mov').value,mins=+$('mins').value,days=+$('days').value;
+  const [rate,inten,kind]=$('act').value.split('|');
+  const tef=cin*0.10, exWeek=mins*days*(+rate), ex=exWeek/7;
+  const out=bmr+mov+ex+tef, diff=cin-out;
+  $('vin').textContent=fmt(cin);$('vmin').textContent=mins;$('vday').textContent=days;
+  // seesaw
+  const th=Math.max(-15,Math.min(15,-diff*0.024)), rad=th*Math.PI/180, L=140, cx=220, cy=150;
+  const lx=cx-L*Math.cos(rad), ly=cy-L*Math.sin(rad), rx=cx+L*Math.cos(rad), ry=cy+L*Math.sin(rad);
+  const b=$('beam');b.setAttribute('x1',lx);b.setAttribute('y1',ly);b.setAttribute('x2',rx);b.setAttribute('y2',ry);
+  const drop=62;
+  $('ropeL').setAttribute('points',lx-44+','+(ly+drop)+' '+lx+','+ly+' '+(lx+44)+','+(ly+drop));
+  $('ropeR').setAttribute('points',rx-44+','+(ry+drop)+' '+rx+','+ry+' '+(rx+44)+','+(ry+drop));
+  $('panL').setAttribute('transform','translate('+lx+','+(ly+drop)+')');
+  $('panR').setAttribute('transform','translate('+rx+','+(ry+drop)+')');
+  // ropes are in absolute coords, undo pan translate:
+  $('ropeL').setAttribute('transform','translate('+(-lx)+','+(-(ly+drop))+')');
+  $('ropeR').setAttribute('transform','translate('+(-rx)+','+(-(ry+drop))+')');
+  $('tIn').textContent=fmt(cin)+' kcal';$('tOut').textContent=fmt(out)+' kcal';
+  const v=$('verdict');
+  if(Math.abs(diff)<150){v.className='msg ok';v.textContent='Near balance. Energy in and out are within about 150 kcal, so body weight would tend to stay stable.';}
+  else if(diff>0){v.className='msg info';v.textContent='Surplus of about '+fmt(diff)+' kcal/day. Sustained over time, eating more energy than you use tends to increase body weight.';}
+  else{v.className='msg info';v.textContent='Deficit of about '+fmt(-diff)+' kcal/day. Sustained over time, using more energy than you eat tends to decrease body weight.';}
+  if(cin<1500)v.textContent+=' Note: very low intakes can fall short of nutrient needs. This model is not a recommendation.';
+  // stacked bar
+  const parts=[['Resting',bmr,'#8c1b21'],['Digesting food',tef,'#d98c1f'],['Daily movement',mov,'#2e8b57'],['Exercise',ex,'#1a5fb4']];
+  const scale=380/Math.max(out,cin,1);let x=30,s='<text x="30" y="24" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Energy out: '+fmt(out)+' kcal/day</text>';
+  parts.forEach(p=>{const w=p[1]*scale;s+='<rect x="'+x+'" y="34" width="'+w+'" height="40" fill="'+p[2]+'" stroke="#fff" stroke-width="2"/>';x+=w;});
+  s+='<text x="30" y="104" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Energy in: '+fmt(cin)+' kcal/day</text><rect x="30" y="114" width="'+(cin*scale)+'" height="40" fill="#b3262c" stroke="#fff" stroke-width="2"/>';
+  parts.forEach((p,i)=>{const lx2=30+(i%2)*200,ly=176+Math.floor(i/2)*20;s+='<rect x="'+lx2+'" y="'+(ly-10)+'" width="12" height="12" fill="'+p[2]+'"/><text x="'+(lx2+18)+'" y="'+ly+'" font-size="12" font-family="Segoe UI,Arial" fill="#262626">'+p[0]+': '+fmt(p[1])+' kcal</text>';});
+  $('stack').innerHTML='<title id="stacktitle">Energy out '+fmt(out)+' kcal: resting '+fmt(bmr)+', digesting food '+fmt(tef)+', daily movement '+fmt(mov)+', exercise '+fmt(ex)+'. Energy in '+fmt(cin)+' kcal.</title>'+s;
+  // weekly activity
+  let aer=0;if(kind==='aer')aer=mins*days*(inten==='vig'?2:1);
+  const strOK=(kind==='str'&&days>=2);
+  $('wk').innerHTML='<title id="wktitle">'+aer+' of 150 moderate-equivalent minutes per week</title><rect x="0" y="14" width="300" height="22" rx="8" fill="#ece8e1"/><rect x="0" y="14" width="'+Math.min(300,aer/150*300)+'" height="22" rx="8" fill="'+(aer>=150?'#2e8b57':'#1a5fb4')+'"/><text x="0" y="52" font-size="11" font-family="Segoe UI,Arial" fill="#555">0</text><text x="300" y="52" font-size="11" text-anchor="end" font-family="Segoe UI,Arial" fill="#555">150 min</text>';
+  let t=kind==='aer'?'Aerobic activity: '+aer+' moderate-equivalent minutes per week'+(aer>=150?' (meets the minimum).':' (target 150).'):(strOK?'Muscle-strengthening on '+days+' days meets the 2-day guideline. Add aerobic activity to reach 150 minutes.':'Strength training counts toward the muscle-strengthening goal of 2 or more days per week.');
+  $('wkmsg').textContent=t;
+}
+['cin','bmr','mov','act','mins','days'].forEach(i=>$(i).addEventListener('input',update));update();
+
+const M={
+ bmi:'<span class="kicker">BMI</span><h3>Body mass index</h3><ul><li><strong>What it is:</strong> weight relative to height. A quick screening tool.</li><li><strong>Limit:</strong> it does not measure body composition, so muscle and fat look the same, and it does not show where fat is stored.</li></ul>',
+ waist:'<span class="kicker">Waist</span><h3>Waist circumference</h3><ul><li><strong>What it adds:</strong> indicates fat carried around the abdomen, which is linked to higher chronic disease risk.</li><li><strong>Limit:</strong> it still does not separate muscle from fat, and measuring technique matters.</li></ul>',
+ comp:'<span class="kicker">Composition</span><h3>Body composition</h3><ul><li><strong>What it adds:</strong> estimates the proportion of fat and lean tissue.</li><li><strong>Limit:</strong> methods vary in accuracy and access, and no single number defines health. Genetics, environment, and behavior all contribute.</li></ul>'
+};
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{$('mpanel').innerHTML=M[b.dataset.m];document.querySelectorAll('[data-m]').forEach(x=>{const on=x===b;x.setAttribute('aria-pressed',on);x.className='btn'+(on?'':' alt');});});
+$('mpanel').innerHTML=M.bmi;
+
+makeQuiz('quiz',[
+ {q:'Which is NOT one of the components of total energy expenditure?',o:['Basal metabolism','Thermic effect of food','Physical activity','Vitamin intake'],a:3,why:'Vitamins supply no energy. Expenditure includes basal metabolism, the thermic effect of food, and physical activity.'},
+ {q:'What is a limitation of BMI?',o:['It cannot be calculated','It does not measure body composition','It only works for children','It requires blood tests'],a:1,why:'BMI is a screening tool and cannot tell muscle from fat.'},
+ {q:'How much moderate-intensity aerobic activity is generally advised for adults each week?',o:['At least 30 minutes','At least 75 minutes','At least 150 minutes','At least 500 minutes'],a:2,why:'Adults are generally advised to get at least 150 minutes per week plus muscle-strengthening on 2 or more days.'},
+ {q:'Which approach does the Deep Dive emphasize for lasting health?',o:['Short-term fixes','Consistent patterns of eating and moving','Eliminating food groups','Exercising only occasionally'],a:1,why:'Sustainable health comes from consistent patterns, not quick results.'}
+]);
+
+</script>
+</body>
+</html>

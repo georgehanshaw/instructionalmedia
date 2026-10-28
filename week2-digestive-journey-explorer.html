@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 2 Interactive | Digestive Journey Explorer</title>
+<meta name="description" content="Interactive digestive system diagram and carbohydrate classifier for HSCI 105 Week 2">
+<style>
+:root{--red:#d34147;--dred:#b3262c;--ink:#262626;--mute:#555;--bg:#edebe8;--line:#e4e1dc;--ok:#17653a;--okbg:#e4f4ea;--warn:#7a4a00;--warnbg:#fff3da;--bad:#9d1f26;--badbg:#fdeaeb;--blue:#1a5fb4}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.banner{border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#b3262c,#8c1b21);color:#fff;display:flex;align-items:center;gap:22px;padding:20px 28px;flex-wrap:wrap}
+.banner svg{flex:0 0 auto;width:120px;height:120px}
+.banner .txt{flex:1 1 300px}
+.banner h1{margin:0;font-size:1.7rem;line-height:1.2}
+.banner p{margin:8px 0 0}
+.tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:600;margin-bottom:8px}
+.card{background:#fff;border-radius:20px;padding:24px 26px;margin-top:18px}
+.card h2{margin:0 0 6px;font-size:1.3rem}
+.rule{width:100px;height:6px;background:var(--red);border-radius:5px;margin:0 0 12px;border:0}
+.lead{margin:0 0 14px;color:var(--mute)}
+.grid{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.fig{flex:1 1 340px;min-width:280px;background:#faf8f5;border:1px solid var(--line);border-radius:16px;padding:10px}
+.fig svg{display:block;width:100%;height:auto}
+.panel{flex:1 1 300px;min-width:260px;border:1px solid #eee;border-left:6px solid var(--red);border-radius:15px;padding:16px 20px;background:#fcfcfc}
+.panel h3{margin:0 0 4px;color:var(--dred);font-size:1.15rem}
+.panel ul{padding-left:20px;margin:8px 0}
+.kicker{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#fff;background:#6b4a8a;border-radius:6px;padding:1px 8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--dred);color:#fff;border:2px solid var(--dred);border-radius:10px;padding:8px 16px;font-weight:600}
+.btn:hover{background:#8c1b21;border-color:#8c1b21}
+.btn.alt{background:#fff;color:var(--dred)}
+.btn.alt:hover{background:#fdeaeb}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.note{font-size:.88rem;color:var(--mute);margin-top:10px}
+.msg{border-radius:12px;padding:10px 14px;margin-top:10px;font-weight:500}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.bad{background:var(--badbg);color:var(--bad)}
+.msg.info{background:var(--warnbg);color:var(--warn)}
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border:2px dashed #c9c4bb;border-radius:14px;background:#faf8f5}
+.buckets{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.bucket{flex:1 1 200px;border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+.bucket h4{margin:0 0 2px;font-size:1rem}
+.bucket p{margin:0 0 8px;font-size:.85rem;color:var(--mute)}
+.bucket .put{width:100%;margin-bottom:8px;font-size:.88rem;padding:5px 8px}
+.zone{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #b9b3a8;border-radius:999px;padding:5px 12px 5px 8px;font-weight:600;color:var(--ink)}
+.item svg{width:26px;height:26px;flex:0 0 auto}
+.item[aria-pressed=true]{border-color:var(--blue);background:#e8f0fb;box-shadow:0 0 0 2px var(--blue)}
+.item.ok{border-color:var(--ok);background:var(--okbg)}
+.item.bad{border-color:var(--bad);background:var(--badbg)}
+/* quiz */
+.q{border:0;border-top:1px solid var(--line);padding:14px 0 6px;margin:0}
+.q legend{font-weight:700;padding:0 0 6px;float:left;width:100%}
+.opts{clear:both;display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:#fff;border:2px solid #cfc9bf;border-radius:10px;padding:8px 12px}
+.opt:hover:not([disabled]){border-color:var(--red);background:#fff7f7}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.score{font-weight:700;margin-top:12px}
+input[type=range]{width:100%;accent-color:#b3262c}
+label{font-weight:600}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #cfc9bf;background:#fff;max-width:100%}
+.sel-organ{filter:drop-shadow(0 0 5px #1a5fb4)}
+.hot{cursor:pointer}
+.hot:hover{opacity:.9}
+.sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="banner">
+<svg viewBox="0 0 120 120" role="img" aria-label="Illustration of the digestive tract: stomach, small intestine and large intestine">
+<circle cx="60" cy="60" r="56" fill="#fff" opacity=".18"/>
+<path d="M60,10 L60,38" stroke="#f0a58f" stroke-width="7" stroke-linecap="round"/>
+<path d="M60,36 C80,32 98,44 92,62 C88,76 68,78 60,68 C54,60 64,54 70,52 C58,50 52,44 60,36Z" fill="#f7c9b9"/>
+<path d="M44,84 L44,68 L50,66 L86,66 L90,70 L90,102 L50,102 L44,96Z" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round" opacity=".9"/>
+<path d="M58,80 L76,80 L76,86 L58,86 L58,92 L76,92" fill="none" stroke="#ffd9cc" stroke-width="5" stroke-linejoin="round"/>
+</svg>
+<div class="txt"><span class="tag">Week 2 &middot; Digestion &amp; Carbohydrates</span><h1>Digestive Journey Explorer</h1><p>Follow a bite of food through the digestive tract, then sort carbohydrates by structure.</p></div>
+</header>
+
+<section class="card" aria-labelledby="h-a">
+<hr class="rule"><h2 id="h-a">Part 1 &middot; The Digestive Journey Explorer</h2>
+<p class="lead">Select any organ in the diagram (or use Tab and Enter) to see its job. Or press <strong>Trace a bite</strong> to follow one mouthful of food from start to finish.</p>
+<div class="grid">
+<div class="fig">
+<svg id="body" viewBox="0 0 400 540" role="group" aria-label="Interactive diagram of the digestive system. Each organ is a button.">
+<title>Digestive system diagram</title>
+<defs><filter id="soft"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity=".25"/></filter></defs>
+<!-- body silhouette -->
+<ellipse cx="200" cy="58" rx="48" ry="52" fill="#f3ece2" stroke="#d3c9b9" stroke-width="2"/>
+<rect x="182" y="100" width="36" height="40" fill="#f3ece2" stroke="#d3c9b9" stroke-width="2"/>
+<path d="M112,140 Q112,132 150,134 L250,134 Q288,132 288,140 L298,455 Q298,535 200,538 Q102,535 102,455 Z" fill="#f3ece2" stroke="#d3c9b9" stroke-width="2"/>
+<!-- liver -->
+<g class="hot" id="o-liver" role="button" tabindex="0" aria-label="Liver"><path d="M118,198 C150,182 198,192 208,204 C204,226 172,242 142,238 C120,234 110,214 118,198Z" fill="#a8503a" filter="url(#soft)"/></g>
+<!-- gallbladder -->
+<g class="hot" id="o-gall" role="button" tabindex="0" aria-label="Gallbladder"><ellipse cx="172" cy="248" rx="9" ry="14" fill="#4d9a5c" filter="url(#soft)"/></g>
+<!-- pancreas -->
+<g class="hot" id="o-pancreas" role="button" tabindex="0" aria-label="Pancreas"><path d="M196,296 C225,288 262,292 284,302 C262,316 225,316 196,308Z" fill="#e8b64a" filter="url(#soft)"/></g>
+<!-- esophagus -->
+<g class="hot" id="o-esoph" role="button" tabindex="0" aria-label="Esophagus"><path d="M200,86 L200,200" stroke="#e98f78" stroke-width="14" stroke-linecap="round" fill="none"/><path d="M200,86 L200,200" stroke="#f6c3b3" stroke-width="5" stroke-linecap="round" fill="none"/></g>
+<!-- stomach -->
+<g class="hot" id="o-stomach" role="button" tabindex="0" aria-label="Stomach"><path d="M198,198 C240,188 285,205 278,250 C272,285 232,292 212,272 C200,260 214,246 224,242 C204,238 190,218 198,198Z" fill="#f2a58e" stroke="#d9806a" stroke-width="2" filter="url(#soft)"/></g>
+<!-- large intestine -->
+<g class="hot" id="o-li" role="button" tabindex="0" aria-label="Large intestine"><polyline points="145,484 145,328 152,322 248,322 255,328 255,470 245,495 205,502" fill="none" stroke="#c98a6b" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/><polyline points="145,484 145,328 152,322 248,322 255,328 255,470 245,495 205,502" fill="none" stroke="#e0b197" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></g>
+<!-- small intestine -->
+<g class="hot" id="o-si" role="button" tabindex="0" aria-label="Small intestine"><polyline points="215,300 215,345 175,345 175,370 225,370 225,395 175,395 175,420 225,420 225,445 175,445 175,470 150,470" fill="none" stroke="#e98f78" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/><polyline points="215,300 215,345 175,345 175,370 225,370 225,395 175,395 175,420 225,420 225,445 175,445 175,470 150,470" fill="none" stroke="#f7c8b8" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></g>
+<!-- mouth -->
+<g class="hot" id="o-mouth" role="button" tabindex="0" aria-label="Mouth"><ellipse cx="200" cy="76" rx="24" ry="11" fill="#d9534f" stroke="#a63a37" stroke-width="2"/><rect x="184" y="68" width="32" height="6" rx="2" fill="#fff"/><ellipse cx="200" cy="82" rx="9" ry="4" fill="#f59a9a"/></g>
+<!-- eyes -->
+<circle cx="184" cy="42" r="4" fill="#7a6a58"/><circle cx="216" cy="42" r="4" fill="#7a6a58"/>
+<!-- labels -->
+<g font-size="13" font-weight="700" fill="#262626" font-family="Segoe UI,Arial,sans-serif" pointer-events="none">
+<text x="232" y="80">Mouth</text><text x="214" y="150">Esophagus</text><text x="285" y="232" text-anchor="start" transform="translate(-6,0)">Stomach</text>
+<text x="22" y="205">Liver</text><text x="58" y="252">Gallbladder</text><text x="284" y="316">Pancreas</text>
+<text x="12" y="400">Small</text><text x="12" y="416">intestine</text><text x="304" y="400">Large</text><text x="304" y="416">intestine</text></g>
+<g stroke="#8a8174" stroke-width="1.2" fill="none" pointer-events="none"><path d="M60,202 L118,206"/><path d="M110,246 L162,248"/><path d="M62,408 L150,408"/><path d="M302,408 L255,408"/></g>
+<!-- food dot -->
+<circle id="dot" cx="200" cy="76" r="9" fill="#f9c74f" stroke="#b07d00" stroke-width="2.5" style="display:none" pointer-events="none"/>
+</svg>
+</div>
+<div class="panel" id="info" aria-live="polite">
+<span class="kicker" id="i-kicker">Start here</span>
+<h3 id="i-title">Choose an organ</h3>
+<div id="i-body"><p>Select any organ in the diagram to learn what it does. Digestion has two parts: <strong>mechanical</strong> (chewing, churning) and <strong>chemical</strong> (enzymes, acid, bile).</p></div>
+<div class="row"><button class="btn" id="trace" type="button">Trace a bite</button><button class="btn alt" id="next" type="button" style="display:none">Next stop &rarr;</button><button class="btn alt" id="restart" type="button" style="display:none">Start over</button></div>
+<p class="note" id="stepnote"></p>
+</div>
+</div>
+</section>
+
+<section class="card" aria-labelledby="h-b">
+<hr class="rule"><h2 id="h-b">Part 2 &middot; Carbohydrate Classifier</h2>
+<p class="lead">Carbohydrates are classified by structure. Select a term, then choose the group where it belongs.</p>
+<div class="grid" style="margin-bottom:12px">
+<div class="fig" style="flex:1 1 100%">
+<svg viewBox="0 0 640 150" role="img" aria-label="Diagram: a single hexagon is a monosaccharide, two joined hexagons are a disaccharide, and a long branching chain of hexagons is a complex carbohydrate">
+<g fill="#fff" stroke="#b3262c" stroke-width="3"><polygon points="60,40 85,40 97,62 85,84 60,84 48,62" fill="#fde1c8"/></g>
+<text x="72" y="64" text-anchor="middle" font-size="12" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Glc</text>
+<text x="72" y="115" text-anchor="middle" font-size="14" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Monosaccharide</text><text x="72" y="133" text-anchor="middle" font-size="12" font-family="Segoe UI,Arial" fill="#555">1 sugar unit</text>
+<g stroke="#b3262c" stroke-width="3"><polygon points="230,40 255,40 267,62 255,84 230,84 218,62" fill="#fde1c8"/><polygon points="285,40 310,40 322,62 310,84 285,84 273,62" fill="#c8e6d0"/></g>
+<line x1="267" y1="62" x2="273" y2="62" stroke="#b3262c" stroke-width="4"/>
+<text x="242" y="64" text-anchor="middle" font-size="12" font-weight="700" font-family="Segoe UI,Arial">Glc</text><text x="297" y="64" text-anchor="middle" font-size="12" font-weight="700" font-family="Segoe UI,Arial">Fru</text>
+<text x="270" y="115" text-anchor="middle" font-size="14" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Disaccharide</text><text x="270" y="133" text-anchor="middle" font-size="12" font-family="Segoe UI,Arial" fill="#555">2 sugar units (sucrose shown)</text>
+<g stroke="#b3262c" stroke-width="2.5" fill="#fde1c8">
+<polygon points="400,50 418,50 427,66 418,82 400,82 391,66"/><polygon points="432,50 450,50 459,66 450,82 432,82 423,66"/><polygon points="464,50 482,50 491,66 482,82 464,82 455,66"/><polygon points="496,50 514,50 523,66 514,82 496,82 487,66"/><polygon points="528,50 546,50 555,66 546,82 528,82 519,66"/><polygon points="560,50 578,50 587,66 578,82 560,82 551,66"/>
+<polygon points="464,16 482,16 491,32 482,48 464,48 455,32" fill="#fde1c8"/><polygon points="528,84 546,84 555,100 546,116 528,116 519,100"/></g>
+<text x="490" y="133" text-anchor="middle" font-size="14" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">Complex carbohydrate</text>
+<text x="490" y="10" text-anchor="middle" font-size="12" font-family="Segoe UI,Arial" fill="#555">long chains of sugar units</text>
+</svg></div></div>
+<div id="sort-carb"></div>
+</section>
+
+<section class="card" aria-labelledby="h-c">
+<hr class="rule"><h2 id="h-c">Part 3 &middot; Check Your Understanding</h2>
+<div id="quiz"></div>
+</section>
+
+<p class="note" style="text-align:center;margin:18px 0 4px">HSCI 105 Nutrition and Wellness &middot; Interactive learning activity. Content adapted from the course Deep Dive pages; sources listed in each week&rsquo;s Deep Dive.</p>
+</div>
+<script>
+function el(tag,attrs,...kids){const e=document.createElement(tag);for(const k in (attrs||{})){if(k==='class')e.className=attrs[k];else if(k==='html')e.innerHTML=attrs[k];else e.setAttribute(k,attrs[k]);}kids.forEach(c=>e.append(c));return e;}
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Quiz: immediate feedback, one try per question ---------- */
+function makeQuiz(rootId,qs){
+  const root=document.getElementById(rootId);let right=0,done=0;
+  const score=el('p',{class:'score','aria-live':'polite'});
+  qs.forEach((q,i)=>{
+    const fs=el('fieldset',{class:'q'});fs.append(el('legend',{},(i+1)+'. '+q.q));
+    const box=el('div',{class:'opts',role:'group','aria-label':'Answer choices for question '+(i+1)});
+    const fb=el('div',{class:'msg',style:'display:none','aria-live':'polite'});
+    const btns=q.o.map((t,j)=>{const b=el('button',{class:'opt',type:'button'},t);
+      b.onclick=()=>{btns.forEach(x=>x.disabled=true);done++;
+        if(j===q.a){b.classList.add('ok');right++;fb.className='msg ok';fb.textContent='Correct. '+q.why;}
+        else{b.classList.add('bad');btns[q.a].classList.add('ok');fb.className='msg bad';fb.textContent='Not quite. '+q.why;}
+        fb.style.display='block';
+        score.textContent=done===qs.length?('You answered '+right+' of '+qs.length+' correctly.'+(right===qs.length?' Excellent work!':' Review the explanations above and try the interactive again.')):'';};
+      return b;});
+    btns.forEach(b=>box.append(b));fs.append(box,fb);root.append(fs);});
+  root.append(score);
+}
+
+/* ---------- Sorter: click an item, then click a bucket ---------- */
+function makeSorter(rootId,cfg){
+  const root=document.getElementById(rootId);const place={};let sel=null;
+  cfg.items.forEach(i=>place[i.id]=null);
+  const live=el('div',{class:'msg info','aria-live':'polite',style:'display:none'});
+  const pool=el('div',{class:'pool',role:'group','aria-label':'Items to sort'});
+  const bwrap=el('div',{class:'buckets'});const zones={};const puts={};
+  cfg.buckets.forEach(b=>{
+    const z=el('div',{class:'zone',role:'group','aria-label':b.label+' items'});zones[b.id]=z;
+    const p=el('button',{class:'btn alt put',type:'button'},'Place selected item here');puts[b.id]=p;
+    p.onclick=()=>{if(!sel){say('Select an item first, then choose a group.');return;}place[sel]=b.id;clearMarks();sel=null;render();};
+    bwrap.append(el('div',{class:'bucket'},el('h4',{},b.label),el('p',{},b.desc||''),p,z));});
+  const fb=el('div',{style:'display:none','aria-live':'polite'});
+  const check=el('button',{class:'btn',type:'button'},'Check my answers');
+  const reset=el('button',{class:'btn alt',type:'button'},'Reset');
+  function say(t){live.textContent=t;live.style.display='block';}
+  function clearMarks(){fb.style.display='none';live.style.display='none';}
+  const chips={};
+  cfg.items.forEach(it=>{const c=el('button',{class:'item',type:'button','aria-pressed':'false'});
+    c.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';chips[it.id]=c;
+    c.onclick=()=>{clearMarks();Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));
+      if(place[it.id]){place[it.id]=null;sel=it.id;render();say(it.label+' returned to the item pool and selected.');return;}
+      sel=(sel===it.id)?null:it.id;render();if(sel)say(it.label+' selected. Now choose a group.');};});
+  function render(){pool.innerHTML='';Object.values(zones).forEach(z=>z.innerHTML='');
+    cfg.items.forEach(it=>{const c=chips[it.id];c.setAttribute('aria-pressed',sel===it.id?'true':'false');
+      (place[it.id]?zones[place[it.id]]:pool).append(c);});
+    if(!pool.children.length)pool.append(el('span',{class:'note'},'All items placed. Select Check my answers.'));}
+  check.onclick=()=>{if(cfg.items.some(i=>!place[i.id])){say('Place every item in a group before checking.');return;}
+    let r=0;const wrong=[];cfg.items.forEach(it=>{const ok=place[it.id]===it.bucket;chips[it.id].classList.remove('ok','bad');chips[it.id].classList.add(ok?'ok':'bad');if(ok)r++;else wrong.push(it);});
+    live.style.display='none';fb.style.display='block';
+    fb.className='msg '+(r===cfg.items.length?'ok':'bad');
+    fb.innerHTML='<strong>'+r+' of '+cfg.items.length+' correct.</strong>'+(wrong.length?'<ul>'+wrong.map(w=>'<li><strong>'+w.label+':</strong> '+w.why+'</li>').join('')+'</ul><span>Tap a red item to move it, then check again.</span>':' '+(cfg.done||''));};
+  reset.onclick=()=>{cfg.items.forEach(i=>place[i.id]=null);sel=null;Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));clearMarks();render();};
+  root.append(pool,bwrap,el('div',{class:'row'},check,reset),live,fb);render();
+}
+
+
+const ORGANS={
+ mouth:{n:'Mouth',k:'Mechanical + chemical',b:'<ul><li><strong>Mechanical:</strong> chewing breaks food into smaller pieces.</li><li><strong>Chemical:</strong> saliva moistens food, and the enzyme salivary amylase begins breaking down starch.</li></ul><p><em>Try it:</em> chew a plain cracker for 30 seconds. Many people notice it start to taste slightly sweet.</p>'},
+ esoph:{n:'Esophagus',k:'Transport',b:'<ul><li>A muscular tube that moves food to the stomach with wave-like contractions called <strong>peristalsis</strong>.</li><li>No significant digestion happens here.</li></ul>'},
+ stomach:{n:'Stomach',k:'Mechanical + chemical',b:'<ul><li><strong>Mechanical:</strong> muscular walls churn food into a thick liquid called <strong>chyme</strong>.</li><li><strong>Chemical:</strong> hydrochloric acid and the enzyme <strong>pepsin</strong> begin protein digestion.</li><li>Chyme is released in small amounts into the small intestine.</li></ul>'},
+ liver:{n:'Liver',k:'Accessory organ',b:'<ul><li>Food never passes through the liver, but it supports digestion.</li><li>Makes <strong>bile</strong>, which emulsifies fat so enzymes can break it down.</li><li>Processes absorbed nutrients delivered by the blood.</li></ul>'},
+ gall:{n:'Gallbladder',k:'Accessory organ',b:'<ul><li>Stores and concentrates bile.</li><li>Releases bile into the small intestine when fat is present in a meal.</li></ul>'},
+ pancreas:{n:'Pancreas',k:'Accessory organ',b:'<ul><li>Releases digestive enzymes for carbohydrates, fats, and proteins into the small intestine.</li><li>Releases bicarbonate to neutralize stomach acid.</li><li>Its hormones insulin and glucagon help regulate blood glucose.</li></ul>'},
+ si:{n:'Small intestine',k:'Digestion + absorption',b:'<ul><li>Most chemical digestion is completed here, and <strong>most absorption occurs here</strong>.</li><li>Finger-like <strong>villi</strong> greatly increase surface area.</li><li>Sugars and amino acids enter the blood; fats are packaged as chylomicrons and travel through the lymph.</li></ul>'},
+ li:{n:'Large intestine',k:'Water + waste',b:'<ul><li>Absorbs water and electrolytes.</li><li>Gut bacteria ferment some fiber and make small amounts of vitamin K.</li><li>Remaining material is formed into feces. Fiber adds bulk and helps keep things moving.</li></ul>'}
+};
+let current=null;
+function show(id){
+  current=id;const o=ORGANS[id];
+  document.querySelectorAll('.hot').forEach(g=>g.classList.remove('sel-organ'));
+  document.getElementById('o-'+id).classList.add('sel-organ');
+  document.getElementById('i-kicker').textContent=o.k;
+  document.getElementById('i-title').textContent=o.n;
+  document.getElementById('i-body').innerHTML=o.b;
+}
+Object.keys(ORGANS).forEach(id=>{const g=document.getElementById('o-'+id);
+  g.addEventListener('click',()=>{if(!tracing)show(id);});
+  g.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!tracing){e.preventDefault();show(id);}});});
+
+/* Trace a bite */
+const STOPS=[
+ {id:'mouth',pts:[[200,76]]},
+ {id:'esoph',pts:[[200,76],[200,198]]},
+ {id:'stomach',pts:[[200,198],[245,238],[222,288]]},
+ {id:'si',pts:[[222,288],[215,300],[215,345],[175,345],[175,370],[225,370],[225,395],[175,395],[175,420],[225,420],[225,445],[175,445],[175,470],[150,470]]},
+ {id:'li',pts:[[150,470],[145,470],[145,328],[152,322],[248,322],[255,328],[255,470],[245,495],[205,502]]}
+];
+let tracing=false,step=-1,busy=false;
+const dot=document.getElementById('dot'),nextB=document.getElementById('next'),traceB=document.getElementById('trace'),restartB=document.getElementById('restart'),note=document.getElementById('stepnote');
+function move(pts,done){
+  if(reduceMotion||pts.length<2){const p=pts[pts.length-1];dot.setAttribute('cx',p[0]);dot.setAttribute('cy',p[1]);done();return;}
+  const segs=[];let total=0;for(let i=1;i<pts.length;i++){const l=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);segs.push(l);total+=l;}
+  const dur=Math.max(600,total*9);const t0=performance.now();busy=true;
+  function f(t){let d=Math.min(1,(t-t0)/dur)*total;let i=0;while(i<segs.length-1&&d>segs[i]){d-=segs[i];i++;}
+    const a=pts[i],b=pts[i+1],r=segs[i]?d/segs[i]:1;dot.setAttribute('cx',a[0]+(b[0]-a[0])*r);dot.setAttribute('cy',a[1]+(b[1]-a[1])*r);
+    if(t-t0<dur)requestAnimationFrame(f);else{busy=false;done();}}
+  requestAnimationFrame(f);
+}
+function goto(n){
+  if(busy)return;step=n;const s=STOPS[n];nextB.disabled=true;
+  move(s.pts,()=>{show(s.id);nextB.disabled=false;
+    note.textContent='Stop '+(n+1)+' of '+STOPS.length+'.';
+    if(n===STOPS.length-1){nextB.style.display='none';restartB.style.display='inline-block';note.textContent='Journey complete. Whatever was not absorbed leaves the body as waste.';}});
+}
+traceB.onclick=()=>{tracing=true;traceB.style.display='none';nextB.style.display='inline-block';restartB.style.display='inline-block';dot.style.display='block';dot.setAttribute('cx',200);dot.setAttribute('cy',76);goto(0);};
+nextB.onclick=()=>{if(step<STOPS.length-1)goto(step+1);};
+restartB.onclick=()=>{if(busy)return;tracing=false;step=-1;dot.style.display='none';traceB.style.display='inline-block';nextB.style.display='none';restartB.style.display='none';note.textContent='';
+  document.querySelectorAll('.hot').forEach(g=>g.classList.remove('sel-organ'));
+  document.getElementById('i-kicker').textContent='Start here';document.getElementById('i-title').textContent='Choose an organ';
+  document.getElementById('i-body').innerHTML='<p>Select any organ in the diagram to learn what it does.</p>';};
+
+makeSorter('sort-carb',{
+ buckets:[{id:'mono',label:'Monosaccharide',desc:'Single sugar unit'},{id:'di',label:'Disaccharide',desc:'Two sugar units joined'},{id:'complex',label:'Complex carbohydrate',desc:'Long chains of sugar units'}],
+ items:[
+  {id:'glc',label:'Glucose',bucket:'mono',why:'Glucose is a single sugar unit (monosaccharide).'},
+  {id:'fru',label:'Fructose',bucket:'mono',why:'Fructose is a monosaccharide found in fruit and honey.'},
+  {id:'gal',label:'Galactose',bucket:'mono',why:'Galactose is a monosaccharide; it pairs with glucose to form lactose.'},
+  {id:'suc',label:'Sucrose (table sugar)',bucket:'di',why:'Sucrose is glucose + fructose joined: a disaccharide.'},
+  {id:'lac',label:'Lactose (milk sugar)',bucket:'di',why:'Lactose is glucose + galactose: a disaccharide.'},
+  {id:'mal',label:'Maltose',bucket:'di',why:'Maltose is two glucose units: a disaccharide.'},
+  {id:'sta',label:'Starch',bucket:'complex',why:'Starch is how plants store glucose in long chains.'},
+  {id:'gly',label:'Glycogen',bucket:'complex',why:'Glycogen is the body\u2019s stored form of glucose, a long branched chain.'},
+  {id:'fib',label:'Fiber',bucket:'complex',why:'Fiber is a complex carbohydrate the body cannot fully digest.'}],
+ done:'You can tell the three structures apart.'});
+
+makeQuiz('quiz',[
+ {q:'Where does most nutrient absorption occur?',o:['Stomach','Small intestine','Large intestine','Esophagus'],a:1,why:'Villi in the small intestine provide the large surface area needed for absorption.'},
+ {q:'Which of these begins protein digestion?',o:['Salivary amylase in the mouth','Bile from the gallbladder','Pepsin and acid in the stomach','Water absorption in the colon'],a:2,why:'Stomach acid and pepsin start breaking proteins into smaller pieces.'},
+ {q:'Which organs help digestion even though food never passes through them?',o:['Liver, gallbladder, and pancreas','Stomach and esophagus','Mouth and small intestine','Large intestine and rectum'],a:0,why:'These accessory organs supply bile and enzymes to the small intestine.'},
+ {q:'About what share of daily calories do dietary recommendations suggest should come from carbohydrates?',o:['5\u201315%','20\u201330%','45\u201365%','80\u201390%'],a:2,why:'Recommendations suggest about 45\u201365% of daily calories from carbohydrates.'}
+]);
+
+</script>
+</body>
+</html>

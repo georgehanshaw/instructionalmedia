@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 3 Interactive | Fats and Protein Lab</title>
+<meta name="description" content="Interactive fatty acid, fat sorting, and protein pairing activity for HSCI 105 Week 3">
+<style>
+:root{--red:#d34147;--dred:#b3262c;--ink:#262626;--mute:#555;--bg:#edebe8;--line:#e4e1dc;--ok:#17653a;--okbg:#e4f4ea;--warn:#7a4a00;--warnbg:#fff3da;--bad:#9d1f26;--badbg:#fdeaeb;--blue:#1a5fb4}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.banner{border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#b3262c,#8c1b21);color:#fff;display:flex;align-items:center;gap:22px;padding:20px 28px;flex-wrap:wrap}
+.banner svg{flex:0 0 auto;width:120px;height:120px}
+.banner .txt{flex:1 1 300px}
+.banner h1{margin:0;font-size:1.7rem;line-height:1.2}
+.banner p{margin:8px 0 0}
+.tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:600;margin-bottom:8px}
+.card{background:#fff;border-radius:20px;padding:24px 26px;margin-top:18px}
+.card h2{margin:0 0 6px;font-size:1.3rem}
+.rule{width:100px;height:6px;background:var(--red);border-radius:5px;margin:0 0 12px;border:0}
+.lead{margin:0 0 14px;color:var(--mute)}
+.grid{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.fig{flex:1 1 340px;min-width:280px;background:#faf8f5;border:1px solid var(--line);border-radius:16px;padding:10px}
+.fig svg{display:block;width:100%;height:auto}
+.panel{flex:1 1 300px;min-width:260px;border:1px solid #eee;border-left:6px solid var(--red);border-radius:15px;padding:16px 20px;background:#fcfcfc}
+.panel h3{margin:0 0 4px;color:var(--dred);font-size:1.15rem}
+.panel ul{padding-left:20px;margin:8px 0}
+.kicker{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#fff;background:#6b4a8a;border-radius:6px;padding:1px 8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--dred);color:#fff;border:2px solid var(--dred);border-radius:10px;padding:8px 16px;font-weight:600}
+.btn:hover{background:#8c1b21;border-color:#8c1b21}
+.btn.alt{background:#fff;color:var(--dred)}
+.btn.alt:hover{background:#fdeaeb}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.note{font-size:.88rem;color:var(--mute);margin-top:10px}
+.msg{border-radius:12px;padding:10px 14px;margin-top:10px;font-weight:500}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.bad{background:var(--badbg);color:var(--bad)}
+.msg.info{background:var(--warnbg);color:var(--warn)}
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border:2px dashed #c9c4bb;border-radius:14px;background:#faf8f5}
+.buckets{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.bucket{flex:1 1 200px;border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+.bucket h4{margin:0 0 2px;font-size:1rem}
+.bucket p{margin:0 0 8px;font-size:.85rem;color:var(--mute)}
+.bucket .put{width:100%;margin-bottom:8px;font-size:.88rem;padding:5px 8px}
+.zone{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #b9b3a8;border-radius:999px;padding:5px 12px 5px 8px;font-weight:600;color:var(--ink)}
+.item svg{width:26px;height:26px;flex:0 0 auto}
+.item[aria-pressed=true]{border-color:var(--blue);background:#e8f0fb;box-shadow:0 0 0 2px var(--blue)}
+.item.ok{border-color:var(--ok);background:var(--okbg)}
+.item.bad{border-color:var(--bad);background:var(--badbg)}
+/* quiz */
+.q{border:0;border-top:1px solid var(--line);padding:14px 0 6px;margin:0}
+.q legend{font-weight:700;padding:0 0 6px;float:left;width:100%}
+.opts{clear:both;display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:#fff;border:2px solid #cfc9bf;border-radius:10px;padding:8px 12px}
+.opt:hover:not([disabled]){border-color:var(--red);background:#fff7f7}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.score{font-weight:700;margin-top:12px}
+input[type=range]{width:100%;accent-color:#b3262c}
+label{font-weight:600}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #cfc9bf;background:#fff;max-width:100%}
+.sel-organ{filter:drop-shadow(0 0 5px #1a5fb4)}
+.hot{cursor:pointer}
+.hot:hover{opacity:.9}
+.sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="banner">
+<svg viewBox="0 0 120 120" role="img" aria-label="Illustration of an oil droplet and a protein chain">
+<circle cx="60" cy="60" r="56" fill="#fff" opacity=".18"/>
+<path d="M40,22 C40,22 20,50 20,64 A20,20 0 0 0 60,64 C60,50 40,22 40,22Z" fill="#ffd166"/>
+<path d="M32,62 A9,9 0 0 0 44,72" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+<g fill="#fff"><circle cx="78" cy="38" r="8"/><circle cx="96" cy="52" r="8"/><circle cx="84" cy="72" r="8"/><circle cx="98" cy="92" r="8"/><circle cx="76" cy="96" r="8"/></g>
+<polyline points="78,38 96,52 84,72 98,92 76,96" fill="none" stroke="#ffd9cc" stroke-width="3"/>
+</svg>
+<div class="txt"><span class="tag">Week 3 &middot; Lipids and Protein</span><h1>Fats &amp; Protein Lab</h1><p>Explore how fat chains differ, sort foods by fat type, and pair plant proteins.</p></div>
+</header>
+
+<section class="card" aria-labelledby="h-a">
+<hr class="rule"><h2 id="h-a">Part 1 &middot; Fatty Acid Chain Lab</h2>
+<p class="lead">Fats are not all alike. Their shape depends on the bonds between carbon atoms. Choose a type to see its chain and how chains pack together.</p>
+<div class="row" role="group" aria-label="Choose a fatty acid type">
+<button class="btn" type="button" data-t="sat" aria-pressed="true">Saturated</button>
+<button class="btn alt" type="button" data-t="cis" aria-pressed="false">Unsaturated (cis)</button>
+<button class="btn alt" type="button" data-t="trans" aria-pressed="false">Trans</button>
+</div>
+<div class="grid">
+<div class="fig"><svg id="chainsvg" viewBox="0 0 440 360" role="img" aria-labelledby="chaintitle"><title id="chaintitle">Fatty acid chain</title></svg></div>
+<div class="panel" aria-live="polite"><span class="kicker" id="c-kick">Saturated</span><h3 id="c-title"></h3><div id="c-body"></div></div>
+</div>
+</section>
+
+<section class="card" aria-labelledby="h-b">
+<hr class="rule"><h2 id="h-b">Part 2 &middot; Which Fat Is Which?</h2>
+<p class="lead">Sort each food by the type of fat it provides <em>most</em> of. Select a food, then choose a group.</p>
+<div id="sort-fat"></div>
+</section>
+
+<section class="card" aria-labelledby="h-c">
+<hr class="rule"><h2 id="h-c">Part 3 &middot; Protein Pairing Studio</h2>
+<p class="lead">Nine amino acids are essential. Complete proteins supply all of them; plant foods can be <strong>combined</strong> to complement one another. Pick any two foods to see what they supply together.</p>
+<div class="grid">
+<div class="panel" style="border-left-color:#6b4a8a">
+<label for="fa">Food A</label><br><select id="fa"></select><br><br>
+<label for="fb">Food B</label><br><select id="fb"></select>
+<div id="pmsg" class="msg info" aria-live="polite" style="margin-top:14px"></div>
+</div>
+<div class="fig"><svg id="aasvg" viewBox="0 0 440 250" role="img" aria-labelledby="aatitle"><title id="aatitle">Amino acid coverage meters</title></svg></div>
+</div>
+<p class="note">Simplified model: this activity tracks only two amino acids that are often limiting in plant foods (lysine and methionine) using general levels (low, moderate, high). Real foods contain all nine in varying amounts, and eating a variety of protein foods across the day works well, too.</p>
+</section>
+
+<section class="card" aria-labelledby="h-d">
+<hr class="rule"><h2 id="h-d">Part 4 &middot; Check Your Understanding</h2>
+<div id="quiz"></div>
+</section>
+
+<p class="note" style="text-align:center;margin:18px 0 4px">HSCI 105 Nutrition and Wellness &middot; Interactive learning activity. Content adapted from the course Deep Dive pages; sources listed in each week&rsquo;s Deep Dive.</p>
+</div>
+<script>
+function el(tag,attrs,...kids){const e=document.createElement(tag);for(const k in (attrs||{})){if(k==='class')e.className=attrs[k];else if(k==='html')e.innerHTML=attrs[k];else e.setAttribute(k,attrs[k]);}kids.forEach(c=>e.append(c));return e;}
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Quiz: immediate feedback, one try per question ---------- */
+function makeQuiz(rootId,qs){
+  const root=document.getElementById(rootId);let right=0,done=0;
+  const score=el('p',{class:'score','aria-live':'polite'});
+  qs.forEach((q,i)=>{
+    const fs=el('fieldset',{class:'q'});fs.append(el('legend',{},(i+1)+'. '+q.q));
+    const box=el('div',{class:'opts',role:'group','aria-label':'Answer choices for question '+(i+1)});
+    const fb=el('div',{class:'msg',style:'display:none','aria-live':'polite'});
+    const btns=q.o.map((t,j)=>{const b=el('button',{class:'opt',type:'button'},t);
+      b.onclick=()=>{btns.forEach(x=>x.disabled=true);done++;
+        if(j===q.a){b.classList.add('ok');right++;fb.className='msg ok';fb.textContent='Correct. '+q.why;}
+        else{b.classList.add('bad');btns[q.a].classList.add('ok');fb.className='msg bad';fb.textContent='Not quite. '+q.why;}
+        fb.style.display='block';
+        score.textContent=done===qs.length?('You answered '+right+' of '+qs.length+' correctly.'+(right===qs.length?' Excellent work!':' Review the explanations above and try the interactive again.')):'';};
+      return b;});
+    btns.forEach(b=>box.append(b));fs.append(box,fb);root.append(fs);});
+  root.append(score);
+}
+
+/* ---------- Sorter: click an item, then click a bucket ---------- */
+function makeSorter(rootId,cfg){
+  const root=document.getElementById(rootId);const place={};let sel=null;
+  cfg.items.forEach(i=>place[i.id]=null);
+  const live=el('div',{class:'msg info','aria-live':'polite',style:'display:none'});
+  const pool=el('div',{class:'pool',role:'group','aria-label':'Items to sort'});
+  const bwrap=el('div',{class:'buckets'});const zones={};const puts={};
+  cfg.buckets.forEach(b=>{
+    const z=el('div',{class:'zone',role:'group','aria-label':b.label+' items'});zones[b.id]=z;
+    const p=el('button',{class:'btn alt put',type:'button'},'Place selected item here');puts[b.id]=p;
+    p.onclick=()=>{if(!sel){say('Select an item first, then choose a group.');return;}place[sel]=b.id;clearMarks();sel=null;render();};
+    bwrap.append(el('div',{class:'bucket'},el('h4',{},b.label),el('p',{},b.desc||''),p,z));});
+  const fb=el('div',{style:'display:none','aria-live':'polite'});
+  const check=el('button',{class:'btn',type:'button'},'Check my answers');
+  const reset=el('button',{class:'btn alt',type:'button'},'Reset');
+  function say(t){live.textContent=t;live.style.display='block';}
+  function clearMarks(){fb.style.display='none';live.style.display='none';}
+  const chips={};
+  cfg.items.forEach(it=>{const c=el('button',{class:'item',type:'button','aria-pressed':'false'});
+    c.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';chips[it.id]=c;
+    c.onclick=()=>{clearMarks();Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));
+      if(place[it.id]){place[it.id]=null;sel=it.id;render();say(it.label+' returned to the item pool and selected.');return;}
+      sel=(sel===it.id)?null:it.id;render();if(sel)say(it.label+' selected. Now choose a group.');};});
+  function render(){pool.innerHTML='';Object.values(zones).forEach(z=>z.innerHTML='');
+    cfg.items.forEach(it=>{const c=chips[it.id];c.setAttribute('aria-pressed',sel===it.id?'true':'false');
+      (place[it.id]?zones[place[it.id]]:pool).append(c);});
+    if(!pool.children.length)pool.append(el('span',{class:'note'},'All items placed. Select Check my answers.'));}
+  check.onclick=()=>{if(cfg.items.some(i=>!place[i.id])){say('Place every item in a group before checking.');return;}
+    let r=0;const wrong=[];cfg.items.forEach(it=>{const ok=place[it.id]===it.bucket;chips[it.id].classList.remove('ok','bad');chips[it.id].classList.add(ok?'ok':'bad');if(ok)r++;else wrong.push(it);});
+    live.style.display='none';fb.style.display='block';
+    fb.className='msg '+(r===cfg.items.length?'ok':'bad');
+    fb.innerHTML='<strong>'+r+' of '+cfg.items.length+' correct.</strong>'+(wrong.length?'<ul>'+wrong.map(w=>'<li><strong>'+w.label+':</strong> '+w.why+'</li>').join('')+'</ul><span>Tap a red item to move it, then check again.</span>':' '+(cfg.done||''));};
+  reset.onclick=()=>{cfg.items.forEach(i=>place[i.id]=null);sel=null;Object.values(chips).forEach(x=>x.classList.remove('ok','bad'));clearMarks();render();};
+  root.append(pool,bwrap,el('div',{class:'row'},check,reset),live,fb);render();
+}
+
+
+/* ----- Fatty acid chains ----- */
+const T={
+ sat:{k:'Saturated',t:'No double bonds. Chains stay straight.',b:'<ul><li>Every carbon holds as many hydrogens as it can (it is \u201csaturated\u201d).</li><li>Straight chains pack tightly, so these fats tend to be <strong>solid at room temperature</strong>.</li><li>Common in butter, cheese, fatty meats, and coconut and palm oils.</li></ul>'},
+ cis:{k:'Unsaturated (cis)',t:'One double bond makes a kink.',b:'<ul><li>A double bond with hydrogens on the same side (<em>cis</em>) bends the chain.</li><li>Kinked chains cannot pack tightly, so these fats are usually <strong>liquid oils</strong>.</li><li>Found in olive oil, avocado, nuts, and fish. Essential fatty acids are unsaturated.</li></ul>'},
+ trans:{k:'Trans',t:'A double bond, but the chain stays straight.',b:'<ul><li>Hydrogens sit on opposite sides, so the chain does not bend and packs like a saturated fat.</li><li>Artificial trans fats come from partially hydrogenated oils and raise heart disease risk. Check Nutrition Facts labels.</li><li>Small amounts occur naturally in some meat and dairy.</li></ul>'}
+};
+function chain(type,y0,x0,scale){
+  const pts=[];let x=x0,y=y0,head=0,up=true;const n=13;const kink=5;let dbl=null;
+  for(let i=0;i<n;i++){pts.push([x,y]);
+    const ang=(up?-30:30)*Math.PI/180+head*Math.PI/180;
+    if(i<n-1){x+=Math.cos(ang)*scale;y+=Math.sin(ang)*scale;}
+    if(type==='cis'&&i===kink-1)head=0; // placeholder
+    up=!up;}
+  if(type==='cis'){ // rebuild with a kink after carbon 6
+    pts.length=0;x=x0;y=y0;up=true;let h=0;
+    for(let i=0;i<n;i++){pts.push([x,y]);const a=(up?-30:30)*Math.PI/180+h;
+      if(i===kink-1){h=Math.PI/4;} // turn after double bond
+      const a2=(up?-30:30)*Math.PI/180+h;x+=Math.cos(a2)*scale;y+=Math.sin(a2)*scale;up=!up;}
+  }
+  return pts;
+}
+function drawChain(g,type,y0,color){
+  const p=chain(type,y0,26,22);let s='';
+  s+='<polyline points="'+p.map(q=>q.join(',')).join(' ')+'" fill="none" stroke="'+color+'" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>';
+  if(type!=='sat'){const a=p[4],b=p[5];const dx=b[1]-a[1],dy=a[0]-b[0],l=Math.hypot(dx,dy);const ox=dx/l*5,oy=dy/l*5;
+    s+='<line x1="'+(a[0]+ox)+'" y1="'+(a[1]+oy)+'" x2="'+(b[0]+ox)+'" y2="'+(b[1]+oy)+'" stroke="#fff" stroke-width="2.5"/>';}
+  p.forEach((q,i)=>{s+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+(i===0?7:5)+'" fill="'+(i===0?'#b3262c':'#555')+'" stroke="#fff" stroke-width="1.5"/>';});
+  g.insertAdjacentHTML('beforeend',s);
+}
+function showChain(t){
+  const svg=document.getElementById('chainsvg');
+  svg.querySelectorAll('g').forEach(g=>g.remove());
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');svg.append(g);
+  g.insertAdjacentHTML('beforeend','<text x="14" y="22" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">One fatty acid chain (carbons in gray, acid end in red)</text>');
+  drawChain(g,t,45,'#6e6a64');
+  g.insertAdjacentHTML('beforeend','<text x="14" y="205" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">How three chains pack together</text>');
+  const sp=t==='cis'?60:26;
+  for(let i=0;i<3;i++){const y=t==='cis'?170+i*8:170+i*sp*0.9;
+    const off=t==='cis'?(i%2?18:0):0;
+    const grp=document.createElementNS('http://www.w3.org/2000/svg','g');grp.setAttribute('transform','translate('+(t==='cis'?i*105:0)+','+(t==='cis'?225:225+i*34)+') scale(.55)');
+    g.append(grp);drawChain(grp,t,10,'#8a6a2f');}
+  const lab=t==='cis'?'Loose packing: tends to be liquid (oil)':'Tight packing: tends to be solid';
+  g.insertAdjacentHTML('beforeend','<text x="14" y="352" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="'+(t==='cis'?'#17653a':'#9d1f26')+'">'+lab+'</text>');
+  document.getElementById('chaintitle').textContent=T[t].k+' fatty acid chain and packing diagram';
+  document.getElementById('c-kick').textContent=T[t].k;document.getElementById('c-title').textContent=T[t].t;document.getElementById('c-body').innerHTML=T[t].b;
+  document.querySelectorAll('[data-t]').forEach(b=>{const on=b.dataset.t===t;b.setAttribute('aria-pressed',on);b.className='btn'+(on?'':' alt');});
+}
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>showChain(b.dataset.t));
+showChain('sat');
+
+/* ----- Food icons ----- */
+const IC={
+ oil:'<svg viewBox="0 0 28 28" aria-hidden="true"><rect x="9" y="10" width="10" height="16" rx="3" fill="#8fb339"/><rect x="11" y="3" width="6" height="8" fill="#6c8c1f"/><rect x="10" y="16" width="8" height="5" fill="#fff" opacity=".6"/></svg>',
+ butter:'<svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="10" width="22" height="12" rx="2" fill="#f6d24a"/><rect x="3" y="10" width="22" height="4" rx="2" fill="#fbe58a"/></svg>',
+ salmon:'<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M3,14 C9,5 18,5 22,14 C18,23 9,23 3,14Z" fill="#f28c6b"/><path d="M22,14 L27,8 L27,20Z" fill="#e06a47"/><circle cx="8" cy="12" r="1.5" fill="#262626"/></svg>',
+ avocado:'<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14,2 C20,2 24,12 24,18 A10,10 0 0 1 4,18 C4,12 8,2 14,2Z" fill="#5f8f2e"/><path d="M14,6 C18,6 21,13 21,18 A7,7 0 0 1 7,18 C7,13 10,6 14,6Z" fill="#cfe49a"/><circle cx="14" cy="18" r="4.5" fill="#7a4b24"/></svg>',
+ cheese:'<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M2,22 L2,12 L26,6 L26,22Z" fill="#f6c244"/><circle cx="10" cy="17" r="2" fill="#d99b1c"/><circle cx="19" cy="14" r="2.4" fill="#d99b1c"/><circle cx="21" cy="19" r="1.5" fill="#d99b1c"/></svg>',
+ almond:'<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14,3 C21,8 22,18 14,25 C6,18 7,8 14,3Z" fill="#c8985a"/><path d="M14,7 C16,12 16,18 14,22" stroke="#a8763c" stroke-width="1.5" fill="none"/></svg>',
+ coconut:'<svg viewBox="0 0 28 28" aria-hidden="true"><rect x="5" y="9" width="18" height="16" rx="3" fill="#f4f1ea" stroke="#b9b3a8" stroke-width="1.5"/><rect x="4" y="5" width="20" height="5" rx="2" fill="#8a6f55"/></svg>',
+ pastry:'<svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="11" fill="#d9a05b"/><circle cx="14" cy="14" r="9" fill="#f4a9c0"/><circle cx="14" cy="14" r="3.5" fill="#fff"/></svg>'
+};
+makeSorter('sort-fat',{
+ buckets:[{id:'sat',label:'Mostly saturated',desc:'Often solid at room temperature'},{id:'unsat',label:'Mostly unsaturated',desc:'Usually liquid or from plants and fish'},{id:'trans',label:'Artificial trans fat source',desc:'Partially hydrogenated oils'}],
+ items:[
+  {id:'oil',label:'Olive oil',icon:IC.oil,bucket:'unsat',why:'Olive oil is mostly monounsaturated fat.'},
+  {id:'butter',label:'Butter',icon:IC.butter,bucket:'sat',why:'Butter is mostly saturated animal fat.'},
+  {id:'salmon',label:'Salmon',icon:IC.salmon,bucket:'unsat',why:'Fatty fish provide unsaturated omega-3 fats.'},
+  {id:'avocado',label:'Avocado',icon:IC.avocado,bucket:'unsat',why:'Avocado is rich in monounsaturated fat.'},
+  {id:'cheese',label:'Cheddar cheese',icon:IC.cheese,bucket:'sat',why:'Full-fat cheese is a major source of saturated fat.'},
+  {id:'almond',label:'Almonds',icon:IC.almond,bucket:'unsat',why:'Nuts are mostly unsaturated fat.'},
+  {id:'coconut',label:'Coconut oil',icon:IC.coconut,bucket:'sat',why:'Coconut oil is unusual for a plant oil: it is mostly saturated and solid at room temperature.'},
+  {id:'pastry',label:'Pastry made with partially hydrogenated oil',icon:IC.pastry,bucket:'trans',why:'Partially hydrogenated oils are the source of artificial trans fats.'}],
+ done:'Great sorting. Remember that most foods contain a mix of fat types.'});
+
+/* ----- Protein pairing ----- */
+const FOODS=[
+ {n:'Brown rice',l:1,m:3},{n:'Whole wheat bread',l:1,m:3},{n:'Corn tortilla',l:1,m:2},{n:'Oats',l:1,m:3},
+ {n:'Black beans',l:3,m:1},{n:'Lentils',l:3,m:1},{n:'Chickpeas',l:3,m:1},{n:'Peanuts',l:2,m:1},
+ {n:'Quinoa',l:3,m:3},{n:'Egg',l:3,m:3},{n:'Milk',l:3,m:3},{n:'Almonds',l:1,m:2}
+];
+const fa=document.getElementById('fa'),fb=document.getElementById('fb');
+FOODS.forEach((f,i)=>{fa.append(new Option(f.n,i));fb.append(new Option(f.n,i));});
+fa.value=0;fb.value=4;
+const LV=['','Low','Moderate','High'];
+function bar(svg,y,label,v,color){
+  const w=[0,60,140,220][v];
+  return '<text x="20" y="'+(y-6)+'" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">'+label+'</text>'+
+  '<rect x="20" y="'+y+'" width="260" height="26" rx="8" fill="#ece8e1"/><rect x="20" y="'+y+'" width="'+(w*260/220)+'" height="26" rx="8" fill="'+color+'"/>'+
+  '<line x1="'+(20+140*260/220)+'" x2="'+(20+140*260/220)+'" y1="'+(y-3)+'" y2="'+(y+29)+'" stroke="#262626" stroke-dasharray="3 3"/>'+
+  '<text x="292" y="'+(y+19)+'" font-size="13" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">'+LV[v]+'</text>';
+}
+function pair(){
+  const A=FOODS[fa.value],B=FOODS[fb.value];
+  const L=Math.max(A.l,B.l),M=Math.max(A.m,B.m);
+  const okL=L>=3,okM=M>=3;
+  const svg=document.getElementById('aasvg');
+  svg.innerHTML='<title id="aatitle">Amino acid coverage: lysine '+LV[L]+', methionine '+LV[M]+'</title>'+
+   '<text x="20" y="22" font-size="14" font-weight="700" font-family="Segoe UI,Arial" fill="#262626">'+A.n+' + '+B.n+'</text>'+
+   bar(svg,70,'Lysine',L,okL?'#2e8b57':'#d98c1f')+bar(svg,130,'Methionine',M,okM?'#2e8b57':'#d98c1f')+
+   '<text x="20" y="188" font-size="12" font-family="Segoe UI,Arial" fill="#555">Dashed line = target for a complete protein pattern</text>'+
+   '<g transform="translate(330,40)"><circle cx="40" cy="60" r="38" fill="'+(okL&&okM?'#e4f4ea':'#fff3da')+'" stroke="'+(okL&&okM?'#2e8b57':'#d98c1f')+'" stroke-width="3"/>'+
+   (okL&&okM?'<path d="M22,60 L35,73 L60,46" stroke="#17653a" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>':'<text x="40" y="72" text-anchor="middle" font-size="40" font-weight="700" fill="#7a4a00" font-family="Segoe UI,Arial">!</text>')+'</g>';
+  const m=document.getElementById('pmsg');
+  if(okL&&okM){m.className='msg ok';m.textContent='This combination covers both amino acids well, so it works as a complete protein pattern.';}
+  else{const miss=[!okL?'lysine':'',!okM?'methionine':''].filter(Boolean).join(' and ');m.className='msg info';m.textContent='Still low in '+miss+'. Try pairing a grain with a legume (beans, lentils, chickpeas) so each food fills the other\u2019s gap.';}
+}
+fa.onchange=fb.onchange=pair;pair();
+
+makeQuiz('quiz',[
+ {q:'How many kilocalories per gram do fats provide?',o:['4','7','9','12'],a:2,why:'Fat provides about 9 kcal per gram, compared with about 4 for carbohydrate and protein.'},
+ {q:'What does bile do?',o:['Digests protein in the stomach','Emulsifies fat so enzymes can break it down','Absorbs vitamins in the colon','Makes insulin'],a:1,why:'Bile breaks large fat globules into small droplets so fat-digesting enzymes can work.'},
+ {q:'Why are unsaturated fats usually liquid at room temperature?',o:['They contain more water','Kinks in the chains prevent tight packing','They have more protein','They are always heated'],a:1,why:'Double bonds create bends, so the chains cannot stack tightly.'},
+ {q:'Which vitamins need dietary fat to be absorbed?',o:['B vitamins and C','A, D, E, and K','Only vitamin C','None'],a:1,why:'A, D, E, and K are fat-soluble and travel with fats.'},
+ {q:'Which pairing best complements plant proteins?',o:['Rice and pasta','Rice and beans','Bread and oats','Lentils and chickpeas'],a:1,why:'Grains are lower in lysine and legumes are lower in methionine, so together they fill each other\u2019s gaps.'}
+]);
+
+</script>
+</body>
+</html>
