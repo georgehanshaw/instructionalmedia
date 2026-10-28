@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Whose lens is it? Week 3 Learning Theory</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--ink:#2a2422;--muted:#645b56;--paper:#f6f3ef;--card:#ffffff;--line:#e2dcd5;--warm:#edebe8;--red:#c63840;--red-text:#a8353a;--teal:#1f6f78;--teal-text:#1a5d65;--gold:#d99a1f;--gold-text:#8a5d06;--ok:#25704a;--ok-bg:#e4f3ea;--bad:#a8261e;--bad-bg:#fbe9e7;--focus:#1a5fb4;--panel:#fbf1e6;--serif:"Literata",Georgia,"Times New Roman",serif;--sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.55 var(--sans)}
+.wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:.5em 0}
+.rule{width:100px;height:6px;border-radius:5px;background:var(--red);margin-bottom:.9rem}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:center;margin-bottom:1.75rem}
+.lede{font-size:1.15rem;max-width:34em;margin-top:.8rem}
+.src{color:var(--muted);font-size:.95rem;margin-top:.6rem}
+.hero-art{background:var(--panel);border-radius:20px;padding:.75rem;border:1px solid var(--line)}
+.hero-art svg{display:block;width:100%;height:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem}
+.btn{font:700 1rem var(--sans);padding:.6rem 1.15rem;border-radius:999px;border:2px solid var(--red);background:transparent;color:var(--red-text);cursor:pointer}
+.btn:hover{background:var(--warm)}
+.btn.primary{background:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red-text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.foot{margin-top:2rem;color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.stage{display:grid;grid-template-columns:230px 1fr;gap:1.25rem;align-items:start}
+.art{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:.5rem}
+.art svg{display:block;width:100%;height:auto}
+.progress{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);background:transparent}
+.dot.now{border-color:var(--red);box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 25%,transparent)}
+.dot.ok{background:var(--ok);border-color:var(--ok)}
+.dot.late{background:var(--gold);border-color:var(--gold)}
+.count{margin-left:auto;color:var(--muted);font-size:.95rem}
+.scene-text{font-size:1.15rem;font-family:var(--serif);line-height:1.5;margin:.2rem 0 1rem}
+.ask{font-weight:700;margin-bottom:.6rem}
+.lenses{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.lens{display:flex;flex-direction:column;gap:.35rem;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-top:6px solid var(--c);border-radius:14px;padding:.75rem;font:inherit;cursor:pointer}
+.lens:hover:not(:disabled){background:var(--warm)}
+.lens svg{width:44px;height:44px}
+.lens b{font-family:var(--serif);font-size:1rem;line-height:1.25}
+.lens span{font-size:.88rem;color:var(--muted);line-height:1.4}
+.lens.wrong{background:var(--bad-bg);border-color:var(--bad);animation:shake .35s}
+.lens.right{background:var(--ok-bg);border-color:var(--ok)}
+.lens:disabled{cursor:default}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.fb{margin-top:1rem;border-radius:14px;padding:1rem 1.1rem;border:1px solid var(--line);background:var(--card)}
+.fb.good{border-color:var(--ok);background:var(--ok-bg)}
+.fb.nudge{border-color:var(--gold)}
+.fb h3{margin-bottom:.3rem}
+.fb .row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:.7rem}
+.pyr{background:var(--panel);border-radius:12px;padding:.4rem;max-width:330px;border:1px solid var(--line)}
+.pyr svg{display:block;width:100%;height:auto}
+.end h2{margin-bottom:.4rem}
+.bars{display:grid;gap:.6rem;margin:1rem 0}
+.bar{display:grid;grid-template-columns:12em 1fr 3em;gap:.6rem;align-items:center;font-size:.95rem}
+.track{height:14px;border-radius:7px;background:var(--warm);overflow:hidden}
+.fill{height:100%;background:var(--c);border-radius:7px}
+textarea{width:100%;min-height:80px;font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:.7rem;resize:vertical}
+@media(max-width:760px){.stage{grid-template-columns:1fr}.art{max-width:260px}.lenses{grid-template-columns:1fr}.bar{grid-template-columns:1fr 1fr 2.5em}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z"/></symbol>
+<symbol id="kid" viewBox="0 0 40 60"><circle cx="20" cy="14" r="10" fill="var(--skin,#c98f6b)"/><path d="M5 58V36a15 15 0 0 1 30 0v22z" fill="currentColor"/></symbol>
+</defs></svg>
+
+<main class="wrap">
+<header class="hero">
+  <div>
+    <div class="rule"></div>
+    <h1>Whose lens is it?</h1>
+    <p class="lede">Every teaching move rests on an idea about how students learn. Read six classroom moments and choose the learning-theory lens that best explains each one.</p>
+    <p class="src">Week 3 Deep Dive: Learning Theory 101</p>
+  </div>
+  <div class="hero-art" role="img" aria-label="Three magnifying lenses: a gold star for behaviorism, stacked blocks for cognitive and constructivist theory, and two figures for social learning.">
+    <svg viewBox="0 0 420 170" aria-hidden="true">
+      <g stroke-linecap="round">
+        <line x1="104" y1="104" x2="132" y2="140" stroke="#c63840" stroke-width="9"/>
+        <line x1="244" y1="104" x2="272" y2="140" stroke="#1f6f78" stroke-width="9"/>
+        <line x1="384" y1="104" x2="412" y2="140" stroke="#b8830f" stroke-width="9"/>
+      </g>
+      <circle cx="70" cy="70" r="50" fill="#fff" stroke="#c63840" stroke-width="8"/>
+      <circle cx="210" cy="70" r="50" fill="#fff" stroke="#1f6f78" stroke-width="8"/>
+      <circle cx="350" cy="70" r="50" fill="#fff" stroke="#b8830f" stroke-width="8"/>
+      <!-- behaviorism: star + arrow loop -->
+      <use href="#star" x="48" y="44" width="44" height="44" style="color:#e0a21f"/>
+      <path d="M44 98c10 8 32 8 42 0" fill="none" stroke="#c63840" stroke-width="3" stroke-linecap="round"/>
+      <path d="M86 98l-8-1 4-7" fill="none" stroke="#c63840" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- constructivist blocks -->
+      <rect x="176" y="80" width="30" height="26" fill="#74b3ba" stroke="#1f6f78" stroke-width="2"/>
+      <rect x="208" y="80" width="30" height="26" fill="#a8d3d8" stroke="#1f6f78" stroke-width="2"/>
+      <rect x="192" y="52" width="30" height="26" fill="#1f6f78" stroke="#1f6f78" stroke-width="2"/>
+      <path d="M238 108V48" stroke="#1f6f78" stroke-width="2" stroke-dasharray="4 3"/>
+      <path d="M170 50l8-8" stroke="#1f6f78" stroke-width="2" stroke-dasharray="4 3"/>
+      <!-- social: model and observer -->
+      <use href="#kid" x="318" y="40" width="30" height="45" style="color:#b8830f;--skin:#8d5a3b"/>
+      <use href="#kid" x="356" y="54" width="26" height="39" style="color:#1f6f78;--skin:#e2b48c"/>
+      <path d="M342 50c8-10 20-10 28-2" fill="none" stroke="#b8830f" stroke-width="2.5" stroke-dasharray="3 3" stroke-linecap="round"/>
+      <circle cx="374" cy="44" r="3" fill="#b8830f"/>
+    </svg>
+  </div>
+</header>
+
+<section id="stage" aria-label="Scenario practice"></section>
+
+<p class="foot">Built from the Week 3 Deep Dive in EDUC 300. Behaviorism (Pavlov, Skinner), cognitive and constructivist theories (Piaget, Vygotsky), and social learning and motivation (Bandura, Maslow).</p>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const LENS = {
+  B:{name:"Behaviorism",color:"#c63840",gloss:"Learning is a change in observable behavior, shaped by the environment.",icon:`<svg viewBox="0 0 44 44" aria-hidden="true"><use href="#star" x="6" y="4" width="32" height="32" style="color:#e0a21f"/><path d="M8 40c8 4 20 4 28 0" fill="none" stroke="#c63840" stroke-width="3" stroke-linecap="round"/></svg>`},
+  C:{name:"Cognitive and constructivist",color:"#1f6f78",gloss:"Learners build understanding by thinking, exploring, and talking with others.",icon:`<svg viewBox="0 0 44 44" aria-hidden="true"><rect x="3" y="24" width="18" height="16" fill="#74b3ba" stroke="#1f6f78" stroke-width="2"/><rect x="23" y="24" width="18" height="16" fill="#a8d3d8" stroke="#1f6f78" stroke-width="2"/><rect x="13" y="6" width="18" height="16" fill="#1f6f78"/></svg>`},
+  S:{name:"Social learning and motivation",color:"#b8830f",gloss:"People learn by watching others, and learn best when they feel safe and capable.",icon:`<svg viewBox="0 0 44 44" aria-hidden="true"><use href="#kid" x="4" y="4" width="22" height="33" style="color:#b8830f;--skin:#8d5a3b"/><use href="#kid" x="24" y="14" width="18" height="27" style="color:#1f6f78;--skin:#e2b48c"/></svg>`}
+};
+
+const art = {
+  1:()=>{let s='<svg viewBox="0 0 160 120" aria-hidden="true"><rect x="12" y="8" width="136" height="104" rx="10" fill="#fff" stroke="#a8353a" stroke-width="3"/><rect x="12" y="8" width="136" height="20" rx="10" fill="#c63840"/>';
+    for(let j=0;j<3;j++)for(let i=0;i<4;i++){const x=24+i*30,y=38+j*24,n=j*4+i;
+      s+= n<7 ? `<use href="#star" x="${x}" y="${y}" width="22" height="22" style="color:#e0a21f"/>` : `<rect x="${x+2}" y="${y+2}" width="18" height="18" rx="4" fill="none" stroke="#bbb" stroke-width="2" stroke-dasharray="3 3"/>`;}
+    return s+'</svg>'},
+  2:()=>`<svg viewBox="0 0 160 120" aria-hidden="true"><rect x="14" y="84" width="40" height="22" fill="#a8d3d8" stroke="#1f6f78" stroke-width="2"/><rect x="54" y="62" width="40" height="44" fill="#74b3ba" stroke="#1f6f78" stroke-width="2"/><rect x="94" y="40" width="40" height="66" fill="#1f6f78"/><use href="#kid" x="22" y="48" width="22" height="33" style="color:#c63840;--skin:#e2b48c"/><use href="#kid" x="100" y="6" width="26" height="39" style="color:#b8830f;--skin:#8d5a3b"/><path d="M48 70c8-12 18-14 30-8" fill="none" stroke="#1f6f78" stroke-width="2.5" stroke-dasharray="4 3" stroke-linecap="round"/><path d="M14 106h120" stroke="#1f6f78" stroke-width="3"/></svg>`,
+  3:()=>`<svg viewBox="0 0 160 120" aria-hidden="true"><rect x="8" y="10" width="96" height="62" rx="4" fill="#2f4f4f" stroke="#6b4e2e" stroke-width="4"/><path d="M20 28h50M20 42h66M20 56h36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><use href="#kid" x="112" y="26" width="30" height="45" style="color:#b8830f;--skin:#8d5a3b"/><ellipse cx="126" cy="12" rx="22" ry="9" fill="#fff" stroke="#b8830f" stroke-width="2"/><path d="M120 20l-2 6 8-4" fill="#fff" stroke="#b8830f" stroke-width="2"/><use href="#kid" x="28" y="80" width="22" height="33" style="color:#1f6f78;--skin:#e2b48c"/><use href="#kid" x="66" y="80" width="22" height="33" style="color:#c63840;--skin:#c98f6b"/><use href="#kid" x="104" y="80" width="22" height="33" style="color:#6a4c93;--skin:#8d5a3b"/></svg>`,
+  4:()=>`<svg viewBox="0 0 160 120" aria-hidden="true"><path d="M44 24v36a36 36 0 0 0 72 0V24H94v36a14 14 0 0 1-28 0V24z" fill="#c63840"/><rect x="44" y="18" width="22" height="14" fill="#d9d9d9" stroke="#888" stroke-width="2"/><rect x="94" y="18" width="22" height="14" fill="#d9d9d9" stroke="#888" stroke-width="2"/><g fill="none" stroke="#6b6b6b" stroke-width="2.5" stroke-linecap="round"><rect x="46" y="4" width="8" height="18" rx="4" transform="rotate(8 50 14)" /><rect x="104" y="2" width="8" height="18" rx="4" transform="rotate(-10 108 12)"/></g><rect x="14" y="94" width="60" height="18" rx="3" fill="#fff" stroke="#1f6f78" stroke-width="2"/><path d="M22 103h44" stroke="#1f6f78" stroke-width="2"/><circle cx="130" cy="100" r="9" fill="#e0a21f"/><text x="130" y="105" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="sans-serif">?</text></svg>`,
+  5:()=>`<svg viewBox="0 0 160 120" aria-hidden="true"><path d="M30 60h84l-10 46a8 8 0 0 1-8 6H48a8 8 0 0 1-8-6z" fill="#b5834d" stroke="#7a5428" stroke-width="2"/><path d="M38 76h68M42 92h60" stroke="#7a5428" stroke-width="2"/><path d="M34 60c4-16 72-16 76 0" fill="none" stroke="#7a5428" stroke-width="4" stroke-linecap="round"/><circle cx="56" cy="52" r="13" fill="#c63840"/><path d="M56 40c0-6 4-8 7-8" stroke="#2f6b3a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M80 56c12-18 24-6 20 6-3 8-12 10-20 8z" fill="#e0a21f"/><path d="M128 24c-6-10-20-2-12 8l12 12 12-12c8-10-6-18-12-8z" fill="#c63840"/></svg>`,
+  6:()=>`<svg viewBox="0 0 160 120" aria-hidden="true"><rect x="10" y="12" width="70" height="98" rx="4" fill="#d9b98a" stroke="#7a5428" stroke-width="3"/><circle cx="68" cy="62" r="4" fill="#7a5428"/><rect x="92" y="14" width="58" height="72" rx="4" fill="#fff" stroke="#a8353a" stroke-width="3"/><g stroke="#a8353a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M100 30l4 4 8-8M100 50l4 4 8-8M100 70l4 4 8-8"/></g><g stroke="#bbb" stroke-width="3" stroke-linecap="round"><path d="M120 30h22M120 50h22M120 70h22"/></g><circle cx="120" cy="100" r="11" fill="#fff" stroke="#1f6f78" stroke-width="3"/><path d="M120 94v7l5 3" stroke="#1f6f78" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+};
+
+const SCENES = [
+ {text:`Ms. Reyes gives a sticker each time a student turns in homework on time. Within two weeks, on-time homework climbs from half the class to nearly everyone.`,
+  ans:"B",who:"Skinner’s operant conditioning",
+  why:`The teacher is shaping behavior with a reinforcer. A behavior that is followed by something rewarding becomes more likely to happen again.`,
+  hint:`Look at what happens right after the behavior, and at what changed in the students’ actions.`},
+ {text:`Mr. Ito pairs students to solve fraction problems. He gives each pair a hint just beyond what they can do alone, then pulls the hints back as they gain confidence.`,
+  ans:"C",who:"Vygotsky’s zone of proximal development and scaffolding",
+  why:`Learning happens in the gap between what a student can do alone and what they can do with help. The temporary support, called scaffolding, is removed as competence grows.`,
+  hint:`Notice the “just beyond reach” help and the partner work.`},
+ {text:`While solving a word problem on the board, Mr. Okafor says each step aloud: “First I underline the question. Now I look for the numbers.” Soon students are narrating the same steps at their desks.`,
+  ans:"S",who:"Bandura’s observational learning",
+  why:`People learn by watching a model. Students copied the strategy because they saw it demonstrated and could imagine doing it themselves.`,
+  hint:`Who is the example the students are following, and what are they copying?`},
+ {text:`Before naming the concept, Ms. Lindqvist lets students explore magnets and paper clips. Then she asks them to explain what they noticed and what they think is happening.`,
+  ans:"C",who:"Piaget’s constructivism and inquiry",
+  why:`Students build the idea through active exploration and talk before the teacher supplies the vocabulary. Knowledge is constructed, not simply received.`,
+  hint:`The students put the idea together themselves before the teacher gives it a name.`},
+ {text:`A teacher keeps a basket of snacks by the door and greets every child by name. She notices that one student who skipped lunch cannot focus, and quietly offers food before the lesson starts.`,
+  ans:"S",who:"Maslow’s hierarchy of needs",pyr:0,
+  why:`Basic needs and safety come first. A hungry student, or one who does not feel welcome, has little energy left for higher-level learning.`,
+  hint:`Think about what a student needs before they can think about fractions.`},
+ {text:`A three-step routine for entering class is posted on the board. The teacher praises students who follow it and calmly reminds those who do not. By October, class starts smoothly without reminders.`,
+  ans:"B",who:"Skinner’s reinforcement, applied to routines",
+  why:`Clear cues, praise, and calm consistency are classic behaviorist tools. The environment is arranged so the desired behavior is noticed and reinforced.`,
+  hint:`Look at the tools the teacher uses: cues, praise, and consistency.`}
+];
+
+function pyramid(hi){
+  const L=["Physiological needs","Safety","Belonging","Esteem","Self-actualization"];
+  let s='<svg viewBox="0 0 300 190" aria-hidden="true" font-family="Nunito Sans,sans-serif">';
+  for(let i=0;i<5;i++){ // i=0 bottom
+    const y=150-i*34, wTop=300-(i+1)*50-0, wBot=300-i*50;
+    const x1=(300-wBot)/2, x2=(300+wBot)/2, x3=(300+wTop)/2, x4=(300-wTop)/2;
+    const on=i===hi;
+    s+=`<polygon points="${x1},${y+32} ${x2},${y+32} ${x3},${y} ${x4},${y}" fill="${on?'#c63840':'#e8d8c8'}" stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="150" y="${y+21}" text-anchor="middle" font-size="${i===4?9:11.5}" font-weight="700" fill="${on?'#fff':'#4a3a2c'}">${L[i]}</text>`;
+  }
+  return s+'</svg>';
+}
+
+let idx=0, firstTry=[], missed=false, answered=false;
+
+function renderStage(){
+  const st=$('#stage');
+  if(idx>=SCENES.length){ return renderEnd(st); }
+  const sc=SCENES[idx];
+  let dots='';
+  for(let i=0;i<SCENES.length;i++){
+    const cls = i===idx ? 'now' : (firstTry[i]===undefined ? '' : (firstTry[i]?'ok':'late'));
+    dots+=`<span class="dot ${cls}" title="Scene ${i+1}"></span>`;
+  }
+  const correct=firstTry.filter(Boolean).length;
+  st.innerHTML=`
+  <div class="progress" aria-label="Progress">${dots}<span class="count">Scene ${idx+1} of ${SCENES.length}. First-try matches: ${correct}</span></div>
+  <div class="stage">
+    <div class="art" role="img" aria-label="Illustration for the classroom scene">${art[idx+1]()}</div>
+    <div>
+      <p class="scene-text">${sc.text}</p>
+      <p class="ask" id="ask">Which lens best explains the teacher’s move?</p>
+      <div class="lenses" role="group" aria-labelledby="ask">
+        ${Object.keys(LENS).map(k=>`<button class="lens" data-k="${k}" style="--c:${LENS[k].color}">${LENS[k].icon}<b>${LENS[k].name}</b><span>${LENS[k].gloss}</span></button>`).join('')}
+      </div>
+      <div id="fb" aria-live="polite"></div>
+    </div>
+  </div>`;
+  missed=false; answered=false;
+  st.querySelectorAll('.lens').forEach(b=>b.addEventListener('click',()=>choose(b)));
+}
+
+function choose(btn){
+  if(answered) return;
+  const sc=SCENES[idx], k=btn.dataset.k, fb=$('#fb');
+  if(k===sc.ans){
+    answered=true;
+    if(firstTry[idx]===undefined) firstTry[idx]=!missed;
+    document.querySelectorAll('.lens').forEach(b=>{b.disabled=true;});
+    btn.classList.remove('wrong'); btn.classList.add('right');
+    const last = idx===SCENES.length-1;
+    fb.innerHTML=`<div class="fb good"><h3>${missed?'That’s the one':'Yes, that’s the lens'}: ${LENS[k].name}</h3>
+      <p><b>${sc.who}.</b> ${sc.why}</p>
+      <div class="row">${sc.pyr!==undefined?`<div class="pyr" role="img" aria-label="Maslow’s pyramid with physiological needs highlighted">${pyramid(sc.pyr)}</div>`:''}
+      <button class="btn primary" id="next">${last?'See my results':'Next scene'}</button></div></div>`;
+    $('#next').addEventListener('click',()=>{idx++;renderStage();window.scrollTo({top:0,behavior:'smooth'});});
+    $('#next').focus();
+  } else {
+    missed=true; if(firstTry[idx]===undefined) firstTry[idx]=false;
+    btn.classList.add('wrong'); btn.disabled=true;
+    fb.innerHTML=`<div class="fb nudge"><h3>Not quite. Try another lens.</h3><p>${sc.hint}</p></div>`;
+    updateDots();
+  }
+}
+function updateDots(){
+  const d=document.querySelectorAll('.dot'); d.forEach((el,i)=>{ if(i===idx) return; });
+}
+
+function renderEnd(st){
+  const tally={B:[0,0],C:[0,0],S:[0,0]};
+  SCENES.forEach((s,i)=>{tally[s.ans][1]++; if(firstTry[i]) tally[s.ans][0]++;});
+  const total=firstTry.filter(Boolean).length;
+  st.innerHTML=`<div class="card end">
+    <h2>You matched ${total} of ${SCENES.length} on the first try</h2>
+    <p>Here is how you did with each lens:</p>
+    <div class="bars">
+      ${Object.keys(LENS).map(k=>`<div class="bar"><span>${LENS[k].name}</span><div class="track"><div class="fill" style="--c:${LENS[k].color};width:${tally[k][0]/tally[k][1]*100}%"></div></div><span>${tally[k][0]}/${tally[k][1]}</span></div>`).join('')}
+    </div>
+    <p>No single theory explains everything. Effective teachers move between lenses on purpose, and so can you.</p>
+    <label for="refl" class="ask" style="display:block;margin-top:1rem">Which lens do you find yourself reaching for first, and why? One sentence is enough, and it can seed your Writing Assignment, Part 2.</label>
+    <textarea id="refl" placeholder="I reach for the ___ lens first because…"></textarea>
+    <p style="margin-top:1rem"><button class="btn primary" id="again">Try the scenes again</button></p>
+  </div>`;
+  $('#again').addEventListener('click',()=>{idx=0;firstTry=[];renderStage();window.scrollTo({top:0});});
+}
+renderStage();
+</script>
+</body>
+</html>

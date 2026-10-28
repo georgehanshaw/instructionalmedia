@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>One lesson, four learners. Week 4 All Students Can Learn</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--ink:#2a2422;--muted:#645b56;--paper:#f6f3ef;--card:#ffffff;--line:#e2dcd5;--warm:#edebe8;--red:#c63840;--red-text:#a8353a;--teal:#1f6f78;--teal-text:#1a5d65;--gold:#d99a1f;--gold-text:#8a5d06;--ok:#25704a;--ok-bg:#e4f3ea;--bad:#a8261e;--bad-bg:#fbe9e7;--focus:#1a5fb4;--panel:#fbf1e6;--serif:"Literata",Georgia,"Times New Roman",serif;--sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.55 var(--sans)}
+.wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:.5em 0}
+.rule{width:100px;height:6px;border-radius:5px;background:var(--red);margin-bottom:.9rem}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:center;margin-bottom:1.75rem}
+.lede{font-size:1.15rem;max-width:34em;margin-top:.8rem}
+.src{color:var(--muted);font-size:.95rem;margin-top:.6rem}
+.hero-art{background:var(--panel);border-radius:20px;padding:.75rem;border:1px solid var(--line)}
+.hero-art svg{display:block;width:100%;height:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem}
+.btn{font:700 1rem var(--sans);padding:.6rem 1.15rem;border-radius:999px;border:2px solid var(--red);background:transparent;color:var(--red-text);cursor:pointer}
+.btn:hover{background:var(--warm)}
+.btn.primary{background:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red-text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.foot{margin-top:2rem;color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+:root{--eng:#b8830f;--rep:#1f6f78;--act:#c63840}
+.lesson{display:grid;grid-template-columns:150px 1fr;gap:1rem;align-items:center;margin-bottom:1.25rem}
+.lesson .pic{background:var(--panel);border-radius:14px;border:1px solid var(--line);padding:.4rem}
+.lesson svg{display:block;width:100%;height:auto}
+.lesson p{margin:.2rem 0}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem}
+.tab{display:flex;flex-direction:column;align-items:center;gap:.2rem;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:.5rem .4rem;font:inherit;cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--red);background:var(--warm)}
+.tab svg{width:54px;height:54px;border-radius:50%;background:var(--panel)}
+.tab b{font-family:var(--serif)}
+.tab small{color:var(--muted);font-size:.8rem}
+.tab .mini{width:100%;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.tab .mini i{display:block;height:100%;background:var(--ok)}
+.work{display:grid;grid-template-columns:260px 1fr;gap:1.25rem}
+.who{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:.6rem;text-align:center;color:#2a2422}
+.who svg{width:100%;height:auto;display:block}
+.who .pct{font:700 1.5rem var(--serif);margin:0}
+.who .state{font-size:.9rem;margin:0}
+.info h2{margin-bottom:.3rem}
+.info h3{font-size:1rem;margin:.8rem 0 .2rem}
+.info ul{margin:.2rem 0;padding-left:1.2rem}
+.gap{background:var(--bad-bg);border-radius:10px;padding:.5rem .8rem;margin-top:.8rem}
+.budget{font-weight:700;margin:1rem 0 .4rem}
+.group{margin:.8rem 0}
+.group h4{margin:0 0 .35rem;font:700 .95rem var(--sans);color:var(--c)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{display:inline-flex;align-items:center;gap:.45rem;border:2px solid var(--c);background:var(--card);color:var(--ink);padding:.4rem .8rem .4rem .55rem;border-radius:999px;font:600 .95rem var(--sans);cursor:pointer}
+.chip svg{width:20px;height:20px;fill:none;stroke:var(--c);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chip[aria-pressed="true"]{background:var(--c);color:#fff}
+.chip[aria-pressed="true"] svg{stroke:#fff}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.notes{margin-top:1rem;display:grid;gap:.5rem}
+.note{border-left:6px solid var(--line);background:var(--card);border-radius:8px;padding:.5rem .8rem;font-size:.95rem}
+.note.s3{border-color:var(--ok);background:var(--ok-bg)}
+.note.s2{border-color:var(--ok)}
+.note.s1{border-color:var(--gold)}
+.note.s0{border-color:var(--bad);background:var(--bad-bg)}
+.final{margin-top:1.5rem}
+.final .tally{display:grid;gap:.45rem;margin:.8rem 0}
+.t{display:grid;grid-template-columns:15em 1fr 5em;gap:.6rem;align-items:center;font-size:.95rem}
+.t .track{height:14px;border-radius:7px;background:var(--warm);overflow:hidden}
+.t .fill{height:100%;background:var(--c)}
+.done{display:inline-block;background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok);border-radius:999px;padding:.15rem .7rem;font-weight:700;font-size:.9rem}
+@media(max-width:780px){.work{grid-template-columns:1fr}.who{max-width:280px}.tabs{grid-template-columns:repeat(2,1fr)}.t{grid-template-columns:1fr 1fr 4em}.lesson{grid-template-columns:1fr}.lesson .pic{max-width:180px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="hero">
+  <div>
+    <div class="rule"></div>
+    <h1>One lesson, four learners</h1>
+    <p class="lede">The same lesson lands differently on different students. Start with what each learner can do, then choose the supports that open the lesson up.</p>
+    <p class="src">Week 4 Deep Dive: All Students Can Learn</p>
+  </div>
+  <div class="hero-art" role="img" aria-label="Four students at their desks, each with a different color glow, under a shared lesson sun.">
+    <svg viewBox="0 0 420 170" aria-hidden="true" id="heroart"></svg>
+  </div>
+</header>
+
+<section class="card lesson" aria-label="The lesson as written">
+  <div class="pic" role="img" aria-label="A pond with a tree and a sun">
+    <svg viewBox="0 0 150 110" aria-hidden="true"><rect width="150" height="110" fill="#fbf1e6"/><circle cx="118" cy="24" r="14" fill="#e0a21f"/><path d="M0 84c30-14 60-14 150 0v26H0z" fill="#8fc7a0"/><ellipse cx="62" cy="94" rx="34" ry="9" fill="#74b3ba"/><rect x="24" y="44" width="8" height="40" fill="#7a5428"/><circle cx="28" cy="40" r="20" fill="#3f8a56"/><path d="M96 90l6-12 6 12z" fill="#2f6b3a"/><path d="M80 94c4-4 8-4 12 0" stroke="#fff" stroke-width="2" fill="none"/></svg>
+  </div>
+  <div>
+    <h2>Today’s lesson, as first written</h2>
+    <p>Read a two-page article about habitats, then write a paragraph on your own in 30 minutes.</p>
+    <p class="muted">Choose up to four supports for each learner. Aim to open the lesson up for all four.</p>
+  </div>
+</section>
+
+<div class="tabs" role="tablist" aria-label="Learners" id="tabs"></div>
+<section id="work" role="tabpanel" aria-live="polite"></section>
+<section id="final" class="final"></section>
+
+<p class="foot">Built from the Week 4 Deep Dive in EDUC 300: a strengths-based lens, IEPs and Section 504 plans, differentiated instruction, and Universal Design for Learning. The learners are fictional.</p>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const PRIN={E:{name:"Engagement",color:"#b8830f",ask:"Why learners care"},R:{name:"Representation",color:"#1f6f78",ask:"How information is shown"},A:{name:"Action and expression",color:"#c63840",ask:"How learners show what they know"}};
+const IC={
+ headphones:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><path d="M4 15h3v5H4zM17 15h3v5h-3z"/>',
+ picture:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M3 17l5-5 4 4 3-3 6 5"/>',
+ chunk:'<path d="M4 6h16M4 12h10M4 18h16"/>',
+ choice:'<path d="M12 4v6M12 10l-6 6M12 10l6 6M4 20h4M16 20h4"/>',
+ pair:'<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6M10 20c0-3 2-5 6-5s6 2 6 5"/>',
+ up:'<path d="M4 18l6-6 4 4 6-8M15 8h5v5"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+ starter:'<path d="M4 20l1-5L16 4l4 4L9 19zM13 7l4 4"/>',
+ move:'<circle cx="13" cy="5" r="2"/><path d="M12 8l-3 5 3 2v5M12 8l3 4h3M9 13l-3 1"/>'
+};
+const CHIPS=[
+ {id:"E1",p:"E",label:"Choice of habitat topic",ic:"choice"},
+ {id:"E2",p:"E",label:"Partner or small group",ic:"pair"},
+ {id:"E3",p:"E",label:"Extension challenge",ic:"up"},
+ {id:"R1",p:"R",label:"Read-aloud audio version",ic:"headphones"},
+ {id:"R2",p:"R",label:"Picture-supported vocabulary",ic:"picture"},
+ {id:"R3",p:"R",label:"Text in short chunks with headings",ic:"chunk"},
+ {id:"A1",p:"A",label:"Draw or record instead of writing",ic:"mic"},
+ {id:"A2",p:"A",label:"Sentence starters",ic:"starter"},
+ {id:"A3",p:"A",label:"Stand-up workstation and movement break",ic:"move"}
+];
+const chipById=Object.fromEntries(CHIPS.map(c=>[c.id,c]));
+
+const KIDS=[
+ {id:"maya",name:"Maya",tag:"English learner",skin:"#a9714b",hair:"#2b1b14",shirt:"#1f6f78",style:"long",
+  strengths:["Tells vivid stories aloud in two languages","Quick with number patterns","Eager to help classmates"],
+  gap:"The article’s vocabulary is dense, and a solo paragraph in English asks her to do everything at once.",
+  fit:{E1:[1,"Choice lets her pick a habitat she already knows from home."],E2:[3,"A partner lets her talk through ideas before she writes."],E3:[0,"The challenge is not the problem here. Language access is."],
+   R1:[1,"Hearing the text helps a little, but pictures do more."],R2:[3,"Pictures attached to key words give her the content and the English at the same time."],R3:[1,"Shorter chunks help a little."],
+   A1:[2,"She can show what she knows by drawing or speaking first."],A2:[3,"Sentence starters give her the academic language frame to write in."],A3:[0,"Movement is not what is in her way."]}},
+ {id:"jordan",name:"Jordan",tag:"Has an IEP for reading",skin:"#e2b48c",hair:"#8a5a2b",shirt:"#c63840",style:"short",glasses:true,
+  strengths:["Remembers everything he hears","Curious about animals and how they live","Strong verbal reasoning"],
+  gap:"A two-page article is a wall of print, and writing alone for 30 minutes hides how much he understands.",
+  fit:{E1:[2,"Choosing an animal he loves keeps his motivation high."],E2:[1,"A partner helps, but the text itself is still the barrier."],E3:[0,"An extension adds load without removing the reading barrier."],
+   R1:[3,"Audio lets him use his strong listening to reach the same content as everyone else."],R2:[1,"Pictures help a little."],R3:[3,"Chunks with headings make the text approachable and predictable."],
+   A1:[3,"Recording his answer lets his reasoning show without the writing hurdle."],A2:[1,"Starters help a little."],A3:[0,"Movement is not the main need here."]}},
+ {id:"priya",name:"Priya",tag:"Advanced and finishes early",skin:"#8d5a3b",hair:"#1b1b1b",shirt:"#6a4c93",style:"pony",
+  strengths:["Reads well above grade level","Loves to research and ask “why”","Persistent when a task is hard"],
+  gap:"She finishes in ten minutes and then waits. The task does not stretch her.",
+  fit:{E1:[2,"Choosing her own habitat question points her curiosity at something real."],E2:[1,"A partner can help if the group task is rich enough."],E3:[3,"An extension challenge keeps her thinking at the edge of what she can do."],
+   R1:[0,"She reads this easily. Audio is not needed."],R2:[0,"She already knows these words."],R3:[0,"She can handle the full text."],
+   A1:[2,"Choosing a richer format, like a labeled diagram, lets her go deeper."],A2:[0,"Starters would cap her writing."],A3:[1,"A change of scene can help her reset."]}},
+ {id:"marcus",name:"Marcus",tag:"Has a Section 504 plan for attention",skin:"#c98f6b",hair:"#3a2418",shirt:"#b8830f",style:"curly",
+  strengths:["Energetic and enthusiastic","Builds things with his hands","A natural leader on the playground"],
+  gap:"Thirty minutes of sitting and reading is a long stretch, and the task gives him no moving parts.",
+  fit:{E1:[2,"A topic he chooses makes it easier to stay on task."],E2:[2,"Working with others keeps him engaged and gives him a role."],E3:[1,"A challenge can help if it is hands-on."],
+   R1:[0,"Audio would add another thing to sit through."],R2:[1,"Pictures help a little."],R3:[3,"Short chunks with clear stopping points match his attention span."],
+   A1:[1,"Drawing or recording helps a little."],A2:[2,"Starters cut the time he spends staring at a blank page."],A3:[3,"Standing and moving lets him work with his energy instead of against it."]}}
+];
+const NEED=7, MAX=4;
+const pick={maya:new Set(),jordan:new Set(),priya:new Set(),marcus:new Set()};
+let cur="maya";
+
+function hair(k,x,y){ // head center x,y r=14
+  const c=k.hair;
+  if(k.style==="long") return `<path d="M${x-16} ${y+22}V${y}a16 16 0 0 1 32 0v${22}h-6V${y-2}a10 10 0 0 0-20 0v${24}z" fill="${c}"/>`;
+  if(k.style==="pony") return `<path d="M${x-15} ${y+2}a15 15 0 0 1 30 0c-6-6-24-6-30 0z" fill="${c}"/><path d="M${x+14} ${y-6}c14 0 14 20 6 26" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round"/>`;
+  if(k.style==="curly") return `<g fill="${c}"><circle cx="${x-10}" cy="${y-8}" r="8"/><circle cx="${x}" cy="${y-12}" r="9"/><circle cx="${x+10}" cy="${y-8}" r="8"/></g>`;
+  return `<path d="M${x-15} ${y+1}a15 15 0 0 1 30 0c-8-5-22-5-30 0z" fill="${c}"/>`;
+}
+function avatar(k,s){ // returns svg group at 0..100 box scaled by s
+  const x=50,y=40;
+  return `<g transform="scale(${s})"><path d="M18 100v-22a32 32 0 0 1 64 0v22z" fill="${k.shirt}"/><circle cx="${x}" cy="${y}" r="15" fill="${k.skin}"/>${hair(k,x,y)}<circle cx="${x-5}" cy="${y+2}" r="1.8" fill="#2a2422"/><circle cx="${x+5}" cy="${y+2}" r="1.8" fill="#2a2422"/><path d="M${x-4} ${y+8}q4 3 8 0" stroke="#2a2422" stroke-width="1.6" fill="none" stroke-linecap="round"/>${k.glasses?`<g fill="none" stroke="#2a2422" stroke-width="1.5"><circle cx="${x-6}" cy="${y+2}" r="5"/><circle cx="${x+6}" cy="${y+2}" r="5"/><path d="M${x-1} ${y+2}h2"/></g>`:''}</g>`;
+}
+function pts(id){ return [...pick[id]].reduce((a,c)=>a+KIDS.find(k=>k.id===id).fit[c][0],0); }
+function pct(id){ return Math.min(100,Math.round(pts(id)/NEED*100)); }
+
+function heroArt(){
+  let s='<circle cx="210" cy="24" r="0" fill="none"/>';
+  s+='<rect x="0" y="130" width="420" height="40" fill="#e8d8c8"/>';
+  const cols=["#b8830f","#1f6f78","#c63840","#6a4c93"];
+  KIDS.forEach((k,i)=>{const x=20+i*100;
+    s+=`<g transform="translate(${x},14)"><circle cx="40" cy="62" r="52" fill="${cols[i]}" opacity=".18"/>${avatar(k,.8)}<rect x="4" y="86" width="72" height="10" rx="3" fill="#b5834d"/><rect x="12" y="96" width="5" height="26" fill="#7a5428"/><rect x="63" y="96" width="5" height="26" fill="#7a5428"/></g>`;});
+  $('#heroart').innerHTML=s;
+}
+
+function renderTabs(){
+  $('#tabs').innerHTML=KIDS.map(k=>`<button class="tab" role="tab" aria-selected="${k.id===cur}" data-id="${k.id}"><svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="#fbf1e6"/>${avatar(k,1)}</svg><b>${k.name}</b><small>${k.tag}</small><span class="mini"><i style="width:${pct(k.id)}%"></i></span></button>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{cur=b.dataset.id;render();}));
+}
+
+function ring(p,color){
+  const r=84,c=2*Math.PI*r;
+  return `<circle cx="120" cy="108" r="${r}" fill="none" stroke="#eadfd2" stroke-width="12"/><circle cx="120" cy="108" r="${r}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round" ${p<=0?'opacity="0"':''} stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 120 108)" style="transition:stroke-dasharray .5s"/>`;
+}
+
+function renderWork(){
+  const k=KIDS.find(x=>x.id===cur), p=pct(k.id), set=pick[k.id], left=MAX-set.size;
+  const col = p>=100? "#25704a" : (p>=55? "#b8830f" : "#c63840");
+  const state = p>=100? "The lesson works for "+k.name : (set.size? "Getting closer" : "The lesson as written");
+  const groups=Object.keys(PRIN).map(g=>`<div class="group" style="--c:${PRIN[g].color}"><h4>${PRIN[g].name}: ${PRIN[g].ask}</h4><div class="chips">${CHIPS.filter(c=>c.p===g).map(c=>{
+    const on=set.has(c.id);
+    return `<button class="chip" style="--c:${PRIN[g].color}" data-c="${c.id}" aria-pressed="${on}" ${(!on&&left===0)?'disabled':''}><svg viewBox="0 0 24 24" aria-hidden="true">${IC[c.ic]}</svg>${c.label}</button>`}).join('')}</div></div>`).join('');
+  const notes=[...set].map(id=>{const [w,t]=k.fit[id];return `<div class="note s${w}"><b>${chipById[id].label}.</b> ${t}</div>`}).join('');
+  $('#work').innerHTML=`<div class="work">
+    <div class="who"><svg viewBox="0 0 240 230" role="img" aria-label="${k.name} at a desk with a progress ring showing ${p} percent access to the lesson">${ring(p,col)}<g transform="translate(40,30) scale(1.6)">${avatar(k,1)}</g><rect x="50" y="170" width="140" height="14" rx="4" fill="#b5834d"/></svg>
+      <p class="pct" style="color:${col}">${p}%</p><p class="state">${state}</p></div>
+    <div class="info"><h2>${k.name} ${p>=100?'<span class="done">Ready</span>':''}</h2><p class="muted" style="margin-top:0">${k.tag}</p>
+      <h3>Strengths to build on</h3><ul>${k.strengths.map(s=>`<li>${s}</li>`).join('')}</ul>
+      <div class="gap"><b>What gets in the way:</b> ${k.gap}</div>
+      <p class="budget">${left===0?'No supports left. Remove one to try another.':`Supports left for ${k.name}: ${left} of ${MAX}`}</p>
+      ${groups}
+      <div class="notes">${notes||'<p class="muted">Pick a support to see how it lands for '+k.name+'.</p>'}</div>
+    </div></div>`;
+  document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.c; if(set.has(id)) set.delete(id); else if(set.size<MAX) set.add(id); render();
+    const nb=document.querySelector(`.chip[data-c="${id}"]`); if(nb) nb.focus();
+  }));
+}
+
+function renderFinal(){
+  const all=KIDS.every(k=>pct(k.id)>=100);
+  const f=$('#final');
+  if(!all){ f.innerHTML=''; return; }
+  const cnt={}; CHIPS.forEach(c=>cnt[c.id]=0);
+  KIDS.forEach(k=>pick[k.id].forEach(id=>cnt[id]++));
+  const rows=CHIPS.filter(c=>cnt[c.id]>0).sort((a,b)=>cnt[b.id]-cnt[a.id]);
+  const shared=rows.filter(c=>cnt[c.id]>=2).map(c=>c.label.toLowerCase());
+  f.innerHTML=`<div class="card"><h2>The lesson works for all four</h2>
+    <p>You adjusted the lesson for each learner. That is differentiation. Now look at which supports you chose again and again.</p>
+    <div class="tally">${rows.map(c=>`<div class="t"><span>${c.label}</span><div class="track"><div class="fill" style="--c:${PRIN[c.p].color};width:${cnt[c.id]/4*100}%"></div></div><span>${cnt[c.id]} of 4</span></div>`).join('')}</div>
+    <p>${shared.length? `Supports you picked for two or more learners, such as ${shared.slice(0,3).join(', ')}, are good candidates to build into the lesson for everyone from the start. That is Universal Design for Learning: reduce barriers up front, so no student has to ask.`:'Each learner needed different supports. Think about which ones could still be offered to the whole class as options.'}</p>
+    <p><button class="btn" id="reset">Start over</button></p></div>`;
+  $('#reset').addEventListener('click',()=>{Object.values(pick).forEach(s=>s.clear());cur="maya";render();window.scrollTo({top:0,behavior:'smooth'});});
+}
+function render(){renderTabs();renderWork();renderFinal();}
+heroArt();render();
+</script>
+</body>
+</html>

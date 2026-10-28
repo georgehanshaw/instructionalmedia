@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Right tool, right moment. Week 8 Assessment in the Classroom</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--ink:#2a2422;--muted:#645b56;--paper:#f6f3ef;--card:#ffffff;--line:#e2dcd5;--warm:#edebe8;--red:#c63840;--red-text:#a8353a;--teal:#1f6f78;--teal-text:#1a5d65;--gold:#d99a1f;--gold-text:#8a5d06;--ok:#25704a;--ok-bg:#e4f3ea;--bad:#a8261e;--bad-bg:#fbe9e7;--focus:#1a5fb4;--panel:#fbf1e6;--serif:"Literata",Georgia,"Times New Roman",serif;--sans:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#f2ece7;--muted:#b9aea6;--paper:#1c1816;--card:#292321;--line:#4a3f39;--warm:#352d2a;--red-text:#ff9ea2;--teal-text:#74c7cf;--gold-text:#f0c25e;--ok:#8fdcaa;--ok-bg:#1f3a2a;--bad:#ffa79e;--bad-bg:#43231f;--focus:#8ab8ff;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.55 var(--sans)}
+.wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:.5em 0}
+.rule{width:100px;height:6px;border-radius:5px;background:var(--red);margin-bottom:.9rem}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:center;margin-bottom:1.75rem}
+.lede{font-size:1.15rem;max-width:34em;margin-top:.8rem}
+.src{color:var(--muted);font-size:.95rem;margin-top:.6rem}
+.hero-art{background:var(--panel);border-radius:20px;padding:.75rem;border:1px solid var(--line)}
+.hero-art svg{display:block;width:100%;height:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem}
+.btn{font:700 1rem var(--sans);padding:.6rem 1.15rem;border-radius:999px;border:2px solid var(--red);background:transparent;color:var(--red-text);cursor:pointer}
+.btn:hover{background:var(--warm)}
+.btn.primary{background:var(--red);color:#fff}
+.btn.primary:hover{background:var(--red-text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.foot{margin-top:2rem;color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+:root{--dx:#1f6f78;--fm:#b8830f;--sm:#c63840}
+.seg{display:inline-flex;border:2px solid var(--red);border-radius:999px;overflow:hidden;margin-bottom:1.25rem}
+.seg button{font:700 1rem var(--sans);padding:.55rem 1.3rem;border:0;background:transparent;color:var(--red-text);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--red);color:#fff}
+.road{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:.5rem;margin-bottom:1rem}
+.road svg{display:block;width:100%;height:auto}
+.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.zone{background:var(--card);border:3px dashed var(--c);border-radius:16px;padding:.8rem;min-height:210px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:.4rem}
+.zone:hover,.zone.over{background:var(--warm)}
+.zone h3{color:var(--c-text);font-size:1.05rem}
+.zone .when{font-size:.88rem;color:var(--muted);margin:0}
+.zone .slot{display:flex;flex-direction:column;gap:.4rem;margin-top:.3rem}
+.placed{background:var(--ok-bg);border:2px solid var(--ok);border-radius:10px;padding:.35rem .6rem;font-size:.88rem;line-height:1.35}
+.deck{margin:1rem 0}
+.deckhead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;align-items:baseline}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin-top:.5rem}
+.acard{background:var(--card);border:2px solid var(--line);border-left:6px solid var(--red);border-radius:12px;padding:.6rem .75rem;font:inherit;color:var(--ink);text-align:left;cursor:grab;font-size:.95rem;line-height:1.4}
+.acard[aria-pressed="true"]{background:var(--warm);border-color:var(--red);box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 30%,transparent)}
+.acard.shake{animation:shake .35s;border-color:var(--bad)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.status{min-height:3.2em;border-radius:12px;padding:.6rem .9rem;background:var(--card);border:1px solid var(--line);margin:.8rem 0}
+.status.bad{background:var(--bad-bg);border-color:var(--bad)}
+.status.good{background:var(--ok-bg);border-color:var(--ok)}
+.case{font:500 1.15rem/1.5 var(--serif);margin:.4rem 0 1rem}
+.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.tg{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:.5rem;font:inherit;color:var(--ink);cursor:pointer;text-align:center}
+.tg:hover:not(:disabled){background:var(--warm)}
+.tg svg{display:block;width:100%;height:auto;background:var(--panel);border-radius:10px}
+.tg span{display:block;font-size:.88rem;margin-top:.35rem;line-height:1.3}
+.tg.wrong{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+.tg.right{border-color:var(--ok);background:var(--ok-bg)}
+.key{display:flex;gap:1rem;flex-wrap:wrap;font-size:.92rem;color:var(--muted);margin:.6rem 0}
+.key i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:.3rem}
+.end h2{margin-bottom:.4rem}
+@media(max-width:820px){.zones{grid-template-columns:1fr}.zone{min-height:0}.targets{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="hero">
+  <div>
+    <div class="rule"></div>
+    <h1>Right tool, right moment</h1>
+    <p class="lede">Assessment is more than a grade at the end. Place each check where it belongs in a unit, then judge whether an assessment hits what it should.</p>
+    <p class="src">Week 8 Deep Dive: Assessment in the Classroom</p>
+  </div>
+  <div class="hero-art" role="img" aria-label="A winding path from a start flag, past a magnifying glass and a checklist, to a finish line with a trophy.">
+    <svg viewBox="0 0 420 170" aria-hidden="true">
+      <path d="M20 130C80 130 90 60 150 60S230 130 290 120 340 50 395 50" fill="none" stroke="#e0cdb5" stroke-width="22" stroke-linecap="round"/>
+      <path d="M20 130C80 130 90 60 150 60S230 130 290 120 340 50 395 50" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/>
+      <g transform="translate(14,84)"><rect x="0" y="0" width="4" height="44" fill="#7a5428"/><path d="M4 2h26l-6 8 6 8H4z" fill="#1f6f78"/></g>
+      <g transform="translate(120,14)"><circle cx="16" cy="16" r="14" fill="#fff" stroke="#1f6f78" stroke-width="5"/><path d="M26 26l16 16" stroke="#1f6f78" stroke-width="6" stroke-linecap="round"/></g>
+      <g transform="translate(236,120)"><rect x="0" y="0" width="40" height="46" rx="5" fill="#fff" stroke="#b8830f" stroke-width="3"/><path d="M8 14l4 4 7-8M8 30l4 4 7-8" stroke="#b8830f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 15h10M24 31h10" stroke="#bbb" stroke-width="3" stroke-linecap="round"/></g>
+      <g transform="translate(358,4)"><path d="M6 0h28v14c0 10-6 16-14 16S6 24 6 14z" fill="#e0a21f" stroke="#b8830f" stroke-width="2"/><rect x="16" y="30" width="8" height="8" fill="#b8830f"/><rect x="8" y="38" width="24" height="6" rx="2" fill="#7a5428"/></g>
+    </svg>
+  </div>
+</header>
+
+<div class="seg" role="tablist" aria-label="Activities">
+  <button role="tab" id="t1" aria-selected="true" aria-controls="p1">Match to the moment</button>
+  <button role="tab" id="t2" aria-selected="false" aria-controls="p2">Hit the target</button>
+</div>
+
+<section id="p1" role="tabpanel" aria-labelledby="t1">
+  <div class="road" role="img" aria-label="A unit timeline from start to finish with three stages: before, during, and after learning.">
+    <svg viewBox="0 0 900 100" aria-hidden="true">
+      <path d="M30 60C150 60 170 24 300 24S450 66 600 52 760 20 870 30" fill="none" stroke="#e0cdb5" stroke-width="20" stroke-linecap="round"/>
+      <path d="M30 60C150 60 170 24 300 24S450 66 600 52 760 20 870 30" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/>
+      <circle cx="30" cy="60" r="12" fill="#1f6f78"/><circle cx="450" cy="52" r="12" fill="#b8830f"/><circle cx="870" cy="30" r="12" fill="#c63840"/>
+      <text x="18" y="92" text-anchor="start" font-size="14" font-weight="700" fill="#4a3a2c" font-family="Nunito Sans,sans-serif">Unit starts</text>
+      <text x="450" y="92" text-anchor="middle" font-size="14" font-weight="700" fill="#4a3a2c" font-family="Nunito Sans,sans-serif">Learning in progress</text>
+      <text x="866" y="62" text-anchor="end" font-size="14" font-weight="700" fill="#4a3a2c" font-family="Nunito Sans,sans-serif">Unit ends</text>
+    </svg>
+  </div>
+  <div class="zones" id="zones"></div>
+  <div class="status" id="status" aria-live="polite">Choose an assessment, then choose where it belongs. You can also drag it into a stage.</div>
+  <div class="deck"><div class="deckhead"><h2 style="font-size:1.15rem">Assessments to place</h2><span class="muted" id="left"></span></div><div class="cards" id="cards"></div></div>
+  <div id="done1"></div>
+</section>
+
+<section id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <p class="muted" style="margin-top:0">Good assessments are valid, reliable, and fair. Read each case, then choose the target that matches how its results would look.</p>
+  <div class="key" aria-hidden="true"><span>The center is what you meant to measure.</span><span>Each dot is one result.</span></div>
+  <div id="case"></div>
+</section>
+
+<p class="foot">Built from the Week 8 Deep Dive in EDUC 300: diagnostic, formative, and summative assessment, and quality and fairness (validity and reliability).</p>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const ZONES=[
+ {k:"D",name:"Diagnostic",when:"Before learning",color:"#1f6f78",text:"#1a5d65",desc:"Shows what students already know."},
+ {k:"F",name:"Formative",when:"During learning",color:"#b8830f",text:"#8a5d06",desc:"Monitors learning and guides your next move."},
+ {k:"S",name:"Summative",when:"After learning",color:"#c63840",text:"#a8353a",desc:"Evaluates learning at the end of a unit or course."}
+];
+const CARDS=[
+ {t:"A short concept map on the water cycle, on day one of the unit",a:"D",why:"It reveals what students already know before you teach, so you can plan from there."},
+ {t:"An exit ticket: “Name one thing you are still unsure about”",a:"F",why:"A quick, low-stakes check that tells you what to adjust tomorrow."},
+ {t:"An end-of-unit project and portfolio",a:"S",why:"Projects and portfolios show what students have learned at the close of a unit."},
+ {t:"A pre-unit quiz on fractions, not graded",a:"D",why:"It finds starting points before instruction, rather than judging the unit."},
+ {t:"Walking around with a checklist during group work",a:"F",why:"Observation in the moment lets you give timely, specific feedback."},
+ {t:"The state test aligned to the Common Core",a:"S",why:"State tests, like Smarter Balanced, measure progress toward standards at a larger scale."},
+ {t:"A thumbs-up or thumbs-down check halfway through a lesson",a:"F",why:"Frequent, low-stakes checks help you adjust quickly."},
+ {t:"The unit test on the last day",a:"S",why:"It evaluates what students learned across the whole unit."}
+];
+const state={placed:{},sel:null,miss:0};
+
+function renderZones(){
+  $('#zones').innerHTML=ZONES.map(z=>`<button class="zone" data-z="${z.k}" style="--c:${z.color};--c-text:${z.text}" aria-label="Place in ${z.name}, ${z.when}">
+    <h3>${z.name}</h3><p class="when">${z.when}. ${z.desc}</p>
+    <div class="slot">${CARDS.map((c,i)=>state.placed[i]&&c.a===z.k?`<div class="placed">${c.t}</div>`:'').join('')}</div></button>`).join('');
+  document.querySelectorAll('.zone').forEach(b=>{
+    b.addEventListener('click',()=>tryPlace(b.dataset.z));
+    b.addEventListener('dragover',e=>{e.preventDefault();b.classList.add('over')});
+    b.addEventListener('dragleave',()=>b.classList.remove('over'));
+    b.addEventListener('drop',e=>{e.preventDefault();b.classList.remove('over');const i=e.dataTransfer.getData('text/plain');if(i!=='')state.sel=+i;tryPlace(b.dataset.z)});
+  });
+}
+function renderCards(){
+  const rest=CARDS.map((c,i)=>({c,i})).filter(o=>!state.placed[o.i]);
+  $('#left').textContent=rest.length?`${rest.length} left`:'All placed';
+  $('#cards').innerHTML=rest.map(o=>`<button class="acard" draggable="true" data-i="${o.i}" aria-pressed="${state.sel===o.i}">${o.c.t}</button>`).join('');
+  document.querySelectorAll('.acard').forEach(b=>{
+    b.addEventListener('click',()=>{const i=+b.dataset.i;state.sel=state.sel===i?null:i;renderCards();const nb=document.querySelector(`.acard[data-i="${i}"]`);if(nb)nb.focus();
+      setStatus(state.sel===null?'Choose an assessment, then choose where it belongs.':'Now choose a stage: diagnostic, formative, or summative.','');});
+    b.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',b.dataset.i);state.sel=+b.dataset.i;});
+  });
+  if(!rest.length) renderDone();
+}
+function setStatus(t,cls){const s=$('#status');s.textContent=t;s.className='status '+cls}
+function tryPlace(zk){
+  if(state.sel===null){setStatus('Pick an assessment first, then choose its stage.','');return}
+  const i=state.sel,c=CARDS[i],z=ZONES.find(z=>z.k===zk);
+  if(c.a===zk){
+    state.placed[i]=true;state.sel=null;
+    setStatus(`Yes, ${z.name.toLowerCase()}. ${c.why}`,'good');renderZones();renderCards();
+  } else {
+    state.miss++;
+    const card=document.querySelector(`.acard[data-i="${i}"]`);if(card){card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),400)}
+    const right=ZONES.find(z=>z.k===c.a);
+    const hint={D:'Ask when it happens. Does it come before teaching begins?',F:'Ask whether the result changes what you do next, while students are still learning.',S:'Ask whether it judges what students learned at the end.'}[c.a];
+    setStatus(`Not ${z.name.toLowerCase()}. ${hint}`,'bad');
+  }
+}
+function renderDone(){
+  const msg=state.miss===0?'You placed every assessment correctly on the first try.':`You placed all eight, with ${state.miss} slip${state.miss>1?'s':''} along the way.`;
+  $('#done1').innerHTML=`<div class="card end"><h2>The unit has a full set of checks</h2><p>${msg} Notice the pattern: diagnostic checks set the starting point, formative checks steer the middle, and summative checks look back. Learning drives assessment and, in turn, assessment drives learning.</p><p><button class="btn primary" id="go2">Try the quality targets</button> <button class="btn" id="redo1">Start over</button></p></div>`;
+  $('#go2').addEventListener('click',()=>showTab(2));
+  $('#redo1').addEventListener('click',()=>{state.placed={};state.sel=null;state.miss=0;$('#done1').innerHTML='';setStatus('Choose an assessment, then choose where it belongs. You can also drag it into a stage.','');renderZones();renderCards();});
+}
+
+/* quality targets */
+const SHOTS={
+ tightOff:[[34,-22],[40,-26],[30,-28],[38,-18],[44,-22],[34,-30],[28,-22],[42,-30]],
+ spreadCenter:[[-34,18],[30,-30],[-10,36],[26,26],[-30,-26],[8,-38],[38,6],[-38,-4]],
+ tightCenter:[[2,3],[-4,-2],[5,-5],[-2,6],[0,-1],[-5,4],[4,2],[-1,-6]],
+ spreadOff:[[28,-8],[48,-40],[10,-32],[44,20],[20,-48],[50,-4],[0,-14],[36,-36]]
+};
+const T=[
+ {k:"tightOff",label:"Tight cluster, off center"},
+ {k:"spreadCenter",label:"Spread around the center"},
+ {k:"tightCenter",label:"Tight cluster at the center"},
+ {k:"spreadOff",label:"Spread out and off center"}
+];
+const CASES=[
+ {t:"A multiplication quiz has directions written in dense, hard-to-read language. Students who know their facts keep missing items because of the reading. Most students’ scores land in nearly the same place every time they take it.",a:"tightOff",
+  why:"The results are consistent, so the quiz is reliable. But they are consistently measuring reading difficulty, not multiplication. That means it is not valid for what you meant to measure."},
+ {t:"Three teachers grade the same set of essays, each with a personal rubric. One student’s essay gets a 62, a 78, and a 91. Averaged over many essays, the scores are about right.",a:"spreadCenter",
+  why:"On average the scores aim at the right thing, but the results swing widely from grader to grader. The scoring is not reliable. A shared rubric would tighten the cluster."},
+ {t:"A unit test is built from the unit objectives, uses clear questions, has a shared scoring guide, and gives similar results when students take a parallel version.",a:"tightCenter",
+  why:"It measures what it claims to measure and does so consistently. That is the target to aim for: valid and reliable."},
+ {t:"A quiz asks about topics that were never taught, uses confusing wording, and is graded differently each time it is used.",a:"spreadOff",
+  why:"It misses what you meant to measure, and the results are inconsistent, too. It is neither valid nor reliable."}
+];
+let ci=0,score=0,tried=false;
+function targetSVG(k){
+  let s='<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#fff" stroke="#4a3a2c" stroke-width="2"/><circle cx="60" cy="60" r="42" fill="#e9eef0" stroke="#4a3a2c" stroke-width="1.5"/><circle cx="60" cy="60" r="28" fill="#fff" stroke="#4a3a2c" stroke-width="1.5"/><circle cx="60" cy="60" r="14" fill="#c63840" stroke="#4a3a2c" stroke-width="1.5"/>';
+  SHOTS[k].forEach(p=>{s+=`<circle cx="${60+p[0]}" cy="${60+p[1]}" r="4.2" fill="#1f6f78" stroke="#fff" stroke-width="1.5"/>`});
+  return s+'</svg>';
+}
+function renderCase(){
+  const el=$('#case');
+  if(ci>=CASES.length){
+    el.innerHTML=`<div class="card end"><h2>You matched ${score} of ${CASES.length} on the first try</h2><p>Valid means the assessment measures what it claims to measure. Reliable means the results are consistent. Fair means every student has a real chance to show what they know. Accommodations and varied formats change <em>how</em> students show their learning, not <em>what</em> is being measured.</p><p><button class="btn primary" id="again2">Try the targets again</button></p></div>`;
+    $('#again2').addEventListener('click',()=>{ci=0;score=0;renderCase();});return;
+  }
+  const c=CASES[ci];tried=false;
+  el.innerHTML=`<p class="muted" style="margin-bottom:0">Case ${ci+1} of ${CASES.length}</p><p class="case">${c.t}</p>
+   <div class="targets" role="group" aria-label="Choose the target that matches">${T.map(t=>`<button class="tg" data-k="${t.k}">${targetSVG(t.k)}<span>${t.label}</span></button>`).join('')}</div>
+   <div id="tfb" aria-live="polite"></div>`;
+  document.querySelectorAll('.tg').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.k,fb=$('#tfb');
+    if(k===c.a){
+      if(!tried) score++;
+      document.querySelectorAll('.tg').forEach(x=>x.disabled=true);b.classList.remove('wrong');b.classList.add('right');
+      fb.innerHTML=`<div class="status good" style="margin-top:1rem"><p style="margin:0"><b>${T.find(t=>t.k===k).label}.</b> ${c.why}</p><p style="margin:.7rem 0 0"><button class="btn primary" id="nx">${ci===CASES.length-1?'See results':'Next case'}</button></p></div>`;
+      $('#nx').addEventListener('click',()=>{ci++;renderCase();});$('#nx').focus();
+    } else {
+      tried=true;b.classList.add('wrong');b.disabled=true;
+      fb.innerHTML=`<div class="status bad" style="margin-top:1rem">Not that one. Ask two questions: are the results clustered together (consistent)? And is the cluster on the center (measuring the right thing)?</div>`;
+    }
+  }));
+}
+function showTab(n){
+  [1,2].forEach(i=>{$('#t'+i).setAttribute('aria-selected',i===n);$('#p'+i).hidden=i!==n});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#t1').addEventListener('click',()=>showTab(1));$('#t2').addEventListener('click',()=>showTab(2));
+renderZones();renderCards();renderCase();
+</script>
+</body>
+</html>
