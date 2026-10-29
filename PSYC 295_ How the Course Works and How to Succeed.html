@@ -438,5 +438,19 @@ $("#helpList").innerHTML = HELP.map(h=>`<div class="card"><h3>${h.t}</h3><p>${h.
 
 setWeek(0);
 </script>
-</body>
+<script>
+(function () {
+  function sendHeight() {
+    var h = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+      JSON.stringify({ subject: 'lti.frameResize', height: h }),
+      '*'
+    );
+  }
+  window.addEventListener('load', sendHeight);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
+})();
+</script></body>
 </html>
