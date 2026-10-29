@@ -362,5 +362,19 @@ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=
 $('#restart').addEventListener('click',()=>{S.seen.clear();S.done.clear();S.wk=0;S.obj=0;S.sit=0;save();house();renderObj();renderHelp();renderCheck();showTab(0);});
 house();renderObj();renderWeeks();renderHelp();renderCheck();
 </script>
-</body>
+<script>
+(function () {
+  function sendHeight() {
+    var h = document.documentElement.scrollHeight;
+    window.parent.postMessage(
+      JSON.stringify({ subject: 'lti.frameResize', height: h }),
+      '*'
+    );
+  }
+  window.addEventListener('load', sendHeight);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
+})();
+</script></body>
 </html>
