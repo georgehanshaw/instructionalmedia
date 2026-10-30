@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Holland's Hexagon and Super's Rainbow | CCSD 573 Week 3</title>
+<meta name="description" content="Interactive RIASEC hexagon code builder and Super life-career rainbow explorer for CCSD 573 Week 3.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brick:#A8353A; --deep:#7C2429; --black:#000; --ink:#2A2422; --muted:#5F5650;
+  --paper:#FFFFFF; --cream:#F5F2EF; --line:#E3DDD7; --tint:#F6E9EA;
+  --good:#2F6B4F; --good-bg:#E8F2EC; --mid:#8A5A00; --mid-bg:#FBF1DC; --bad:#9B2C2C; --bad-bg:#F8E6E6;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'Public Sans', Arial, Helvetica, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);overflow-x:hidden}
+html.embedded,html.embedded body{overflow-y:hidden}
+body{font-family:var(--sans);font-size:17px;line-height:1.6}
+#app{max-width:900px;margin:0 auto;padding:0 20px 28px}
+.bar{display:flex;height:12px;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:22px}
+.bar span:first-child{flex:1;background:var(--brick)} .bar span:last-child{width:72px;background:var(--black)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,3.6vw,2.35rem);line-height:1.15;color:var(--deep);margin:0 0 8px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-weight:600;font-size:1.45rem;line-height:1.25;color:var(--deep);margin:34px 0 8px}
+h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:var(--deep);margin:18px 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{font-size:1.08rem;color:var(--ink)}
+.course{font-size:.95rem;color:var(--muted);margin:0 0 14px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin-bottom:6px}
+.hero svg{width:100%;height:auto;display:block}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero .art{max-width:360px}}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+.rule{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:36px 0 0}
+.rule span:first-child{width:40px;background:var(--black)} .rule span:last-child{flex:1;background:var(--brick)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brick);color:#fff;border:2px solid var(--brick);border-radius:999px;padding:9px 20px;font-weight:600}
+.btn:hover{background:var(--deep);border-color:var(--deep)}
+.btn.ghost{background:transparent;color:var(--deep);border-color:var(--deep)}
+.btn.ghost:hover{background:var(--tint)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid #1F5FBF;outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.panel h3:first-child{margin-top:0}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;color:var(--ink)}
+.choice:hover{border-color:var(--brick)}
+.choice[aria-pressed="true"]{border-color:var(--deep);background:var(--tint)}
+.fb{border-radius:10px;padding:12px 16px;margin:10px 0;border-left:6px solid}
+.fb.good{background:var(--good-bg);border-color:var(--good)} .fb.mid{background:var(--mid-bg);border-color:var(--mid)} .fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb strong{display:block;margin-bottom:2px}
+.fb.good strong{color:var(--good)} .fb.mid strong{color:var(--mid)} .fb.bad strong{color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:600;background:var(--tint);color:var(--deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.hexwrap{display:grid;grid-template-columns:1.15fr 1fr;gap:20px;align-items:start}
+@media (max-width:760px){.hexwrap{grid-template-columns:1fr}}
+.hexsvg{width:100%;height:auto;display:block;overflow:visible}
+.hexline{fill:#F5F2EF;stroke:#2A2422;stroke-width:2}
+.spoke{stroke:#E3DDD7;stroke-width:2;stroke-dasharray:4 6}
+.codepath{fill:none;stroke:#A8353A;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.node{cursor:pointer;outline:none}
+.node circle{fill:#fff;stroke:#7C2429;stroke-width:3;transition:fill .2s}
+.node .ltr{font-family:var(--serif);font-weight:700;font-size:32px;fill:#7C2429;pointer-events:none}
+.node:hover circle{fill:#F6E9EA}
+.node[aria-pressed="true"] circle{fill:#7C2429}
+.node[aria-pressed="true"] .ltr{fill:#fff}
+.node:focus-visible circle{stroke:#1F5FBF;stroke-width:5}
+.bdg circle{fill:#000;stroke:#fff;stroke-width:2}.badge{font-family:var(--sans);font-weight:700;font-size:14px;fill:#fff}
+.nm{font-family:var(--sans);font-size:15px;fill:#2A2422;font-weight:600}
+.codebox{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid #000;padding-bottom:8px;margin-bottom:8px}
+.codebox .lab{color:var(--muted);font-size:.95rem}
+.code{font-family:var(--serif);font-size:2.6rem;font-weight:700;color:var(--deep);letter-spacing:.12em}
+.typecard{background:#fff}
+.small{font-size:.92rem;color:var(--muted)}
+.envs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.envs button{background:#fff;border:2px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);text-align:left}
+.envs button:hover{border-color:var(--brick)}
+.envs button[aria-pressed="true"]{border-color:var(--deep);background:var(--tint)}
+.envs b{font-family:var(--serif);color:var(--deep);margin-left:6px}
+.rainwrap{max-width:640px;margin:0 auto}
+.rainsvg{width:100%;height:auto;display:block}
+.track{fill:none;stroke:#F1ECE7;stroke-width:20}
+.role{fill:none;stroke-width:20;stroke-linecap:butt;transition:opacity .25s}
+.r0{stroke:#7C2429}.r1{stroke:#A8353A}.r2{stroke:#C86A6E}.r3{stroke:#2A2422}.r4{stroke:#8C7E74}.r5{stroke:#D9A5A8}
+.role.dim{opacity:.22}
+.legend{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;padding:0;margin:0 0 10px;font-size:.92rem}.legend li{display:flex;align-items:center;gap:6px}.sw{width:22px;height:12px;border-radius:2px;display:inline-block}.sw.r0{background:#7C2429}.sw.r1{background:#A8353A}.sw.r2{background:#C86A6E}.sw.r3{background:#2A2422}.sw.r4{background:#8C7E74}.sw.r5{background:#D9A5A8}.center{text-align:center;margin:6px auto 4px}.panel h3:first-child{margin-top:0}
+.tick{stroke:#5F5650;stroke-width:2}.tk{font-family:var(--sans);font-size:12px;fill:#5F5650}
+.ageline{stroke:#000;stroke-width:3}.agedot{fill:#000}
+.agelab{display:block;margin:6px 0 2px}
+input[type=range]{width:100%;accent-color:#A8353A;height:28px}
+.people{margin:10px 0}
+.people .btn{font-size:.95rem;padding:7px 14px}
+.stagecard{background:#fff;border-top:6px solid var(--brick)}
+.note{background:var(--cream);border-radius:8px;padding:10px 12px;margin:0}
+</style>
+</head>
+<body>
+<main id="app">
+<div class="bar" aria-hidden="true"><span></span><span></span></div>
+
+<header>
+  <p class="course">CCSD 573, Week 3</p>
+  <h1>Holland's hexagon and Super's rainbow</h1>
+  <p class="lede">Two theories, two pictures. Holland asks what fits; Super asks where you are in your life story.
+  Use both diagrams below, then try them out with your own Strong Interest Inventory results or your case study student's.</p>
+</header>
+
+<section aria-labelledby="hxH">
+  <h2 id="hxH">Build a Holland code</h2>
+  <p>Select up to three types in order, from most to least like you (or your student). Select a type again to remove it.
+  Use Tab and Enter or Space to choose with a keyboard.</p>
+  <div class="hexwrap">
+    <div><svg viewBox="-40 0 500 400" class="hexsvg" aria-labelledby="hexT hexD" role="group">
+<title id="hexT">Holland's RIASEC hexagon</title>
+<desc id="hexD">Six types arranged in a hexagon: Realistic, Investigative, Artistic, Social, Enterprising, Conventional. Adjacent types are most similar; opposite types are least similar. Select up to three types in order to build a Holland code.</desc>
+<polygon points="140.0,78.8 280.0,78.8 350.0,200.0 280.0,321.2 140.0,321.2 70.0,200.0" class="hexline"/>
+<g aria-hidden="true"><line x1="140.0" y1="78.8" x2="280.0" y2="321.2" class="spoke"/><line x1="280.0" y1="78.8" x2="140.0" y2="321.2" class="spoke"/><line x1="350.0" y1="200.0" x2="70.0" y2="200.0" class="spoke"/></g>
+<path id="codePath" class="codepath" d=""/>
+<g class="node" data-k="0" tabindex="0" role="button" aria-pressed="false" aria-label="Realistic"><circle cx="140.0" cy="78.8" r="36"/><text class="ltr" x="140.0" y="89.8" text-anchor="middle">R</text><g class="bdg" id="bg0" style="display:none"><circle cx="168.0" cy="50.8" r="12"/><text class="badge" id="bd0" x="168.0" y="55.8" text-anchor="middle"></text></g></g><text class="nm" x="109.0" y="30.1" text-anchor="end" aria-hidden="true">Realistic</text><g class="node" data-k="1" tabindex="0" role="button" aria-pressed="false" aria-label="Investigative"><circle cx="280.0" cy="78.8" r="36"/><text class="ltr" x="280.0" y="89.8" text-anchor="middle">I</text><g class="bdg" id="bg1" style="display:none"><circle cx="308.0" cy="50.8" r="12"/><text class="badge" id="bd1" x="308.0" y="55.8" text-anchor="middle"></text></g></g><text class="nm" x="311.0" y="30.1" text-anchor="start" aria-hidden="true">Investigative</text><g class="node" data-k="2" tabindex="0" role="button" aria-pressed="false" aria-label="Artistic"><circle cx="350.0" cy="200.0" r="36"/><text class="ltr" x="350.0" y="211.0" text-anchor="middle">A</text><g class="bdg" id="bg2" style="display:none"><circle cx="378.0" cy="172.0" r="12"/><text class="badge" id="bd2" x="378.0" y="177.0" text-anchor="middle"></text></g></g><text class="nm" x="412.0" y="205.0" text-anchor="start" aria-hidden="true">Artistic</text><g class="node" data-k="3" tabindex="0" role="button" aria-pressed="false" aria-label="Social"><circle cx="280.0" cy="321.2" r="36"/><text class="ltr" x="280.0" y="332.2" text-anchor="middle">S</text><g class="bdg" id="bg3" style="display:none"><circle cx="308.0" cy="293.2" r="12"/><text class="badge" id="bd3" x="308.0" y="298.2" text-anchor="middle"></text></g></g><text class="nm" x="311.0" y="379.9" text-anchor="start" aria-hidden="true">Social</text><g class="node" data-k="4" tabindex="0" role="button" aria-pressed="false" aria-label="Enterprising"><circle cx="140.0" cy="321.2" r="36"/><text class="ltr" x="140.0" y="332.2" text-anchor="middle">E</text><g class="bdg" id="bg4" style="display:none"><circle cx="168.0" cy="293.2" r="12"/><text class="badge" id="bd4" x="168.0" y="298.2" text-anchor="middle"></text></g></g><text class="nm" x="109.0" y="379.9" text-anchor="end" aria-hidden="true">Enterprising</text><g class="node" data-k="5" tabindex="0" role="button" aria-pressed="false" aria-label="Conventional"><circle cx="70.0" cy="200.0" r="36"/><text class="ltr" x="70.0" y="211.0" text-anchor="middle">C</text><g class="bdg" id="bg5" style="display:none"><circle cx="98.0" cy="172.0" r="12"/><text class="badge" id="bd5" x="98.0" y="177.0" text-anchor="middle"></text></g></g><text class="nm" x="8.0" y="205.0" text-anchor="end" aria-hidden="true">Conventional</text>
+</svg></div>
+    <div>
+      <div class="codebox" aria-live="polite"><span class="lab">Holland code</span><span id="code" class="code">_ _ _</span></div>
+      <div class="panel typecard" id="typeCard" aria-live="polite">
+        <h3 id="tcName">Choose a type</h3>
+        <p id="tcDesc">Each type describes a cluster of interests, values, and preferred activities. Most people resemble a combination of two or three.</p>
+        <p id="tcEnv" class="small"></p>
+      </div>
+      <div class="panel" id="consist"><h3>Consistency</h3><p id="consText">Pick two types to see how consistent your first two letters are.</p></div>
+      <div class="row"><button type="button" class="btn ghost" id="clear">Clear code</button></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="cgH">
+  <h3 id="cgH">Check congruence with an environment</h3>
+  <p>Congruence is the fit between a person's type and an environment's type. Choose an example environment to compare its first letter with yours.
+  The codes here are illustrative; look up actual codes in O*NET OnLine.</p>
+  <div class="envs" id="envs" role="group" aria-label="Example environments"></div>
+  <div id="congr" aria-live="polite"></div>
+</section>
+
+<div class="rule" aria-hidden="true"><span></span><span></span></div>
+
+<section aria-labelledby="spH">
+  <h2 id="spH">Move through Super's life stages</h2>
+  <p>Drag the slider to an age. The rainbow shows which life roles are typically active (an illustration after Super's Life-Career Rainbow),
+  and the card describes the stage. Then try the two students below to see how people recycle through stages.</p>
+  <div class="rainwrap"><svg viewBox="-10 -24 540 290" class="rainsvg" role="img" aria-labelledby="rnT rnD">
+<title id="rnT">Life-career rainbow</title>
+<desc id="rnD">Six concentric arcs show life roles across ages 0 to 85: child, student, leisurite, citizen, worker, and homemaker. A marker shows the selected age.</desc>
+<path d="M32.0,250.0 A228,228 0 0 1 488.0,250.0" class="track"/><path id="arc0" d="M32.0,250.0 A228,228 0 0 1 397.4,68.1" class="role r0"/><path d="M58.0,250.0 A202,202 0 0 1 462.0,250.0" class="track"/><path id="arc1" d="M61.4,212.9 A202,202 0 0 1 132.4,93.4" class="role r1"/><path d="M84.0,250.0 A176,176 0 0 1 436.0,250.0" class="track"/><path id="arc2" d="M87.0,217.7 A176,176 0 0 1 436.0,250.0" class="role r2"/><path d="M110.0,250.0 A150,150 0 0 1 410.0,250.0" class="track"/><path id="arc3" d="M142.0,157.4 A150,150 0 0 1 410.0,250.0" class="role r3"/><path d="M136.0,250.0 A124,124 0 0 1 384.0,250.0" class="track"/><path id="arc4" d="M157.1,180.9 A124,124 0 0 1 360.3,177.1" class="role r4"/><path d="M162.0,250.0 A98,98 0 0 1 358.0,250.0" class="track"/><path id="arc5" d="M198.1,174.0 A98,98 0 0 1 358.0,250.0" class="role r5"/><line x1="20.0" y1="250.0" x2="10.0" y2="250.0" class="tick"/><text x="-2.0" y="254.0" class="tk" text-anchor="middle">0</text><line x1="51.4" y1="131.3" x2="42.7" y2="126.3" class="tick"/><text x="32.3" y="124.4" class="tk" text-anchor="middle">14</text><line x1="115.4" y1="58.5" x2="109.3" y2="50.5" class="tick"/><text x="102.1" y="44.9" class="tk" text-anchor="middle">25</text><line x1="282.1" y1="11.0" x2="283.1" y2="1.1" class="tick"/><text x="284.2" y="-6.9" class="tk" text-anchor="middle">45</text><line x1="437.4" y1="88.3" x2="444.8" y2="81.6" class="tick"/><text x="453.6" y="77.5" class="tk" text-anchor="middle">65</text><line x1="500.0" y1="250.0" x2="510.0" y2="250.0" class="tick"/><text x="522.0" y="254.0" class="tk" text-anchor="middle">85</text>
+<line id="ageLine" x1="260" y1="250" x2="260" y2="10" class="ageline"/>
+<circle id="ageDot" cx="260" cy="10" r="7" class="agedot"/>
+</svg><p class="small center">Outer arc to inner arc:</p><ul class="legend" aria-hidden="true"><li><span class="sw r0"></span>Child</li><li><span class="sw r1"></span>Student</li><li><span class="sw r2"></span>Leisurite</li><li><span class="sw r3"></span>Citizen</li><li><span class="sw r4"></span>Worker</li><li><span class="sw r5"></span>Homemaker</li></ul></div>
+  <label for="age" class="agelab">Age: <strong id="ageOut">19</strong></label>
+  <input type="range" id="age" min="5" max="85" value="19" aria-describedby="stageName">
+  <div class="row people" role="group" aria-label="Example students">
+    <button type="button" class="btn ghost" data-age="19" data-note="Jordan, 19, is a sophomore crystallizing a choice between nursing and communications. Classic exploration-stage work.">Jordan, 19</button>
+    <button type="button" class="btn ghost" data-age="38" data-note="Maria, 38, left an accounting career to pursue a degree in social work. By age she would be in establishment, but she has recycled into exploration: crystallizing and specifying a new choice while also carrying worker, homemaker, and parent roles.">Maria, 38, returning student</button>
+    <button type="button" class="btn ghost" data-age="62" data-note="Dale, 62, is mentoring younger staff and planning a phased retirement. He is moving from maintenance toward disengagement and exploring new leisure and citizen roles.">Dale, 62, staff mentor</button>
+  </div>
+  <div class="panel stagecard" aria-live="polite">
+    <h3 id="stageName"></h3>
+    <p id="stageAges" class="small"></p>
+    <p id="stageTasks"></p>
+    <p id="roles" class="small"></p>
+    <p id="personNote" class="note" hidden></p>
+  </div>
+  <p class="small">Super's age ranges are approximate. Real lives rarely follow them exactly, which is why recycling matters in counseling.</p>
+</section>
+
+<footer>Azusa Pacific University, CCSD 573: Career Counseling and Development</footer>
+</main>
+<script>
+(function(){
+  var embedded = window.self !== window.top;
+  if (embedded) document.documentElement.classList.add('embedded');
+  var last = 0;
+  function send(){
+    var app = document.getElementById('app');
+    var h = Math.ceil(app.getBoundingClientRect().height) + 4;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    try { window.parent.postMessage(JSON.stringify({subject:'lti.frameResize', height:h}), '*'); } catch(e) {}
+  }
+  window.addEventListener('load', send);
+  window.addEventListener('resize', send);
+  if ('ResizeObserver' in window) new ResizeObserver(send).observe(document.getElementById('app'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(send);
+  setTimeout(send, 300);
+  window.__resize = send;
+})();
+</script>
+<script>const TYPES=[["R", "Realistic", "Doers", "Practical, hands-on, mechanical, and often outdoors. Prefers working with tools, machines, plants, or animals.", "Engineering technology, construction, agriculture, athletic training"], ["I", "Investigative", "Thinkers", "Analytical, curious, and scientific. Prefers observing, researching, and solving complex problems.", "Research labs, medicine, data science, academic research"], ["A", "Artistic", "Creators", "Creative, expressive, and original. Prefers unstructured settings that reward imagination.", "Design, writing, music, theater, media"], ["S", "Social", "Helpers", "Caring, cooperative, and people-focused. Prefers teaching, helping, counseling, and serving others.", "Education, counseling, nursing, student affairs, ministry"], ["E", "Enterprising", "Persuaders", "Energetic, ambitious, and sociable. Prefers leading, persuading, and taking risks to reach goals.", "Sales, management, law, entrepreneurship, politics"], ["C", "Conventional", "Organizers", "Careful, orderly, and detail-oriented. Prefers clear systems, data, and established procedures.", "Accounting, administration, records, logistics, finance"]];
+
+const $=id=>document.getElementById(id);
+const nodes=[...document.querySelectorAll('.node')];
+let code=[];
+const pos=k=>{const c=nodes[k].querySelector('circle');return [ +c.getAttribute('cx'), +c.getAttribute('cy') ];};
+function dist(a,b){const d=Math.abs(a-b)%6;return Math.min(d,6-d);}
+function show(k){const t=TYPES[k];$('tcName').textContent=`${t[1]} (${t[0]}): ${t[2]}`;$('tcDesc').textContent=t[3];$('tcEnv').textContent='Example environments: '+t[4]+'.';}
+function update(){
+  nodes.forEach((n,k)=>{const idx=code.indexOf(k);n.setAttribute('aria-pressed',idx>=0);$('bd'+k).textContent=idx>=0?idx+1:'';$('bg'+k).style.display=idx>=0?'':'none';
+    n.setAttribute('aria-label',TYPES[k][1]+(idx>=0?`, selected as letter ${idx+1}`:''));});
+  $('code').textContent=[0,1,2].map(i=>code[i]!==undefined?TYPES[code[i]][0]:'_').join(' ');
+  $('codePath').setAttribute('d',code.length>1?'M'+code.map(k=>pos(k).join(',')).join(' L'):'');
+  if(code.length<2){$('consText').textContent='Pick two types to see how consistent your first two letters are.';}
+  else{const d=dist(code[0],code[1]);const a=TYPES[code[0]][1],b=TYPES[code[1]][1];
+    $('consText').innerHTML = d===1?`<strong>High consistency.</strong> ${a} and ${b} sit next to each other on the hexagon, so these interests share a lot in common and tend to point toward similar environments.`
+      : d===2?`<strong>Moderate consistency.</strong> ${a} and ${b} are one step apart. They share some features, so look for environments that use both.`
+      : `<strong>Low consistency.</strong> ${a} and ${b} sit opposite each other. This is not a problem, but it can mean a person feels pulled in different directions. Explore roles that combine both, or settings outside of work for one of them.`;}
+  updateCongr();
+}
+function toggle(k){const i=code.indexOf(k); if(i>=0) code.splice(i,1); else if(code.length<3) code.push(k); show(k); update();}
+nodes.forEach((n,k)=>{n.addEventListener('click',()=>toggle(+n.dataset.k));n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(+n.dataset.k);}});n.addEventListener('focus',()=>show(k));});
+$('clear').onclick=()=>{code=[];update();};
+const ENVS=[["Registered nurse","SIC"],["Accountant","CEI"],["Graphic designer","AER"],["Software developer","ICR"],["Electrician","RCI"],["Sales manager","ECS"],["Student affairs professional","SEA"],["Research scientist","IRA"]];
+let env=null;
+ENVS.forEach((e,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed','false');b.innerHTML=`${e[0]}<b>${e[1]}</b>`;
+  b.onclick=()=>{env=i;document.querySelectorAll('#envs button').forEach((x,xi)=>x.setAttribute('aria-pressed',xi===i));updateCongr();};$('envs').appendChild(b);});
+function updateCongr(){
+  const box=$('congr'); if(env===null){box.innerHTML='';return;}
+  if(!code.length){box.innerHTML='<div class="fb mid"><strong>Build a code first.</strong>Select at least one type on the hexagon.</div>';return;}
+  const L='RIASEC', e=ENVS[env], p=code[0], q=L.indexOf(e[1][0]), d=dist(p,q);
+  const lvl=d===0?['good','High congruence','Your first letter matches this environment’s first letter. People in congruent environments tend to report more satisfaction and stability.']
+    :d===1?['mid','Moderate congruence','Your first letter is next to this environment’s on the hexagon. Expect some fit, with parts of the work drawing on other interests.']
+    :d===2?['mid','Lower congruence','Your first letter is one step removed. The environment may feel like a stretch; explore which tasks would energize you.']
+    :['bad','Low congruence','Your first letter is opposite this environment’s. That doesn’t rule it out, but it is worth exploring what draws you to it and whether parts of the role fit.'];
+  box.innerHTML=`<div class="fb ${lvl[0]}"><strong>${lvl[1]}: you (${TYPES[p][0]}) and ${e[0]} (${e[1][0]})</strong>${lvl[2]}</div>`;
+}
+update();
+
+const STAGES=[[0,13,'Growth','Childhood to early adolescence','Developing a self-concept, curiosity, and early ideas about work through play, school, and family.'],
+ [14,24,'Exploration','Adolescence to mid-twenties','Crystallizing, specifying, and implementing a career choice through classes, jobs, and trying out roles.'],
+ [25,44,'Establishment','Mid-twenties to mid-forties','Stabilizing in a chosen field, consolidating skills, and advancing.'],
+ [45,64,'Maintenance','Mid-forties to mid-sixties','Holding on to what has been achieved, updating skills, and innovating within a career.'],
+ [65,85,'Disengagement','Mid-sixties and beyond','Decelerating, planning for retirement, and taking on new leisure, family, and community roles.']];
+const ROLES=[["Child",0,60],["Student",5,24],["Leisurite",5,85],["Citizen",18,85],["Worker",16,68],["Homemaker",24,85]];
+const CX=260,CY=250;
+function setAge(a,note){
+  a=+a; $('age').value=a; $('ageOut').textContent=a;
+  const ang=(180-a/85*180)*Math.PI/180, x=CX+240*Math.cos(ang), y=CY-240*Math.sin(ang);
+  $('ageLine').setAttribute('x2',x.toFixed(1)); $('ageLine').setAttribute('y2',y.toFixed(1));
+  $('ageDot').setAttribute('cx',x.toFixed(1)); $('ageDot').setAttribute('cy',y.toFixed(1));
+  const s=STAGES.find(s=>a>=s[0]&&a<=s[1]);
+  $('stageName').textContent=`${s[2]} stage`; $('stageAges').textContent=`Approximate ages: ${s[3]}`; $('stageTasks').textContent=s[4];
+  const act=[]; ROLES.forEach((r,k)=>{let on=a>=r[1]&&a<=r[2]; if(note&&note.includes('degree')&&k===1) on=true; $('arc'+k).classList.toggle('dim',!on); if(on) act.push(r[0].toLowerCase());});
+  $('roles').textContent='Typically active roles at this age: '+act.join(', ')+'.';
+  $('age').setAttribute('aria-valuetext',`Age ${a}, ${s[2]} stage`);
+  const pn=$('personNote'); if(note){pn.hidden=false;pn.textContent=note; if(note.includes('recycled')){const ex=STAGES[1];$('stageName').textContent='Exploration stage (recycled)';$('stageAges').textContent='By age alone: establishment. In practice: exploration again.';$('stageTasks').textContent=ex[4];}} else pn.hidden=true;
+}
+$('age').addEventListener('input',e=>setAge(e.target.value));
+document.querySelectorAll('.people button').forEach(b=>b.onclick=()=>setAge(b.dataset.age,b.dataset.note));
+setAge(19);
+</script>
+</body>
+</html>

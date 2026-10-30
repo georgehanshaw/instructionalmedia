@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disclosure, Access, and Self-Determination | CCSD 573 Week 7</title>
+<meta name="description" content="Interactive social model sorter, disclosure timeline explorer, and counseling practice scenarios for CCSD 573 Week 7.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brick:#A8353A; --deep:#7C2429; --black:#000; --ink:#2A2422; --muted:#5F5650;
+  --paper:#FFFFFF; --cream:#F5F2EF; --line:#E3DDD7; --tint:#F6E9EA;
+  --good:#2F6B4F; --good-bg:#E8F2EC; --mid:#8A5A00; --mid-bg:#FBF1DC; --bad:#9B2C2C; --bad-bg:#F8E6E6;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'Public Sans', Arial, Helvetica, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);overflow-x:hidden}
+html.embedded,html.embedded body{overflow-y:hidden}
+body{font-family:var(--sans);font-size:17px;line-height:1.6}
+#app{max-width:900px;margin:0 auto;padding:0 20px 28px}
+.bar{display:flex;height:12px;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:22px}
+.bar span:first-child{flex:1;background:var(--brick)} .bar span:last-child{width:72px;background:var(--black)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,3.6vw,2.35rem);line-height:1.15;color:var(--deep);margin:0 0 8px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-weight:600;font-size:1.45rem;line-height:1.25;color:var(--deep);margin:34px 0 8px}
+h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:var(--deep);margin:18px 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{font-size:1.08rem;color:var(--ink)}
+.course{font-size:.95rem;color:var(--muted);margin:0 0 14px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin-bottom:6px}
+.hero svg{width:100%;height:auto;display:block}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero .art{max-width:360px}}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+.rule{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:36px 0 0}
+.rule span:first-child{width:40px;background:var(--black)} .rule span:last-child{flex:1;background:var(--brick)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brick);color:#fff;border:2px solid var(--brick);border-radius:999px;padding:9px 20px;font-weight:600}
+.btn:hover{background:var(--deep);border-color:var(--deep)}
+.btn.ghost{background:transparent;color:var(--deep);border-color:var(--deep)}
+.btn.ghost:hover{background:var(--tint)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid #1F5FBF;outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.panel h3:first-child{margin-top:0}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;color:var(--ink)}
+.choice:hover{border-color:var(--brick)}
+.choice[aria-pressed="true"]{border-color:var(--deep);background:var(--tint)}
+.fb{border-radius:10px;padding:12px 16px;margin:10px 0;border-left:6px solid}
+.fb.good{background:var(--good-bg);border-color:var(--good)} .fb.mid{background:var(--mid-bg);border-color:var(--mid)} .fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb strong{display:block;margin-bottom:2px}
+.fb.good strong{color:var(--good)} .fb.mid strong{color:var(--mid)} .fb.bad strong{color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:600;background:var(--tint);color:var(--deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.sorter{padding-left:22px}
+.sorter li{margin:0 0 16px}
+.sorter .stmt{font-family:var(--serif);font-size:1.08rem;margin:0 0 6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink)}
+.seg button:hover{border-color:var(--brick)}
+.seg button.right{background:var(--good-bg);border-color:var(--good);color:var(--good);font-weight:600}
+.seg button.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.why{font-size:.95rem;margin:6px 0 0}
+.score{font-weight:600;color:var(--deep)}
+.tl{width:100%;height:auto;display:block}
+.tlbtns{display:none}
+@media (max-width:600px){.tlwrap{display:none}.tlbtns{display:block}.tlbtns .choice{margin:6px 0;padding:9px 14px}}
+.road{fill:none;stroke:#E3DDD7;stroke-width:22;stroke-linecap:round}
+.stop{cursor:pointer;outline:none}
+.stop circle{fill:#fff;stroke:#7C2429;stroke-width:3}
+.stop .sn{font-family:var(--serif);font-size:20px;font-weight:700;fill:#7C2429;pointer-events:none}
+.stop .sl{font-family:var(--sans);font-size:14px;font-weight:600;fill:#2A2422}
+.stop:hover circle{fill:#F6E9EA}
+.stop[aria-pressed="true"] circle{fill:#7C2429}.stop[aria-pressed="true"] .sn{fill:#fff}
+.stop:focus-visible circle{stroke:#1F5FBF;stroke-width:5}
+.detail{background:#fff;border-top:6px solid var(--brick)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:640px){.cols{grid-template-columns:1fr}}
+.cols h4{font-family:var(--sans);font-size:1rem;margin:0 0 4px}
+.cols .plus h4{color:var(--good)}.cols .minus h4{color:var(--bad)}
+.cols ul{margin:0;padding-left:20px}
+.script{font-family:var(--serif);font-style:italic;background:var(--cream);border-radius:8px;padding:10px 14px;margin:12px 0 8px}
+.small{font-size:.92rem;color:var(--muted)}
+.small a,.detail a{color:var(--deep)}
+.scen{border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;background:#fff}
+.scen h3{margin-top:0}
+</style>
+</head>
+<body>
+<main id="app">
+<div class="bar" aria-hidden="true"><span></span><span></span></div>
+
+<header class="hero">
+  <div>
+    <p class="course">CCSD 573, Week 7</p>
+    <h1>Disclosure, access, and self&#8209;determination</h1>
+    <p class="lede">Career counselors help students with disabilities plan, prepare, and advocate for themselves. Work through three activities:
+    reframe statements using the social model, explore when a student might disclose, and practice your own responses.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 340 220" role="img" aria-labelledby="artT">
+<title id="artT">Illustration of a student at a crossroads sign with arrows pointing to different times to disclose, next to an open door with a ramp.</title>
+<rect x="0" y="196" width="340" height="6" rx="3" fill="#E3DDD7"/>
+<path d="M200 196 h110 l-110 -26z" fill="#E3DDD7"/>
+<rect x="236" y="70" width="64" height="100" rx="4" fill="#F5F2EF" stroke="#2A2422" stroke-width="3"/>
+<path d="M236 70 l26 10 v100 l-26 -10z" fill="#A8353A"/><circle cx="256" cy="128" r="3" fill="#fff"/>
+<rect x="104" y="60" width="6" height="136" fill="#2A2422"/>
+<path d="M50 64 h80 l14 12 l-14 12 h-80z" fill="#7C2429"/><text x="88" y="81" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fff">Now</text>
+<path d="M160 96 h-80 l-14 12 l14 12 h80z" fill="#000"/><text x="118" y="113" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fff">Later</text>
+<path d="M50 128 h80 l14 12 l-14 12 h-80z" fill="#A8353A"/><text x="88" y="145" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fff">My choice</text>
+<circle cx="196" cy="128" r="13" fill="#2A2422"/><path d="M178 196 q2-50 18-56 q16 6 18 56z" fill="#7C2429"/>
+<path d="M182 164 q-10 -8 -14 -26" stroke="#7C2429" stroke-width="8" stroke-linecap="round" fill="none"/>
+</svg></div>
+</header>
+
+<section aria-labelledby="mH">
+  <h2 id="mH">Medical model or social model?</h2>
+  <p>The medical model locates disability in a person's impairment. The social model locates it in barriers created by environments and attitudes.
+  Decide which model each statement reflects.</p>
+  <ol class="sorter" id="models"></ol>
+  <p class="score" id="mScore" aria-live="polite"></p>
+</section>
+
+<div class="rule" aria-hidden="true"><span></span><span></span></div>
+
+<section aria-labelledby="tH">
+  <h2 id="tH">When might a student disclose?</h2>
+  <p>Whether, when, and how to disclose a disability to an employer is the student's decision. Select each point on the path to compare the options.</p>
+  <div class="tlwrap"><svg viewBox="0 40 720 145" class="tl" role="group" aria-labelledby="tlT">
+<title id="tlT">Disclosure options along the path from job search to the job. Select a point to learn more.</title>
+<path d="M20 100.0 L30 101.5 L40 102.9 L50 104.4 L60 105.8 L70 107.1 L80 108.4 L90 109.6 L100 110.8 L110 111.8 L120 112.8 L130 113.6 L140 114.3 L150 114.9 L160 115.4 L170 115.7 L180 115.9 L190 116.0 L200 115.9 L210 115.7 L220 115.4 L230 114.9 L240 114.3 L250 113.6 L260 112.8 L270 111.8 L280 110.8 L290 109.6 L300 108.4 L310 107.1 L320 105.8 L330 104.4 L340 102.9 L350 101.5 L360 100.0 L370 98.5 L380 97.1 L390 95.6 L400 94.2 L410 92.9 L420 91.6 L430 90.4 L440 89.2 L450 88.2 L460 87.2 L470 86.4 L480 85.7 L490 85.1 L500 84.6 L510 84.3 L520 84.1 L530 84.0 L540 84.1 L550 84.3 L560 84.6 L570 85.1 L580 85.7 L590 86.4 L600 87.2 L610 88.2 L620 89.2 L630 90.4 L640 91.6 L650 92.9 L660 94.2 L670 95.6 L680 97.1 L690 98.5 L700 100.0 L710 101.5" class="road"/><g class="stop" data-k="0" role="button" tabindex="0" aria-pressed="false" aria-label="Application: In the application or cover letter"><circle cx="80" cy="108.4" r="24"/><text x="80" y="115.4" text-anchor="middle" class="sn">1</text><text x="80" y="158.4" text-anchor="middle" class="sl">Application</text></g><g class="stop" data-k="1" role="button" tabindex="0" aria-pressed="false" aria-label="Interview: Before or at the interview"><circle cx="220" cy="115.4" r="24"/><text x="220" y="122.4" text-anchor="middle" class="sn">2</text><text x="220" y="165.4" text-anchor="middle" class="sl">Interview</text></g><g class="stop" data-k="2" role="button" tabindex="0" aria-pressed="false" aria-label="Offer: After a job offer, before starting"><circle cx="360" cy="100.0" r="24"/><text x="360" y="107.0" text-anchor="middle" class="sn">3</text><text x="360" y="150.0" text-anchor="middle" class="sl">Offer</text></g><g class="stop" data-k="3" role="button" tabindex="0" aria-pressed="false" aria-label="First weeks: After starting the job"><circle cx="500" cy="84.6" r="24"/><text x="500" y="91.6" text-anchor="middle" class="sn">4</text><text x="500" y="134.6" text-anchor="middle" class="sl">First weeks</text></g><g class="stop" data-k="4" role="button" tabindex="0" aria-pressed="false" aria-label="Not at all: Choosing not to disclose"><circle cx="640" cy="91.6" r="24"/><text x="640" y="98.6" text-anchor="middle" class="sn">5</text><text x="640" y="141.6" text-anchor="middle" class="sl">Not at all</text></g>
+</svg></div>
+  <div class="tlbtns" role="group" aria-label="Disclosure points"><button type="button" class="choice tb" data-k="0" aria-pressed="false">1. Application</button><button type="button" class="choice tb" data-k="1" aria-pressed="false">2. Interview</button><button type="button" class="choice tb" data-k="2" aria-pressed="false">3. Offer</button><button type="button" class="choice tb" data-k="3" aria-pressed="false">4. First weeks</button><button type="button" class="choice tb" data-k="4" aria-pressed="false">5. Not at all</button></div>
+  <div class="panel detail" id="detail" aria-live="polite"></div>
+  <p class="small">Under Title I of the ADA, covered employers provide reasonable accommodations to qualified employees with disabilities.
+  The <a href="https://askjan.org/">Job Accommodation Network (JAN)</a> offers free guidance for students, counselors, and employers.</p>
+</section>
+
+<div class="rule" aria-hidden="true"><span></span><span></span></div>
+
+<section aria-labelledby="pH">
+  <h2 id="pH">Practice your response</h2>
+  <p>These scenarios use fictional students. Choose the response you would give, then read the feedback.</p>
+  <div id="scen"></div>
+</section>
+
+<footer>Azusa Pacific University, CCSD 573: Career Counseling and Development</footer>
+</main>
+<script>
+(function(){
+  var embedded = window.self !== window.top;
+  if (embedded) document.documentElement.classList.add('embedded');
+  var last = 0;
+  function send(){
+    var app = document.getElementById('app');
+    var h = Math.ceil(app.getBoundingClientRect().height) + 4;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    try { window.parent.postMessage(JSON.stringify({subject:'lti.frameResize', height:h}), '*'); } catch(e) {}
+  }
+  window.addEventListener('load', send);
+  window.addEventListener('resize', send);
+  if ('ResizeObserver' in window) new ResizeObserver(send).observe(document.getElementById('app'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(send);
+  setTimeout(send, 300);
+  window.__resize = send;
+})();
+</script>
+<script>const POINTS=[["Application", "In the application or cover letter", ["Lets a student frame disability-related experience as a strength, such as advocacy or leadership.", "Can signal interest in employers known for inclusive hiring."], ["Concern that an application could be screened out because of bias.", "Shifts attention before qualifications are known."], "\u201cAs president of our campus disability advocacy group, I led a team that redesigned event accessibility...\u201d", "What would you want an employer to learn about you from this?"], ["Interview", "Before or at the interview", ["Allows a student to request interview accommodations, such as an interpreter, extra time, or an accessible location.", "Can explain visible differences on the student's own terms."], ["The conversation may drift away from qualifications.", "The student has less information about the employer's culture."], "\u201cI'll be using an ASL interpreter for the interview. Could you let me know who I should coordinate with?\u201d", "What would you need in order to show your best self in the interview?"], ["Offer", "After a job offer, before starting", ["Qualifications are already established by the offer.", "Time to plan workplace accommodations before day one."], ["Some accommodations take time to arrange.", "The student may worry about the offer being reconsidered."], "\u201cI'm excited to accept. I'd like to talk with HR about an accommodation that will help me do my best work.\u201d", "Who at the organization would you feel comfortable talking with first?"], ["First weeks", "After starting the job", ["The student knows the work, the team, and the culture before deciding.", "Can request accommodations based on actual job tasks."], ["Accommodations are not in place until requested.", "A student may struggle at first without support."], "\u201cNow that I've learned the role, I've noticed one change that would help me be more productive.\u201d", "What would tell you it is the right time to ask?"], ["Not at all", "Choosing not to disclose", ["The student keeps full control of private information.", "Some students do not need accommodations for a particular role."], ["Workplace accommodations are not available until the student asks.", "Keeping a disability private can take ongoing energy."], "The student may still use self-advocacy skills, such as asking for clear written instructions, without naming a disability.", "What supports could you arrange for yourself without disclosing?"]];
+
+const $=id=>document.getElementById(id);
+const MODELS=[
+ {t:"The student needs to overcome their dyslexia to succeed in a business career.",a:0,w:"This locates the problem in the student. A social-model reframe asks what tools, formats, or supports would remove barriers."},
+ {t:"The career fair is on the second floor of a building with no elevator, so some students can't attend.",a:1,w:"The barrier is the venue, not the students. Moving the fair removes the disability-related exclusion."},
+ {t:"Employer information sessions are streamed without captions, which excludes Deaf and hard of hearing students.",a:1,w:"Uncaptioned media is an environmental barrier. Captioning is a straightforward fix."},
+ {t:"Let's find you a job where your ADHD won't be a problem.",a:0,w:"This frames ADHD as the problem to avoid. A social-model approach explores strengths and the supports or work designs that help the student thrive."},
+ {t:"Online applications that time out before a screen reader user can finish are shutting qualified candidates out.",a:1,w:"The design of the application process creates the barrier, which places this in the social model."},
+ {t:"Her autism is the reason she struggles in interviews.",a:0,w:"This places the difficulty in the person. The social model notes that traditional interviews reward particular social norms, and alternatives such as work samples can reduce that barrier."}
+];
+const ML=["Medical model","Social model"]; let mAns=0,mRight=0;
+MODELS.forEach((q,qi)=>{const li=document.createElement('li');
+  li.innerHTML=`<p class="stmt" id="ms${qi}">“${q.t}”</p><div class="seg" role="group" aria-labelledby="ms${qi}"></div><p class="why" aria-live="polite"></p>`;
+  const seg=li.querySelector('.seg');
+  ML.forEach((l,k)=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.onclick=()=>{
+    if(seg.dataset.done) return; seg.dataset.done=1; mAns++; const ok=k===q.a; if(ok) mRight++;
+    seg.querySelectorAll('button').forEach((x,xi)=>{if(xi===q.a)x.classList.add('right');else if(x===b)x.classList.add('wrong');x.setAttribute('aria-disabled','true');});
+    li.querySelector('.why').innerHTML=`<strong>${ok?'Correct.':'Not quite. This reflects the '+ML[q.a].toLowerCase()+'.'}</strong> ${q.w}`;
+    $('mScore').textContent=mAns===MODELS.length?`You identified ${mRight} of ${MODELS.length}.`:'';};seg.appendChild(b);});
+  $('models').appendChild(li);});
+
+const stops=[...document.querySelectorAll('.stop')];
+const tbs=[...document.querySelectorAll('.tb')];tbs.forEach((b,k)=>b.onclick=()=>pick(k));
+function pick(k){const p=POINTS[k];stops.forEach((s,i)=>s.setAttribute('aria-pressed',i===k));tbs.forEach((s,i)=>s.setAttribute('aria-pressed',i===k));
+  $('detail').innerHTML=`<h3>${k+1}. ${p[1]}</h3><div class="cols"><div class="plus"><h4>Possible benefits</h4><ul>${p[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="minus"><h4>Possible concerns</h4><ul>${p[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <p class="script">${p[4]}</p><p><strong>Ask the student:</strong> ${p[5]}</p>`;}
+stops.forEach((s,k)=>{s.addEventListener('click',()=>pick(k));s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(k);}
+  if(e.key==='ArrowRight'&&k<4){stops[k+1].focus();} if(e.key==='ArrowLeft'&&k>0){stops[k-1].focus();}});});
+pick(0);
+
+const SCEN=[
+ {h:"Amara and the interview",say:"Amara, a Deaf senior, has a first-round interview next week. She asks whether she should mention that she will need an ASL interpreter.",
+  o:[["Explain that she can request an interview accommodation, talk through when and how to ask, and practice the wording together.",2,"This supports self-determination with a concrete skill: making an accommodation request on her own terms."],
+     ["Tell her to bring it up when she arrives for the interview.",0,"Waiting until arrival leaves no time to arrange an interpreter, which puts Amara at a disadvantage."],
+     ["Suggest she look for jobs that don't involve phone or video interviews.",0,"This narrows her options around a barrier instead of helping her remove it."]]},
+ {h:"Luis and a non-visible disability",say:"Luis manages an anxiety disorder and has a new internship offer. He is afraid that telling his supervisor will change how he is seen.",
+  o:[["Affirm that the decision is his, compare the benefits and concerns of disclosing now, later, or not at all, and share JAN as a resource.",2,"You honor his autonomy and give him information to decide. That is the core of disclosure counseling."],
+     ["Tell him most people with non-visible disabilities don't disclose, so he shouldn't either.",0,"This replaces his judgment with a generalization. The choice depends on his needs and the setting."],
+     ["Encourage him to disclose right away so the company knows.",1,"Disclosure may help, and accommodations require a request, but pushing a timeline takes the decision away from Luis."]]},
+ {h:"Planning the spring career fair",say:"Your career center is planning its spring career fair. Your director asks how to make it accessible.",
+  o:[["Choose an accessible venue, caption any media, invite accommodation requests in advance, and brief employers on inclusive practices.",2,"This applies the social model and universal design, removing barriers before anyone has to ask."],
+     ["Add a line to the flyer saying accommodations are available on request.",1,"A good start, but on its own it puts the work on students. Build access into the event itself."],
+     ["Handle any accommodation needs on the day of the fair if someone asks.",0,"Many accommodations can't be arranged on the spot, so students would be excluded."]]}
+];
+const ORD=[[1,0,2],[2,1,0],[0,2,1]];
+SCEN.forEach((s,si)=>{const d=document.createElement('div');d.className='scen';
+  d.innerHTML=`<h3>${s.h}</h3><p>${s.say}</p><div class="opts" role="group" aria-label="Responses for ${s.h}"></div><div class="fbx" aria-live="polite"></div>`;
+  const box=d.querySelector('.opts');
+  ORD[si].forEach(k=>{const o=s.o[k];const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=o[0];b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      const c=o[1]===2?'good':o[1]===1?'mid':'bad', h=o[1]===2?'Strong response':o[1]===1?'Partly there':'Try a different approach';
+      d.querySelector('.fbx').innerHTML=`<div class="fb ${c}"><strong>${h}</strong>${o[2]}</div>`;};box.appendChild(b);});
+  $('scen').appendChild(d);});
+</script>
+</body>
+</html>

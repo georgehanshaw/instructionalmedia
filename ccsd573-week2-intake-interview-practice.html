@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice an Intake Interview | CCSD 573 Week 2</title>
+<meta name="description" content="Interactive intake interview simulation and theory sorting activity for CCSD 573 Week 2.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brick:#A8353A; --deep:#7C2429; --black:#000; --ink:#2A2422; --muted:#5F5650;
+  --paper:#FFFFFF; --cream:#F5F2EF; --line:#E3DDD7; --tint:#F6E9EA;
+  --good:#2F6B4F; --good-bg:#E8F2EC; --mid:#8A5A00; --mid-bg:#FBF1DC; --bad:#9B2C2C; --bad-bg:#F8E6E6;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'Public Sans', Arial, Helvetica, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);overflow-x:hidden}
+html.embedded,html.embedded body{overflow-y:hidden}
+body{font-family:var(--sans);font-size:17px;line-height:1.6}
+#app{max-width:900px;margin:0 auto;padding:0 20px 28px}
+.bar{display:flex;height:12px;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:22px}
+.bar span:first-child{flex:1;background:var(--brick)} .bar span:last-child{width:72px;background:var(--black)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,3.6vw,2.35rem);line-height:1.15;color:var(--deep);margin:0 0 8px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-weight:600;font-size:1.45rem;line-height:1.25;color:var(--deep);margin:34px 0 8px}
+h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:var(--deep);margin:18px 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{font-size:1.08rem;color:var(--ink)}
+.course{font-size:.95rem;color:var(--muted);margin:0 0 14px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin-bottom:6px}
+.hero svg{width:100%;height:auto;display:block}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero .art{max-width:360px}}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+.rule{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:36px 0 0}
+.rule span:first-child{width:40px;background:var(--black)} .rule span:last-child{flex:1;background:var(--brick)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brick);color:#fff;border:2px solid var(--brick);border-radius:999px;padding:9px 20px;font-weight:600}
+.btn:hover{background:var(--deep);border-color:var(--deep)}
+.btn.ghost{background:transparent;color:var(--deep);border-color:var(--deep)}
+.btn.ghost:hover{background:var(--tint)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid #1F5FBF;outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.panel h3:first-child{margin-top:0}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;color:var(--ink)}
+.choice:hover{border-color:var(--brick)}
+.choice[aria-pressed="true"]{border-color:var(--deep);background:var(--tint)}
+.fb{border-radius:10px;padding:12px 16px;margin:10px 0;border-left:6px solid}
+.fb.good{background:var(--good-bg);border-color:var(--good)} .fb.mid{background:var(--mid-bg);border-color:var(--mid)} .fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb strong{display:block;margin-bottom:2px}
+.fb.good strong{color:var(--good)} .fb.mid strong{color:var(--mid)} .fb.bad strong{color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:600;background:var(--tint);color:var(--deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.sim{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start}
+@media (max-width:760px){.sim{grid-template-columns:1fr}}
+.stage{margin:0;background:#fff}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px}
+#progFill{height:100%;width:0;background:var(--brick);transition:width .3s}
+.stepcount{font-size:.9rem;color:var(--muted);margin:0 0 10px}
+.said{background:var(--cream);border-radius:12px 12px 12px 2px;padding:12px 16px;margin-bottom:12px;border:1px solid var(--line)}
+.said .who{font-weight:700;color:var(--deep);font-size:.92rem}
+.said p{margin:2px 0 0;font-family:var(--serif);font-size:1.12rem;line-height:1.5}
+fieldset.opts{border:0;margin:0;padding:0}
+.notes{background:var(--cream);border:1px solid var(--line);border-top:6px solid var(--black);border-radius:10px;padding:14px 18px}
+.notes h3{margin-top:0}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin:0 0 8px}
+.notes li.empty{list-style:none;margin-left:-18px;color:var(--muted);font-style:italic}
+.notes li.new{animation:pop .5s ease}
+@keyframes pop{from{background:var(--tint)}to{background:transparent}}
+.checklist{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.checklist li{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.checklist .ok::before{content:"\2713  ";color:var(--good);font-weight:700}
+.checklist .miss::before{content:"\25CB  ";color:var(--bad);font-weight:700}
+.sorter{padding-left:22px}
+.sorter li{margin:0 0 16px}
+.sorter .stmt{font-family:var(--serif);font-size:1.08rem;margin:0 0 6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink)}
+.seg button:hover{border-color:var(--brick)}
+.seg button.right{background:var(--good-bg);border-color:var(--good);color:var(--good);font-weight:600}
+.seg button.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.why{font-size:.95rem;margin:6px 0 0}
+.score{font-weight:600;color:var(--deep)}
+</style>
+</head>
+<body>
+<main id="app">
+<div class="bar" aria-hidden="true"><span></span><span></span></div>
+
+<header class="hero">
+  <div>
+    <p class="course">CCSD 573, Week 2</p>
+    <h1>Practice an intake interview</h1>
+    <p class="lede">Jordan, a sophomore, has agreed to be part of your case study. Choose what you would say at each point in your first session.
+    You'll get feedback on each choice, and your intake notes build as you go.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 360 240" role="img" aria-labelledby="artT">
+<title id="artT">Illustration of a counselor and a student seated in two chairs facing each other across a small table, with speech bubbles above them.</title>
+<rect x="0" y="196" width="360" height="6" rx="3" fill="#E3DDD7"/>
+<!-- left chair -->
+<path d="M48 120 h70 a8 8 0 0 1 8 8 v40 h-86 v-40 a8 8 0 0 1 8-8z" fill="#7C2429"/>
+<rect x="40" y="166" width="88" height="14" rx="5" fill="#A8353A"/>
+<rect x="48" y="180" width="8" height="18" fill="#000"/><rect x="112" y="180" width="8" height="18" fill="#000"/>
+<!-- left person -->
+<circle cx="88" cy="92" r="17" fill="#2A2422"/>
+<path d="M62 168 q2-50 26-56 q24 6 26 56z" fill="#000"/>
+<rect x="104" y="138" width="22" height="16" rx="2" fill="#fff" stroke="#2A2422" stroke-width="2" transform="rotate(-12 115 146)"/>
+<!-- table -->
+<rect x="150" y="150" width="60" height="8" rx="3" fill="#2A2422"/><rect x="176" y="158" width="8" height="40" fill="#2A2422"/>
+<rect x="166" y="138" width="16" height="12" rx="2" fill="#A8353A"/><path d="M182 141 q6 0 6 4 q0 4-6 4" fill="none" stroke="#A8353A" stroke-width="2"/>
+<!-- right chair -->
+<path d="M242 120 h70 a8 8 0 0 1 8 8 v40 h-86 v-40 a8 8 0 0 1 8-8z" fill="#7C2429"/>
+<rect x="232" y="166" width="88" height="14" rx="5" fill="#A8353A"/>
+<rect x="240" y="180" width="8" height="18" fill="#000"/><rect x="304" y="180" width="8" height="18" fill="#000"/>
+<!-- right person -->
+<circle cx="276" cy="92" r="17" fill="#5F5650"/>
+<path d="M250 168 q2-50 26-56 q24 6 26 56z" fill="#A8353A"/>
+<!-- bubbles -->
+<path d="M22 22 h112 a10 10 0 0 1 10 10 v26 a10 10 0 0 1-10 10 h-70 l-14 12 l2-12 h-30 a10 10 0 0 1-10-10 v-26 a10 10 0 0 1 10-10z" fill="#F5F2EF" stroke="#7C2429" stroke-width="2"/>
+<rect x="34" y="34" width="84" height="6" rx="3" fill="#7C2429"/><rect x="34" y="46" width="60" height="6" rx="3" fill="#A8353A"/>
+<path d="M226 10 h112 a10 10 0 0 1 10 10 v26 a10 10 0 0 1-10 10 h-30 l2 12 l-14-12 h-70 a10 10 0 0 1-10-10 v-26 a10 10 0 0 1 10-10z" fill="#A8353A"/>
+<rect x="238" y="22" width="88" height="6" rx="3" fill="#fff"/><rect x="238" y="34" width="54" height="6" rx="3" fill="#F6E9EA"/>
+<text x="296" y="118" font-family="Georgia,serif" font-size="13" fill="#5F5650" text-anchor="middle">?</text>
+</svg></div>
+</header>
+
+<section aria-labelledby="simH">
+  <h2 id="simH">Your first session with Jordan</h2>
+  <div class="sim">
+    <div class="stage panel" id="stage">
+      <div class="progress" aria-hidden="true"><div id="progFill"></div></div>
+      <p class="stepcount" id="stepCount"></p>
+      <div class="said"><span class="who">Jordan</span><p id="jordan"></p></div>
+      <fieldset class="opts"><legend class="sr" id="optLegend">Choose your response</legend><div id="opts"></div></fieldset>
+      <div id="feedback" aria-live="polite"></div>
+      <div class="row"><button class="btn" id="next" hidden>Continue</button></div>
+    </div>
+    <div class="notes" role="region" aria-labelledby="notesH">
+      <h3 id="notesH">Your intake notes</h3>
+      <ul id="notes"><li class="empty">Notes appear here as you learn about Jordan.</li></ul>
+    </div>
+  </div>
+  <div id="summary" hidden></div>
+</section>
+
+<div class="rule" aria-hidden="true"><span></span><span></span></div>
+<section aria-labelledby="sortH">
+  <h2 id="sortH">Which theory is listening?</h2>
+  <p>Each statement below is something a student might say in an intake. Decide which theory family would pay closest attention to it:
+  person-environment fit, social cognitive career theory (SCCT), or constructivist and narrative approaches.</p>
+  <ol class="sorter" id="sorter"></ol>
+  <p class="score" id="sortScore" aria-live="polite"></p>
+</section>
+
+<footer>Azusa Pacific University, CCSD 573: Career Counseling and Development</footer>
+</main>
+<script>
+(function(){
+  var embedded = window.self !== window.top;
+  if (embedded) document.documentElement.classList.add('embedded');
+  var last = 0;
+  function send(){
+    var app = document.getElementById('app');
+    var h = Math.ceil(app.getBoundingClientRect().height) + 4;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    try { window.parent.postMessage(JSON.stringify({subject:'lti.frameResize', height:h}), '*'); } catch(e) {}
+  }
+  window.addEventListener('load', send);
+  window.addEventListener('resize', send);
+  if ('ResizeObserver' in window) new ResizeObserver(send).observe(document.getElementById('app'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(send);
+  setTimeout(send, 300);
+  window.__resize = send;
+})();
+</script>
+<script>
+const STEPS = [
+ {say:"So... I'm not really sure what this is going to be.",
+  opts:[
+   {t:"Thanks for coming. Let me explain how our sessions will work and what you can expect, and then I'd love to hear what you hope to get out of this.",s:2,f:"You set expectations and described the process before diving in. That builds trust and matches the intake guidelines in your syllabus."},
+   {t:"No problem! Let's start with the Strong Interest Inventory so we have some data to work with.",s:0,f:"Assessments come after the intake conversation, not before. Without background and goals, you can't choose tools for a purpose."},
+   {t:"It's just a few conversations about careers. What's your major?",s:1,f:"Friendly, but Jordan still doesn't know what the process involves or what you'll ask of them. Explain the process first."}],
+  note:"Explained the process and what to expect", key:"Process and expectations"},
+ {say:"I guess I want to figure out if I should stay in nursing. Everyone says I'd be good at it.",
+  opts:[
+   {t:"What would make our time together feel worthwhile for you?",s:2,f:"An open goal question lets Jordan name what success looks like. You'll come back to this goal when you close the case."},
+   {t:"Who is 'everyone'?",s:1,f:"A useful question about outside influences, and worth asking soon. First, though, make sure you and Jordan agree on the goal for your sessions."},
+   {t:"Nursing has a strong job outlook, so it's a safe choice.",s:0,f:"Giving advice this early closes the conversation. Jordan came to explore, not to be told what is safe."}],
+  note:"Goal: decide whether to stay in nursing", key:"Goals"},
+ {say:"Will you tell my advisor what I say in here?",
+  opts:[
+   {t:"I won't share what you tell me with your advisor. I'm a graduate student, so I'll write about our sessions for my course using a made-up name, and I'd only break privacy if I were worried about your safety.",s:2,f:"Honest and specific. Jordan knows exactly how their information will be used, including your case study paper, and the limits of privacy."},
+   {t:"Only if you want me to.",s:1,f:"Reassuring but vague. Jordan should know about your case study paper and the limits of confidentiality."},
+   {t:"Don't worry, everything stays between us.",s:0,f:"This overpromises. You'll be writing about these sessions for class, and safety concerns are a limit on confidentiality."}],
+  note:"Concern about privacy; explained confidentiality and its limits", key:"Concerns and confidentiality"},
+ {say:"My mom's a nurse. My dad drives for a delivery company. I'm the first one in my family at a four-year school.",
+  opts:[
+   {t:"What hopes do your parents have for you? And what do you hope for yourself?",s:2,f:"This invites both family expectations and Jordan's own voice. Duffy and Dik (2009) remind us that influences beyond the self are part of how many students decide."},
+   {t:"Being first-gen must be really hard.",s:1,f:"Well meant, but it assumes a deficit. Ask what Jordan has navigated and who has supported them."},
+   {t:"Okay. What's your GPA?",s:0,f:"Too abrupt. Jordan just shared something meaningful about family; follow it before moving on."}],
+  note:"First in family at a four-year school; mom is a nurse, dad drives for a delivery company", key:"Family background"},
+ {say:"I got a C in chemistry and it honestly wrecked me. But I loved my public speaking class.",
+  opts:[
+   {t:"Tell me more about what happened in chemistry, and how confident you feel about the science courses ahead.",s:2,f:"You're listening for self-efficacy. In SCCT terms, one hard grade may be lowering Jordan's confidence more than their interest."},
+   {t:"What did you love about public speaking?",s:1,f:"A good question about interests, and worth returning to. Don't skip the chemistry story, though. It's a clue about confidence."},
+   {t:"Sounds like you're not really a science person. Communications might be a better fit.",s:0,f:"This is a premature conclusion based on one grade. It could close off an option Jordan still cares about."}],
+  note:"C in chemistry shook confidence; loved public speaking", key:"Academics"},
+ {say:"Outside of class I'm an RA, and I lead worship for my church's youth group.",
+  opts:[
+   {t:"When you're leading worship or working as an RA, what are you doing in the moments you feel most like yourself?",s:2,f:"This is a narrative question. It looks for life themes and values that cut across roles."},
+   {t:"Great, those will look good on a resume.",s:1,f:"True, but it treats rich experiences as resume lines. Ask what they mean to Jordan."},
+   {t:"Let's get back to nursing.",s:0,f:"Co-curricular and leadership roles are part of the background your syllabus asks you to gather. They often reveal more than coursework."}],
+  note:"RA and youth worship leader; feels most alive leading and encouraging others", key:"Co-curricular and leadership"},
+ {say:"This was actually kind of helpful. So what happens next?",
+  opts:[
+   {t:"Here's what I heard today. Next time I'd like you to try the Strong Interest Inventory and a values card sort, and we'll look at the results together. Does that fit what you want?",s:2,f:"You summarized, chose assessments for a purpose, and checked the plan with Jordan. A strong close to an intake."},
+   {t:"See you next week!",s:1,f:"Warm, but Jordan leaves without a summary or a plan. Briefly recap and agree on next steps."},
+   {t:"I'll email you five assessments to finish before next time.",s:0,f:"Career counseling is not giving a bunch of assessments. Choose a few tools tied to Jordan's goal and explain why."}],
+  note:"Next session: Strong Interest Inventory and values card sort", key:"Summary and plan"}
+];
+let i=0, score=0, results=[];
+const $=id=>document.getElementById(id);
+function render(){
+  const s=STEPS[i];
+  $('stepCount').textContent=`Moment ${i+1} of ${STEPS.length}`;
+  $('progFill').style.width=(i/STEPS.length*100)+'%';
+  $('jordan').textContent=s.say;
+  $('feedback').innerHTML=''; $('next').hidden=true;
+  const box=$('opts'); box.innerHTML='';
+  const ORD=[[0,1,2],[1,2,0],[2,0,1],[1,0,2],[2,1,0],[0,2,1],[1,2,0]][i%7];
+  ORD.map(k=>s.opts[k]).forEach(o=>{
+    const b=document.createElement('button'); b.className='choice'; b.type='button'; b.textContent=o.t; b.setAttribute('aria-pressed','false');
+    b.onclick=()=>choose(o,b); box.appendChild(b);
+  });
+}
+function choose(o,btn){
+  document.querySelectorAll('#opts .choice').forEach(b=>{b.disabled=true;b.setAttribute('aria-pressed', b===btn?'true':'false')});
+  const cls=o.s===2?'good':o.s===1?'mid':'bad', head=o.s===2?'Strong choice':o.s===1?'Partly there':'Try a different approach';
+  $('feedback').innerHTML=`<div class="fb ${cls}"><strong>${head}</strong>${o.f}</div>`;
+  score+=o.s; results.push({key:STEPS[i].key, s:o.s});
+  if(o.s>0) addNote(STEPS[i].note);
+  $('next').hidden=false; $('next').textContent = i===STEPS.length-1 ? 'See my summary' : 'Continue';
+  $('next').focus();
+}
+function addNote(t){
+  const ul=$('notes'); const e=ul.querySelector('.empty'); if(e) e.remove();
+  const li=document.createElement('li'); li.textContent=t; li.className='new'; ul.appendChild(li);
+}
+$('next').onclick=()=>{ i++; if(i<STEPS.length){render(); $('jordan').setAttribute('tabindex','-1'); $('jordan').focus();} else finish(); };
+function finish(){
+  $('progFill').style.width='100%';
+  const max=STEPS.length*2, pct=Math.round(score/max*100);
+  const items=results.map(r=>`<li class="${r.s===2?'ok':'miss'}">${r.key}${r.s===2?'':' (revisit)'}</li>`).join('');
+  const msg = pct>=85 ? 'You covered the intake essentials and kept Jordan at the center of the conversation.' :
+              pct>=60 ? 'You covered most of the essentials. Look at the items marked revisit before meeting your own case study student.' :
+              'Try the session again, focusing on the process, goals, and background before any assessment.';
+  const sum=$('summary'); sum.hidden=false;
+  sum.innerHTML=`<div class="panel" tabindex="-1" id="sumPanel"><h3>Session summary</h3>
+  <p><strong>${score} of ${max} points.</strong> ${msg}</p>
+  <h3>Intake elements</h3><ul class="checklist">${items}</ul>
+  <h3>Theories at work</h3>
+  <p>The strongest responses listened for <strong>self-efficacy</strong> (SCCT) in the chemistry story, <strong>external influences</strong> in Jordan\u2019s family,
+  and <strong>life themes</strong> (narrative approaches) in Jordan's leadership roles. Name at least two theories like these in your case study paper.</p>
+  <div class="row"><button class="btn ghost" id="again" type="button">Start the session again</button></div></div>`;
+  $('again').onclick=reset; $('sumPanel').focus();
+}
+function reset(){ i=0; score=0; results=[]; $('notes').innerHTML='<li class="empty">Notes appear here as you learn about Jordan.</li>'; $('summary').hidden=true; render(); $('jordan').focus(); }
+render();
+
+const SORT=[
+ {t:"I took the Strong and my top theme is Social. Which majors match that?",a:0,w:"Matching a person's interests to environments is classic person-environment fit, as in Holland's theory."},
+ {t:"I'd love engineering, but I don't think I'm smart enough for calculus.",a:1,w:"Low confidence, not low interest, is limiting the choice. That is SCCT's self-efficacy at work."},
+ {t:"My grandmother always told stories about crossing the border. I think that's why I want to work in immigration law.",a:2,w:"This student is making meaning from a family story. Narrative approaches listen for life themes like this."},
+ {t:"My parents can't help with tuition, so I need a job that pays right away.",a:1,w:"SCCT pays attention to contextual barriers and supports, such as finances, that shape which choices feel possible."},
+ {t:"I want a job where I'm outdoors and working with my hands.",a:0,w:"A clear preference for a type of work environment points to person-environment fit (Holland's Realistic type)."},
+ {t:"Every time I've been happiest, I was teaching someone something.",a:2,w:"A recurring pattern across a life story is a life theme, central to constructivist and narrative approaches."}
+];
+const LABELS=["Person-environment fit","SCCT","Narrative"];
+let answered=0, correct=0;
+SORT.forEach((q,qi)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<p class="stmt" id="st${qi}">“${q.t}”</p><div class="seg" role="group" aria-labelledby="st${qi}"></div><p class="why" aria-live="polite"></p>`;
+  const seg=li.querySelector('.seg');
+  LABELS.forEach((l,li2)=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=l;
+    b.onclick=()=>{
+      if(seg.dataset.done) return;
+      seg.dataset.done=1; answered++;
+      const right=li2===q.a; if(right) correct++;
+      seg.querySelectorAll('button').forEach((x,xi)=>{ if(xi===q.a) x.classList.add('right'); else if(x===b) x.classList.add('wrong'); x.setAttribute('aria-disabled','true'); });
+      li.querySelector('.why').innerHTML=`<strong>${right?'Correct.':'Not quite. The best fit is '+LABELS[q.a]+'.'}</strong> ${q.w}`;
+      $('sortScore').textContent = answered===SORT.length ? `You matched ${correct} of ${SORT.length}.` : '';
+    };
+    seg.appendChild(b);
+  });
+  $('sorter').appendChild(li);
+});
+</script>
+</body>
+</html>

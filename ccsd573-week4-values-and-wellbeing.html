@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work Values Card Sort and Wellbeing Check | CCSD 573 Week 4</title>
+<meta name="description" content="Interactive work values card sort and five elements of wellbeing self-check for CCSD 573 Week 4.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brick:#A8353A; --deep:#7C2429; --black:#000; --ink:#2A2422; --muted:#5F5650;
+  --paper:#FFFFFF; --cream:#F5F2EF; --line:#E3DDD7; --tint:#F6E9EA;
+  --good:#2F6B4F; --good-bg:#E8F2EC; --mid:#8A5A00; --mid-bg:#FBF1DC; --bad:#9B2C2C; --bad-bg:#F8E6E6;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'Public Sans', Arial, Helvetica, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);overflow-x:hidden}
+html.embedded,html.embedded body{overflow-y:hidden}
+body{font-family:var(--sans);font-size:17px;line-height:1.6}
+#app{max-width:900px;margin:0 auto;padding:0 20px 28px}
+.bar{display:flex;height:12px;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:22px}
+.bar span:first-child{flex:1;background:var(--brick)} .bar span:last-child{width:72px;background:var(--black)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,3.6vw,2.35rem);line-height:1.15;color:var(--deep);margin:0 0 8px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-weight:600;font-size:1.45rem;line-height:1.25;color:var(--deep);margin:34px 0 8px}
+h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:var(--deep);margin:18px 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.lede{font-size:1.08rem;color:var(--ink)}
+.course{font-size:.95rem;color:var(--muted);margin:0 0 14px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin-bottom:6px}
+.hero svg{width:100%;height:auto;display:block}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero .art{max-width:360px}}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+.rule{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:36px 0 0}
+.rule span:first-child{width:40px;background:var(--black)} .rule span:last-child{flex:1;background:var(--brick)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brick);color:#fff;border:2px solid var(--brick);border-radius:999px;padding:9px 20px;font-weight:600}
+.btn:hover{background:var(--deep);border-color:var(--deep)}
+.btn.ghost{background:transparent;color:var(--deep);border-color:var(--deep)}
+.btn.ghost:hover{background:var(--tint)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid #1F5FBF;outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.panel h3:first-child{margin-top:0}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;color:var(--ink)}
+.choice:hover{border-color:var(--brick)}
+.choice[aria-pressed="true"]{border-color:var(--deep);background:var(--tint)}
+.fb{border-radius:10px;padding:12px 16px;margin:10px 0;border-left:6px solid}
+.fb.good{background:var(--good-bg);border-color:var(--good)} .fb.mid{background:var(--mid-bg);border-color:var(--mid)} .fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb strong{display:block;margin-bottom:2px}
+.fb.good strong{color:var(--good)} .fb.mid strong{color:var(--mid)} .fb.bad strong{color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:600;background:var(--tint);color:var(--deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.deal{background:#fff;text-align:center;padding:22px}
+.count{color:var(--muted);font-size:.92rem;margin:0 auto 10px}
+.card{max-width:420px;margin:0 auto 16px;border:2px solid #2A2422;border-top:16px solid #000;border-radius:12px;padding:18px 20px;background:#fff;outline:none}
+.card h3{font-size:1.6rem;margin:0 0 6px}
+.card p{margin:0 auto;color:var(--ink)}
+.card.flip{animation:deal .35s ease}
+@keyframes deal{from{transform:translateY(-10px) rotate(-2deg);opacity:.2}to{transform:none;opacity:1}}
+.piles-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.piles-btns button{border:2px solid var(--deep);background:#fff;color:var(--deep);border-radius:999px;padding:9px 16px;font-weight:600}
+.piles-btns button:hover{background:var(--tint)}
+.piles-btns button.p0{background:var(--deep);color:#fff}
+.piles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+@media (max-width:760px){.piles{grid-template-columns:repeat(2,1fr)}}
+.pile{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:90px}
+.pile h3{font-family:var(--sans);font-size:.98rem;margin:0 0 8px;color:var(--deep)}
+.pile.p0{border-top:6px solid var(--deep)}.pile.p1{border-top:6px solid var(--brick)}.pile.p2{border-top:6px solid #8C7E74}.pile.p3{border-top:6px solid #CFC7C0}
+.chip{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin:0 4px 6px 0;font-size:.9rem;color:var(--ink)}
+.chip:hover{border-color:var(--brick)}
+.topgrid{display:flex;flex-wrap:wrap;gap:8px}
+.topgrid button{background:#fff;border:2px solid var(--line);border-radius:10px;padding:8px 14px;color:var(--ink)}
+.topgrid button[aria-pressed="true"]{border-color:var(--deep);background:var(--deep);color:#fff}
+.topgrid button .n{font-weight:700;margin-right:6px}
+.ranked{font-family:var(--serif);font-size:1.15rem;padding-left:26px}
+.small{font-size:.92rem;color:var(--muted)}
+.wbgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+@media (max-width:760px){.wbgrid{grid-template-columns:1fr}}
+.radar{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;overflow:visible}
+.ring{fill:none;stroke:#E3DDD7;stroke-width:1.5}.ax{stroke:#E3DDD7;stroke-width:1.5}
+.shape{fill:rgba(168,53,58,.22);stroke:#A8353A;stroke-width:3;stroke-linejoin:round;transition:all .25s}
+.axl{font-family:var(--sans);font-size:14px;font-weight:600;fill:#2A2422}
+.axl.low{fill:#9B2C2C}
+.dot{fill:#7C2429}
+.sl{margin:0 0 12px}
+.sl label{display:flex;justify-content:space-between;font-weight:600}
+.sl .hint{font-size:.88rem;color:var(--muted);margin:0}
+.sl input{width:100%;accent-color:#A8353A;height:26px}
+</style>
+</head>
+<body>
+<main id="app">
+<div class="bar" aria-hidden="true"><span></span><span></span></div>
+
+<header class="hero">
+  <div>
+    <p class="course">CCSD 573, Week 4</p>
+    <h1>What matters to you at work?</h1>
+    <p class="lede">Sort twenty work values, choose your top five, and see where they might pull against each other.
+    Then check in on the five elements of wellbeing. This is the same kind of values card sort you can use with your case study student.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 360 210" role="img" aria-labelledby="artT">
+<title id="artT">Illustration of value cards sorted into four stacks labeled Always, Often, Sometimes, and Seldom, with one card labeled Service being placed on the Always stack.</title>
+<rect x="20" y="110" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="20" y="101" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="20" y="92" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="20" y="83" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="20" y="83" width="66" height="12" rx="6" fill="#7C2429"/><text x="53" y="196" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#2A2422">Always</text><rect x="104" y="110" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="104" y="101" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="104" y="92" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="104" y="92" width="66" height="12" rx="6" fill="#A8353A"/><text x="137" y="196" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#2A2422">Often</text><rect x="188" y="110" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="188" y="101" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="188" y="101" width="66" height="12" rx="6" fill="#8C7E74"/><text x="221" y="196" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#2A2422">Sometimes</text><rect x="272" y="110" width="66" height="60" rx="6" fill="#fff" stroke="#2A2422" stroke-width="1.5"/><rect x="272" y="110" width="66" height="12" rx="6" fill="#CFC7C0"/><text x="305" y="196" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#2A2422">Seldom</text>
+<path d="M120 54 q-40 -10 -62 40" fill="none" stroke="#5F5650" stroke-width="2" stroke-dasharray="4 5"/>
+<path d="M52 86 l6 10 l8 -8" fill="none" stroke="#5F5650" stroke-width="2"/>
+<g transform="rotate(-10 160 40)"><rect x="118" y="6" width="96" height="64" rx="8" fill="#A8353A"/><text x="166" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#fff">Service</text></g>
+</svg></div>
+</header>
+
+<section aria-labelledby="sortH">
+  <h2 id="sortH">Step 1: Sort the cards</h2>
+  <p>For each value, choose how much you value it in your work. Go with your first reaction. You can move a card later by selecting it in a pile.</p>
+  <div class="deal panel" id="deal">
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="card" id="card" tabindex="-1"><h3 id="cName"></h3><p id="cDef"></p></div>
+    <div class="piles-btns" role="group" aria-label="Choose a pile for this value" id="pileBtns"></div>
+  </div>
+  <div class="piles" id="piles"></div>
+</section>
+
+<section aria-labelledby="topH" id="topSec" hidden>
+  <h2 id="topH">Step 2: Choose your top five</h2>
+  <p id="topIntro">Select five values in order of importance, starting with the most important. Select a value again to remove it.</p>
+  <div class="topgrid" id="topgrid" role="group" aria-labelledby="topH"></div>
+  <ol class="ranked" id="ranked" aria-live="polite"></ol>
+  <div class="row"><button type="button" class="btn" id="toSummary" disabled>See my values summary</button></div>
+</section>
+
+<section aria-labelledby="sumH" id="sumSec" hidden>
+  <h2 id="sumH" tabindex="-1">Step 3: Reflect</h2>
+  <div class="panel" id="summary"></div>
+  <div class="row"><button type="button" class="btn ghost" id="copy">Copy my summary</button><button type="button" class="btn ghost" id="restart">Start the sort again</button></div>
+  <p class="small" id="copyMsg" aria-live="polite"></p>
+</section>
+
+<div class="rule" aria-hidden="true"><span></span><span></span></div>
+
+<section aria-labelledby="wbH">
+  <h2 id="wbH">The five elements of wellbeing</h2>
+  <p>Rath and Harter (2010) describe five interconnected elements of a thriving life. Rate each from 0 (struggling) to 10 (thriving) as it is for you right now.</p>
+  <div class="wbgrid">
+    <div><svg viewBox="0 0 340 340" class="radar" role="img" aria-labelledby="rdT" aria-describedby="rdD">
+<title id="rdT">Your wellbeing profile</title><desc id="rdD">A five-sided chart of your ratings for career, social, financial, physical, and community wellbeing.</desc>
+<polygon class="ring" points="170.0,146.0 192.8,162.6 184.1,189.4 155.9,189.4 147.2,162.6"/><polygon class="ring" points="170.0,122.0 215.7,155.2 198.2,208.8 141.8,208.8 124.3,155.2"/><polygon class="ring" points="170.0,98.0 238.5,147.8 212.3,228.2 127.7,228.2 101.5,147.8"/><polygon class="ring" points="170.0,74.0 261.3,140.3 226.4,247.7 113.6,247.7 78.7,140.3"/><polygon class="ring" points="170.0,50.0 284.1,132.9 240.5,267.1 99.5,267.1 55.9,132.9"/><line x1="170" y1="170" x2="170.0" y2="50.0" class="ax"/><line x1="170" y1="170" x2="284.1" y2="132.9" class="ax"/><line x1="170" y1="170" x2="240.5" y2="267.1" class="ax"/><line x1="170" y1="170" x2="99.5" y2="267.1" class="ax"/><line x1="170" y1="170" x2="55.9" y2="132.9" class="ax"/><polygon id="shape" class="shape" points=""/><text x="170.0" y="29.0" text-anchor="middle" class="axl" id="axl0">Career</text><text x="308.9" y="129.9" text-anchor="start" class="axl" id="axl1">Social</text><text x="255.8" y="293.1" text-anchor="start" class="axl" id="axl2">Financial</text><text x="84.2" y="293.1" text-anchor="end" class="axl" id="axl3">Physical</text><text x="31.1" y="129.9" text-anchor="end" class="axl" id="axl4">Community</text><g id="dots"></g></svg></div>
+    <div id="sliders"></div>
+  </div>
+  <div class="panel" id="wbNote" aria-live="polite"></div>
+</section>
+
+<footer>Azusa Pacific University, CCSD 573: Career Counseling and Development</footer>
+</main>
+<script>
+(function(){
+  var embedded = window.self !== window.top;
+  if (embedded) document.documentElement.classList.add('embedded');
+  var last = 0;
+  function send(){
+    var app = document.getElementById('app');
+    var h = Math.ceil(app.getBoundingClientRect().height) + 4;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    try { window.parent.postMessage(JSON.stringify({subject:'lti.frameResize', height:h}), '*'); } catch(e) {}
+  }
+  window.addEventListener('load', send);
+  window.addEventListener('resize', send);
+  if ('ResizeObserver' in window) new ResizeObserver(send).observe(document.getElementById('app'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(send);
+  setTimeout(send, 300);
+  window.__resize = send;
+})();
+</script>
+<script>
+const VALUES=[["Helping others","Directly improving the lives of individuals or communities."],["Independence","Deciding how and when to do your work."],
+["Financial security","A steady, dependable income and benefits."],["High income","Earning well above average."],["Creativity","Generating original ideas and new ways of doing things."],
+["Achievement","Accomplishing challenging goals and seeing results."],["Recognition","Being noticed and appreciated for your contributions."],["Variety","Changing tasks, settings, and people often."],
+["Stability","A predictable routine and a secure position."],["Work-life balance","Time and energy for family, friends, and rest."],["Leadership","Guiding people and shaping direction."],
+["Teamwork","Working closely with others toward shared goals."],["Faith integration","Living out your faith through your work."],["Learning","Continually growing in knowledge and skill."],
+["Adventure","Taking risks and trying new experiences."],["Prestige","Holding a respected, high-status position."],["Social justice","Working toward fairness and equity."],
+["Flexibility","Setting your own schedule or working remotely."],["Location","Living and working in a particular place."],["Influence","Affecting decisions and how others think."]];
+const PILES=["Always valued","Often valued","Sometimes valued","Seldom valued"];
+const TENSIONS=[["Financial security","Adventure"],["High income","Work-life balance"],["Independence","Teamwork"],["Stability","Variety"],["Prestige","Helping others"],["Location","Adventure"],["Stability","Adventure"],["High income","Helping others"],["Flexibility","Leadership"]];
+const $=id=>document.getElementById(id);
+let place={}, queue=[], top5=[];
+function init(){ place={}; queue=VALUES.map((v,i)=>i); top5=[];
+  $('pileBtns').innerHTML=''; PILES.forEach((p,k)=>{const b=document.createElement('button');b.type='button';b.className='p'+k;b.textContent=p;b.onclick=()=>assign(k);$('pileBtns').appendChild(b);});
+  $('topSec').hidden=true; $('sumSec').hidden=true; $('deal').hidden=false; deal(); drawPiles(); }
+function deal(){
+  if(!queue.length){ $('deal').hidden=true; showTop(); return; }
+  const v=VALUES[queue[0]]; const sorted=VALUES.length-queue.length;
+  $('count').textContent=`Card ${sorted+1} of ${VALUES.length}`; $('cName').textContent=v[0]; $('cDef').textContent=v[1];
+  const c=$('card'); c.classList.remove('flip'); void c.offsetWidth; c.classList.add('flip');
+}
+function assign(k){ const i=queue.shift(); place[i]=k; drawPiles(); deal(); if(queue.length) $('pileBtns').querySelector('.p'+k).focus(); }
+function drawPiles(){
+  $('piles').innerHTML=PILES.map((p,k)=>{const items=Object.keys(place).filter(i=>place[i]===k);
+    return `<div class="pile p${k}"><h3>${p} (${items.length})</h3>${items.map(i=>`<button type="button" class="chip" data-i="${i}" aria-label="${VALUES[i][0]}. Select to sort this card again.">${VALUES[i][0]}</button>`).join('')}</div>`;}).join('');
+  $('piles').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const i=+b.dataset.i; delete place[i]; queue.unshift(i); top5=top5.filter(x=>x!==i);
+    $('deal').hidden=false; $('topSec').hidden=true; $('sumSec').hidden=true; drawPiles(); deal(); $('card').focus();});
+}
+function candidates(){ let c=Object.keys(place).filter(i=>place[i]===0).map(Number); if(c.length<5) c=c.concat(Object.keys(place).filter(i=>place[i]===1).map(Number)); return c; }
+function showTop(){
+  $('topSec').hidden=false; const c=candidates();
+  $('topIntro').textContent = Object.keys(place).filter(i=>place[i]===0).length<5 ? 'You have fewer than five values in Always valued, so your Often valued cards are included too. Select five in order of importance.' : 'Select five values in order of importance, starting with the most important. Select a value again to remove it.';
+  const g=$('topgrid'); g.innerHTML='';
+  c.forEach(i=>{const b=document.createElement('button');b.type='button';b.dataset.i=i;b.setAttribute('aria-pressed','false');b.innerHTML=`<span class="n"></span>${VALUES[i][0]}`;
+    b.onclick=()=>{const p=top5.indexOf(i); if(p>=0) top5.splice(p,1); else if(top5.length<5) top5.push(i); drawTop();}; g.appendChild(b);});
+  drawTop(); $('topH').setAttribute('tabindex','-1'); $('topH').focus();
+}
+function drawTop(){
+  $('topgrid').querySelectorAll('button').forEach(b=>{const p=top5.indexOf(+b.dataset.i); b.setAttribute('aria-pressed',p>=0); b.querySelector('.n').textContent=p>=0?(p+1)+'.':'';});
+  $('ranked').innerHTML=top5.map(i=>`<li>${VALUES[i][0]}</li>`).join('');
+  $('toSummary').disabled = top5.length < Math.min(5, candidates().length);
+}
+$('toSummary').onclick=()=>{
+  const names=top5.map(i=>VALUES[i][0]); const always=Object.keys(place).filter(i=>place[i]===0).map(i=>VALUES[i][0]);
+  const pool=new Set([...names,...always]);
+  const t=TENSIONS.filter(([a,b])=>pool.has(a)&&pool.has(b));
+  let html=`<h3>Your top five</h3><ol>${names.map(n=>`<li>${n}</li>`).join('')}</ol>`;
+  html+= t.length ? `<h3>Values that may pull against each other</h3><ul>${t.map(([a,b])=>`<li><strong>${a}</strong> and <strong>${b}</strong>: how would you choose if a role offered one but not the other?</li>`).join('')}</ul>`
+    : `<h3>Values that may pull against each other</h3><p>No common tensions showed up among your top and always-valued cards. Look again: which two of your top five would be hardest to give up?</p>`;
+  html+=`<h3>Questions to talk through</h3><ul><li>Where did your top value come from: family, faith, experience, or something else?</li><li>Which of your top five does your current or most recent job honor? Which does it ignore?</li><li>If you used this sort with your case study student, what follow-up question would you ask about their top card?</li></ul>`;
+  $('summary').innerHTML=html; $('sumSec').hidden=false; $('sumH').focus();
+};
+$('copy').onclick=()=>{
+  const names=top5.map((i,k)=>`${k+1}. ${VALUES[i][0]}`).join('\n');
+  const txt=`My top five work values\n${names}\n\n`+PILES.map((p,k)=>`${p}: `+Object.keys(place).filter(i=>place[i]===k).map(i=>VALUES[i][0]).join(', ')).join('\n');
+  const done=()=>{$('copyMsg').textContent='Summary copied. Paste it into your notes or the Vocation Activity.';};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,()=>fallback(txt,done));} else fallback(txt,done);
+};
+function fallback(txt,done){const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');done();}catch(e){$('copyMsg').textContent='Copy is blocked here. Select and copy your top five from the list above.';} ta.remove();}
+$('restart').onclick=()=>{init(); $('card').focus();};
+init();
+
+const WB=[["Career","Liking what you do each day","career"],["Social","Strong relationships and love in your life","social"],["Financial","Managing your economic life well","financial"],["Physical","Good health and enough energy","physical"],["Community","Engagement with where you live","community"]];
+const NOTE={0:"Rath and Harter place career wellbeing first. What part of your days would you most like to change, and what would it take?",
+ 1:"Relationships at work and beyond shape career satisfaction. Who are the colleagues, mentors, or friends who energize you?",
+ 2:"Financial pressure narrows the choices that feel possible, an example of the contextual barriers SCCT describes. What would ease that pressure?",
+ 3:"Work demands affect sleep, stress, and energy. What would a sustainable pace look like for you?",
+ 4:"Community wellbeing comes from belonging and service where you live. Where could you contribute outside of work?"};
+let vals=[6,6,6,6,6];
+const RC=170,RR=120;
+function pt(k,v){const a=(-90+72*k)*Math.PI/180;return [RC+RR*(v/10)*Math.cos(a),RC+RR*(v/10)*Math.sin(a)];}
+WB.forEach((w,k)=>{const d=document.createElement('div');d.className='sl';
+  d.innerHTML=`<label for="wb${k}"><span>${w[0]} wellbeing</span><span id="wv${k}">6</span></label><p class="hint" id="wh${k}">${w[1]}</p><input type="range" id="wb${k}" min="0" max="10" value="6" aria-describedby="wh${k}">`;
+  $('sliders').appendChild(d); d.querySelector('input').addEventListener('input',e=>{vals[k]=+e.target.value;drawRadar();});});
+function drawRadar(){
+  $('shape').setAttribute('points',vals.map((v,k)=>pt(k,v).map(n=>n.toFixed(1)).join(',')).join(' '));
+  $('dots').innerHTML=vals.map((v,k)=>{const [x,y]=pt(k,v);return `<circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5"/>`;}).join('');
+  vals.forEach((v,k)=>{$('wv'+k).textContent=v;$('wb'+k).setAttribute('aria-valuetext',`${v} out of 10`);});
+  const min=Math.min(...vals), lows=vals.map((v,k)=>v===min?k:-1).filter(k=>k>=0);
+  vals.forEach((v,k)=>$('axl'+k).classList.toggle('low',lows.includes(k)&&min<10));
+  const allSame=vals.every(v=>v===vals[0]);
+  $('wbNote').innerHTML = allSame ? '<p>Move the sliders to rate each element. Your lowest-rated element will be highlighted with a question to consider.</p>'
+    : `<h3>Your lowest: ${lows.map(k=>WB[k][0]).join(' and ')} wellbeing</h3><p>${NOTE[lows[0]]}</p><p class="small">The elements are connected. A career decision touches relationships, finances, health, and community, not only a job title.</p>`;
+}
+drawRadar();
+</script>
+</body>
+</html>
