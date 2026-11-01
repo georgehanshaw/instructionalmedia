@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Behavior Bureau: The Walk and the Footprints</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#183530; --desk-deep:#112722; --on-desk:#f1e8cf; --on-desk-soft:#b9c7bd;
+  --paper:#efe4c6; --paper-edge:#d6c593; --manila:#dcc48a; --manila-deep:#c2a765;
+  --ink:#2a2118; --ink-soft:#5b4e3c;
+  --red:#a82a22; --blue:#25517f; --brass:#b08a3e; --green:#2f6b3f;
+  --display:"Special Elite","Courier New",Courier,monospace;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--desk:#0c1a17;--desk-deep:#08120f;--paper:#d9ceae;--paper-edge:#bfae7c;--manila:#c4ad73;color-scheme:dark;}
+}
+:root[data-theme="dark"]{--desk:#0c1a17;--desk-deep:#08120f;--paper:#d9ceae;--paper-edge:#bfae7c;--manila:#c4ad73;color-scheme:dark;}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scroll-behavior:smooth}
+body{margin:0;min-height:100%;background:var(--desk);color:var(--on-desk);font-family:var(--body);font-size:1.0625rem;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--desk-deep);z-index:30}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;margin:0}
+p{margin:0 0 1em}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brass);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--desk-deep);border-bottom:1px solid rgba(241,232,207,.15)}
+.bar .wrap{display:flex;align-items:center;gap:18px;min-height:56px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.brand{font-family:var(--display);font-size:1.05rem;display:flex;align-items:center;gap:10px;color:var(--on-desk);text-decoration:none}
+.bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.bar nav a{color:var(--on-desk-soft);text-decoration:none;padding:6px 10px;border-radius:3px;white-space:nowrap;font-size:.95rem}
+.bar nav a:hover{color:var(--on-desk);background:rgba(241,232,207,.08)}
+
+/* hero */
+.hero{padding:44px 0 36px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:center}
+.hero h1{font-size:clamp(2.2rem,6vw,3.5rem);margin-bottom:16px}
+.hero .lede{font-size:1.15rem;color:var(--on-desk);max-width:34ch}
+.hero .lede em{color:var(--manila)}
+.hero svg{width:100%;height:auto;display:block}
+.go{display:inline-block;margin-top:6px;background:var(--manila);color:var(--ink);border:0;padding:12px 20px;border-radius:3px;font-family:var(--display);font-size:1.05rem;text-decoration:none;box-shadow:0 3px 0 var(--manila-deep)}
+.go:hover{background:#e8d49d}
+@media (max-width:720px){.hero .wrap{grid-template-columns:1fr}.hero svg{max-width:420px}}
+
+/* case-file sheets */
+.sheet{position:relative;background:var(--paper);color:var(--ink);margin:56px 0 0;border-radius:2px 6px 4px 4px;padding:34px 30px 32px;box-shadow:0 14px 28px rgba(0,0,0,.35)}
+.sheet::before{content:attr(data-tab);position:absolute;left:18px;top:-30px;background:var(--manila);color:var(--ink);font-family:var(--display);padding:6px 18px 4px;border-radius:7px 7px 0 0;font-size:.98rem;height:31px}
+.sheet h2{font-size:1.75rem;margin-bottom:12px}
+.sheet h3{font-size:1.2rem;margin:20px 0 6px}
+.sheet p,.sheet li{max-width:66ch}
+.typed{font-family:var(--display)}
+@media (max-width:560px){.sheet{padding:28px 18px 26px}}
+
+/* briefing */
+.tests{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.test{border:2px solid var(--ink);padding:14px 16px;background:rgba(255,255,255,.28)}
+.test h3{margin-top:0}
+.test p{margin:0;font-size:1rem}
+@media (max-width:640px){.tests{grid-template-columns:1fr}}
+.defs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0 6px}
+.def{padding:14px 16px;border-left:6px solid}
+.def.b{border-color:var(--blue);background:rgba(37,81,127,.09)}
+.def.o{border-color:var(--red);background:rgba(168,42,34,.08)}
+.def strong{font-family:var(--display);font-weight:400;font-size:1.15rem;display:block;margin-bottom:2px}
+.def p{margin:0;font-size:1rem}
+@media (max-width:640px){.defs{grid-template-columns:1fr}}
+.lab{margin-top:26px;border:2px solid var(--ink);background:#e3d6b0}
+.lab-head{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:2px solid var(--ink);background:var(--manila)}
+.seg{background:transparent;border:2px solid var(--ink);padding:6px 12px;border-radius:3px;font-family:var(--display);font-size:.95rem}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.lab svg{display:block;width:100%;height:auto}
+.lab-cap{padding:12px 14px 14px;margin:0;border-top:2px solid var(--ink);min-height:4.8em;max-width:none}
+.scene .walker,.scene .prints{transition:opacity .45s ease}
+.scene[data-view="tape"] .prints{opacity:0}
+.scene[data-view="prints"] .walker{opacity:0}
+
+/* evidence board */
+.dots{display:flex;gap:6px;margin:6px 0 18px;flex-wrap:wrap}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);background:transparent}
+.dot.now{background:var(--brass)}
+.dot.good{background:var(--green);border-color:var(--green)}
+.dot.bad{background:var(--red);border-color:var(--red)}
+.exhibit{position:relative;background:#fbf5df;border:2px solid var(--ink);padding:26px 24px 22px;box-shadow:5px 5px 0 var(--paper-edge);overflow:hidden}
+.exhibit .tag{font-family:var(--display);color:var(--ink-soft);font-size:.95rem;margin-bottom:10px}
+.exhibit blockquote{margin:0 0 20px;font-size:1.4rem;line-height:1.4;font-family:var(--body);font-weight:600;max-width:34ch}
+.pick{display:flex;gap:12px;flex-wrap:wrap}
+.stampbtn{flex:1 1 180px;padding:14px 16px;border:3px solid;background:transparent;font-family:var(--display);font-size:1.15rem;border-radius:3px;transition:transform .12s}
+.stampbtn.b{border-color:var(--blue);color:var(--blue)}
+.stampbtn.o{border-color:var(--red);color:var(--red)}
+.stampbtn:hover:not(:disabled){transform:rotate(-1.2deg) scale(1.02);background:rgba(0,0,0,.04)}
+.stampbtn:disabled{opacity:.45;cursor:default}
+.stampbtn.picked{opacity:1;background:currentColor}
+.stampbtn.picked span{color:#fbf5df}
+.hintline{margin:14px 0 0;font-size:.95rem;color:var(--ink-soft)}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;font-size:inherit}
+.stamp{position:absolute;right:16px;top:14px;border:4px solid;padding:2px 14px;font-family:var(--display);font-size:1.9rem;transform:rotate(-9deg);opacity:0;pointer-events:none;background:rgba(251,245,223,.7)}
+.stamp.show{animation:thunk .35s ease-out forwards}
+.stamp.b{color:var(--blue);border-color:var(--blue)}
+.stamp.o{color:var(--red);border-color:var(--red)}
+@keyframes thunk{0%{opacity:0;transform:rotate(-9deg) scale(2.2)}100%{opacity:.92;transform:rotate(-9deg) scale(1)}}
+.notes{margin-top:16px;padding:14px 16px;border-left:6px solid var(--ink);background:rgba(255,255,255,.35)}
+.notes.good{border-color:var(--green)}
+.notes.bad{border-color:var(--red)}
+.notes p{margin:0 0 .4em;max-width:none}
+.notes p:last-child{margin:0}
+.notes b{font-family:var(--display);font-weight:400}
+.next{margin-top:14px;background:var(--ink);color:var(--paper);border:0;padding:10px 18px;border-radius:3px;font-family:var(--display)}
+.summary{text-align:left}
+.summary .big{font-family:var(--display);font-size:2.4rem;margin:4px 0 8px}
+
+/* field reports */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+.chip{border:2px solid var(--ink);background:transparent;padding:6px 12px;border-radius:3px;font-size:.98rem;display:flex;gap:8px;align-items:center}
+.chip[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.chip .done{color:var(--green);font-weight:600}
+.chip[aria-selected="true"] .done{color:#9fd9a8}
+.report-grid{display:grid;grid-template-columns:240px 1fr;gap:22px;align-items:start}
+.report-grid figure{margin:0;border:2px solid var(--ink);background:#e3d6b0}
+.report-grid figure svg{display:block;width:100%;height:auto}
+.report-grid figcaption{padding:8px 10px;font-size:.92rem;border-top:2px solid var(--ink);color:var(--ink-soft)}
+@media (max-width:700px){.report-grid{grid-template-columns:1fr}.report-grid figure{max-width:320px}}
+.report{font-size:1.18rem;line-height:2.15;background:#fbf5df;border:2px solid var(--ink);padding:16px 18px;margin:0 0 14px;max-width:none}
+.clue{font:inherit;color:inherit;background:rgba(176,138,62,.28);border:0;border-bottom:3px dotted var(--brass);padding:1px 3px;border-radius:2px;line-height:1.5}
+.clue:hover{background:rgba(176,138,62,.5)}
+.clue[data-mark="B"]{background:rgba(37,81,127,.18);border-bottom:3px solid var(--blue)}
+.clue[data-mark="O"]{background:rgba(168,42,34,.14);border-bottom:3px solid var(--red)}
+.clue[data-mark="B"]::after,.clue[data-mark="O"]::after{font-family:var(--display);font-size:.72em;margin-left:5px;padding:0 5px;color:#fbf5df;vertical-align:.12em}
+.clue[data-mark="B"]::after{content:"behavior";background:var(--blue)}
+.clue[data-mark="O"]::after{content:"outcome";background:var(--red)}
+.clue.ok{outline:3px solid var(--green);outline-offset:1px}
+.clue.no{outline:3px solid var(--red);outline-offset:1px;text-decoration:line-through;text-decoration-thickness:1px}
+.clue:disabled{cursor:default}
+.legend{font-size:.98rem;color:var(--ink-soft);margin-bottom:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.review{margin:16px 0 0;padding:0;list-style:none}
+.review li{padding:10px 12px;border-left:6px solid;margin-bottom:8px;background:rgba(255,255,255,.35);max-width:none}
+.review li.ok{border-color:var(--green)}
+.review li.no{border-color:var(--red)}
+.review b{font-family:var(--display);font-weight:400}
+
+/* verdict */
+.ranks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.rank{text-align:center;padding:12px 8px;border:2px dashed var(--ink-soft);opacity:.55}
+.rank svg{width:84px;height:auto}
+.rank.earned{opacity:1;border:3px solid var(--ink);background:rgba(255,255,255,.4)}
+.rank div{font-family:var(--display)}
+.checklist{list-style:none;padding:0;margin:0 0 14px}
+.checklist li{padding:2px 0}
+.checklist li::before{content:"\25CB  ";font-family:var(--display)}
+.checklist li.done::before{content:"\2713  ";color:var(--green)}
+.take{margin:10px 0 0;padding-left:1.2em}
+.take li{margin-bottom:6px}
+footer{padding:44px 0 56px;color:var(--on-desk-soft);font-size:.92rem}
+footer .wrap{max-width:860px}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="The Behavior Bureau, top of page">
+      <svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><circle cx="17" cy="17" r="11" fill="none" stroke="#b08a3e" stroke-width="4"/><path d="M25 25 L36 36" stroke="#f1e8cf" stroke-width="5" stroke-linecap="round"/><path d="M12 20c0-6 10-6 10 0" fill="none" stroke="#f1e8cf" stroke-width="1.6"/><path d="M14 22c0-3 6-3 6 0" fill="none" stroke="#f1e8cf" stroke-width="1.6"/></svg>
+      The Behavior Bureau
+    </a>
+    <nav aria-label="Case file sections">
+      <a href="#briefing">Briefing</a>
+      <a href="#board">Evidence board</a>
+      <a href="#reports">Field reports</a>
+      <a href="#verdict">Verdict</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>The Walk and the Footprints</h1>
+      <p class="lede">Every client file lands on your desk with two kinds of clues mixed together. One is what the person <em>did</em>. The other is what was <em>left behind</em>. Your job is to tell them apart.</p>
+      <a class="go" href="#briefing">Open the case file</a>
+    </div>
+    <svg viewBox="0 0 520 380" role="img" aria-label="A case folder with a magnifying glass showing a fingerprint, and a detective's fedora on the desk">
+      <defs>
+        <clipPath id="lens"><circle cx="190" cy="196" r="62"/></clipPath>
+      </defs>
+      <circle cx="452" cy="72" r="34" fill="none" stroke="#6d4a2a" stroke-opacity=".4" stroke-width="5" stroke-dasharray="170 40"/>
+      <rect x="36" y="86" width="400" height="262" rx="6" fill="#dcc48a"/>
+      <path d="M36 92 V70 q0-8 8-8 h96 q8 0 12 7 l8 17z" fill="#c2a765"/>
+      <g transform="rotate(-3 236 196)">
+        <rect x="72" y="58" width="330" height="262" fill="#f4ebd0" stroke="#2a2118" stroke-width="2"/>
+        <text x="94" y="96" font-family="Special Elite, Courier New, monospace" font-size="24" fill="#2a2118">CASE FILE 01</text>
+        <text x="94" y="120" font-family="Special Elite, Courier New, monospace" font-size="14" fill="#5b4e3c">Subject: behavior vs. outcome</text>
+        <rect x="94" y="140" width="210" height="9" fill="#2a2118"/>
+        <rect x="94" y="160" width="150" height="9" fill="#5b4e3c" opacity=".4"/>
+        <rect x="94" y="178" width="250" height="9" fill="#5b4e3c" opacity=".4"/>
+        <rect x="94" y="196" width="120" height="9" fill="#2a2118"/>
+        <rect x="94" y="214" width="230" height="9" fill="#5b4e3c" opacity=".4"/>
+        <rect x="94" y="232" width="180" height="9" fill="#5b4e3c" opacity=".4"/>
+        <g transform="rotate(-10 330 270)">
+          <rect x="262" y="246" width="136" height="44" fill="none" stroke="#a82a22" stroke-width="4"/>
+          <text x="330" y="278" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="26" fill="#a82a22">OPEN</text>
+        </g>
+      </g>
+      <path d="M338 306 C338 244 364 232 410 236 C456 232 482 244 482 306Z" fill="#26211c"/>
+      <path d="M380 240 q30 16 62 0" fill="none" stroke="#0f0c09" stroke-width="3"/>
+      <rect x="338" y="288" width="144" height="16" fill="#a82a22"/>
+      <ellipse cx="410" cy="310" rx="104" ry="24" fill="#26211c"/>
+      <ellipse cx="410" cy="304" rx="104" ry="22" fill="#33291f"/>
+      <line x1="238" y1="248" x2="324" y2="334" stroke="#3b2a1c" stroke-width="18" stroke-linecap="round"/>
+      <line x1="236" y1="246" x2="256" y2="266" stroke="#b08a3e" stroke-width="20" stroke-linecap="round"/>
+      <circle cx="190" cy="196" r="62" fill="#fbf5df" fill-opacity=".8"/>
+      <g clip-path="url(#lens)" transform="translate(190 190)" fill="none" stroke="#2a2118" stroke-width="2.4" stroke-linecap="round">
+        <path d="M-10 22 C-10 -4 10 -4 10 22"/>
+        <path d="M-18 24 C-18 -16 18 -16 18 24" stroke-dasharray="46 7"/>
+        <path d="M-26 26 C-26 -28 26 -28 26 26" stroke-dasharray="60 8"/>
+        <path d="M-34 28 C-34 -40 34 -40 34 28" stroke-dasharray="80 9"/>
+        <path d="M-42 30 C-42 -52 42 -52 42 30" stroke-dasharray="95 10"/>
+        <path d="M-50 32 C-50 -62 50 -62 50 32" stroke-dasharray="110 12"/>
+        <path d="M0 22 V6"/>
+      </g>
+      <circle cx="190" cy="196" r="62" fill="none" stroke="#b08a3e" stroke-width="10"/>
+      <path d="M150 168 a46 46 0 0 1 28 -22" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+  </div>
+</section>
+
+<div class="wrap">
+
+<!-- BRIEFING -->
+<section class="sheet" id="briefing" data-tab="Briefing">
+  <h2>Know your two kinds of evidence</h2>
+  <p>A behavioral assessment starts with a clear record of what a person does. Reports often skip that and describe what happened afterward, like a grade, a weight, or a messy room. Those are real and useful, but they are a different kind of clue.</p>
+  <div class="defs">
+    <div class="def b"><strong>Behavior</strong><p>What a person does. You can watch it happen, and you can count it or time it.</p></div>
+    <div class="def o"><strong>Behavior outcome</strong><p>What a behavior produces or changes. It is the result, product, or state left behind.</p></div>
+  </div>
+  <h3>Two quick tests</h3>
+  <div class="tests">
+    <div class="test">
+      <h3>The camera test</h3>
+      <p>Could a video camera record it happening? If yes, it is a behavior. If you would only see it by looking at what remains afterward, it is an outcome.</p>
+    </div>
+    <div class="test">
+      <h3>The dead man’s test</h3>
+      <p>Could a dead person do it? If yes, it is not a behavior. A dead person can “lose six pounds” or “have a clean room.” They cannot walk or sort laundry.</p>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head" role="group" aria-label="Choose what to examine">
+      <button class="seg" data-view="tape" aria-pressed="true">Replay the tape</button>
+      <button class="seg" data-view="prints" aria-pressed="false">Dust for prints</button>
+      <button class="seg" data-view="both" aria-pressed="false">Show both</button>
+    </div>
+    <svg class="scene" id="scene" data-view="tape" viewBox="0 0 640 250" role="img" aria-label="A detective walking across wet sand, and the line of footprints he leaves behind">
+      <defs>
+        <g id="fp"><ellipse cx="0" cy="-7" rx="7.5" ry="10.5"/><ellipse cx="0" cy="11" rx="5.5" ry="6"/></g>
+      </defs>
+      <rect width="640" height="250" fill="#e9dcb5"/>
+      <rect y="196" width="640" height="54" fill="#cdb98a"/>
+      <g stroke="#b9a273" stroke-width="2" opacity=".6"><path d="M20 214h60M140 232h80M300 220h70M430 238h90M560 212h60"/></g>
+      <g class="prints" fill="#6d5a3a" opacity=".85">
+        <use href="#fp" transform="translate(70 214) rotate(90)"/>
+        <use href="#fp" transform="translate(112 226) rotate(90)"/>
+        <use href="#fp" transform="translate(154 214) rotate(90)"/>
+        <use href="#fp" transform="translate(196 226) rotate(90)"/>
+        <use href="#fp" transform="translate(238 214) rotate(90)"/>
+        <use href="#fp" transform="translate(280 226) rotate(90)"/>
+        <use href="#fp" transform="translate(322 214) rotate(90)"/>
+        <use href="#fp" transform="translate(364 226) rotate(90)"/>
+        <use href="#fp" transform="translate(406 214) rotate(90)"/>
+        <use href="#fp" transform="translate(448 226) rotate(90)"/>
+        <use href="#fp" transform="translate(490 214) rotate(90)"/>
+      </g>
+      <g class="walker" fill="none" stroke="#26211c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(150 200)" opacity=".28">
+          <circle cx="0" cy="-104" r="12" fill="#26211c"/><path d="M-20 -112h40" stroke-width="5"/>
+          <path d="M0 -90V-40M0 -80l-18 24M0 -80l20 -20M0 -40l-24 40M0 -40l22 -6l6 46"/>
+        </g>
+        <g transform="translate(320 200)" opacity=".55">
+          <circle cx="0" cy="-104" r="12" fill="#26211c"/><path d="M-20 -112h40" stroke-width="5"/>
+          <path d="M0 -90V-40M0 -80l20 24M0 -80l-20 -20M0 -40l24 40M0 -40l-22 -6l-6 46"/>
+        </g>
+        <g transform="translate(490 200)">
+          <circle cx="0" cy="-104" r="12" fill="#26211c"/><path d="M-22 -112h44" stroke-width="5"/><path d="M-11 -118q11 -12 22 0" stroke-width="5"/>
+          <path d="M0 -90V-40M0 -80l-18 24M0 -80l20 -20M0 -40l-24 40M0 -40l22 -6l6 46"/>
+        </g>
+        <path d="M520 150h60m-14 -12l14 12l-14 12" stroke="#a82a22" stroke-width="5"/>
+      </g>
+    </svg>
+    <p class="lab-cap" id="labcap" aria-live="polite"><b class="typed">The behavior.</b> Someone walked across the sand. You can watch it, count the steps, and time it.</p>
+  </div>
+</section>
+
+<!-- EVIDENCE BOARD -->
+<section class="sheet" id="board" data-tab="Evidence board">
+  <h2>Sort ten exhibits</h2>
+  <p>Read each statement, then stamp it. Behavior or outcome? Each ruling comes with a note that shows which test settles it.</p>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <div id="boardArea"></div>
+</section>
+
+<!-- FIELD REPORTS -->
+<section class="sheet" id="reports" data-tab="Field reports">
+  <h2>Mark up three real-sounding reports</h2>
+  <p>In the wild, behaviors and outcomes arrive tangled in one paragraph. Tap each highlighted phrase to tag it. One tap marks it as a behavior, a second as an outcome, and a third clears it.</p>
+  <div class="chips" role="tablist" aria-label="Choose a report" id="chips"></div>
+  <div class="report-grid">
+    <figure><div id="caseArt"></div><figcaption id="caseCap"></figcaption></figure>
+    <div>
+      <p class="legend"><span style="color:var(--blue)">Blue</span> tag = behavior. <span style="color:var(--red)">Red</span> tag = outcome.</p>
+      <p class="report" id="reportText"></p>
+      <div class="actions" id="reportActions"></div>
+      <ul class="review" id="review"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- VERDICT -->
+<section class="sheet" id="verdict" data-tab="Verdict">
+  <h2 id="verdictHead">Close the case</h2>
+  <ul class="checklist" id="checklist">
+    <li id="ck1">Rule on all ten exhibits</li>
+    <li id="ck2">File all three field reports</li>
+  </ul>
+  <p id="verdictText">Finish both investigations and your rank appears here.</p>
+  <div class="ranks" id="ranks"></div>
+  <h3>What to carry back to your own files</h3>
+  <ul class="take">
+    <li>Describe the behavior first: what the person did, in words a camera could confirm.</li>
+    <li>Treat outcomes as pointers. A grade, a weight, or a scrap count tells you where to look, not what to change.</li>
+    <li>When a report gives only an outcome, ask what the person was doing when it was produced.</li>
+  </ul>
+</section>
+
+</div>
+</main>
+
+<footer><div class="wrap">The Behavior Bureau is a practice activity for a behavioral assessment course. All clients and reports are fictional.</div></footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+
+/* ---------- Briefing lab ---------- */
+var caps={
+  tape:"<b class='typed'>The behavior.</b> Someone walked across the sand. You can watch it, count the steps, and time it.",
+  prints:"<b class='typed'>The outcome.</b> Footprints are what the walk left behind. They cannot tell you how fast, why, or even who.",
+  both:"<b class='typed'>Together.</b> The behavior makes the outcome, and the outcome only points back at the behavior."
+};
+document.querySelectorAll(".seg").forEach(function(b){
+  b.addEventListener("click",function(){
+    var v=b.getAttribute("data-view");
+    $("#scene").setAttribute("data-view",v);
+    $("#labcap").innerHTML=caps[v];
+    document.querySelectorAll(".seg").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false")});
+  });
+});
+
+/* ---------- Evidence board ---------- */
+var EVIDENCE=[
+ {s:"Dana raises her hand and answers the question out loud.",a:"B",why:"A camera records this, and you can count how often it happens."},
+ {s:"Dana earns an A on the quiz.",a:"O",why:"The A is a result. It sums up many things Dana did, such as studying and answering items, and it shows none of them."},
+ {s:"Marcus hits his sister’s arm with a closed fist.",a:"B",why:"Passes the camera test. You can see it and count it."},
+ {s:"Marcus’s sister has a bruise on her arm.",a:"O",why:"The bruise is what the action left behind. A fall or a bump could leave the same mark, so the bruise alone cannot tell you what happened."},
+ {s:"Priya types the first paragraph of her report.",a:"B",why:"Typing is an action a camera can capture, and it could be timed."},
+ {s:"Priya’s report is finished and saved.",a:"O",why:"A finished report is a product. It sits on the drive long after the typing stopped."},
+ {s:"Leo loses six pounds.",a:"O",why:"Fails the dead man’s test, since weight loss can happen to anyone. It results from what Leo eats and how he moves."},
+ {s:"Leo walks for thirty minutes after dinner.",a:"B",why:"Leo is doing something here. A camera sees it, and a timer measures it."},
+ {s:"Ana’s bedroom is clean.",a:"O",why:"A clean room is a state, and a dead man’s room can be clean too. The behaviors behind it are the clues you still need."},
+ {s:"Ana puts her dirty clothes into the hamper.",a:"B",why:"Observable and countable. This is the sort of action you would track."}
+];
+var deck,idx,score,results;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var boardDone=false;
+
+function startBoard(){
+  deck=shuffle(EVIDENCE.slice());idx=0;score=0;results=[];boardDone=false;
+  drawDots();drawCard();updateVerdict();
+}
+function drawDots(){
+  var h="";
+  for(var i=0;i<deck.length;i++){
+    var c="dot";
+    if(results[i]===true)c+=" good";else if(results[i]===false)c+=" bad";else if(i===idx)c+=" now";
+    h+='<span class="'+c+'"></span>';
+  }
+  $("#dots").innerHTML=h;
+}
+function drawCard(){
+  var area=$("#boardArea");
+  if(idx>=deck.length){
+    boardDone=true;
+    var msg=score>=9?"Sharp eyes. You rarely mistook a result for an action."
+      :score>=7?"Good instincts. Re-run the camera test on the ones you missed."
+      :"Slow down and run both tests on every exhibit before you stamp it.";
+    area.innerHTML='<div class="summary"><div class="big">'+score+' of '+deck.length+' correct</div><p>'+msg+'</p><div class="actions"><button class="next" id="again">Re-shuffle the exhibits</button><a class="linkbtn" href="#reports">Go to the field reports</a></div></div>';
+    $("#again").addEventListener("click",startBoard);
+    drawDots();updateVerdict();return;
+  }
+  var e=deck[idx];
+  area.innerHTML=
+   '<div class="exhibit" id="ex">'+
+   '<div class="stamp" id="stamp" aria-hidden="true"></div>'+
+   '<div class="tag">Exhibit '+(idx+1)+' of '+deck.length+'</div>'+
+   '<blockquote>“'+e.s+'”</blockquote>'+
+   '<div class="pick">'+
+   '<button class="stampbtn b" data-a="B"><span>Behavior</span></button>'+
+   '<button class="stampbtn o" data-a="O"><span>Behavior outcome</span></button>'+
+   '</div>'+
+   '<p class="hintline"><button class="linkbtn" id="hint">Need a nudge?</button> <span id="hintText"></span></p>'+
+   '<div id="fb" aria-live="polite"></div></div>';
+  $("#hint").addEventListener("click",function(){
+    $("#hintText").textContent="Ask yourself: could a camera film this happening, or would you only see what it left behind?";
+  });
+  area.querySelectorAll(".stampbtn").forEach(function(b){b.addEventListener("click",function(){rule(b.getAttribute("data-a"),b)})});
+  drawDots();
+}
+function rule(ans,btn){
+  var e=deck[idx],ok=ans===e.a;
+  if(ok)score++;
+  results[idx]=ok;
+  document.querySelectorAll(".stampbtn").forEach(function(b){b.disabled=true});
+  btn.classList.add("picked");
+  var st=$("#stamp");
+  st.className="stamp show "+(e.a==="B"?"b":"o");
+  st.textContent=e.a==="B"?"BEHAVIOR":"OUTCOME";
+  var last=idx===deck.length-1;
+  $("#fb").innerHTML='<div class="notes '+(ok?"good":"bad")+'"><p><b>'+(ok?"Ruling confirmed.":"Ruling overturned.")+'</b> This is '+(e.a==="B"?"a behavior":"a behavior outcome")+'.</p><p>'+e.why+'</p></div><button class="next" id="nx">'+(last?"See my result":"Next exhibit")+'</button>';
+  var nx=$("#nx");nx.focus();
+  nx.addEventListener("click",function(){idx++;drawCard();var t=$("#board");});
+  drawDots();
+}
+
+/* ---------- Field reports ---------- */
+var CASES=[
+ {title:"Missing homework",cap:"Ms. Reyes’s classroom",
+  art:'<svg viewBox="0 0 320 200" role="img" aria-label="A student with head down on a desk, crumpled papers, and a worksheet marked D"><rect width="320" height="200" fill="#e8dcb6"/><rect y="150" width="320" height="50" fill="#c9b684"/><rect x="40" y="118" width="240" height="14" fill="#7a5a36"/><rect x="60" y="132" width="10" height="56" fill="#5d4428"/><rect x="250" y="132" width="10" height="56" fill="#5d4428"/><circle cx="120" cy="92" r="20" fill="#26211c"/><path d="M96 118 q24 -22 48 0z" fill="#25517f"/><path d="M150 106 q40 10 76 12" fill="none" stroke="#25517f" stroke-width="12" stroke-linecap="round"/><g fill="#f4ebd0" stroke="#2a2118" stroke-width="2"><path d="M180 112l10-10 12 4 8 10-4 10-14 2z"/><path d="M216 116l8-8 12 2 6 8-6 8-14 0z"/><path d="M60 114l8-8 12 2 4 10-8 6z"/></g><g transform="rotate(-8 258 70)"><rect x="228" y="30" width="60" height="78" fill="#f4ebd0" stroke="#2a2118" stroke-width="2"/><text x="258" y="84" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="42" fill="#a82a22">D</text><rect x="238" y="40" width="40" height="4" fill="#5b4e3c" opacity=".5"/></g></svg>',
+  segs:["Ms. Reyes writes: “Jordan ",
+   ["has a D in my class","O","A grade is a summary product of many behaviors. It does not say what Jordan did."],
+   ". During independent work he ",
+   ["puts his head down on the desk","B","A camera sees it, and you could tally how often it happens."],
+   " and ",
+   ["talks to the student beside him","B","Observable and countable. You could time how long it lasts."],
+   ". Only ",
+   ["2 of 10 assignments were turned in","O","A count of finished work is a permanent product, left behind after Jordan acted or did not act."],
+   " this month, and ",
+   ["his desk is full of crumpled worksheets","O","The pile is what remains. Crumpling is the behavior and the pile is the product."],
+   ".”"]},
+ {title:"The scale won’t budge",cap:"Rosa’s health coaching notes",
+  art:'<svg viewBox="0 0 320 200" role="img" aria-label="A bathroom scale, a lunch box with vegetables, and a soda can"><rect width="320" height="200" fill="#e8dcb6"/><rect y="156" width="320" height="44" fill="#c9b684"/><rect x="26" y="112" width="130" height="56" rx="12" fill="#cfd5d2" stroke="#2a2118" stroke-width="3"/><circle cx="91" cy="138" r="20" fill="#fbf5df" stroke="#2a2118" stroke-width="3"/><path d="M91 138 L103 124" stroke="#a82a22" stroke-width="3" stroke-linecap="round"/><rect x="176" y="106" width="86" height="54" rx="6" fill="#25517f" stroke="#2a2118" stroke-width="3"/><rect x="176" y="106" width="86" height="14" fill="#1b3c5e"/><circle cx="199" cy="100" r="11" fill="#2f6b3f"/><circle cx="217" cy="96" r="9" fill="#3c8a52"/><path d="M236 104 q10 -26 22 -4" fill="#d9822b" stroke="#a45d16" stroke-width="2"/><rect x="274" y="94" width="30" height="66" rx="5" fill="#a82a22" stroke="#2a2118" stroke-width="3"/><rect x="274" y="116" width="30" height="14" fill="#fbf5df"/></svg>',
+  segs:["Her coach notes: “Rosa ",
+   ["lost 4 pounds","O","Fails the dead man’s test. It is a result of what she does, not something she does."],
+   " since March. She ",
+   ["walks around the block after dinner","B","An action a camera can capture and a timer can measure."],
+   " three evenings a week and ",
+   ["packs vegetables in her lunch","B","Observable. You could count how many days she does it."],
+   ", but she also ",
+   ["drinks a soda at the afternoon break","B","An action you can see and count, even though it works against her goal."],
+   ". Her ",
+   ["blood pressure reading was 138/86","O","A measurement of a state in her body. It is an outcome, not an action."],
+   " at the last visit.”"]},
+ {title:"Scrap in Bay Three",cap:"Theo’s supervisor log",
+  art:'<svg viewBox="0 0 320 200" role="img" aria-label="A gauge, a machined part, and a bin of scrap parts with a tag reading 14"><rect width="320" height="200" fill="#e8dcb6"/><rect y="160" width="320" height="40" fill="#c9b684"/><circle cx="76" cy="84" r="40" fill="#fbf5df" stroke="#2a2118" stroke-width="5"/><g stroke="#2a2118" stroke-width="2"><path d="M76 50v8M76 110v8M42 84h8M102 84h8M52 60l6 6M100 108l6 6M100 60l-6 6M52 108l6 -6"/></g><path d="M76 84 L98 66" stroke="#a82a22" stroke-width="4" stroke-linecap="round"/><circle cx="76" cy="84" r="5" fill="#2a2118"/><rect x="62" y="124" width="28" height="36" fill="#7b838a" stroke="#2a2118" stroke-width="3"/><g transform="translate(150 96)"><path d="M0 0h110l-12 64h-86z" fill="#5d4428" stroke="#2a2118" stroke-width="3"/><g fill="#9aa2a8" stroke="#2a2118" stroke-width="2"><circle cx="30" cy="-2" r="13"/><circle cx="56" cy="-8" r="13"/><circle cx="82" cy="-2" r="13"/></g><g fill="#2a2118"><circle cx="30" cy="-2" r="4"/><circle cx="56" cy="-8" r="4"/><circle cx="82" cy="-2" r="4"/></g></g><g transform="rotate(8 270 62)"><rect x="244" y="34" width="52" height="40" fill="#f4ebd0" stroke="#a82a22" stroke-width="3"/><text x="270" y="64" text-anchor="middle" font-family="Special Elite, Courier New, monospace" font-size="28" fill="#a82a22">14</text></g></svg>',
+  segs:["The supervisor’s log reads: “Theo ",
+   ["checks the gauge before each cut","B","A camera sees him do it, and you could count the checks per shift."],
+   " and ",
+   ["stacks finished parts in the wrong bin","B","An observable action. The bin and the count of mixed parts come after it."],
+   ". The ",
+   ["weekly scrap count is 14 parts","O","A tally of products left behind. It cannot say which action caused each one."],
+   " and ",
+   ["the last batch failed inspection","O","The inspection result is an outcome, produced by many steps by many people."],
+   ". When the lathe jams, he ",
+   ["asks a coworker for help with the setup","B","Observable and countable, and a useful skill to note."],
+   ".”"]}
+];
+var cur=0;
+var state=CASES.map(function(c){var n=0;c.segs.forEach(function(s){if(typeof s!=="string")n++});return{marks:[],filed:false,correct:0,total:n}});
+CASES.forEach(function(c,i){state[i].marks=state[i].marks.concat(Array(state[i].total).fill(0))});
+
+function drawChips(){
+  var h="";
+  CASES.forEach(function(c,i){
+    h+='<button class="chip" role="tab" aria-selected="'+(i===cur)+'" data-i="'+i+'">'+c.title+(state[i].filed?' <span class="done" aria-label="filed">filed</span>':'')+'</button>';
+  });
+  $("#chips").innerHTML=h;
+  $("#chips").querySelectorAll(".chip").forEach(function(b){b.addEventListener("click",function(){cur=+b.getAttribute("data-i");drawCase()})});
+}
+var LBL=["","B","O"];
+function drawCase(){
+  drawChips();
+  var c=CASES[cur],st=state[cur];
+  $("#caseArt").innerHTML=c.art;$("#caseCap").textContent=c.cap;
+  var h="",k=0;
+  c.segs.forEach(function(s){
+    if(typeof s==="string"){h+=s;}
+    else{
+      var m=LBL[st.marks[k]];
+      var cls="clue";
+      if(st.filed){cls+=(m===s[1]?" ok":" no")}
+      h+='<button class="'+cls+'" data-k="'+k+'" data-mark="'+m+'"'+(st.filed?" disabled":"")+' aria-label="'+s[0]+'. '+(m==="B"?"Tagged behavior":m==="O"?"Tagged outcome":"Not tagged")+'">'+s[0]+'</button>';
+      k++;
+    }
+  });
+  $("#reportText").innerHTML=h;
+  $("#reportText").querySelectorAll(".clue").forEach(function(b){
+    b.addEventListener("click",function(){
+      var kk=+b.getAttribute("data-k");
+      st.marks[kk]=(st.marks[kk]+1)%3;
+      drawCase();
+      var nb=$("#reportText").querySelector('[data-k="'+kk+'"]');if(nb)nb.focus();
+    });
+  });
+  var act=$("#reportActions");
+  if(!st.filed){
+    var tagged=st.marks.filter(function(x){return x>0}).length;
+    act.innerHTML='<button class="next" id="file"'+(tagged<st.total?" disabled":"")+'>File this report</button><span class="legend" style="margin:0">'+tagged+' of '+st.total+' phrases tagged</span>';
+    if(tagged<st.total){$("#file").style.opacity=".5";$("#file").style.cursor="default";}
+    $("#file").addEventListener("click",function(){if(tagged<st.total)return;file()});
+    $("#review").innerHTML="";
+  }else{
+    act.innerHTML='<b class="typed">'+st.correct+' of '+st.total+' tagged correctly.</b> <button class="linkbtn" id="reopen">Re-open and try again</button>';
+    $("#reopen").addEventListener("click",function(){st.filed=false;st.marks=Array(st.total).fill(0);st.correct=0;drawCase();updateVerdict()});
+    var r="",k2=0;
+    c.segs.forEach(function(s){
+      if(typeof s!=="string"){
+        var ok=LBL[st.marks[k2]]===s[1];
+        r+='<li class="'+(ok?"ok":"no")+'"><b>“'+s[0]+'” is '+(s[1]==="B"?"a behavior":"an outcome")+'.</b> '+(ok?"":"You tagged it "+(st.marks[k2]===1?"as a behavior. ":"as an outcome. "))+s[2]+'</li>';
+        k2++;
+      }
+    });
+    $("#review").innerHTML=r;
+  }
+}
+function file(){
+  var c=CASES[cur],st=state[cur],k=0,n=0;
+  c.segs.forEach(function(s){if(typeof s!=="string"){if(LBL[st.marks[k]]===s[1])n++;k++}});
+  st.correct=n;st.filed=true;drawCase();updateVerdict();
+}
+
+/* ---------- Verdict ---------- */
+function badge(n,label,earned){
+  var stars="";
+  for(var i=0;i<n;i++){stars+='<path transform="translate('+(50+(i-(n-1)/2)*20)+' 48) scale(.9)" d="M0 -9 L2.6 -3 L9 -2.6 L4 1.6 L5.6 8 L0 4.6 L-5.6 8 L-4 1.6 L-9 -2.6 L-2.6 -3z" fill="#f1e8cf"/>';}
+  return '<div class="rank'+(earned?" earned":"")+'"><svg viewBox="0 0 100 110" aria-hidden="true"><path d="M50 6 L90 20 V54 C90 80 70 98 50 104 C30 98 10 80 10 54 V20z" fill="'+(n===3?"#a82a22":n===2?"#25517f":"#7a5a36")+'" stroke="#2a2118" stroke-width="4"/>'+'<path d="M50 14 L82 25 V54 C82 75 66 90 50 96" fill="none" stroke="#f1e8cf" stroke-opacity=".35" stroke-width="3"/>'+stars+'</svg><div>'+label+'</div></div>';
+}
+function updateVerdict(){
+  var filed=state.filter(function(s){return s.filed}).length;
+  var repDone=filed===CASES.length;
+  $("#ck1").className=boardDone?"done":"";
+  $("#ck2").className=repDone?"done":"";
+  var rank=0;
+  if(boardDone&&repDone){
+    var tot=deck.length,got=score;
+    state.forEach(function(s){tot+=s.total;got+=s.correct});
+    var pct=got/tot;
+    rank=pct>=.9?3:pct>=.7?2:1;
+    var names=["","Rookie","Detective","Chief of Detectives"];
+    var msgs=["","You found some of the line between action and result. Replay the evidence board, and use the camera test first every time.","You separate most behaviors from their outcomes. Review the files you missed and the lines will sharpen.","You keep the walk and the footprints apart without hesitating."];
+    $("#verdictHead").textContent="Case closed: "+names[rank];
+    $("#verdictText").textContent=got+" of "+tot+" rulings correct. "+msgs[rank];
+  }else{
+    $("#verdictHead").textContent="Close the case";
+    $("#verdictText").textContent="Finish both investigations and your rank appears here.";
+  }
+  $("#ranks").innerHTML=badge(1,"Rookie",rank===1)+badge(2,"Detective",rank===2)+badge(3,"Chief of Detectives",rank===3);
+}
+
+startBoard();drawCase();updateVerdict();
+})();
+</script>
+</body>
+</html>
