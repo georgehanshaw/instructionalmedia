@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tap Drill, Drill &amp; Ream Sizes · GTC Review Course v0.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:dark;--ground:#171d20;--gunmetal:#2C3539;--panel:#222a2e;--line:#3a454a;--text:#ebe6dc;--muted:#a3adb1;--amber:#d29a2e;--amber-deep:#8C5A0A;--amber-tint:rgba(210,154,46,.14);--good:#4fb37a;--good-tint:rgba(79,179,122,.14);--bad:#e0594a;--bad-tint:rgba(224,89,74,.14);
+--f-display:Georgia,"Times New Roman",serif;--f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--text)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+p{margin:0}
+svg{display:block}
+/* header */
+.top{position:sticky;top:0;z-index:20;background:var(--gunmetal);border-bottom:2px solid var(--amber-deep)}
+.top-inner{max-width:1320px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.wm{display:flex;flex-direction:column;line-height:1;border-left:3px solid var(--amber);padding-left:8px}
+.wm b{font-family:var(--f-display);font-size:19px;letter-spacing:.06em}
+.wm span{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted)}
+.brand .mod{font-family:var(--f-display);font-size:17px;white-space:nowrap}
+.brand .hcode{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.track{flex:1;display:flex;gap:4px;min-width:200px;align-items:center}
+.track button{flex:1;height:5px;border-radius:3px;background:var(--line);border:0;padding:0;cursor:default}
+.track button.done{background:var(--amber-deep)}
+.track button.now{background:var(--amber)}
+body.revmode .track button{cursor:pointer}
+.track-label{font-family:var(--f-mono);font-size:11px;color:var(--muted);white-space:nowrap;letter-spacing:.05em;text-transform:uppercase}
+.rev-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;cursor:pointer;font-size:13px;color:var(--muted)}
+.rev-toggle .pip{width:28px;height:16px;border-radius:8px;background:var(--line);position:relative;transition:background .2s}
+.rev-toggle .pip::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--text);transition:transform .2s}
+.rev-toggle[aria-pressed="true"]{color:var(--text);border-color:var(--amber)}
+.rev-toggle[aria-pressed="true"] .pip{background:var(--amber-deep)}
+.rev-toggle[aria-pressed="true"] .pip::after{transform:translateX(12px)}
+/* stage */
+main{max-width:1320px;margin:0 auto;padding:22px 16px 48px}
+.screen{display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:980px){.screen.split{grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);align-items:start}}
+.mediacol{display:flex;flex-direction:column;gap:16px;min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.side h2{font-size:clamp(24px,2.6vw,32px);line-height:1.15}
+.onscreen{font-size:16px;display:flex;flex-direction:column;gap:10px}
+.onscreen strong{color:var(--amber);font-weight:600}
+.onscreen ul{margin:0;padding-left:20px;display:grid;gap:7px}
+.narr{border-left:2px solid var(--line);padding-left:12px;color:var(--muted);font-style:italic;font-size:14px}
+.narr b{font-style:normal;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;display:block;opacity:.8;margin-bottom:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--amber);background:var(--amber);color:#1b1407;font-weight:600;padding:10px 18px;border-radius:6px;cursor:pointer;transition:transform .12s,opacity .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--amber)}
+.hint{font-size:13px;color:var(--muted)}
+.media{position:relative;width:100%;border-radius:8px;overflow:hidden;background:#000;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.media svg{width:100%;height:auto}
+.cap{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.fadein{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hs{position:absolute;transform:translate(-50%,-50%);width:clamp(30px,4.2vw,46px);aspect-ratio:1;border-radius:50%;border:2px solid #fff;background:rgba(210,154,46,.9);cursor:pointer;display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:clamp(12px,1.4vw,16px);color:#1b1407;animation:pulse 2s infinite;padding:0}
+.hs.seen{background:rgba(79,179,122,.95);animation:none;color:#08180f}
+.hs.act{outline:3px solid #fff;outline-offset:3px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(210,154,46,.7)}70%{box-shadow:0 0 0 14px rgba(210,154,46,0)}100%{box-shadow:0 0 0 0 rgba(210,154,46,0)}}
+.alert{border:1px solid var(--bad);background:var(--bad-tint);border-radius:8px;padding:12px 14px}
+.okbox{border:1px solid var(--good);background:var(--good-tint);border-radius:8px;padding:12px 14px}
+.warnbox{border:1px solid var(--amber);background:var(--amber-tint);border-radius:8px;padding:12px 14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.panel h3{font-size:19px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;width:100%}
+.opt:hover:not(:disabled){border-color:var(--amber)}
+.opt .l{font-family:var(--f-mono);font-weight:600;color:var(--amber);flex:none}
+.opt.bad{border-color:var(--bad);background:var(--bad-tint)}
+.opt.good{border-color:var(--good);background:var(--good-tint)}
+.opt:disabled{cursor:default}
+.fb{font-size:14px;min-height:1px}
+.fb.bad{color:#f08a7e}.fb.good{color:var(--good)}
+.steps-lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+/* cover */
+.cover{position:relative;border-radius:12px;overflow:hidden;min-height:min(600px,76vh);display:flex;align-items:flex-end;background:var(--gunmetal)}
+.cover .bg{position:absolute;inset:0;opacity:.42}
+.cover .bg svg{width:100%;height:100%}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,29,32,.15) 0%,rgba(23,29,32,.5) 40%,rgba(23,29,32,.96) 100%)}
+.cover-inner{position:relative;z-index:1;padding:clamp(20px,4vw,48px);display:flex;flex-direction:column;gap:16px;max-width:820px}
+.cover h1{font-size:clamp(46px,8vw,92px);line-height:.95}
+.cover .h1sub{font-family:var(--f-display);font-size:clamp(22px,3vw,34px);color:var(--amber);margin-top:-6px}
+.cover .sub{font-size:clamp(16px,1.8vw,19px);color:#d4cfc5;max-width:56ch}
+.cover .logos{position:absolute;z-index:1;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px clamp(20px,4vw,48px);flex-wrap:wrap}
+.rc{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:rgba(23,29,32,.7)}
+.meta{display:flex;flex-wrap:wrap;gap:14px 28px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.meta div{display:flex;flex-direction:column}
+.meta b{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--amber);font-weight:500;text-transform:uppercase}
+.meta span{font-size:14px}
+.objs{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.objs li{display:flex;gap:12px;align-items:baseline;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.objs li b{font-family:var(--f-display);color:var(--amber);font-size:16px;flex:none;width:26px}
+/* cone legend + sort */
+.legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.legend .lc{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:6px 4px}
+.legend .lc b{font-family:var(--f-mono);letter-spacing:.12em;font-size:13px}
+.legend .lc span{font-size:13.5px;font-weight:600}
+.legend .lc small{font-size:12.5px;color:var(--muted);line-height:1.35}
+@media (max-width:640px){.legend{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sortbox{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.tray{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px;border:1px dashed var(--line);border-radius:8px;min-height:104px;align-items:center}
+.tray:empty::after{content:"All five cones placed";font-family:var(--f-mono);font-size:12px;color:var(--good);letter-spacing:.1em;text-transform:uppercase}
+.dcone{background:none;border:2px solid transparent;border-radius:8px;padding:4px 10px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.dcone:hover{border-color:var(--line)}
+.dcone.sel{border-color:var(--amber);background:var(--amber-tint)}
+.slots{display:grid;gap:8px}
+.slot{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.02);border:1px dashed var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;text-align:left;width:100%;min-height:78px}
+.slot:hover{border-color:var(--amber)}
+.slot .drop{width:56px;height:66px;flex:none;border-radius:6px;background:rgba(255,255,255,.04);display:grid;place-items:center}
+.slot .stx b{display:block;font-size:15px}
+.slot .stx small{color:var(--muted);font-size:13px}
+.slot.ok{border-style:solid;border-color:var(--good);background:var(--good-tint);cursor:default}
+.slot.no{animation:shake .35s;border-color:var(--bad)}
+.slot.hot{border-color:var(--amber);border-style:solid;background:var(--amber-tint)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#ghost{position:fixed;pointer-events:none;z-index:60;transform:translate(-50%,-50%);display:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.6))}
+/* sequence */
+.seq{display:grid;gap:8px}
+.seqslot{display:flex;gap:10px;align-items:center;border:1px dashed var(--line);border-radius:8px;padding:9px 12px;min-height:46px;background:rgba(255,255,255,.02);cursor:pointer;width:100%;text-align:left}
+.seqslot i{font-style:normal;font-family:var(--f-display);font-size:20px;color:var(--amber);width:18px}
+.seqslot.filled{border-style:solid;background:var(--panel)}
+.seqslot.right{border-color:var(--good);background:var(--good-tint)}
+.seqslot.wrong{border-color:var(--bad);background:var(--bad-tint)}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.pool button{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+.pool button:hover{border-color:var(--amber)}
+/* figures */
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.fig svg{width:100%;height:auto;border-radius:6px}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.asset{border:2px dashed var(--amber-deep);border-radius:10px;background:repeating-linear-gradient(135deg,rgba(140,90,10,.09) 0 12px,transparent 12px 24px);padding:18px;display:flex;flex-direction:column;gap:8px;justify-content:center;min-height:190px}
+.asset .tagl{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+.asset h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:18px}
+.asset p{font-size:13.5px;color:var(--muted)}
+.mock-btn{align-self:flex-start;font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:5px 10px;background:#0f1416;color:var(--muted)}
+.code{font-family:var(--f-mono);font-size:12.5px;background:#0f1416;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:#b9c7cc;overflow-x:auto;white-space:pre;line-height:1.6;margin:0}
+.code .hl{color:#1b1407;background:var(--amber);padding:1px 3px;border-radius:2px;font-weight:600}
+.code .c{color:#6f7d83}
+/* id tags */
+.router{font-family:var(--f-mono);font-size:13px;background:#fbfaf6;color:#1d1d1d;border-radius:8px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px 18px}
+.router b{color:#8C5A0A}
+.idtags{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tagbtn{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.tagbtn:hover:not(:disabled){border-color:var(--amber)}
+.tagbtn svg{width:100%;height:auto;max-width:300px;margin:0 auto}
+.tagbtn .tl{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center}
+.tagbtn.good{border-color:var(--good);background:var(--good-tint)}
+.tagbtn.bad{border-color:var(--bad);background:var(--bad-tint)}
+.tagbtn:disabled{cursor:default}
+/* traveler hotspots */
+.trav .tz{cursor:pointer;transition:fill-opacity .15s}
+.trav .tz:hover,.trav .tz:focus{fill-opacity:.14;outline:none}
+.trav .tz.miss{fill:#e0594a;fill-opacity:.18}
+.trav.found .tfound{opacity:1}
+.trav.found .tz{pointer-events:none}
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--amber);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.tier h3{font-size:22px;display:flex;justify-content:space-between;align-items:baseline}
+.tier h3 small{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.tier .r{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.tier .r svg{flex:none;margin-top:1px}
+.tier.t1{border-top-color:#e0594a}.tier.t2{border-top-color:var(--amber)}.tier.t3{border-top-color:var(--good)}
+.stl{display:grid;gap:8px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.st .bt{display:flex;gap:6px}
+.st .bt button{flex:1;background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:6px;cursor:pointer;font-family:var(--f-display);font-size:16px}
+.st .bt button:hover:not(:disabled){border-color:var(--amber)}
+.st .bt button.bad{border-color:var(--bad);background:var(--bad-tint)}
+.st .bt button.good{border-color:var(--good);background:var(--good-tint)}
+.st.ok{border-color:var(--good)}
+.locked{opacity:.45;pointer-events:none}
+/* kc */
+.kc{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.qdots{display:flex;gap:8px}
+.qdots span{width:30px;height:6px;border-radius:3px;background:var(--line)}
+.qdots span.now{background:var(--amber)}.qdots span.ok{background:var(--good)}.qdots span.shown{background:var(--amber-deep)}
+.prompt-band{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.prompt-band h2{font-size:clamp(21px,2.3vw,28px);line-height:1.25}
+/* debrief */
+.recap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.recap div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.recap b{font-family:var(--f-display);font-size:34px;color:var(--amber);font-weight:400;line-height:1}
+.recap span{font-family:var(--f-display);font-size:17px}
+.pd{margin:0;padding-left:20px;display:grid;gap:5px;font-size:14px}
+.tries{width:100%;border-collapse:collapse;font-size:14px}
+.tries td{padding:6px 0;border-bottom:1px solid var(--line)}
+.tries td:last-child{text-align:right;font-family:var(--f-mono)}
+.first{color:var(--good)}.more{color:var(--amber)}
+/* nav */
+.navbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:24px;border-top:1px solid var(--line);padding-top:16px;flex-wrap:wrap}
+.navbar .r{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+/* reviewer notes */
+.rev{margin-top:26px;border:1px dashed var(--amber-deep);border-radius:10px;padding:16px 18px;background:rgba(140,90,10,.07);display:grid;gap:14px}
+.rev-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rev-head h3{font-size:18px;color:var(--amber)}
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.rev-grid div,.rev-long div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rev b.k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);font-weight:500;text-transform:uppercase}
+.rev span{font-size:14px}
+.rev .id{font-family:var(--f-mono);color:var(--amber)}
+.rev-long{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.flags{display:grid;gap:8px}
+.flag{border-left:3px solid var(--bad);background:var(--bad-tint);padding:10px 12px;border-radius:0 6px 6px 0;font-size:14px}
+.flag.med{border-left-color:var(--amber);background:var(--amber-tint)}
+.flag.low{border-left-color:#7d8b91;background:rgba(125,139,145,.12)}
+.flag.bld{border-left-color:#6fa8d6;background:rgba(111,168,214,.1)}
+.flag b{display:block;margin-bottom:2px;font-family:var(--f-mono);font-size:12px;letter-spacing:.04em}
+.flag.high b{color:#f08a7e}.flag.med b{color:var(--amber)}.flag.low b{color:#b7c2c6}.flag.bld b{color:#8fc0e6}
+.assets{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:14px}
+.assets li{display:flex;gap:8px;align-items:baseline}
+.pill{font-family:var(--f-mono);font-size:10.5px;font-weight:600;border-radius:4px;padding:2px 7px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;flex:none}
+.p-built{background:var(--good-tint);color:var(--good)}
+.p-stand{background:var(--amber-tint);color:var(--amber)}
+.p-need{background:var(--bad-tint);color:#f08a7e}
+.jump{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.jump select{background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit}
+@media (max-width:640px){.cover{flex-direction:column;align-items:stretch;justify-content:space-between}.cover .logos{position:relative}
+.trav,.abw{overflow-x:auto;-webkit-overflow-scrolling:touch}.trav svg{min-width:760px}.abw svg{min-width:700px}.scrollhint{display:block!important}}
+.scrollhint{display:none;font-size:12px;color:var(--muted)}
+.legendflags{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.guide{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;font-size:14px}
+.ghead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.ghead .chk{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);border:1px dashed var(--line);border-radius:4px;padding:2px 7px}
+.gsec b{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:500;margin-bottom:4px}
+.gsec ol,.gsec ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.gsec.mat span{color:var(--muted)}
+.projlbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.projlbl::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--good)}
+.chart{background:#fbfaf6;color:#1d1d1d;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;border-left:5px solid var(--amber-deep)}
+.chart b{font-family:var(--f-mono);font-size:13px;color:#8C5A0A}.chart span{font-family:var(--f-display);font-size:19px}.chart small{color:#555}
+.big{font-family:var(--f-mono);color:var(--amber)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:14px}
+.tabs button.on{background:var(--amber);border-color:var(--amber);color:#1b1407;font-weight:600}
+.index{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:5px;max-height:300px;overflow:auto;padding:4px;background:#121618;border-radius:8px;border:1px solid var(--line)}
+.dbit{background:linear-gradient(180deg,#3a4448,#2b3337);border:1px solid #4b565b;border-radius:6px;padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px}
+.dbit b{font-family:var(--f-mono);font-size:13px}.dbit small{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.dbit:hover{border-color:var(--amber)}.dbit.hit{border-color:var(--good);background:var(--good-tint)}
+.convs{display:grid;gap:8px}
+.cv{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px}
+.cv span{min-width:160px;font-family:var(--f-mono)}
+.cv input,.entry input,#tg{font-family:var(--f-mono);font-size:15px;background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:120px}
+.cv.okc input{border-color:var(--good)}
+.cv em{font-style:normal;font-family:var(--f-mono)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.entry{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tbl-wrap{border:1px solid var(--line);border-radius:8px;overflow-x:auto}
+.ctable{width:100%;border-collapse:collapse;font-size:14px}
+.ctable th{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;background:var(--gunmetal);font-weight:500}
+.ctable td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:middle}
+.ctable tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.ctable tr.hit td{background:var(--amber-tint)}
+.ctable td.okc{background:var(--good-tint)!important}.ctable td.noc{background:var(--bad-tint)!important}
+.ctable td.c{text-align:center}
+.ctable select,.ctable input:not([type=radio]){background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 6px;font:inherit;font-size:13.5px;max-width:130px}
+.ctable input[type=radio]{width:18px;height:18px;accent-color:#d29a2e}
+.hrow{display:grid;grid-template-columns:1fr;gap:6px;padding:10px 0;border-top:1px solid var(--line)}
+.hrow:first-of-type{border-top:0}
+.hrow select{background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-size:14px}
+.hrow.okc{background:var(--good-tint);border-radius:6px;padding:10px}
+.hl{font-family:var(--f-mono);color:#7fb0f0}
+.why{color:var(--muted);font-size:13px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:14px;font-family:var(--f-mono)}
+.seg button:hover:not(:disabled){border-color:var(--amber)}
+.seg button.good{border-color:var(--good);background:var(--good-tint)}.seg button.bad{border-color:var(--bad);background:var(--bad-tint)}
+.seg button:disabled{cursor:default}
+.lrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:6px 0}
+.lrow>b{min-width:96px;font-family:var(--f-mono)}
+.mono{font-family:var(--f-mono);font-weight:500;font-size:13.5px}
+.pstep{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.pstep>span:first-child{min-width:200px}
+.pstep.okc{border-color:var(--good);background:var(--good-tint)}
+.pstep b{font-family:var(--f-mono)}
+.worked{border-left:3px solid var(--good)}
+.tick{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px}
+.tick li::before{content:"\2610  ";color:var(--amber)}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.fig svg{width:100%;height:auto;border-radius:6px}
+.cap{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.gates4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.gates4 div{border:1px solid var(--line);border-radius:6px;padding:8px 6px;text-align:center;font-size:12.5px;color:var(--muted)}
+.gates4 div:nth-child(1),.gates4 div:nth-child(3){border-color:var(--amber);color:var(--text)}
+.sheet{background:#fbfaf6;color:#1d1d1d;border-color:#ccc}
+.sheet .steps-lbl{color:#8C5A0A}.sheet h3{color:#1d1d1d}.sheet .hint{color:#555}
+.sheethead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.sig{display:flex;gap:12px;flex-wrap:wrap}
+.sig label{display:flex;flex-direction:column;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;gap:3px}
+.sig input{border:0;border-bottom:1px solid #888;background:transparent;font:inherit;font-family:var(--f-body);font-size:14px;color:#1d1d1d;padding:4px 2px;min-width:160px;text-transform:none;letter-spacing:0}
+.sheet .ctable th{background:#2C3539;color:#eee}.sheet .ctable td{border-top:1px solid #ddd;color:#1d1d1d}.sheet .ctable tr:nth-child(even) td{background:#f1efe8}
+.sheet .btn.ghost{color:#1d1d1d;border-color:#999}
+.sheet .tbc{color:#8C5A0A}
+.recap5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.recap5{grid-template-columns:1fr 1fr}}
+.recap5 div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.recap5 b{font-family:var(--f-display);font-size:30px;color:var(--amber);font-weight:400;line-height:1}
+.recap5 span{font-family:var(--f-display);font-size:17px}
+.tbc{color:var(--amber);font-style:normal;background:var(--amber-tint);border-radius:3px;padding:0 4px}
+.good{color:var(--good)}.bad{color:#f08a7e}
+.cover .bg svg{width:100%;height:100%;object-fit:cover}
+@media (max-width:640px){.top{position:static}.pstep>span:first-child{min-width:0}.cv span{min-width:0}}
+@media print{body *{visibility:hidden}body.printsheet #sheet,body.printsheet #sheet *{visibility:visible}body.printsheet #sheet{position:absolute;left:0;top:0;width:100%;border:0}.noprint{display:none!important}html,body{background:#fff}}
+.cover .bg{opacity:.22}
+</style></head>
+<body>
+<header class="top"><div class="top-inner">
+  <div class="brand"><div class="wm"><b>GTC</b><span>GENERAL TOOL COMPANY</span></div><div><div class="mod">Tap Drill, Drill &amp; Ream</div><div class="hcode" id="hcode">L1 · STEP B · INSTRUCTOR-LED</div></div></div>
+  <nav class="track" id="track" aria-label="Course progress"></nav>
+  <span class="track-label" id="tlabel"></span>
+  <button class="rev-toggle" id="revt" aria-pressed="false"><span class="pip"></span>Reviewer notes</button>
+</div></header>
+<main id="app"></main>
+<div id="ghost" aria-hidden="true"></div>
+<script>
+/* ===== GRAPHICS: all vector, built for this course. TRAINING SAMPLE data only. ===== */
+const CONES={
+  white:{name:'White',fill:'#efefea',edge:'#aab2b6',band:'#9ea8ad',status:'Incoming inspection',detail:'Ready for inspection',wait:'Incoming inspection. It is ready to be inspected',label:'Incoming inspection'},
+  green:{name:'Green',fill:'#37a35f',edge:'#23764a',band:'#eef1ee',status:'Conforms',detail:'Inspection complete; the part conforms',wait:'Nothing. Inspection is complete and it conforms',label:'Conforms'},
+  yellow:{name:'Yellow',fill:'#f0c02c',edge:'#b88f12',band:'#fbf6e4',status:'Hold',detail:'More information or input is needed',wait:'More information or input. It is on hold',label:'Hold: needs info'},
+  red:{name:'Red',fill:'#d63f2e',edge:'#9a2a1e',band:'#f6eeec',status:'Non-conforming',detail:'Does not meet the requirement or specification',wait:'A decision from Quality. It does not conform',label:'Non-conforming'},
+  blue:{name:'Blue',fill:'#2f6fd0',edge:'#1f4e97',band:'#edf2fa',status:'Move order',detail:'A move request has been sent in Egennix; waiting for transfer',wait:'Transfer. A move request is in Egennix',label:'Move order'}
+};
+const ORDER=['white','green','yellow','red','blue'];
+const HAND="'Segoe Print','Bradley Hand','Comic Sans MS',cursive";
+const MONO="'IBM Plex Mono',ui-monospace,Menlo,monospace";
+const SANS="'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
+
+function coneG(c,x,baseY,s=1){const k=CONES[c];return `<g transform="translate(${x-30*s},${baseY-76*s}) scale(${s})">
+<ellipse cx="30" cy="77" rx="30" ry="3.5" fill="#000" opacity=".28"/>
+<rect x="3" y="66" width="54" height="10" rx="2" fill="#262b2e"/>
+<path d="M24 4 H36 L50 68 H10 Z" fill="${k.fill}" stroke="${k.edge}" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M18.3 30 H41.7 L43.9 40 H16.1 Z" fill="${k.band}"/>
+<path d="M14.4 48 H45.6 L47.2 55 H12.8 Z" fill="${k.band}"/>
+<path d="M25.5 7 L18 62" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+<rect x="22" y="2" width="16" height="4" rx="2" fill="${k.edge}"/></g>`}
+function coneSVG(c,w=56){return `<svg viewBox="0 0 60 82" width="${w}" role="img" aria-label="${CONES[c].name} cone">${coneG(c,30,79,1)}</svg>`}
+
+function shopBg(u){return `<defs>
+<linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d363b"/><stop offset="1" stop-color="#20282c"/></linearGradient>
+<linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#424c50"/><stop offset="1" stop-color="#2d3539"/></linearGradient>
+<linearGradient id="${u}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d3d8da"/><stop offset=".55" stop-color="#959ea2"/><stop offset="1" stop-color="#5f686d"/></linearGradient>
+<linearGradient id="${u}md" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#848d91"/><stop offset="1" stop-color="#4d555a"/></linearGradient>
+<radialGradient id="${u}g"><stop offset="0" stop-color="#fff6dc" stop-opacity=".55"/><stop offset="1" stop-color="#fff6dc" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="300" fill="url(#${u}w)"/>
+<rect y="300" width="1200" height="340" fill="url(#${u}f)"/>
+<rect y="34" width="1200" height="10" fill="#1a2023"/>
+${[150,450,750,1050].map(x=>`<ellipse cx="${x}" cy="60" rx="140" ry="46" fill="url(#${u}g)"/><rect x="${x-40}" y="44" width="80" height="6" rx="2" fill="#e9e3cf"/>`).join('')}
+${[[30,120,290,192],[360,96,340,216],[760,132,400,180]].map(([x,y,w,h])=>`
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#4b565b"/><rect x="${x}" y="${y}" width="${w}" height="8" rx="4" fill="#5d696f"/>
+<rect x="${x+18}" y="${y+28}" width="${w*0.55}" height="${h*0.5}" rx="4" fill="#182023"/><rect x="${x+18}" y="${y+28}" width="${w*0.55}" height="${h*0.5}" rx="4" fill="#6fb6c9" opacity=".08"/>
+<rect x="${x+w*0.68}" y="${y+30}" width="${w*0.22}" height="${h*0.32}" rx="3" fill="#2b3337"/><rect x="${x+w*0.7}" y="${y+36}" width="${w*0.18}" height="${h*0.12}" rx="2" fill="#4aa3b8" opacity=".55"/>
+<rect x="${x}" y="${y+h-14}" width="${w}" height="14" fill="#3a4448"/>`).join('')}
+<rect y="330" width="1200" height="6" fill="#d8b02a" opacity=".85"/>
+<rect y="604" width="1200" height="6" fill="#d8b02a" opacity=".85"/>
+<path d="M0 420 H1200 M0 520 H1200" stroke="#000" stroke-opacity=".12"/>`}
+
+function skid(x){return `<g><rect x="${x-78}" y="500" width="156" height="8" fill="#9a774d"/><path d="M${x-78} 504 H${x+78}" stroke="#7a5c3a" stroke-width="1"/>
+${[-78,-8,62].map(d=>`<rect x="${x+d}" y="508" width="16" height="12" fill="#7a5c3a"/>`).join('')}<rect x="${x-78}" y="519" width="156" height="3" fill="#000" opacity=".25"/></g>`}
+function ring(x,u){return `<g><ellipse cx="${x}" cy="497" rx="62" ry="14" fill="url(#${u}md)"/><rect x="${x-62}" y="450" width="124" height="47" fill="url(#${u}m)"/><ellipse cx="${x}" cy="450" rx="62" ry="14" fill="#c6ccce"/><ellipse cx="${x}" cy="450" rx="40" ry="8.5" fill="#1c2226"/></g>`}
+function bracket(x,u){return `<g><polygon points="${x-20},460 ${x+60},460 ${x+78},448 ${x-2},448" fill="#c8ced0"/><polygon points="${x-60},420 ${x-20},420 ${x-2},408 ${x-42},408" fill="#c8ced0"/>
+<polygon points="${x+60},460 ${x+78},448 ${x+78},488 ${x+60},500" fill="#646d71"/><polygon points="${x-20},420 ${x-2},408 ${x-2},448 ${x-20},460" fill="#646d71"/>
+<polygon points="${x-60},500 ${x-60},420 ${x-20},420 ${x-20},460 ${x+60},460 ${x+60},500" fill="url(#${u}m)"/><circle cx="${x-40}" cy="446" r="9" fill="#1c2226"/></g>`}
+function bars(x,u){let s='';for(let r=0;r<3;r++){for(let i=0;i<3-r;i++){const cx=x-48+i*22+r*11,cy=488-r*19;s+=`<rect x="${cx}" y="${cy-9}" width="86" height="18" fill="url(#${u}m)"/><circle cx="${cx}" cy="${cy}" r="9.5" fill="#d6dbdd" stroke="#6c757a"/>`}}return `<g>${s}<rect x="${x-10}" y="440" width="7" height="62" fill="#2f5d8a" opacity=".9"/></g>`}
+function housing(x,u,tag=true){return `<g><polygon points="${x-55},425 ${x+55},425 ${x+72},413 ${x-38},413" fill="#c8ced0"/><polygon points="${x+55},425 ${x+72},413 ${x+72},488 ${x+55},500" fill="#646d71"/>
+<rect x="${x-55}" y="425" width="110" height="75" fill="url(#${u}m)"/><circle cx="${x}" cy="462" r="23" fill="#1c2226"/><circle cx="${x}" cy="462" r="23" fill="none" stroke="#e6e9ea" stroke-opacity=".5" stroke-width="2"/>
+${tag?`<path d="M${x+64} 418 L${x+70} 436" stroke="#c9c9c9" stroke-width="1.4"/><rect x="${x+62}" y="434" width="15" height="22" rx="2" fill="#c8372a" transform="rotate(8 ${x+70} 445)"/>`:''}</g>`}
+function shaft(x,u){return `<g><rect x="${x-50}" y="484" width="18" height="16" fill="#3a4246"/><rect x="${x+32}" y="484" width="18" height="16" fill="#3a4246"/>
+<rect x="${x-72}" y="460" width="144" height="28" fill="url(#${u}m)"/><ellipse cx="${x+72}" cy="474" rx="6" ry="14" fill="#a9b1b4"/><rect x="${x-72}" y="466" width="144" height="4" fill="#fff" opacity=".25"/></g>`}
+
+function person(x,fy,s,o){const sk=o.skin||'#c99a78';return `<g transform="translate(${x},${fy}) scale(${s})">
+<ellipse cx="0" cy="0" rx="34" ry="5" fill="#000" opacity=".3"/>
+<path d="M-24 -112 L-27 -8 L-7 -8 L-2 -96 L2 -96 L7 -8 L27 -8 L24 -112 Z" fill="${o.pants}"/>
+<rect x="-31" y="-11" width="25" height="11" rx="4" fill="#1a1d20"/><rect x="6" y="-11" width="25" height="11" rx="4" fill="#1a1d20"/>
+<path d="M-36 -196 L-46 -134 L-38 -128 L-28 -170 Z" fill="${o.shirt}"/><path d="M36 -196 L46 -134 L38 -128 L28 -170 Z" fill="${o.shirt}"/>
+<circle cx="-42" cy="-126" r="6" fill="${sk}"/><circle cx="42" cy="-126" r="6" fill="${sk}"/>
+<rect x="-8" y="-224" width="16" height="14" fill="${sk}"/>
+<path d="M-36 -198 Q-36 -214 -20 -216 L20 -216 Q36 -214 36 -198 L30 -108 L-30 -108 Z" fill="${o.shirt}"/>
+<path d="M-10 -216 L0 -200 L10 -216" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="2"/>
+${o.badge?`<rect x="12" y="-190" width="14" height="9" rx="1.5" fill="#e8e2d0"/>`:''}
+<circle cx="0" cy="-244" r="23" fill="${sk}"/>
+<path d="M-24 -246 Q-24 -272 0 -272 Q24 -272 24 -246 Q20 -258 0 -260 Q-20 -258 -24 -246 Z" fill="${o.hair}"/>
+${o.bun?`<circle cx="0" cy="-274" r="10" fill="${o.hair}"/>`:''}
+<rect x="-19" y="-250" width="38" height="10" rx="4" fill="#bfe4f0" fill-opacity=".75" stroke="#1d2427" stroke-width="1.5"/>
+${o.clip?`<g transform="rotate(-6 34 -150)"><rect x="22" y="-176" width="34" height="46" rx="2" fill="#7a5c3a"/><rect x="25" y="-172" width="28" height="39" fill="#f4f1e8"/><rect x="32" y="-179" width="14" height="6" rx="2" fill="#9aa3a7"/>
+<path d="M28 -164 H50 M28 -158 H50 M28 -152 H44 M28 -146 H50" stroke="#8c949a" stroke-width="1.4"/></g>`:''}
+</g>`}
+const DANA={shirt:'#34506b',pants:'#2b2f36',hair:'#3a2a20',bun:true,clip:true,badge:true};
+const SUP={shirt:'#5d676c',pants:'#2b2f36',hair:'#6b6158',skin:'#e0b796',badge:true};
+
+/* Aisle: five parts in staging. Positions chosen so the activity is not in legend order. */
+const AISLE=[{x:240,c:'yellow',p:'ring',n:'Machined ring'},{x:450,c:'green',p:'bracket',n:'Bracket'},{x:660,c:'white',p:'bars',n:'Bar stock'},{x:870,c:'red',p:'housing',n:'Housing'},{x:1070,c:'blue',p:'shaft',n:'Shaft'}];
+function aisleSVG(u,opt={}){const parts={ring,bracket,bars,housing,shaft};
+  return `<svg viewBox="0 0 1200 640" role="img" aria-label="A machining aisle with five parts on skids, each with a quality cone${opt.labels?', each labeled with its status':''}" ${opt.slice?'preserveAspectRatio="xMidYMid slice"':''}>${shopBg(u)}
+${AISLE.map((a,i)=>`${skid(a.x)}${a.p==='housing'?housing(a.x,u,true):parts[a.p](a.x,u)}${coneG(a.c,a.x+68,524,.82)}
+${opt.num?`<text x="${a.x}" y="560" text-anchor="middle" font-family="${MONO}" font-size="15" fill="#a3adb1">PART ${i+1}</text>`:''}
+${opt.labels?`<g><rect x="${a.x-92}" y="368" width="184" height="32" rx="16" fill="#121618" fill-opacity=".92" stroke="${CONES[a.c].fill}" stroke-width="2"/><circle cx="${a.x-74}" cy="384" r="7" fill="${CONES[a.c].fill}" stroke="#fff" stroke-opacity=".4"/>
+<text x="${a.x+8}" y="389" text-anchor="middle" font-family="${SANS}" font-size="13.5" font-weight="600" fill="#ebe6dc">${CONES[a.c].label}</text><path d="M${a.x} 400 V420" stroke="${CONES[a.c].fill}" stroke-width="2"/></g>`:''}`).join('')}
+${opt.dana===false?'':person(96,632,1.02,DANA)}</svg>`}
+
+/* COD-03 scene: held part with red cone and Hold Tag, Dana and supervisor, tag close-up */
+function holdTagG(tx,ty,s){return `<g transform="translate(${tx},${ty}) scale(${s})">
+<path d="M30 0 H250 L280 30 V470 H0 V30 Z" fill="#c8372a" stroke="#8d2117" stroke-width="2"/>
+<circle cx="140" cy="30" r="12" fill="#f3ece0" stroke="#8d2117" stroke-width="3"/>
+<text x="140" y="98" text-anchor="middle" font-family="${SANS}" font-size="50" font-weight="700" fill="#fff" letter-spacing="6">HOLD</text>
+<rect x="16" y="118" width="248" height="338" rx="3" fill="#fbf8f2"/>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a" letter-spacing=".5">
+<text x="26" y="150">JOB #</text><text x="160" y="150">DATE</text>
+<text x="26" y="192">PART NO.</text><text x="26" y="234">PART NAME</text><text x="26" y="276">REASON</text>
+<text x="26" y="360">INSPECTOR</text><text x="26" y="402">QUANTITY</text><text x="140" y="402">NMR #</text></g>
+<g stroke="#9a9a9a" stroke-width="1"><path d="M66 153 H152 M196 153 H254 M92 195 H254 M106 237 H254 M84 279 H254 M26 318 H254 M106 363 H254 M98 405 H132 M184 405 H254"/></g>
+<g font-family="${HAND}" font-size="16" fill="#1d3c8f">
+<text x="68" y="149">71245-0010</text><text x="198" y="149">11/12/26</text><text x="96" y="191">TS-4417 Rev C</text><text x="108" y="233">Support bracket</text>
+<text x="86" y="275">Bore 2.5032</text><text x="30" y="314">req. 2.500 +.002/-.000</text><text x="110" y="359">QA stamp 07</text><text x="104" y="401">1</text><text x="188" y="401">26-0418</text></g>
+<text x="140" y="440" text-anchor="middle" font-family="${MONO}" font-size="12" fill="#c8372a" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text></g>`}
+function heldSceneSVG(u){return `<svg viewBox="0 0 1200 640" role="img" aria-label="A housing on a skid with a red cone and a Hold Tag. Dana and her supervisor look at it. A close-up shows the Hold Tag fields.">${shopBg(u)}
+<g transform="translate(-320,-173) scale(1.5)">${skid(560)}${housing(560,u,false)}</g>
+<path d="M622 462 L636 492" stroke="#c9c9c9" stroke-width="2"/><rect x="624" y="490" width="26" height="38" rx="3" fill="#c8372a" stroke="#8d2117" transform="rotate(8 637 509)"/>
+${coneG('red',372,622,1.35)}
+${person(112,632,1.0,DANA)}${person(240,636,1.06,{...SUP,clip:false})}
+<path d="M668 500 C 740 470, 800 400, 868 350" fill="none" stroke="#d29a2e" stroke-width="2.5" stroke-dasharray="7 6"/>
+<circle cx="638" cy="510" r="30" fill="none" stroke="#d29a2e" stroke-width="2.5"/>
+<rect x="842" y="70" width="340" height="560" rx="14" fill="#121618" fill-opacity=".9" stroke="#3a454a"/>
+${holdTagG(872,142,1.0)}
+<text x="1012" y="102" text-anchor="middle" font-family="${MONO}" font-size="14" fill="#d29a2e" letter-spacing="2">HOLD TAG CLOSE-UP</text></svg>`}
+
+/* First Article tag, front and back */
+function faTagSVG(){const tag=(x,back)=>`<g transform="translate(${x},40)">
+<path d="M70 0 V-30" stroke="#bdbdbd" stroke-width="2"/><path d="M24 0 H216 L240 24 V330 H0 V24 Z" fill="#2f6fd0" stroke="#1f4e97" stroke-width="2"/>
+<circle cx="120" cy="24" r="10" fill="#f3ece0" stroke="#1f4e97" stroke-width="3"/>
+<rect x="14" y="80" width="212" height="236" rx="3" fill="#fbf8f2"/>
+${back?`<text x="120" y="66" text-anchor="middle" font-family="${SANS}" font-size="17" font-weight="700" fill="#fff" letter-spacing="1.5">FIRST ARTICLE</text>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="26" y="108">ESTABLISHED</text><text x="26" y="146">OPER</text><text x="120" y="146">DATE</text></g>
+<g font-family="${HAND}" font-size="17" fill="#1d3c8f"><text x="64" y="144">30</text><text x="158" y="144">11/12/26</text></g>
+<path d="M60 148 H112 M154 148 H218" stroke="#9a9a9a"/>
+<g transform="rotate(-12 120 230)"><circle cx="120" cy="230" r="52" fill="none" stroke="#b3261e" stroke-width="3.5" opacity=".85"/><circle cx="120" cy="230" r="42" fill="none" stroke="#b3261e" stroke-width="1.5" opacity=".85"/>
+<text x="120" y="212" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">GTC QA</text><text x="120" y="246" text-anchor="middle" font-family="${SANS}" font-size="34" fill="#b3261e" font-weight="700">07</text><text x="120" y="262" text-anchor="middle" font-family="${MONO}" font-size="9" fill="#b3261e">INSPECTOR</text></g>`
+:`<text x="120" y="66" text-anchor="middle" font-family="${SANS}" font-size="22" font-weight="700" fill="#fff" letter-spacing="1.5">FIRST ARTICLE</text>
+<g font-family="${MONO}" font-size="12" fill="#3a3a3a"><text x="26" y="140">JOB #</text><text x="26" y="210">PART #</text></g>
+<path d="M76 143 H218 M84 213 H218" stroke="#9a9a9a"/>
+<g font-family="${HAND}" font-size="19" fill="#1d3c8f"><text x="80" y="139">71245-0010</text><text x="88" y="209">TS-4417</text></g>
+<text x="120" y="290" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#2f6fd0" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text>`}
+<text x="120" y="362" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#a3adb1" letter-spacing="2">${back?'BACK: STAMPED BY INSPECTION':'FRONT'}</text></g>`;
+return `<svg viewBox="0 0 600 420" role="img" aria-label="First Article blue tag. Front shows Job number 71245-0010 and Part number TS-4417. Back shows First Article established at operation 30 with an inspector stamp.">
+<rect width="600" height="420" rx="10" fill="#222a2e"/>${tag(40,false)}${tag(320,true)}</svg>`}
+
+/* Accepted tag + sticker */
+function acceptedSVG(){return `<svg viewBox="0 0 600 400" role="img" aria-label="Green Accepted tag on a finished part, and a green Accepted sticker">
+<rect width="600" height="400" rx="10" fill="#222a2e"/>
+<g transform="translate(40,40)"><path d="M70 0 V-26" stroke="#bdbdbd" stroke-width="2"/><path d="M24 0 H216 L240 24 V320 H0 V24 Z" fill="#2f8f4e" stroke="#1f6a38" stroke-width="2"/>
+<circle cx="120" cy="24" r="10" fill="#f3ece0" stroke="#1f6a38" stroke-width="3"/>
+<text x="120" y="68" text-anchor="middle" font-family="${SANS}" font-size="26" font-weight="700" fill="#fff" letter-spacing="3">ACCEPTED</text>
+<rect x="14" y="84" width="212" height="222" rx="3" fill="#fbf8f2"/>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="24" y="114">JOB #</text><text x="24" y="148">PART #</text><text x="24" y="182">QTY</text><text x="120" y="182">OPER</text><text x="24" y="216">DATE</text></g>
+<path d="M68 117 H216 M76 151 H216 M56 185 H110 M158 185 H216 M64 219 H216" stroke="#9a9a9a"/>
+<g font-family="${HAND}" font-size="16" fill="#1d3c8f"><text x="72" y="113">71245-0010</text><text x="80" y="147">TS-4417 Rev C</text><text x="64" y="181">6</text><text x="164" y="181">90</text><text x="68" y="215">12/02/26</text></g>
+<g transform="rotate(-10 120 252)"><rect x="66" y="228" width="108" height="46" rx="6" fill="none" stroke="#b3261e" stroke-width="3" opacity=".85"/><text x="120" y="248" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">GTC QA 07</text><text x="120" y="266" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">RELEASED</text></g>
+<text x="120" y="300" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#2f8f4e" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text></g>
+<g transform="translate(440,170)"><circle r="78" fill="#2f8f4e" stroke="#fff" stroke-width="5"/><circle r="64" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>
+<text y="-8" text-anchor="middle" font-family="${SANS}" font-size="21" font-weight="700" fill="#fff" letter-spacing="1.5">ACCEPTED</text><text y="18" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#fff">QA 07</text><text y="38" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#fff" opacity=".85">12/02/26</text></g>
+<g font-family="${MONO}" font-size="13" fill="#a3adb1" letter-spacing="2" text-anchor="middle"><text x="160" y="386">TAG</text><text x="440" y="300">OR STICKER</text></g></svg>`}
+
+/* Material ID tag. Neutral color: the real color changes each year (Q04). */
+function matTagSVG(stamped,label){return `<svg viewBox="0 0 300 400" role="img" aria-label="Material identification tag ${label}, ${stamped?'with':'without'} a Quality inspection stamp">
+<path d="M24 10 H276 L296 30 V390 H4 V30 Z" fill="#d9dde6" stroke="#8b93a3" stroke-width="2"/>
+<circle cx="150" cy="30" r="9" fill="#f3ece0" stroke="#8b93a3" stroke-width="3"/>
+<rect x="4" y="48" width="292" height="30" fill="#7d86a0"/><text x="150" y="69" text-anchor="middle" font-family="${SANS}" font-size="15" font-weight="700" fill="#fff" letter-spacing="1.5">MATERIAL IDENTIFICATION</text>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="18" y="106">PART #</text><text x="18" y="140">DESCRIPTION</text><text x="18" y="196">HEAT #</text><text x="160" y="196">QTY</text><text x="18" y="230">PO #</text><text x="160" y="230">REC'D</text></g>
+<g font-family="${MONO}" font-size="14" fill="#141413" font-weight="600"><text x="74" y="107">MAT-174PH-2515</text><text x="18" y="160">17-4PH SS BAR 2.50 X 1.50</text><text x="72" y="197">T7731</text><text x="194" y="197">4</text><text x="56" y="231">88412</text><text x="210" y="231">11/03</text></g>
+<rect x="18" y="252" width="264" height="120" rx="4" fill="#fff" stroke="#8b93a3" stroke-dasharray="${stamped?'0':'6 4'}"/>
+<text x="28" y="270" font-family="${MONO}" font-size="11" fill="#3a3a3a">QC INSPECTION STAMP</text>
+${stamped?`<g transform="rotate(-9 150 320)"><circle cx="150" cy="320" r="40" fill="none" stroke="#b3261e" stroke-width="3.5" opacity=".85"/><text x="150" y="312" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#b3261e" font-weight="600">GTC QA</text><text x="150" y="338" text-anchor="middle" font-family="${SANS}" font-size="26" fill="#b3261e" font-weight="700">07</text></g>`:''}
+<text x="282" y="384" text-anchor="end" font-family="${MONO}" font-size="9" fill="#5a6270" letter-spacing="1">TRAINING SAMPLE</text></svg>`}
+
+/* Traveler header, laid out like the GTC-PD-013 sample. Fictional data (same job as Flow of Work). */
+function travelerSVG(){const z=(id,x,y,w,h)=>`<rect class="tz" data-z="${id}" x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#d29a2e" fill-opacity="0" tabindex="0" role="button" aria-label="${id}"/>`;
+return `<svg viewBox="0 0 1100 520" role="img" aria-label="Sample traveler header. Click the line that shows the quality Tier.">
+<rect width="1100" height="520" rx="8" fill="#fbfaf6"/>
+<g font-family="${MONO}" fill="#1d1d1d">
+<text x="28" y="40" font-size="20" font-weight="600">GTC</text><text x="80" y="40" font-size="11" fill="#555">GENERAL TOOL COMPANY · PRODUCTION FLOOR TRAVELER</text>
+<text x="1072" y="40" font-size="11" fill="#555" text-anchor="end">Printed 11/12/2026 07:42 AM   Page 1</text>
+<path d="M28 54 H1072" stroke="#999"/>
+<text x="28" y="84" font-size="15">Job 71245-0010</text><text x="250" y="84" font-size="15">Part TS-4417</text><text x="440" y="84" font-size="15">Rev C</text><text x="560" y="84" font-size="15">U/M EA</text><text x="690" y="84" font-size="15">Qty 6</text>
+<text x="28" y="112" font-size="13" fill="#333">Description  SUPPORT BRACKET</text><text x="560" y="112" font-size="13" fill="#333">Due 12/04/2026   Sales Order 0000-TRN</text>
+<text x="28" y="136" font-size="13" fill="#333">Customer  TRAINING SAMPLE (no customer shown)</text>
+<path d="M28 152 H1072" stroke="#999"/>
+<g font-size="11" fill="#555"><text x="28" y="174">OPERATION</text><text x="150" y="174">WORK CENTER</text><text x="420" y="174">DNC #</text><text x="540" y="174">OPER QTY</text><text x="660" y="174">SETUP</text><text x="760" y="174">OPER TIME</text><text x="880" y="174">ELAPSED</text></g>
+<path d="M28 184 H1072" stroke="#ccc"/>
+<g font-size="14"><text x="28" y="210">10</text><text x="150" y="210">E010 ENGINEERING</text><text x="540" y="210">1.0</text><text x="660" y="210">2.00</text><text x="760" y="210">0.00</text><text x="880" y="210">2.00</text></g>
+<g font-size="15"><text x="70" y="262" font-weight="600">TIER: 2   DOCUMENTATION REQUIRED</text>
+<text x="70" y="300">PRODUCTION DOCUMENTATION LEVEL: III</text>
+<text x="70" y="338">TECHNICAL CONTACT: MANUFACTURING ENGINEER</text>
+<text x="70" y="376">TECHNICAL REVIEW: ______   REVIEW DATE: __/__/__</text>
+<text x="70" y="414">MATERIAL TYPE: 17-4PH STAINLESS STEEL   SIZE: 2.50" X 1.50" X 6.50"</text>
+<text x="70" y="452">MATERIAL CERTS REQUIRED: YES</text></g></g>
+<text x="550" y="330" text-anchor="middle" font-family="${SANS}" font-size="64" font-weight="700" fill="#2C3539" fill-opacity=".07" transform="rotate(-12 550 330)" letter-spacing="8">TRAINING SAMPLE</text>
+<rect class="tfound" x="60" y="240" width="380" height="32" rx="5" fill="none" stroke="#2f9e5e" stroke-width="3" opacity="0"/>
+${z('job',20,62,215,32)}${z('rev',430,62,100,32)}${z('qty',680,62,100,32)}${z('tier',60,240,380,32)}${z('pdl',60,278,420,32)}${z('mat',60,392,800,32)}</svg>`}
+
+/* As-built drawing (simplified). Shows a Tier 2 record: machinist records all; Quality verifies tolerance .010" or less. */
+function asBuiltSVG(){const rows=[['1','4.000 ±.030','4.006','n/a'],['2','Bore 2.500 +.002/-.000','2.5012','2.5011'],['3','1.250 ±.002','1.2508','1.2507'],['4','.750 ±.015','.748','n/a'],['5','Hole .375 ±.003','.3755','.3756']];
+const b=(n,x,y)=>`<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#1f4e97" stroke-width="2"/><text x="${x}" y="${y+5}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#1f4e97" font-weight="600">${n}</text>`;
+return `<svg viewBox="0 0 1100 520" role="img" aria-label="Sample as-built drawing for a Tier 2 job with five numbered characteristics, the machinist's recorded values, and Quality's in-process verification of the tight-tolerance characteristics">
+<rect width="1100" height="520" rx="8" fill="#fbfaf6"/><rect x="14" y="14" width="1072" height="492" fill="none" stroke="#333" stroke-width="1.5"/>
+<g stroke="#222" stroke-width="2.2" fill="none"><path d="M90 380 V140 H200 V300 H470 V380 Z"/><circle cx="145" cy="220" r="34"/><circle cx="410" cy="340" r="12"/></g>
+<g stroke="#555" stroke-width="1" fill="none"><path d="M90 420 H470 M90 410 V430 M470 410 V430 M520 300 V380 M510 300 H530 M510 380 H530 M60 140 V380 M50 140 H70 M50 380 H70 M145 186 V120"/></g>
+<g font-family="${MONO}" font-size="13" fill="#222"><text x="280" y="445" text-anchor="middle">4.000</text><text x="560" y="345">.750</text><text x="36" y="265" transform="rotate(-90 36 265)" text-anchor="middle">1.250</text><text x="150" y="112">Ø2.500</text><text x="352" y="372">Ø.375</text></g>
+${b(1,280,470)}${b(2,228,108)}${b(3,36,312)}${b(4,560,375)}${b(5,446,300)}
+<g font-family="${MONO}"><rect x="620" y="40" width="440" height="34" fill="#2C3539"/><g font-size="11" fill="#fff"><text x="632" y="62">CHAR</text><text x="686" y="62">REQUIREMENT</text><text x="880" y="62">MACHINIST</text><text x="976" y="62">QUALITY</text></g>
+${rows.map((r,i)=>`<rect x="620" y="${74+i*44}" width="440" height="44" fill="${i%2?'#f1efe8':'#fff'}"/><text x="644" y="${101+i*44}" font-size="13" fill="#1f4e97" font-weight="600">${r[0]}</text><text x="686" y="${101+i*44}" font-size="12.5" fill="#222">${r[1]}</text>
+<text x="880" y="${101+i*44}" font-family="${HAND}" font-size="16" fill="#1d3c8f">${r[2]}</text><text x="976" y="${101+i*44}" ${r[3]==='n/a'?`font-size="12" fill="#999"`:`font-family="${HAND}" font-size="16" fill="#b3261e"`}>${r[3]}</text>`).join('')}
+<rect x="620" y="40" width="440" height="254" fill="none" stroke="#333"/>
+<text x="620" y="318" font-size="11" fill="#444">Stamps: machinist M-112 · Quality QA 07</text>
+<rect x="620" y="400" width="440" height="92" fill="none" stroke="#333"/><path d="M620 430 H1060 M840 430 V492" stroke="#333"/>
+<text x="632" y="421" font-size="13" font-weight="600" fill="#222">AS-BUILT DRAWING · TRAINING SAMPLE</text>
+<g font-size="11" fill="#444"><text x="632" y="454">PART TS-4417  REV C</text><text x="632" y="478">JOB 71245-0010  OPER 30</text><text x="852" y="454">TIER 2</text><text x="852" y="478">SHEET 1 OF 1</text></g></g></svg>`}
+
+/* small icons for tier cards */
+const IC={
+  you:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="8" r="5" fill="#d29a2e"/><path d="M3 24 Q3 14 13 14 Q23 14 23 24 Z" fill="#d29a2e"/></svg>`,
+  qa:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="#4fb37a" stroke-width="3"/><path d="M16 16 L23 23" stroke="#4fb37a" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+  doc:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M5 2 H16 L21 7 V24 H5 Z" fill="none" stroke="#a3adb1" stroke-width="2"/><path d="M8 11 H18 M8 15 H18 M8 19 H14" stroke="#a3adb1" stroke-width="1.6"/></svg>`
+};
+
+/* ===== Tap Drill, Drill & Ream: data and graphics ===== */
+/* Standard decimal equivalents. Check against the GTC-PD-019 drill size chart before release. */
+const NUM={1:.2280,2:.2210,3:.2130,4:.2090,5:.2055,6:.2040,7:.2010,8:.1990,9:.1960,10:.1935,11:.1910,12:.1890,13:.1850,14:.1820,15:.1800,16:.1770,17:.1730,18:.1695,19:.1660,20:.1610,21:.1590,22:.1570,23:.1540,24:.1520,25:.1495,26:.1470,27:.1440,28:.1405,29:.1360,30:.1285,31:.1200,32:.1160,33:.1130,34:.1110,35:.1100,36:.1065,37:.1040,38:.1015,39:.0995,40:.0980};
+const LET={A:.2340,B:.2380,C:.2420,D:.2460,E:.2500,F:.2570,G:.2610,H:.2660,I:.2720,J:.2770,K:.2810,L:.2900,M:.2950,N:.3020,O:.3160,P:.3230,Q:.3320,R:.3390,S:.3480,T:.3580,U:.3680,V:.3770,W:.3860,X:.3970,Y:.4040,Z:.4130};
+function gcd(a,b){return b?gcd(b,a%b):a}
+function fracName(n){const g=gcd(n,64);return `${n/g}/${64/g}`}
+const FRAC=[];for(let n=4;n<=64;n++)FRAC.push({name:fracName(n),d:n/64});
+const DRILLS=[...Object.entries(NUM).map(([k,v])=>({sys:'Number',name:'#'+k,d:v})),...Object.entries(LET).map(([k,v])=>({sys:'Letter',name:k,d:v})),...FRAC.map(f=>({sys:'Fractional',name:f.name,d:f.d}))];
+const f4=d=>d.toFixed(4).replace(/^0/,'');
+function nearestDrill(t){let best=null;for(const x of DRILLS){const e=Math.abs(x.d-t);if(!best||e<best.e-1e-9)best={...x,e}}return best}
+
+/* GTC Standard Tap Chart rows quoted in the storyboard (PD-181, 65% thread) */
+const TAPS=[
+ {th:'1/4-20',drill:'#6',dec:.2040,wall:'#7',pitch:1/20},
+ {th:'5/16-18',drill:'G',dec:.2610,wall:'F',pitch:1/18},
+ {th:'3/8-16',drill:'8.10 mm',dec:.3189,wall:'5/16',pitch:1/16},
+ {th:'1/2-13',drill:'11.00 mm',dec:.4331,wall:'27/64',pitch:1/13},
+ {th:'M6 x 1',drill:'#7',dec:.2010,wall:'5.0 mm',pitch:1/25.4},
+ {th:'M10 x 1.5',drill:'R',dec:.3390,wall:'8.5 mm',pitch:1.5/25.4}];
+/* Stock allowance on diameter (PD-181 2.3.2) */
+const STOCK=[[.125,.250,.010,'.125" to .250"'],[.251,.500,.015,'.251" to .500"'],[.501,1.499,.020,'.501" to 1.499"'],[1.5,99,.025,'1.500" and up (up to)']];
+const allowFor=d=>STOCK.find(r=>d>=r[0]-1e-9&&d<=r[1]+1e-9);
+
+const INK='#1d1d1d';
+function couponSVG(){return `<svg viewBox="0 0 900 420" role="img" aria-label="Scrap coupon: a stripped tapped hole and a reamed hole too big for its pin">
+<rect width="900" height="420" rx="10" fill="#222a2e"/>
+<polygon points="90,140 640,140 760,80 210,80" fill="#c9cfd2"/><polygon points="640,140 760,80 760,250 640,310" fill="#6b757a"/><rect x="90" y="140" width="550" height="170" fill="url(#cm)"/>
+<defs><linearGradient id="cm" x1="0" x2="1"><stop offset="0" stop-color="#b9c0c3"/><stop offset="1" stop-color="#8f999d"/></linearGradient></defs>
+<g transform="translate(270,110)"><ellipse rx="44" ry="16" fill="#1c2226"/><ellipse rx="34" ry="11" fill="none" stroke="#7d868a" stroke-width="2" stroke-dasharray="5 4"/><path d="M-30 -2 l60 4 M-36 3 l70 -6" stroke="#d29a2e" stroke-width="2" opacity=".8"/></g>
+<g transform="translate(500,110)"><ellipse rx="40" ry="14" fill="#1c2226"/><ellipse rx="40" ry="14" fill="none" stroke="#e6e9ea" stroke-opacity=".6" stroke-width="2"/><g transform="rotate(14)"><rect x="-14" y="-90" width="28" height="94" rx="4" fill="#dfe3e5" stroke="#7d868a"/><ellipse cx="0" cy="-90" rx="14" ry="5" fill="#f2f4f5" stroke="#7d868a"/></g></g>
+<g font-family="${SANS}" font-size="17" fill="#ebe6dc"><text x="190" y="370">Tapped hole: threads stripped</text><text x="470" y="370">Reamed hole: pin drops in loose</text></g>
+<path d="M270 350 V140" stroke="#e0594a" stroke-width="2" stroke-dasharray="6 5"/><path d="M500 350 V140" stroke="#e0594a" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="810" y="392" text-anchor="end" font-family="${MONO}" font-size="12" fill="#a3adb1">ILLUSTRATION · USE THE REAL COUPON IN CLASS</text></svg>`}
+
+function threadPctSVG(){return `<svg viewBox="0 0 640 330" role="img" aria-label="Illustration: thread strength levels off above about 60 percent thread while tapping torque keeps rising">
+<rect width="640" height="330" rx="10" fill="#222a2e"/>
+<g font-family="${MONO}" font-size="12" fill="#a3adb1"><path d="M70 270 H600 M70 270 V40" stroke="#5d686d"/>
+${[50,60,70,80,90,100].map((p,i)=>`<text x="${70+i*100}" y="292" text-anchor="middle">${p}%</text>`).join('')}<text x="335" y="318" text-anchor="middle">PERCENT OF THREAD</text></g>
+<path d="M70 210 C 140 120, 170 100, 200 92 S 400 86, 600 84" fill="none" stroke="#4fb37a" stroke-width="4"/>
+<path d="M70 250 C 260 230, 420 170, 600 52" fill="none" stroke="#e0594a" stroke-width="4"/>
+<rect x="215" y="40" width="40" height="230" fill="#d29a2e" opacity=".16"/><path d="M235 40 V270" stroke="#d29a2e" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M370 40 V270" stroke="#a3adb1" stroke-width="1.5" stroke-dasharray="4 5"/>
+<g font-family="${SANS}" font-size="14"><text x="430" y="78" fill="#4fb37a">Thread strength</text><text x="470" y="150" fill="#e0594a">Tapping torque,</text><text x="470" y="168" fill="#e0594a">tap breakage</text><text x="241" y="58" fill="#d29a2e" font-weight="600">GTC: about 65%</text><text x="376" y="258" fill="#a3adb1">wall charts: 75%</text></g>
+<text x="590" y="304" text-anchor="end" font-family="${MONO}" font-size="10" fill="#7d868a">ILLUSTRATIVE CURVES · PD-181 2.4.2</text></svg>`}
+
+function tapsSVG(){return `<svg viewBox="0 0 640 330" role="img" aria-label="Spiral flute tap pulls chips up and out of a blind hole. Spiral point tap pushes chips ahead in a through hole.">
+<rect width="640" height="330" rx="10" fill="#222a2e"/>
+<g transform="translate(60,0)"><rect x="40" y="200" width="160" height="100" fill="#8f999d"/><rect x="100" y="200" width="40" height="80" fill="#1c2226"/>
+<rect x="104" y="40" width="32" height="200" rx="3" fill="#c6ccce"/>${[0,1,2,3,4,5,6,7].map(i=>`<path d="M104 ${120+i*15} L136 ${108+i*15}" stroke="#4d555a" stroke-width="5"/>`).join('')}
+<path d="M150 230 C 170 190, 170 150, 160 110" fill="none" stroke="#d29a2e" stroke-width="3"/><path d="M152 118 l8 -10 l4 12" fill="none" stroke="#d29a2e" stroke-width="3"/>
+<text x="120" y="24" text-anchor="middle" font-family="${SANS}" font-size="16" font-weight="600" fill="#ebe6dc">Spiral flute</text><text x="120" y="322" text-anchor="middle" font-family="${MONO}" font-size="12" fill="#d29a2e">BLIND HOLE · CHIPS OUT</text></g>
+<g transform="translate(340,0)"><rect x="40" y="200" width="160" height="100" fill="#8f999d"/><rect x="100" y="200" width="40" height="100" fill="#1c2226"/>
+<rect x="104" y="40" width="32" height="190" rx="3" fill="#c6ccce"/>${[0,1,2,3,4,5].map(i=>`<path d="M110 ${115+i*18} V${128+i*18} M130 ${115+i*18} V${128+i*18}" stroke="#4d555a" stroke-width="4"/>`).join('')}<path d="M104 210 L120 238 L136 210 Z" fill="#c6ccce"/><path d="M106 206 L130 226" stroke="#4d555a" stroke-width="4"/>
+<path d="M120 250 V290" stroke="#d29a2e" stroke-width="3"/><path d="M112 282 l8 10 l8 -10" fill="none" stroke="#d29a2e" stroke-width="3"/>
+<text x="120" y="24" text-anchor="middle" font-family="${SANS}" font-size="16" font-weight="600" fill="#ebe6dc">Spiral point</text><text x="120" y="322" text-anchor="middle" font-family="${MONO}" font-size="12" fill="#d29a2e">THROUGH HOLE · CHIPS AHEAD</text></g></svg>`}
+
+function blindHoleSVG(){return `<svg viewBox="0 0 640 340" role="img" aria-label="Blind tapped hole cross-section: the tap drill goes deeper than the full thread depth to clear the tap lead">
+<rect width="640" height="340" rx="10" fill="#222a2e"/><rect x="60" y="60" width="300" height="250" fill="#8f999d"/>
+<path d="M170 60 V250 L210 280 L250 250 V60 Z" fill="#1c2226"/>
+${[0,1,2,3,4,5,6].map(i=>`<path d="M170 ${70+i*18} l-10 9 l10 9 M250 ${70+i*18} l10 9 l-10 9" stroke="#c6ccce" stroke-width="2" fill="none"/>`).join('')}
+<g stroke="#d29a2e" stroke-width="2"><path d="M290 60 V196 M282 60 H298 M282 196 H298"/><path d="M320 196 V250 M312 196 H328 M312 250 H328"/><path d="M350 60 V280 M342 280 H358"/></g>
+<g font-family="${SANS}" font-size="14" fill="#ebe6dc"><text x="380" y="124">Full thread depth</text><text x="380" y="142" fill="#a3adb1">(from the print)</text>
+<text x="380" y="218">Tap lead: no full thread</text><text x="380" y="236" fill="#a3adb1">spiral flute: 2.5 x pitch</text><text x="380" y="276">Tap drill depth goes past both</text><text x="380" y="294" fill="#a3adb1">check it in the program (PD-287)</text></g>
+<g stroke="#a3adb1" stroke-width="1" stroke-dasharray="4 4"><path d="M250 196 H290"/><path d="M250 250 H320"/></g>
+<text x="210" y="40" text-anchor="middle" font-family="${MONO}" font-size="12" fill="#a3adb1">1/4-20: PITCH .050" · LEAD ABOUT .125"</text></svg>`}
+
+/* Sample print for TDR-03 (holes A to D) */
+function printSVG(){return `<svg viewBox="0 0 900 430" role="img" aria-label="Sample print with four hole callouts A to D">
+<rect width="900" height="430" rx="8" fill="#fbfaf6"/><rect x="12" y="12" width="876" height="406" fill="none" stroke="#333" stroke-width="1.5"/>
+<rect x="60" y="70" width="560" height="280" fill="none" stroke="${INK}" stroke-width="2.2"/><path d="M500 70 Q 620 70 620 190" fill="none" stroke="${INK}" stroke-width="2.2"/>
+<circle cx="140" cy="140" r="8" fill="none" stroke="${INK}" stroke-width="2"/><circle cx="260" cy="250" r="22" fill="none" stroke="${INK}" stroke-width="2"/><circle cx="540" cy="140" r="38" fill="none" stroke="${INK}" stroke-width="2"/><circle cx="440" cy="280" r="54" fill="none" stroke="${INK}" stroke-width="2"/>
+${[['A',140,140,'Ø.2010 THRU  (tap drill)','HSS jobber drill · flat machined face'],['B',260,250,'Ø.750 x 2.25 DP','Carbide drill · flat machined face'],['C',540,140,'Ø1.500 THRU','Insert drill · on the R6.00 radius'],['D',440,280,'Ø3.250 THRU','']].map(([l,x,y],i)=>`<circle cx="${x+(i===2?50:i===3?66:i===1?34:22)}" cy="${y-(i===3?50:26)}" r="15" fill="#fff" stroke="#1f4e97" stroke-width="2"/><text x="${x+(i===2?50:i===3?66:i===1?34:22)}" y="${y-(i===3?50:26)+5}" text-anchor="middle" font-family="${MONO}" font-size="14" font-weight="600" fill="#1f4e97">${l}</text>`).join('')}
+<g font-family="${MONO}" font-size="13" fill="${INK}"><text x="650" y="96">A  Ø.2010 THRU</text><text x="650" y="126">B  Ø.750 x 2.25 DP</text><text x="650" y="156">C  Ø1.500 THRU</text><text x="676" y="172" font-size="11" fill="#555">on the R6.00 face</text><text x="650" y="202">D  Ø3.250 THRU</text></g>
+<g font-family="${MONO}" font-size="11" fill="#555"><text x="650" y="300">MATERIAL: 4140 STEEL</text><text x="650" y="320">ALL FACES MACHINED</text><text x="650" y="340">EXCEPT AS NOTED</text></g>
+<text x="650" y="392" font-family="${MONO}" font-size="12" font-weight="600" fill="${INK}">SAMPLE PRINT · TRAINING SAMPLE</text></svg>`}
+
+/* Observed check print (TDR-08): three callouts */
+function checkPrintSVG(){return `<svg viewBox="0 0 900 300" role="img" aria-label="Observed check sample print: tapped blind hole 5/16-18 x .50 deep, reamed hole Ø.375, drilled hole Ø.2720">
+<rect width="900" height="300" rx="8" fill="#fbfaf6"/><rect x="12" y="12" width="876" height="276" fill="none" stroke="#333" stroke-width="1.5"/>
+<rect x="60" y="60" width="440" height="180" fill="none" stroke="${INK}" stroke-width="2.2"/>
+<circle cx="140" cy="150" r="14" fill="none" stroke="${INK}" stroke-width="2"/><circle cx="280" cy="150" r="17" fill="none" stroke="${INK}" stroke-width="2"/><circle cx="420" cy="150" r="12" fill="none" stroke="${INK}" stroke-width="2"/>
+${[['1',140],['2',280],['3',420]].map(([l,x])=>`<circle cx="${x}" cy="100" r="15" fill="#fff" stroke="#1f4e97" stroke-width="2"/><text x="${x}" y="105" text-anchor="middle" font-family="${MONO}" font-size="14" font-weight="600" fill="#1f4e97">${l}</text>`).join('')}
+<g font-family="${MONO}" font-size="14" fill="${INK}"><text x="540" y="96">1  5/16-18 UNC-2B x .50 DP</text><text x="540" y="136">2  Ø.3750 +.0005/-.0000 THRU</text><text x="540" y="176">3  Ø.2720 THRU</text></g>
+<text x="540" y="250" font-family="${MONO}" font-size="12" font-weight="600" fill="${INK}">TDR-08 · TRAINING SAMPLE</text></svg>`}
+
+function micSVG(read){return `<svg viewBox="0 0 520 220" role="img" aria-label="Micrometer measuring a reamer across the flutes, reading ${read}">
+<rect width="520" height="220" rx="10" fill="#222a2e"/>
+<path d="M60 60 H130 V90 H90 V160 H210 V190 H60 Z" fill="#8f999d"/><rect x="130" y="70" width="18" height="12" fill="#c6ccce"/>
+<rect x="196" y="68" width="10" height="16" fill="#c6ccce"/><rect x="206" y="62" width="160" height="28" rx="3" fill="#a9b1b4"/><rect x="366" y="58" width="90" height="36" rx="4" fill="#c6ccce"/>
+<rect x="250" y="100" width="120" height="40" rx="4" fill="#15191b" stroke="#5d686d"/><text x="310" y="128" text-anchor="middle" font-family="${MONO}" font-size="22" fill="#4fb37a">${read}</text>
+<rect x="148" y="40" width="48" height="70" rx="3" fill="#d3d8da"/>${[0,1,2,3].map(i=>`<path d="M${152+i*12} 40 L${158+i*12} 110" stroke="#7d868a" stroke-width="3"/>`).join('')}
+<text x="172" y="30" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#a3adb1">REAMER</text></svg>`}
+
+function testCutSVG(){return `<svg viewBox="0 0 520 260" role="img" aria-label="Test cut: ream the first hole .100 inch deep, stop, and check it with a gage pin">
+<rect width="520" height="260" rx="10" fill="#222a2e"/><rect x="40" y="130" width="440" height="110" fill="#8f999d"/>
+<rect x="110" y="130" width="46" height="110" fill="#1c2226"/><rect x="110" y="130" width="46" height="22" fill="#4a5357"/>
+<path d="M175 130 V152 M168 130 H182 M168 152 H182" stroke="#d29a2e" stroke-width="2"/><text x="190" y="146" font-family="${MONO}" font-size="13" fill="#d29a2e">.100" TEST CUT</text>
+<rect x="118" y="30" width="30" height="96" rx="3" fill="#d3d8da"/><text x="133" y="22" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#a3adb1">REAMER</text>
+<rect x="330" y="40" width="20" height="100" rx="4" fill="#e6e9ea"/><rect x="326" y="34" width="28" height="12" rx="3" fill="#2f9e5e"/><text x="340" y="22" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#a3adb1">GAGE PIN</text>
+<g font-family="${SANS}" font-size="14" fill="#ebe6dc"><text x="250" y="200">1. Ream .100" deep  2. Stop</text><text x="250" y="222">3. Check size  4. Then continue</text></g></svg>`}
+
+</script>
+<script>
+/* ===== TAP DRILL, DRILL & REAM SIZES · instructor-led review course. State in memory only. ===== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const app=$('#app');let S;
+const T=t=>`<em class="tbc">${t}</em>`;
+function reset(){S={i:0,rev:S?S.rev:false,done:{},o1:null,find:0,findMiss:false,conv:{},holes:{},spot:{},angle:null,look:{},ttype:{},ws:{},wsChecked:false,rp:{step:0,r:0},fit:{},gage:{},tool:null,mic:'',oc:{},oname:'',take:''}}
+function narrBox(sc){return ''}
+function eyebrow(sc){return `<div class="eyebrow">${sc.id} · ${sc.mod} · ${sc.time} · ${sc.obj}</div>`}
+function mark(id){S.done[id]=true;updateTrack();const r=$('.navbar .r');if(r&&!$('.navbar .good'))r.insertAdjacentHTML('afterbegin','<span class="hint good">Practice complete</span>')}
+function guide(g){return `<div class="guide"><div class="ghead"><span class="steps-lbl">Instructor guide</span><span class="chk">Matches the current class? Confirm in review</span></div>
+<div class="gsec"><b>Instructor does</b><ol>${g.does.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+<div class="gsec"><b>Learners do</b><ul>${g.learn.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+<div class="gsec"><b>Key points (GTC source)</b><ul>${g.key.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+<div class="gsec mat"><b>Materials</b><span>${g.mat}</span></div></div>`}
+const split=(media,side)=>`<section class="screen split fadein"><div class="mediacol">${media}</div><div class="side">${side}</div></section>`;
+const proj=(t)=>`<div class="projlbl">On screen in class${t?' · '+t:''}</div>`;
+const ok=(m)=>`<span class="good">${m}</span>`;
+
+/* ---------- reviewer notes (questions verbatim in substance from the storyboard) ---------- */
+const F=(lvl,t,b)=>({lvl,t,b});
+const NOTES={
+ cover:{dev:'Built from GTC_TapDrill_Drill_Ream_Sizes_ILT_Storyboard_v0.1.docx (11/11/2026). The storyboard is instructor-led, so this review course is built to be projected: each segment shows what learners see and do, with the instructor guide beside it. Every segment is ungated so the instructor sets the pace.',
+  assets:[['Handout packet: PD-181 drill selection table, Standard Tap Chart, reaming and pin-fit tables; PD-019 charts (after the Q02 fix)','need'],['Practice worksheet (five callouts, two reamer plans) and key','built'],['TDR-08 observed check sheet','built'],['Tool kit: drill index, drill gage, spiral flute and spiral point taps, .500" reamer, gage pins, thread pitch gage, 0-1" mic','need']],
+  flags:[F('high','Q01 · High · Tim Waldron / current class instructor (name needed)','Who teaches Tap Drill, Drill & Ream Sizes today, how long does it run, what materials does it use, and does it teach from the GTC charts (PD-181, PD-019) or a vendor wall chart? This build assumes the GTC charts.'),
+   F('bld','Build note · Review copy','Single HTML file, no LMS tracking. The on-screen practice mirrors the table work; it does not replace the real tools. State is in memory only.')]},
+ 'TDR-01':{visual:'Not applicable (storyboard). Built: an illustrated scrap coupon as a stand-in for the real coupon or photos.',dev:'Instructor tip: keep it short; the hands-on segments carry the session.',
+  assets:[['Coupon illustration','stand'],['Practice coupon with a tapped blind hole, a reamed hole and a stripped hole (machine at GTC)','need']],flags:[]},
+ 'TDR-02':{visual:'Not applicable (storyboard). Built: an on-screen drill index (number, letter, fractional) and a converter.',dev:'Teach the correct conversion; do not hand out PD-019 page 3 unchanged until Q02 is resolved. The drill index uses standard decimal equivalents (#1 to #40, A to Z, 1/16" to 1" by 64ths); check them against the PD-019 chart.',
+  assets:[['On-screen drill index and converter','built']],
+  flags:[F('high','Q02 · High · Document control / Tim Waldron','GTC-PD-019 says "To convert Inches to mm, multiply inches by 0.03937." That converts mm to inches; inches to mm is × 25.4. Correct PD-019 before it is handed out.'),
+   F('bld','Build note · Metric drills','The index on screen covers number, letter and fractional drills. Metric drills appear only in the conversion practice. Add a metric tab if the class uses metric drills from the index.')]},
+ 'TDR-03':{visual:'Not applicable (storyboard). Built: a sample print with four holes (A to D) for the drill-type and spot-drill activity.',dev:'Optional extension for strong groups: the MMC 80% target example, pending Q09. The four holes and their conditions were written for this build from the PD-181 2.1 rules and need instructor approval.',
+  assets:[['Sample print (TRAINING SAMPLE)','built']],
+  flags:[F('med','Q03 · Medium · Tooling supervisor (name needed)','PD-181 (Rev 4, 2022) names OSG EX-Gold, Walter, SECO and Allied drills. Still the stocked brands? (Same as Cutting Tools Q03.)'),
+   F('low','Q09 · Low · Tim Waldron','PD-181 2.1.3.1 sets MMC hole size at 80% of the maximum (e.g., Ø.500 ±.005 at MMC targets .504). Teach it here, or later in Applied GD&T?'),
+   F('bld','Build note · Spade vs bore mill','PD-181 says spade drills are used above 2.5" and holes 3" and up are bore milled. Hole D (Ø3.250) is bore milled. Is a spade drill ever used between 2.5" and 3"?')]},
+ 'TDR-04':{visual:'Not applicable (storyboard). Built: an illustrative thread-percentage chart, a six-row tap chart excerpt, and a tap-type diagram.',dev:'Worked examples quoted from the PD-181 Standard Tap Chart. If the current class uses a different chart, flag it in the review column.',
+  assets:[['Thread-percentage chart (illustrative curves)','built'],['Tap chart excerpt (six rows from the storyboard)','built'],['Spiral flute / spiral point diagram','built']],
+  flags:[F('high','Q04 · High · Tim Waldron / Tooling supervisor (name needed)','Confirm machinists use the GTC tap chart (65% thread, e.g., #6 for 1/4-20) and not a 75% wall chart, and that the crib stocks the GTC tap drill sizes.'),
+   F('bld','Build note · Distractors','Wrong answers in the lookups use common 75% wall-chart sizes (#7, F, 5/16, 27/64, 5.0 mm, 8.5 mm). Only #7 for 1/4-20 comes from the storyboard; the others are standard wall-chart values, not GTC documents.'),
+   F('bld','Build note · Chart excerpt','The on-screen chart shows only the six rows quoted in the storyboard. Learners use the full printed chart in class.')]},
+ 'TDR-05':{visual:'Not applicable (storyboard). Built: an on-screen version of the practice worksheet and a blind-hole depth diagram.',dev:'Spiral flute taps have a lead of 2.5x the thread pitch (PD-181 2.4.1.1.1); use it to explain extra drill depth in blind holes.',
+  assets:[['Practice worksheet and key (five callouts)','built'],['Blind-hole depth diagram','built']],
+  flags:[F('bld','Build note · Worksheet callouts','The five callouts (1/4-20 blind, 5/16-18 through, 1/2-13 blind, M6 x 1 through, M10 x 1.5 blind) use only tap chart rows quoted in the storyboard. Swap in callouts from real GTC prints (TRAINING SAMPLE) if preferred.'),
+   F('bld','Build note · Depth rule','PD-181 gives the 2.5x pitch lead, not a drill-depth formula. The diagram only says the drill goes past the full thread and the lead; confirm whether GTC adds a set clearance.')]},
+ 'TDR-06':{visual:'Not applicable (storyboard). Built: the stock allowance table, a step-by-step pre-drill calculator, and a press fit / slip fit check.',dev:'Stock allowance values quoted from PD-181 2.3.2; worked example computed from the table. The two practice reamers (.3125" and .750") were chosen so the nearest drill is clear. "Nearest drill" is taken as the closest inch drill (fractional, number or letter) either side of the target.',
+  assets:[['Stock allowance table','built'],['Pre-drill calculator','built'],['Pin-fit callouts (illustrative)','stand']],
+  flags:[F('med','Q05 · Medium · Tooling supervisor (name needed)','PD-181 2.3.1 says carbide-tipped reamers are stocked up to 1" "in .015" increments." Confirm the increment.'),
+   F('med','Q06 · Medium · Quality Manager (name needed) / Tim Waldron','The pin-fit tables overlap at .375" and .500" (both rows include them). Which row applies at exactly .375" and .500"?'),
+   F('bld','Build note · Nearest drill rule','Should the pre-drill be the nearest drill, or the nearest drill at or under the target (never less stock)? For .750", the nearest is 47/64 (.7344"), which leaves .0156" instead of .020".'),
+   F('bld','Build note · Pin-fit callouts','Only the .625" press-fit range (.0008 to .0012" under) comes from the storyboard. The slip-fit callout is illustrative; swap in values from the PD-181 table.')]},
+ 'TDR-07':{visual:'Not applicable (storyboard). Built: micrometer-on-reamer, test-cut diagram, and a gage pin GO / NO-GO check on three holes.',dev:'Pair with Measuring Tools; reinforce calibration sticker check before use. The gage pin results and the ±.0005" tool question were written for this build.',
+  assets:[['Micrometer and test-cut diagrams','built']],
+  flags:[F('med','Q07 · Medium · Supervisors','Which gage pins and intra-mics are kept at the work center, and which are checked out from Metrology through the QA-003 log?')]},
+ 'TDR-08':{visual:'Not applicable (storyboard). Built: the sample print with three callouts and an on-screen observed check sheet with Print.',dev:'Record results in the training file the same day. Answer key for the three callouts: (1) 5/16-18 blind: G (.2610"), spiral flute; (2) Ø.375 reamed: pre-drill .360", nearest 23/64 (.3594"); (3) Ø.2720: letter I.',
+  assets:[['TDR-08 observed check sheet (printable from the screen)','built']],
+  flags:[F('med','Q08 · Medium · Tim Waldron / George Hanshaw','L1, Step B has no atomic sign-off in the vein maps. File this check as training evidence only, or add an atomic task? Instructor only, or instructor + supervisor? (Same as Chip & Coolant Q09.)'),
+   F('bld','Build note · Gate states','The sheet records Demonstrated or Not Yet Demonstrated, as the storyboard says. In Progress and Mastered are listed on the key points but not used on this check.')]},
+ 'TDR-09':{visual:'Not applicable (storyboard).',dev:'Kirkpatrick Level 1 reaction form if used for instructor-led classes. Survey button is a placeholder.',assets:[['Kirkpatrick L1 reaction form','need']],flags:[]}
+};
+
+/* ---------- screens ---------- */
+const SCREENS=[
+{id:'cover',mod:'Start',time:'',obj:'',title:'Tap Drill, Drill & Ream Sizes',render(){return `<section class="cover fadein"><div class="bg" aria-hidden="true">${couponSVG()}</div>
+<div class="logos"><div class="wm"><b>GTC</b><span>GENERAL TOOL COMPANY</span></div><span class="rc">Review course v0.1 · instructor-led</span></div>
+<div class="cover-inner"><div class="eyebrow">GTC Machinist Program · Level 1 · Step B · Machining Fundamentals</div><h1>Tap Drill,</h1><div class="h1sub">Drill &amp; Ream Sizes</div>
+<p class="sub">Read GTC's drill, tap drill and reaming standards and use them at the machine: read it, convert it, look it up, measure it, test-cut it.</p>
+<div class="meta"><div><b>Format</b><span>Instructor-led, one session</span></div><div><b>Time</b><span>About 60 minutes</span></div><div><b>Group</b><span>Up to 6 learners</span></div><div><b>Built on</b><span>GTC-PD-181 · GTC-PD-019</span></div></div>
+<div class="actions"><button class="btn" id="start">Start the session</button></div></div></section>
+<div class="row2" style="margin-top:22px"><div class="panel"><h3>By the end, learners will be able to</h3><ul class="objs">
+<li><b>O1</b>Read and convert drill sizes in fractional, number, letter and metric systems using the GTC charts (GTC-PD-019).</li>
+<li><b>O2</b>Explain how GTC selects a drill by hole size and when a spot drill is required (GTC-PD-181 2.1).</li>
+<li><b>O3</b>Select the tap drill for an inch or metric thread from the GTC Standard Tap Chart and choose the right tap for a blind or through hole (PD-181 2.4).</li>
+<li><b>O4</b>Select a pre-drill for a reamed hole from the GTC stock allowance table, measure the reamer, and verify the hole size (PD-181 2.3, PD-034).</li>
+<li><b>O5</b>Check drills, taps and reamers against the tool list and print before they go in the machine (GTC-PD-287).</li></ul></div>
+<div class="panel"><h3>How this review course works</h3><div class="onscreen" style="font-size:15px"><p>Each segment shows <strong>what learners see</strong> on the left and the <strong>instructor guide</strong> on the right.</p><p>The on-screen practice mirrors the table work with printed charts and real tools. In class, the instructor can project it.</p><p>Prerequisites: Cutting Tools (L1, Step A) and Measuring Tools.</p>
+<table class="tries" style="margin-top:6px">${[['A · Open','5 min'],['B · Reading the charts','15 min'],['C · Tap drills','15 min'],['D · Reaming','15 min'],['E · Observed check and close','10 min']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div></div></div>`},
+ mount(){$('#start').onclick=()=>go(1)}},
+
+{id:'TDR-01',mod:'Module A: Open',time:'5 min',obj:'All',title:'Why the right size matters',render(){const o=[['The tap was dull.','A dull tap can strip threads, but look at both holes: they share a cause.'],['The wrong drill size.','Right. The wrong drill ruined both holes before the tap or reamer ever touched the part.'],['The machinist used too much coolant.','Coolant didn\'t open up the reamed hole. Think about what happened first.']];
+ return split(`${proj('Discussion')}<div class="media">${couponSVG()}</div>
+ <div class="panel"><p><b>What went wrong before the tap or reamer ever touched the part?</b></p><div class="opts">${o.map((x,k)=>`<button class="opt ${S.o1===k?(k===1?'good':'bad'):''}" data-k="${k}"><span class="l">${'ABC'[k]}</span><span>${x[0]}</span></button>`).join('')}</div><div class="fb ${S.o1===1?'good':S.o1!=null?'bad':''}">${S.o1!=null?o[S.o1][1]:''}</div></div>
+ <div class="row2"><div class="chart"><b>GTC-PD-181</b><span>Standards for Machining</span><small>Drill selection, tap chart, reaming tables</small></div><div class="chart"><b>GTC-PD-019</b><span>Useful Charts</span><small>Decimal equivalents, drill sizes</small></div></div>
+ <div class="alert"><b>The rule:</b> if the chart, the tool list and the print don't agree, <b>STOP and ask.</b></div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2>${guide({does:['Pass around a scrap coupon: a stripped tapped hole and a reamed hole too big for its pin (or photos)','Ask: "What went wrong before the tap or reamer ever touched the part?" Lead to: the wrong drill size','Show where the GTC charts live: Standards for Machining (PD-181) and Useful Charts (PD-019) in the SOP book','State the objectives and the rule: if the chart, the tool list and the print don\'t agree, STOP and ask'],
+ learn:['Handle the coupon and name what failed','Find the two charts in their handout'],key:['Every tapped and reamed hole starts with the right drill (PD-181)','Verify that the router, DNC number and print revision match (PD-008)'],mat:'Scrap coupon or photos; handout packet of GTC charts'})}`)},
+ mount(){$$('.mediacol .opt').forEach(b=>b.onclick=()=>{S.o1=+b.dataset.k;if(S.o1===1)mark('TDR-01');render()})}},
+
+{id:'TDR-02',mod:'Module B: Reading the charts',time:'7 min',obj:'O1',title:'Drill sizes: fractional, number, letter and metric',render(){
+ const tgt=[{n:'#7',d:.2010},{n:'I',d:.2720},{n:'R',d:.3390},{n:'31/64',d:31/64},{n:'#29',d:.1360}];const t=tgt[Math.min(S.find,4)];
+ const tab=S.tab||'Number';const list=DRILLS.filter(x=>x.sys===tab);
+ const cv=[{q:'6 mm = ? inches',a:6/25.4,u:'in'},{q:'8.10 mm = ? inches',a:8.1/25.4,u:'in'},{q:'.3390" = ? mm',a:.339*25.4,u:'mm'},{q:'.2010" = ? mm',a:.201*25.4,u:'mm'}];
+ return split(`${proj('Drill index')}<div class="panel"><div class="steps-lbl">Find the drill · ${Math.min(S.find,5)} of 5</div>${S.find<5?`<h3>Find the drill that is <span class="big">${f4(t.d)}"</span></h3>`:`<h3>${ok('All five found.')}</h3>`}
+ <div class="tabs">${['Number','Letter','Fractional'].map(x=>`<button class="${tab===x?'on':''}" data-tab="${x}">${x}</button>`).join('')}</div>
+ <div class="index">${list.map(x=>`<button class="dbit ${S.foundNames&&S.foundNames.includes(x.name)?'hit':''}" data-n="${x.name}" title="${f4(x.d)}"><b>${x.name}</b><small>${f4(x.d)}</small></button>`).join('')}</div><div class="fb" id="fb1"></div></div>
+ <div class="panel"><div class="steps-lbl">Convert · mm ÷ 25.4 = inches · inches × 25.4 = mm</div>
+ <div class="convs">${cv.map((c,k)=>`<label class="cv ${S.conv[k]?'okc':''}"><span>${c.q}</span><input data-k="${k}" inputmode="decimal" value="${S.conv['v'+k]||''}" ${S.conv[k]?'disabled':''} placeholder="${c.u==='in'?'.0000':'0.00'}"><button class="btn ghost sm" data-k="${k}" ${S.conv[k]?'disabled':''}>Check</button><em>${S.conv[k]?ok((c.u==='in'?f4(c.a)+'"':c.a.toFixed(2)+' mm')):''}</em></label>`).join('')}</div>
+ <div class="fb" id="fb2"></div></div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>Examples: <strong>#7</strong> = .2010" · <strong>letter I</strong> = .2720" · <strong>letter R</strong> = .3390" · <strong>6 mm</strong> = .23622"</p><p>Number and letter drills fill the gaps between fractional sizes.</p></div>
+ ${guide({does:['Show the four drill size systems on the PD-019 charts and on real drills in a drill index','Show examples: #7 = .2010", letter I = .2720", letter R = .3390", 6 mm = .23622"','Show the conversion: millimeters ÷ 25.4 = inches; inches × 25.4 = millimeters','Show how to read a size off a drill shank and confirm it with a drill gage or micrometer'],
+ learn:['Find five drills in the index from their decimal size','Convert two metric sizes to inches and back','Read and verify the size on two unmarked drills with a micrometer (at the table)'],key:['Number and letter drills fill the gaps between fractional sizes','Never guess a size; read it and measure it (PD-287 TOOLS 1)'],mat:'PD-019 decimal equivalent and drill size charts; drill index; drill gage; 0-1" micrometer'})}
+ <div class="alert"><b>Q02 · Fix PD-019 first.</b> It says inches to mm = × 0.03937. That is mm to inches. Inches to mm is × 25.4.</div>`)},
+ mount(){$$('.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;render()});
+  const tgt=['#7','I','R','31/64','#29'];
+  $$('.dbit').forEach(b=>b.onclick=()=>{if(S.find>=5)return;const fb=$('#fb1');if(b.dataset.n===tgt[S.find]){S.foundNames=[...(S.foundNames||[]),b.dataset.n];S.find++;render();const f=$('#fb1');f.className='fb good';f.textContent=`Right: ${b.dataset.n} is ${b.title}".`+(S.find<5?' Next one.':'');if(S.find>=5&&Object.keys(S.conv).filter(k=>!k.startsWith('v')).length>=4)mark('TDR-02')}
+   else{fb.className='fb bad';fb.textContent=`${b.dataset.n} is ${b.title}". Not it. Check the other tabs too.`}});
+  const cv=[6/25.4,8.1/25.4,.339*25.4,.201*25.4],tol=[.0002,.0002,.01,.01];
+  $$('.cv button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;const inp=$(`.cv input[data-k="${k}"]`);const v=parseFloat(inp.value);S.conv['v'+k]=inp.value;const fb=$('#fb2');
+   if(Math.abs(v-cv[k])<=tol[k]+1e-9){S.conv[k]=true;render();if(S.find>=5&&[0,1,2,3].every(i=>S.conv[i]))mark('TDR-02')}else{fb.className='fb bad';fb.textContent=k<2?'Not quite. Millimeters ÷ 25.4 = inches. Round to four places.':'Not quite. Inches × 25.4 = millimeters. Round to two places.'}})}},
+
+{id:'TDR-03',mod:'Module B: Reading the charts',time:'8 min',obj:'O2, O5',title:'How GTC picks a drill',render(){
+ const types=['Stub, jobber or carbide drill (up to 1")','Insert drill (1" to 2.5")','Spade drill (above 2.5")','Bore milled (3" and up)'];
+ const H=[{l:'A',d:'Ø.2010 THRU, HSS jobber drill, flat machined face',t:0,s:'Yes',why:'HSS or cobalt drills need a spot drill.'},{l:'B',d:'Ø.750 x 2.25 deep, carbide drill, flat machined face',t:0,s:'No',why:'Carbide drill, flat face, only 3x deep. No spot required. (Past 3x: slow down and peck.)'},{l:'C',d:'Ø1.500 THRU, insert drill, on the R6.00 radius',t:1,s:'Yes',why:'A radial or angled surface needs a spot drill.'},{l:'D',d:'Ø3.250 THRU',t:3,s:'Not drilled',why:'Holes 3" and up are bore milled, not drilled.'}];
+ const done=H.every((h,k)=>S.holes[k]&&S.spot[k]);
+ return split(`${proj('Sample print')}<div class="media">${printSVG()}</div>
+ <div class="tbl-wrap"><table class="ctable"><thead><tr><th>Hole size</th><th>What GTC uses (PD-181)</th></tr></thead><tbody><tr><td>Up to 1"</td><td>Stub and jobber; EX-Gold and Walter carbide</td></tr><tr><td>1" to 2.5"</td><td>SECO insert drills</td></tr><tr><td>Above 2.5"</td><td>Allied spade drills</td></tr><tr><td>3" and up</td><td>Bore milled</td></tr></tbody></table></div>
+ <div class="panel"><div class="steps-lbl">For each hole: drill type, then spot drill?</div>${H.map((h,k)=>`<div class="hrow ${S.holes[k]&&S.spot[k]?'okc':''}"><div><b class="hl">${h.l}</b> ${h.d}</div>
+ <select data-k="${k}" class="tsel" ${S.holes[k]?'disabled':''}><option value="">Drill type…</option>${types.map((t,j)=>`<option value="${j}" ${S.holes[k]&&j===h.t?'selected':''}>${t}</option>`).join('')}</select>
+ <div class="seg">${['Yes','No','Not drilled'].map(x=>`<button data-k="${k}" data-s="${x}" class="${S.spot[k]&&x===h.s?'good':''}" ${S.spot[k]?'disabled':''}>${x}</button>`).join('')}</div>
+ <small class="why">${S.spot[k]?h.why:''}</small></div>`).join('')}<div class="fb ${done?'good':''}" id="fb">${done?'All four holes done.':''}</div></div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p><strong>Spot drill required</strong> for: HSS or cobalt drills, a drill extended 6x its diameter or more, a rough surface, or a radial or angled surface.</p>
+ <p>Spot drill angle: <strong>90°</strong> for mild steel and aluminum, <strong>120°</strong> for harder materials. Set about .010" deep; spot the whole pattern.</p><p>Past <strong>3x diameter</strong>: slow down and peck (PD-181 2.1.2).</p></div>
+ <div class="panel"><p><b>The print says 4140 steel. Which spot drill angle?</b></p><div class="seg">${['90°','120°'].map(x=>`<button class="ang ${S.angle===x?(x==='120°'?'good':'bad'):''}" data-a="${x}">${x}</button>`).join('')}</div><div class="fb ${S.angle==='120°'?'good':S.angle?'bad':''}">${S.angle==='120°'?'Right. 4140 is harder than mild steel: 120°.':S.angle?'90° is for mild steel and aluminum. 4140 is harder.':''}</div></div>
+ ${guide({does:['Walk the PD-181 drill selection table: stub and jobber, EX-Gold and Walter carbide drills up to 1"; SECO insert drills 1" to 2.5"; Allied spade drills above that; holes 3" and up are bore milled','Show when a spot drill is required: HSS or cobalt drills, a drill extended 6x its diameter or more, a rough surface, or a radial or angled surface','Show spot drill angles: 90° for mild steel and aluminum, 120° for harder materials; set it about .010" deep and spot the whole pattern','Show the deep-hole rule: past 3x diameter, slow down and peck (PD-181 2.1.2)'],
+ learn:['Match four holes on a sample print to the drill type GTC would use','Say whether each needs a spot drill'],key:['Inspect the first drilled hole for size before running the rest of the pattern (PD-181 2.1.3.2)','Check spot drill angle and point before use (PD-287 TOOLS 5, 6)','Speeds and feeds are set by Programming; the machinist checks the tool matches the list'],mat:'PD-181 drill selection table; sample print; spot drills (90° and 120°)'})}`)},
+ mount(){const H=[0,0,1,3],SP=['Yes','No','Yes','Not drilled'];
+  $$('.tsel').forEach(s=>s.onchange=()=>{const k=+s.dataset.k;const fb=$('#fb');if(+s.value===H[k]){S.holes[k]=true;render()}else{fb.className='fb bad';fb.textContent=`Hole ${'ABCD'[k]}: check the size against the table.`}});
+  $$('.hrow .seg button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;const fb=$('#fb');if(b.dataset.s===SP[k]){S.spot[k]=true;render();if([0,1,2,3].every(i=>S.holes[i]&&S.spot[i]))mark('TDR-03')}else{b.classList.add('bad');fb.className='fb bad';fb.textContent=`Hole ${'ABCD'[k]}: check the four spot drill conditions.`}});
+  $$('.ang').forEach(b=>b.onclick=()=>{S.angle=b.dataset.a;render()})}},
+
+{id:'TDR-04',mod:'Module C: Tap drills',time:'8 min',obj:'O3',title:'The GTC tap chart and the 65% rule',render(){
+ const calls=[0,2,4,5];const n=calls.filter(k=>S.look[k]).length;
+ return split(`${proj('Thread percentage')}<div class="media">${threadPctSVG()}</div>
+ <div class="tbl-wrap"><table class="ctable tapc"><thead><tr><th>Thread</th><th>GTC tap drill (65%)</th><th>Decimal</th></tr></thead><tbody>${TAPS.map(t=>`<tr><td>${t.th}</td><td><b>${t.drill}</b></td><td>${f4(t.dec)}"</td></tr>`).join('')}</tbody></table><div class="hint" style="padding:6px 10px">Excerpt: six rows from the GTC Standard Tap Chart (PD-181). Use the full printed chart in class.</div></div>
+ <div class="media">${tapsSVG()}</div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>Above 60% thread adds <strong>no strength</strong> but raises tapping torque and tap breakage. GTC sizes tap drills for <strong>about 65%</strong> thread.</p><p>Many wall charts list 75% (e.g., #7 for 1/4-20). <strong>At GTC, use the GTC chart.</strong></p></div>
+ <div class="panel"><div class="steps-lbl">Lookups · ${n} of 4 · the instructor calls them out</div>${calls.map(k=>{const t=TAPS[k];const opts=(k===0||k===4)?[t.wall,t.drill]:[t.drill,t.wall];return `<div class="lrow"><b>${t.th}</b><div class="seg">${opts.map(o=>`<button data-k="${k}" data-o="${o}" class="${S.look[k]&&o===t.drill?'good':''}" ${S.look[k]?'disabled':''}>${o}</button>`).join('')}</div></div>`}).join('')}<div class="fb" id="fb"></div></div>
+ <div class="panel"><div class="steps-lbl">Which tap?</div>${[['Blind hole','Spiral flute'],['Through hole','Spiral point']].map((r,k)=>`<div class="lrow"><b>${r[0]}</b><div class="seg">${['Spiral flute','Spiral point'].map(o=>`<button data-t="${k}" data-o="${o}" class="tt ${S.ttype[k]&&o===r[1]?'good':''}" ${S.ttype[k]?'disabled':''}>${o}</button>`).join('')}</div></div>`).join('')}<div class="fb" id="fb2"></div>
+ <p class="hint">EMSS for aluminum and steels; EMNI only for high temperature alloys. Tap up to 1.00" in steel and stainless, .75" in high temperature alloys; larger and NPT threads are thread milled. Class 2B unless the print says otherwise.</p></div>
+ ${guide({does:['Explain thread percentage: above 60% adds no strength but raises tapping torque and tap breakage, so GTC sizes tap drills for about 65% thread (PD-181 2.4.2)','Walk the GTC Standard Tap Chart: 1/4-20 → #6 (.2040"); 5/16-18 → G (.2610"); 3/8-16 → 8.10 mm (.3189"); 1/2-13 → 11.00 mm (.4331"); M6 x 1 → #7 (.2010"); M10 x 1.5 → R (.3390")','Point out that many shop wall charts list 75% thread (e.g., #7 for 1/4-20). At GTC, use the GTC chart','Show the taps: spiral flute for blind holes (pulls chips out), spiral point for through holes (pushes chips ahead); EMSS for aluminum and steels, EMNI only for high temperature alloys','Show the limits: tap up to 1.00" in steel and stainless, .75" in high temperature alloys; larger and NPT threads are thread milled; class 2B unless the print says otherwise'],
+ learn:['Look up four threads on the chart as the instructor calls them out','Pick the spiral flute or spiral point tap for a blind and a through hole'],key:['Deeper than 2x diameter: peck tap if the cycle is available (PD-181 2.4.3)','Use the tap manufacturer\'s speed and feed data (PD-181)'],mat:'GTC Standard Tap Chart (inch and metric); spiral flute and spiral point taps'})}`)},
+ mount(){$$('.lrow .seg button:not(.tt)').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,t=TAPS[k];const fb=$('#fb');if(b.dataset.o===t.drill){S.look[k]=true;render();const f=$('#fb');f.className='fb good';f.textContent=`${t.th}: ${t.drill} (${f4(t.dec)}").`;if([0,2,4,5].every(i=>S.look[i])&&S.ttype[0]&&S.ttype[1])mark('TDR-04')}else{b.classList.add('bad');fb.className='fb bad';fb.textContent=`${b.dataset.o} is the 75% wall-chart size. Use the GTC chart.`}});
+  $$('.tt').forEach(b=>b.onclick=()=>{const k=+b.dataset.t,ans=['Spiral flute','Spiral point'][k];const fb=$('#fb2');if(b.dataset.o===ans){S.ttype[k]=true;render();if([0,2,4,5].every(i=>S.look[i])&&S.ttype[0]&&S.ttype[1])mark('TDR-04')}else{b.classList.add('bad');fb.className='fb bad';fb.textContent=k===0?'In a blind hole the chips need to come out the top: spiral flute.':'In a through hole the chips can go ahead: spiral point.'}})}},
+
+{id:'TDR-05',mod:'Module C: Tap drills',time:'7 min',obj:'O3, O5',title:'Practice: tap drill lookups and tool checks',render(){
+ const W=WS;const chk=S.wsChecked;
+ return split(`${proj('Practice worksheet · pairs')}<div class="panel"><div class="steps-lbl">Worksheet · write the tap drill, its decimal and the tap type</div>
+ <div class="tbl-wrap"><table class="ctable ws"><thead><tr><th>Callout</th><th>Tap drill</th><th>Decimal</th><th>Tap</th></tr></thead><tbody>${W.map((w,k)=>{const a=S.ws[k]||{};const t=TAPS[w.t];const c=f=>chk?(f?'okc':'noc'):'';
+  return `<tr><td><b>${t.th}</b> ${w.blind?'blind':'through'}</td>
+  <td class="${c(a.d===t.drill)}"><select data-k="${k}" data-f="d"><option value="">…</option>${DSEL.map(o=>`<option ${a.d===o?'selected':''}>${o}</option>`).join('')}</select></td>
+  <td class="${c(a.x&&Math.abs(parseFloat(a.x)-t.dec)<.00005)}"><input data-k="${k}" data-f="x" value="${a.x||''}" placeholder=".0000" inputmode="decimal"></td>
+  <td class="${c(a.p===(w.blind?'Spiral flute':'Spiral point'))}"><select data-k="${k}" data-f="p"><option value="">…</option>${['Spiral flute','Spiral point'].map(o=>`<option ${a.p===o?'selected':''}>${o}</option>`).join('')}</select></td></tr>`}).join('')}</tbody></table></div>
+ <div class="actions"><button class="btn" id="wschk">Check against the key</button><button class="btn ghost" id="wskey">Show the key</button></div><div class="fb" id="fb">${S.wsMsg||''}</div></div>
+ <div class="media">${blindHoleSVG()}</div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2>
+ <div class="panel"><div class="steps-lbl">Tool check before loading</div><ul class="tick">${['Tap size and pitch checked with a thread pitch gage','Tap seated fully in the holder','Tap drill deep enough for the tap\'s lead','Pitch in the program matches the print callout, not the strategy'].map(x=>`<li>${x}</li>`).join('')}</ul></div>
+ <div class="panel"><p><b>Why must the tap drill go deeper than the thread depth?</b></p><div class="opts">${[['So the chips have somewhere to go and the tap\'s lead, which cuts no full thread, can clear the full thread depth.',1],['So the tap can run faster.',0],['Because the print always adds .100".',0]].map((o,k)=>`<button class="opt ${S.why===k?(o[1]?'good':'bad'):''}" data-k="${k}"><span class="l">${'ABC'[k]}</span><span>${o[0]}</span></button>`).join('')}</div><div class="fb">${S.why===0?ok('Right. A spiral flute tap\'s lead is 2.5x the pitch (PD-181). On 1/4-20 that is about .125".'):S.why!=null?'<span class="bad">Not it. Look at the diagram: what part of the tap cuts no full thread?</span>':''}</div></div>
+ ${guide({does:['Hand out the worksheet: five thread callouts from sample prints (mixed inch and metric, blind and through)','Circulate and check answers against the key','Demonstrate the tool check before loading: tap size and pitch with a thread pitch gage, tap seated fully in the holder, tap drill deep enough for the tap\'s lead'],
+ learn:['For each callout, write the tap drill size and decimal, and the tap type','Check one tap\'s pitch with the thread pitch gage','Explain why the tap drill must go deeper than the thread depth'],key:['Check tap diameter and pitch or thread count before it goes in (PD-287 TOOLS 1)','Check tap drill and tap depths so the drill is deep enough (PD-287 PROGRAM 4)','Check the pitch in the program against the print callout, not the strategy (PD-287 PROGRAM 5)'],mat:'Practice worksheet and key; thread pitch gage; taps in holders'})}`)},
+ mount(){$$('.ws select,.ws input').forEach(el=>{const h=()=>{const k=+el.dataset.k;S.ws[k]=S.ws[k]||{};S.ws[k][el.dataset.f]=el.value;if(S.wsChecked){S.wsChecked=false;S.wsMsg='';render()}};el.onchange=h;if(el.tagName==='INPUT')el.oninput=()=>{const k=+el.dataset.k;S.ws[k]=S.ws[k]||{};S.ws[k].x=el.value}});
+  $('#wschk').onclick=()=>{S.wsChecked=true;let right=0;WS.forEach((w,k)=>{const a=S.ws[k]||{},t=TAPS[w.t];if(a.d===t.drill)right++;if(a.x&&Math.abs(parseFloat(a.x)-t.dec)<.00005)right++;if(a.p===(w.blind?'Spiral flute':'Spiral point'))right++});
+   S.wsMsg=right===15?'<span class="good">15 of 15. All correct.</span>':`<span class="bad">${right} of 15 correct. Fix the red cells using the tap chart.</span>`;if(right===15&&S.why===0)mark('TDR-05');render()};
+  $('#wskey').onclick=()=>{WS.forEach((w,k)=>{const t=TAPS[w.t];S.ws[k]={d:t.drill,x:f4(t.dec),p:w.blind?'Spiral flute':'Spiral point'}});S.wsChecked=true;S.wsMsg='Key shown.';render()};
+  $$('.side .opt').forEach(b=>b.onclick=()=>{S.why=+b.dataset.k;if(S.why===0&&S.wsChecked&&/15 of 15/.test(S.wsMsg))mark('TDR-05');render()})}},
+
+{id:'TDR-06',mod:'Module D: Reaming',time:'7 min',obj:'O4',title:'Ream sizes, stock allowance and pin fits',render(){
+ const R=[.3125,.750];const rp=S.rp;const r=R[rp.r];const al=allowFor(r);const tgt=r-al[2];const nd=nearestDrill(tgt);
+ const near=DRILLS.filter(x=>Math.abs(x.d-tgt)<.02).sort((a,b)=>Math.abs(a.d-tgt)-Math.abs(b.d-tgt)).slice(0,4).sort((a,b)=>a.d-b.d);
+ const fits=[['Ø.6238 / .6242 for a Ø.625 dowel','Press fit','Reamed .0008" to .0012" under the pin: press fit (PD-181 pin-fit table).'],['Ø.6255 / .6260 for a Ø.625 dowel','Slip fit','Reamed oversize: slip fit.']];
+ return split(`${proj('Stock allowance (PD-181 2.3.2)')}<div class="tbl-wrap"><table class="ctable"><thead><tr><th>Reamer size</th><th>Leave on diameter</th></tr></thead><tbody>${STOCK.map(s=>`<tr class="${rp.step>=1&&al===s?'hit':''}"><td>${s[3]}</td><td>${s[2].toFixed(3).replace(/^0/,'')}"</td></tr>`).join('')}</tbody></table></div>
+ <div class="panel worked"><div class="steps-lbl">Worked example</div><p>A <b>.500"</b> reamed hole leaves <b>.015"</b>, so pre-drill about <b>.485"</b>. The nearest drill is <b>31/64 (.4844")</b>.</p></div>
+ <div class="panel"><div class="steps-lbl">Your turn · reamer ${rp.r+1} of 2 · ${f4(r)}"</div>
+ <div class="pstep ${rp.step>0?'okc':''}"><span>1. Stock to leave</span>${rp.step>0?`<b>${al[2].toFixed(3).replace(/^0/,'')}"</b>`:`<div class="seg">${[.010,.015,.020,.025].map(v=>`<button class="al" data-v="${v}">${v.toFixed(3).replace(/^0/,'')}"</button>`).join('')}</div>`}</div>
+ ${rp.step>=1?`<div class="pstep ${rp.step>1?'okc':''}"><span>2. Pre-drill target (${f4(r)} − ${al[2].toFixed(3).replace(/^0/,'')})</span>${rp.step>1?`<b>${f4(tgt)}"</b>`:`<span class="entry"><input id="tg" inputmode="decimal" placeholder=".0000"><button class="btn ghost sm" id="tgc">Check</button></span>`}</div>`:''}
+ ${rp.step>=2?`<div class="pstep ${rp.step>2?'okc':''}"><span>3. Nearest drill on the chart</span>${rp.step>2?`<b>${nd.name} (${f4(nd.d)}")</b>`:`<div class="seg">${near.map(x=>`<button class="nd" data-n="${x.name}">${x.name} · ${f4(x.d)}"</button>`).join('')}</div>`}</div>`:''}
+ <div class="fb" id="fb">${rp.step>2?(rp.r===0?'<span class="good">Done. Next reamer.</span>':'<span class="good">Both reamer plans done.</span>'):''}</div>
+ ${rp.step>2&&rp.r===0?'<div class="actions"><button class="btn" id="nextr">Next reamer</button></div>':''}</div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>GTC reams <strong>close-tolerance holes</strong> (±.0015" or tighter) up to <strong>1.0"</strong> diameter (PD-181 2.3).</p><p>Reamers stocked: <strong>solid carbide</strong> up to 1/2", <strong>carbide tipped</strong> up to 1". Use a floating holder when possible.</p></div>
+ <div class="panel"><div class="steps-lbl">Press fit or slip fit?</div><p class="hint">Press fit holes are reamed undersize; slip fit holes oversize.</p>${fits.map((f,k)=>`<div class="lrow"><b class="mono">${f[0]}</b><div class="seg">${['Press fit','Slip fit'].map(o=>`<button class="fit ${S.fit[k]&&o===f[1]?'good':''}" data-k="${k}" data-o="${o}" ${S.fit[k]?'disabled':''}>${o}</button>`).join('')}</div>${S.fit[k]?`<small class="why">${f[2]}</small>`:''}</div>`).join('')}<div class="fb" id="fb2"></div></div>
+ ${guide({does:['Explain when GTC reams: close-tolerance holes (±.0015" or tighter) up to 1.0" diameter (PD-181 2.3)','Walk the stock allowance table (on diameter): .125-.250" → .010"; .251-.500" → .015"; .501-1.499" → .020"; 1.500" and up → up to .025"','Worked example: a .500" reamed hole leaves .015", so pre-drill about .485"; the nearest drill is 31/64 (.4844")','Show the pin-fit tables: press fit holes are reamed undersize, slip fit holes oversize (e.g., a .625" pin hole: .0008-.0012" under for press fit)','Show the reamer types GTC stocks: solid carbide up to 1/2", carbide tipped up to 1"; use a floating holder when possible'],
+ learn:['Calculate the pre-drill for two reamer sizes and find the nearest drill on the chart','Say whether a dowel hole on a sample print is press fit or slip fit'],key:['Reaming speed is often about half the drilling speed; feed .0015-.004" per tooth (PD-181 2.3.2)','Too little or too much stock, or a bad drilled hole, are common causes of reamer failure (PD-181 2.3.4.2)'],mat:'PD-181 reaming tables; decimal equivalent chart; sample print with a reamed hole'})}`)},
+ mount(){const R=[.3125,.750];const r=R[S.rp.r],al=allowFor(r),tgt=r-al[2],nd=nearestDrill(tgt);const fb=$('#fb');
+  $$('.al').forEach(b=>b.onclick=()=>{if(Math.abs(+b.dataset.v-al[2])<1e-9){S.rp.step=1;render()}else{fb.className='fb bad';fb.textContent=`Find ${f4(r)}" in the reamer size column first.`}});
+  const tc=$('#tgc');if(tc)tc.onclick=()=>{const v=parseFloat($('#tg').value);if(Math.abs(v-tgt)<.00005){S.rp.step=2;render()}else{fb.className='fb bad';fb.textContent=`Reamer size minus stock: ${f4(r)} − ${f4(al[2])}.`}};
+  $$('.nd').forEach(b=>b.onclick=()=>{if(b.dataset.n===nd.name){S.rp.step=3;render();if(S.rp.r===1&&S.fit[0]&&S.fit[1])mark('TDR-06')}else{fb.className='fb bad';fb.textContent=`${b.textContent} is not the closest to ${f4(tgt)}". Compare the differences.`}});
+  const nr=$('#nextr');if(nr)nr.onclick=()=>{S.rp={step:0,r:1};render()};
+  $$('.fit').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ans=['Press fit','Slip fit'][k];if(b.dataset.o===ans){S.fit[k]=true;render();if(S.rp.r===1&&S.rp.step>2&&S.fit[0]&&S.fit[1])mark('TDR-06')}else{b.classList.add('bad');const f=$('#fb2');f.className='fb bad';f.textContent='Compare the hole to the pin: under is press, over is slip.'}})}},
+
+{id:'TDR-07',mod:'Module D: Reaming',time:'8 min',obj:'O4, O5',title:'Practice: measure the reamer, gage the hole',render(){
+ const holes=[['Hole 1','GO pin enters · NO-GO pin does not','In tolerance'],['Hole 2','GO pin does not enter','Undersize'],['Hole 3','NO-GO pin enters','Oversize']];
+ return split(`${proj('Demonstration')}<div class="row2"><div class="fig">${micSVG('.5002')}<div class="cap">Measure across all flutes (PD-034)</div></div><div class="fig">${testCutSVG()}<div class="cap">Test cut: .100" deep, stop, check (PD-181 2.3.3.1)</div></div></div>
+ <div class="panel"><div class="steps-lbl">Record the reamer size from the mic</div><div class="entry"><input id="mic" inputmode="decimal" placeholder=".0000" value="${S.mic}" ${S.micOk?'disabled':''}><button class="btn ghost sm" id="micc" ${S.micOk?'disabled':''}>Record</button><span class="fb ${S.micOk?'good':''}" id="fbm">${S.micOk?'Recorded: .5002"':''}</span></div></div>
+ <div class="panel"><div class="steps-lbl">Gage the coupon · Ø.5000 +.0005 / −.0000 · GO pin .5000 · NO-GO pin .5005</div>${holes.map((h,k)=>`<div class="lrow"><b>${h[0]}</b><span class="hint" style="flex:1">${h[1]}</span><div class="seg">${['In tolerance','Undersize','Oversize'].map(o=>`<button class="gg ${S.gage[k]&&o===h[2]?'good':''}" data-k="${k}" data-o="${o}" ${S.gage[k]?'disabled':''}>${o}</button>`).join('')}</div></div>`).join('')}
+ <div class="fb" id="fbg">${S.gage[2]?'<span class="good">Hole 3 is oversize: stop and contact your supervisor.</span>':''}</div></div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>Measure the reamer <strong>across all flutes</strong> before it goes in.</p><p><strong>Test cut:</strong> ream the first hole .100" deep, stop, and check it with a gage pin or intra-mic before continuing.</p><p>Out of tolerance? <strong>Stop and contact your supervisor.</strong></p></div>
+ <div class="panel"><p><b>The hole is ±.0005". Which measuring tool can you use?</b></p><div class="opts">${[['Calipers (read to .001")',0],['Gage pins or an intra-mic (read to .0001")',1],['A steel rule',0]].map((o,k)=>`<button class="opt ${S.tool===k?(o[1]?'good':'bad'):''}" data-k="${k}"><span class="l">${'ABC'[k]}</span><span>${o[0]}</span></button>`).join('')}</div>
+ <div class="fb">${S.tool===1?ok('Right. MTE must read one decimal place beyond the tolerance and be in calibration (QA-036). Not sure which tool? Ask your supervisor.'):S.tool!=null?'<span class="bad">That tool cannot read one place beyond .0005". Look again.</span>':''}</div><p class="hint">Where to get it: at the work center or from Metrology ${T('Q07')}</p></div>
+ ${guide({does:['Demonstrate measuring a reamer across all flutes with a micrometer to confirm its size (PD-034)','Demonstrate the test-cut rule: ream the first hole .100" deep, stop, and check it with a gage pin or intra-mic before continuing (PD-181 2.3.3.1, PD-034)','Show what to do if the hole is out of tolerance: stop and contact the supervisor'],
+ learn:['Measure the reamer across all flutes and record its size','Check a reamed hole in the practice coupon with gage pins and record GO or NO-GO','Say which measuring tool they would use for the hole\'s tolerance, and where to get it'],key:['If you don\'t know which measuring device to use, ask your supervisor. Never assume (PD-034)','MTE must read one decimal place beyond the tolerance and be in calibration (QA-036)'],mat:'Reamer; 0-1" micrometer; gage pins; practice coupon'})}`)},
+ mount(){$('#micc').onclick=()=>{const v=$('#mic').value;S.mic=v;if(Math.abs(parseFloat(v)-.5002)<.00005){S.micOk=true;render();chk7()}else{const f=$('#fbm');f.className='fb bad';f.textContent='Read the display: four decimal places.'}};
+  $$('.gg').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ans=['In tolerance','Undersize','Oversize'][k];if(b.dataset.o===ans){S.gage[k]=true;render();chk7()}else{b.classList.add('bad');const f=$('#fbg');f.className='fb bad';f.textContent='GO should enter; NO-GO should not. Which one failed?'}});
+  $$('.side .opt').forEach(b=>b.onclick=()=>{S.tool=+b.dataset.k;render();chk7()});
+  function chk7(){if(S.micOk&&S.gage[0]&&S.gage[1]&&S.gage[2]&&S.tool===1)mark('TDR-07')}}},
+
+{id:'TDR-08',mod:'Module E: Observed check and close',time:'8 min',obj:'O1 to O5',title:'Observed check',render(){
+ const items=['Tapped hole: names the tap drill (size and decimal) and the tap type','Reamed hole: names the pre-drill and measures the reamer','Drilled hole: finds the drill in the index and verifies its size','Explains what to do if the chart, tool list and print disagree'];
+ return split(`${proj('Sample print · individual')}<div class="media">${checkPrintSVG()}</div>
+ <div class="panel sheet" id="sheet"><div class="sheethead"><div><div class="steps-lbl">GTC · TDR-08 observed check sheet</div><h3>Tap Drill, Drill &amp; Ream Sizes</h3></div><div class="sig"><label>Learner <input id="oname" value="${S.oname}" placeholder="Name"></label><label>Date <input placeholder="__/__/____"></label></div></div>
+ <table class="ctable oc"><thead><tr><th>Item</th><th>Demonstrated</th><th>Not Yet Demonstrated</th></tr></thead><tbody>${items.map((x,k)=>`<tr><td>${x}</td>${['D','N'].map(v=>`<td class="c"><input type="radio" name="oc${k}" value="${v}" ${S.oc[k]===v?'checked':''} aria-label="${v==='D'?'Demonstrated':'Not Yet Demonstrated'}: item ${k+1}"></td>`).join('')}</tr>`).join('')}</tbody></table>
+ <div class="sig"><label>Instructor <input placeholder="Signature"></label><label>Supervisor ${T('if required (Q08)')} <input placeholder="Signature"></label></div>
+ <p class="hint">Coach any Not Yet Demonstrated item on the spot and recheck. File the same day.</p>
+ <div class="actions noprint"><button class="btn ghost" id="print">Print check sheet</button><button class="btn ghost" id="key">${S.showKey?'Hide':'Show'} answer key</button></div>
+ ${S.showKey?`<div class="warnbox noprint"><b>Key.</b> (1) 5/16-18 blind: <b>G (.2610")</b>, spiral flute. (2) Ø.375 reamed: leave .015", pre-drill .360", nearest <b>23/64 (.3594")</b>; measure the reamer across all flutes. (3) Ø.2720: <b>letter I</b>. (4) STOP and ask.</div>`:''}</div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>Three callouts from a sample print: a <strong>tapped blind hole</strong>, a <strong>reamed hole</strong>, and a <strong>drilled hole</strong>.</p></div>
+ <div class="panel"><div class="steps-lbl">Gate states</div><div class="gates4"><div>Not Yet Demonstrated</div><div>In Progress</div><div>Demonstrated</div><div>Mastered</div></div></div>
+ ${guide({does:['Give each learner three callouts from a sample print: a tapped blind hole, a reamed hole, and a drilled hole','Observe and mark each item Demonstrated or Not Yet Demonstrated on the check sheet','Coach any Not Yet Demonstrated item on the spot and recheck'],
+ learn:['Tapped hole: name the tap drill (size and decimal) and the tap type','Reamed hole: name the pre-drill and measure the reamer','Drilled hole: find the drill in the index and verify its size','Explain what to do if the chart, tool list and print disagree'],key:['Gate states: Not Yet Demonstrated, In Progress, Demonstrated, Mastered'],mat:'TDR-08 observed check sheet; sample print; tools from the session'})}`)},
+ mount(){$$('#sheet input[type=radio]').forEach(r=>r.onchange=()=>{S.oc[+r.name.slice(2)]=r.value;if([0,1,2,3].every(k=>S.oc[k]))mark('TDR-08')});$('#oname').oninput=e=>S.oname=e.target.value;
+  $('#print').onclick=()=>{document.body.classList.add('printsheet');window.print();setTimeout(()=>document.body.classList.remove('printsheet'),500)};$('#key').onclick=()=>{S.showKey=!S.showKey;render()}}},
+
+{id:'TDR-09',mod:'Module E: Observed check and close',time:'2 min',obj:'All',title:'Close',last:true,render(){
+ return split(`${proj('Recap')}<div class="recap5">${['Read it','Convert it','Look it up on the GTC chart','Measure it','Test-cut it'].map((x,k)=>`<div><b>${k+1}</b><span>${x}</span></div>`).join('')}</div>
+ <div class="alert" style="font-size:18px"><b>STOP and ask. Never assume.</b> The GTC chart wins over a wall chart.</div>
+ <div class="panel"><label for="take"><b>One thing you will check differently at the machine tomorrow</b></label><textarea id="take" placeholder="For example: I will check the tap drill against the GTC chart, not the wall chart.">${S.take}</textarea></div>`,
+ `${eyebrow(this)}<h2>${this.title}</h2>${guide({does:['Recap: read it, convert it, look it up on the GTC chart, measure it, test-cut it','Remind learners where the charts are and that the GTC chart wins over a wall chart','Take questions; collect worksheets'],learn:['Name one thing they will check differently at the machine tomorrow'],key:['STOP and ask. Never assume.'],mat:'None'})}
+ <div class="actions"><button class="btn" id="survey">Reaction survey</button><button class="btn ghost" id="restart">Restart the session</button></div><div class="hint" id="svh"></div>`)},
+ mount(){$('#take').oninput=e=>S.take=e.target.value;$('#survey').onclick=()=>{$('#svh').textContent='Placeholder for the Kirkpatrick Level 1 reaction form, if used for instructor-led classes.'};$('#restart').onclick=()=>{reset();go(0)}}}
+];
+const WS=[{t:0,blind:true},{t:1,blind:false},{t:3,blind:true},{t:4,blind:false},{t:5,blind:true}];
+const DSEL=['#6','#7','F','G','5/16','8.10 mm','11.00 mm','27/64','5.0 mm','R','8.5 mm'];
+
+/* ---------- engine ---------- */
+function notesHTML(sc){const n=NOTES[sc.id];if(!n)return '';const pill={built:['p-built','Built'],stand:['p-stand','Stand-in'],need:['p-need','Asset needed']};
+ return `<section class="rev" aria-label="Reviewer notes"><div class="rev-head"><h3>Reviewer notes · <span class="id">${sc.id}</span></h3>
+<label class="jump">Jump to <select id="jumpsel">${SCREENS.map((s,k)=>`<option value="${k}" ${k===S.i?'selected':''}>${s.id==='cover'?'Cover':s.id+' '+s.title}</option>`).join('')}</select></label></div>
+${sc.id!=='cover'?`<div class="flag med"><b>Review decision (storyboard checkboxes)</b>Matches the current class · Not taught today / new · Approved · Approved with changes · Needs rework. Mark these on the storyboard; this course mirrors it.</div>`:''}
+<div class="rev-grid"><div><b class="k">Segment</b><span class="id">${sc.id}</span></div><div><b class="k">Module</b><span>${sc.mod}</span></div><div><b class="k">Time</b><span>${sc.time||'60 min total'}</span></div><div><b class="k">Objective</b><span>${sc.obj||'O1 to O5'}</span></div></div>
+<div class="rev-long">${n.visual?`<div><b class="k">Visual brief</b><span>${n.visual}</span></div>`:''}<div><b class="k">Developer notes</b><span>${n.dev}</span></div></div>
+${n.assets.length?`<div><b class="k">Graphics and materials</b><ul class="assets">${n.assets.map(([a,s])=>`<li><span class="pill ${pill[s][0]}">${pill[s][1]}</span>${a}</li>`).join('')}</ul></div>`:''}
+${n.flags.length?`<div class="flags"><b class="k">Flagged for review</b>${n.flags.map(f=>`<div class="flag ${f.lvl}"><b>${f.t}</b>${f.b}</div>`).join('')}</div>`:'<div class="hint">No open questions on this segment.</div>'}
+<div class="legendflags"><span>Red: high priority</span><span>Amber: medium</span><span>Gray: low</span><span>Blue: build note from the developer</span></div></section>`}
+function navHTML(sc){if(sc.id==='cover')return '';return `<div class="navbar noprint"><button class="btn ghost" id="back">Back</button><div class="r">${S.done[sc.id]?'<span class="hint good">Practice complete</span>':''}${sc.last?'':'<button class="btn" id="next">Next segment</button>'}</div></div>`}
+function updateTrack(){const t=$('#track');t.innerHTML=SCREENS.map((s,k)=>`<button class="${k===S.i?'now':(S.done[s.id]||k<S.i)?'done':''}" data-k="${k}" aria-label="${s.id}"></button>`).join('');
+ $$('#track button').forEach(b=>b.onclick=()=>go(+b.dataset.k));const sc=SCREENS[S.i];$('#tlabel').textContent=sc.id==='cover'?'Start':`${sc.id} · ${S.i} of ${SCREENS.length-1}`}
+function render(top){const sc=SCREENS[S.i];app.innerHTML=sc.render()+navHTML(sc)+(S.rev?notesHTML(sc):'');if(!top)$$('.fadein',app).forEach(e=>e.classList.remove('fadein'));
+ if(sc.mount)sc.mount();const b=$('#back');if(b)b.onclick=()=>go(S.i-1);const n=$('#next');if(n)n.onclick=()=>go(S.i+1);
+ const j=$('#jumpsel');if(j)j.onchange=()=>go(+j.value);updateTrack();if(top)window.scrollTo({top:0})}
+function go(k){S.i=Math.max(0,Math.min(SCREENS.length-1,k));render(true)}
+$('#revt').onclick=()=>{S.rev=!S.rev;$('#revt').setAttribute('aria-pressed',S.rev);document.body.classList.toggle('revmode',S.rev);const y=window.scrollY;render();window.scrollTo(0,y)};
+reset();
+if(location.hash.includes('review')){S.rev=true;$('#revt').setAttribute('aria-pressed','true');document.body.classList.add('revmode')}
+render(true);
+
+</script>
+</body></html>

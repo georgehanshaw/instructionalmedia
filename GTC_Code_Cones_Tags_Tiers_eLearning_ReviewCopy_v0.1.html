@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Code: Quality Cones, Tags and Tiers · GTC Review Copy v0.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:dark;--ground:#171d20;--gunmetal:#2C3539;--panel:#222a2e;--line:#3a454a;--text:#ebe6dc;--muted:#a3adb1;--amber:#d29a2e;--amber-deep:#8C5A0A;--amber-tint:rgba(210,154,46,.14);--good:#4fb37a;--good-tint:rgba(79,179,122,.14);--bad:#e0594a;--bad-tint:rgba(224,89,74,.14);
+--f-display:Georgia,"Times New Roman",serif;--f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--text)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+p{margin:0}
+svg{display:block}
+/* header */
+.top{position:sticky;top:0;z-index:20;background:var(--gunmetal);border-bottom:2px solid var(--amber-deep)}
+.top-inner{max-width:1320px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.wm{display:flex;flex-direction:column;line-height:1;border-left:3px solid var(--amber);padding-left:8px}
+.wm b{font-family:var(--f-display);font-size:19px;letter-spacing:.06em}
+.wm span{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.16em;color:var(--muted)}
+.brand .mod{font-family:var(--f-display);font-size:17px;white-space:nowrap}
+.brand .hcode{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.track{flex:1;display:flex;gap:4px;min-width:200px;align-items:center}
+.track button{flex:1;height:5px;border-radius:3px;background:var(--line);border:0;padding:0;cursor:default}
+.track button.done{background:var(--amber-deep)}
+.track button.now{background:var(--amber)}
+body.revmode .track button{cursor:pointer}
+.track-label{font-family:var(--f-mono);font-size:11px;color:var(--muted);white-space:nowrap;letter-spacing:.05em;text-transform:uppercase}
+.rev-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;cursor:pointer;font-size:13px;color:var(--muted)}
+.rev-toggle .pip{width:28px;height:16px;border-radius:8px;background:var(--line);position:relative;transition:background .2s}
+.rev-toggle .pip::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--text);transition:transform .2s}
+.rev-toggle[aria-pressed="true"]{color:var(--text);border-color:var(--amber)}
+.rev-toggle[aria-pressed="true"] .pip{background:var(--amber-deep)}
+.rev-toggle[aria-pressed="true"] .pip::after{transform:translateX(12px)}
+/* stage */
+main{max-width:1320px;margin:0 auto;padding:22px 16px 48px}
+.screen{display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:980px){.screen.split{grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);align-items:start}}
+.mediacol{display:flex;flex-direction:column;gap:16px;min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.side h2{font-size:clamp(24px,2.6vw,32px);line-height:1.15}
+.onscreen{font-size:16px;display:flex;flex-direction:column;gap:10px}
+.onscreen strong{color:var(--amber);font-weight:600}
+.onscreen ul{margin:0;padding-left:20px;display:grid;gap:7px}
+.narr{border-left:2px solid var(--line);padding-left:12px;color:var(--muted);font-style:italic;font-size:14px}
+.narr b{font-style:normal;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;display:block;opacity:.8;margin-bottom:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--amber);background:var(--amber);color:#1b1407;font-weight:600;padding:10px 18px;border-radius:6px;cursor:pointer;transition:transform .12s,opacity .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--amber)}
+.hint{font-size:13px;color:var(--muted)}
+.media{position:relative;width:100%;border-radius:8px;overflow:hidden;background:#000;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.media svg{width:100%;height:auto}
+.cap{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.fadein{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hs{position:absolute;transform:translate(-50%,-50%);width:clamp(30px,4.2vw,46px);aspect-ratio:1;border-radius:50%;border:2px solid #fff;background:rgba(210,154,46,.9);cursor:pointer;display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:clamp(12px,1.4vw,16px);color:#1b1407;animation:pulse 2s infinite;padding:0}
+.hs.seen{background:rgba(79,179,122,.95);animation:none;color:#08180f}
+.hs.act{outline:3px solid #fff;outline-offset:3px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(210,154,46,.7)}70%{box-shadow:0 0 0 14px rgba(210,154,46,0)}100%{box-shadow:0 0 0 0 rgba(210,154,46,0)}}
+.alert{border:1px solid var(--bad);background:var(--bad-tint);border-radius:8px;padding:12px 14px}
+.okbox{border:1px solid var(--good);background:var(--good-tint);border-radius:8px;padding:12px 14px}
+.warnbox{border:1px solid var(--amber);background:var(--amber-tint);border-radius:8px;padding:12px 14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.panel h3{font-size:19px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;width:100%}
+.opt:hover:not(:disabled){border-color:var(--amber)}
+.opt .l{font-family:var(--f-mono);font-weight:600;color:var(--amber);flex:none}
+.opt.bad{border-color:var(--bad);background:var(--bad-tint)}
+.opt.good{border-color:var(--good);background:var(--good-tint)}
+.opt:disabled{cursor:default}
+.fb{font-size:14px;min-height:1px}
+.fb.bad{color:#f08a7e}.fb.good{color:var(--good)}
+.steps-lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+/* cover */
+.cover{position:relative;border-radius:12px;overflow:hidden;min-height:min(600px,76vh);display:flex;align-items:flex-end;background:var(--gunmetal)}
+.cover .bg{position:absolute;inset:0;opacity:.42}
+.cover .bg svg{width:100%;height:100%}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,29,32,.15) 0%,rgba(23,29,32,.5) 40%,rgba(23,29,32,.96) 100%)}
+.cover-inner{position:relative;z-index:1;padding:clamp(20px,4vw,48px);display:flex;flex-direction:column;gap:16px;max-width:820px}
+.cover h1{font-size:clamp(46px,8vw,92px);line-height:.95}
+.cover .h1sub{font-family:var(--f-display);font-size:clamp(22px,3vw,34px);color:var(--amber);margin-top:-6px}
+.cover .sub{font-size:clamp(16px,1.8vw,19px);color:#d4cfc5;max-width:56ch}
+.cover .logos{position:absolute;z-index:1;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px clamp(20px,4vw,48px);flex-wrap:wrap}
+.rc{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:rgba(23,29,32,.7)}
+.meta{display:flex;flex-wrap:wrap;gap:14px 28px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.meta div{display:flex;flex-direction:column}
+.meta b{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--amber);font-weight:500;text-transform:uppercase}
+.meta span{font-size:14px}
+.objs{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.objs li{display:flex;gap:12px;align-items:baseline;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.objs li b{font-family:var(--f-display);color:var(--amber);font-size:16px;flex:none;width:26px}
+/* cone legend + sort */
+.legend{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.legend .lc{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:6px 4px}
+.legend .lc b{font-family:var(--f-mono);letter-spacing:.12em;font-size:13px}
+.legend .lc span{font-size:13.5px;font-weight:600}
+.legend .lc small{font-size:12.5px;color:var(--muted);line-height:1.35}
+@media (max-width:640px){.legend{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sortbox{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.tray{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px;border:1px dashed var(--line);border-radius:8px;min-height:104px;align-items:center}
+.tray:empty::after{content:"All five cones placed";font-family:var(--f-mono);font-size:12px;color:var(--good);letter-spacing:.1em;text-transform:uppercase}
+.dcone{background:none;border:2px solid transparent;border-radius:8px;padding:4px 10px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.dcone:hover{border-color:var(--line)}
+.dcone.sel{border-color:var(--amber);background:var(--amber-tint)}
+.slots{display:grid;gap:8px}
+.slot{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.02);border:1px dashed var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;text-align:left;width:100%;min-height:78px}
+.slot:hover{border-color:var(--amber)}
+.slot .drop{width:56px;height:66px;flex:none;border-radius:6px;background:rgba(255,255,255,.04);display:grid;place-items:center}
+.slot .stx b{display:block;font-size:15px}
+.slot .stx small{color:var(--muted);font-size:13px}
+.slot.ok{border-style:solid;border-color:var(--good);background:var(--good-tint);cursor:default}
+.slot.no{animation:shake .35s;border-color:var(--bad)}
+.slot.hot{border-color:var(--amber);border-style:solid;background:var(--amber-tint)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#ghost{position:fixed;pointer-events:none;z-index:60;transform:translate(-50%,-50%);display:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.6))}
+/* sequence */
+.seq{display:grid;gap:8px}
+.seqslot{display:flex;gap:10px;align-items:center;border:1px dashed var(--line);border-radius:8px;padding:9px 12px;min-height:46px;background:rgba(255,255,255,.02);cursor:pointer;width:100%;text-align:left}
+.seqslot i{font-style:normal;font-family:var(--f-display);font-size:20px;color:var(--amber);width:18px}
+.seqslot.filled{border-style:solid;background:var(--panel)}
+.seqslot.right{border-color:var(--good);background:var(--good-tint)}
+.seqslot.wrong{border-color:var(--bad);background:var(--bad-tint)}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.pool button{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+.pool button:hover{border-color:var(--amber)}
+/* figures */
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.fig svg{width:100%;height:auto;border-radius:6px}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.asset{border:2px dashed var(--amber-deep);border-radius:10px;background:repeating-linear-gradient(135deg,rgba(140,90,10,.09) 0 12px,transparent 12px 24px);padding:18px;display:flex;flex-direction:column;gap:8px;justify-content:center;min-height:190px}
+.asset .tagl{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+.asset h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:18px}
+.asset p{font-size:13.5px;color:var(--muted)}
+.mock-btn{align-self:flex-start;font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:5px 10px;background:#0f1416;color:var(--muted)}
+.code{font-family:var(--f-mono);font-size:12.5px;background:#0f1416;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:#b9c7cc;overflow-x:auto;white-space:pre;line-height:1.6;margin:0}
+.code .hl{color:#1b1407;background:var(--amber);padding:1px 3px;border-radius:2px;font-weight:600}
+.code .c{color:#6f7d83}
+/* id tags */
+.router{font-family:var(--f-mono);font-size:13px;background:#fbfaf6;color:#1d1d1d;border-radius:8px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px 18px}
+.router b{color:#8C5A0A}
+.idtags{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tagbtn{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.tagbtn:hover:not(:disabled){border-color:var(--amber)}
+.tagbtn svg{width:100%;height:auto;max-width:300px;margin:0 auto}
+.tagbtn .tl{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center}
+.tagbtn.good{border-color:var(--good);background:var(--good-tint)}
+.tagbtn.bad{border-color:var(--bad);background:var(--bad-tint)}
+.tagbtn:disabled{cursor:default}
+/* traveler hotspots */
+.trav .tz{cursor:pointer;transition:fill-opacity .15s}
+.trav .tz:hover,.trav .tz:focus{fill-opacity:.14;outline:none}
+.trav .tz.miss{fill:#e0594a;fill-opacity:.18}
+.trav.found .tfound{opacity:1}
+.trav.found .tz{pointer-events:none}
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--amber);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.tier h3{font-size:22px;display:flex;justify-content:space-between;align-items:baseline}
+.tier h3 small{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.tier .r{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.tier .r svg{flex:none;margin-top:1px}
+.tier.t1{border-top-color:#e0594a}.tier.t2{border-top-color:var(--amber)}.tier.t3{border-top-color:var(--good)}
+.stl{display:grid;gap:8px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.st .bt{display:flex;gap:6px}
+.st .bt button{flex:1;background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:6px;cursor:pointer;font-family:var(--f-display);font-size:16px}
+.st .bt button:hover:not(:disabled){border-color:var(--amber)}
+.st .bt button.bad{border-color:var(--bad);background:var(--bad-tint)}
+.st .bt button.good{border-color:var(--good);background:var(--good-tint)}
+.st.ok{border-color:var(--good)}
+.locked{opacity:.45;pointer-events:none}
+/* kc */
+.kc{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.qdots{display:flex;gap:8px}
+.qdots span{width:30px;height:6px;border-radius:3px;background:var(--line)}
+.qdots span.now{background:var(--amber)}.qdots span.ok{background:var(--good)}.qdots span.shown{background:var(--amber-deep)}
+.prompt-band{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.prompt-band h2{font-size:clamp(21px,2.3vw,28px);line-height:1.25}
+/* debrief */
+.recap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.recap div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.recap b{font-family:var(--f-display);font-size:34px;color:var(--amber);font-weight:400;line-height:1}
+.recap span{font-family:var(--f-display);font-size:17px}
+.pd{margin:0;padding-left:20px;display:grid;gap:5px;font-size:14px}
+.tries{width:100%;border-collapse:collapse;font-size:14px}
+.tries td{padding:6px 0;border-bottom:1px solid var(--line)}
+.tries td:last-child{text-align:right;font-family:var(--f-mono)}
+.first{color:var(--good)}.more{color:var(--amber)}
+/* nav */
+.navbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:24px;border-top:1px solid var(--line);padding-top:16px;flex-wrap:wrap}
+.navbar .r{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+/* reviewer notes */
+.rev{margin-top:26px;border:1px dashed var(--amber-deep);border-radius:10px;padding:16px 18px;background:rgba(140,90,10,.07);display:grid;gap:14px}
+.rev-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rev-head h3{font-size:18px;color:var(--amber)}
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.rev-grid div,.rev-long div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rev b.k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);font-weight:500;text-transform:uppercase}
+.rev span{font-size:14px}
+.rev .id{font-family:var(--f-mono);color:var(--amber)}
+.rev-long{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.flags{display:grid;gap:8px}
+.flag{border-left:3px solid var(--bad);background:var(--bad-tint);padding:10px 12px;border-radius:0 6px 6px 0;font-size:14px}
+.flag.med{border-left-color:var(--amber);background:var(--amber-tint)}
+.flag.low{border-left-color:#7d8b91;background:rgba(125,139,145,.12)}
+.flag.bld{border-left-color:#6fa8d6;background:rgba(111,168,214,.1)}
+.flag b{display:block;margin-bottom:2px;font-family:var(--f-mono);font-size:12px;letter-spacing:.04em}
+.flag.high b{color:#f08a7e}.flag.med b{color:var(--amber)}.flag.low b{color:#b7c2c6}.flag.bld b{color:#8fc0e6}
+.assets{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:14px}
+.assets li{display:flex;gap:8px;align-items:baseline}
+.pill{font-family:var(--f-mono);font-size:10.5px;font-weight:600;border-radius:4px;padding:2px 7px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;flex:none}
+.p-built{background:var(--good-tint);color:var(--good)}
+.p-stand{background:var(--amber-tint);color:var(--amber)}
+.p-need{background:var(--bad-tint);color:#f08a7e}
+.jump{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.jump select{background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit}
+@media (max-width:640px){.cover{flex-direction:column;align-items:stretch;justify-content:space-between}.cover .logos{position:relative}
+.trav,.abw{overflow-x:auto;-webkit-overflow-scrolling:touch}.trav svg{min-width:760px}.abw svg{min-width:700px}.scrollhint{display:block!important}}
+.scrollhint{display:none;font-size:12px;color:var(--muted)}
+.legendflags{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+</style></head>
+<body>
+<header class="top"><div class="top-inner">
+  <div class="brand"><div class="wm"><b>GTC</b><span>GENERAL TOOL COMPANY</span></div><div><div class="mod">Code</div><div class="hcode" id="hcode">L1 · STEP A · CONES, TAGS, TIERS</div></div></div>
+  <nav class="track" id="track" aria-label="Course progress"></nav>
+  <span class="track-label" id="tlabel"></span>
+  <button class="rev-toggle" id="revt" aria-pressed="false"><span class="pip"></span>Reviewer notes</button>
+</div></header>
+<main id="app"></main>
+<div id="ghost" aria-hidden="true"></div>
+<script>
+/* ===== GRAPHICS: all vector, built for this course. TRAINING SAMPLE data only. ===== */
+const CONES={
+  white:{name:'White',fill:'#efefea',edge:'#aab2b6',band:'#9ea8ad',status:'Incoming inspection',detail:'Ready for inspection',wait:'Incoming inspection. It is ready to be inspected',label:'Incoming inspection'},
+  green:{name:'Green',fill:'#37a35f',edge:'#23764a',band:'#eef1ee',status:'Conforms',detail:'Inspection complete; the part conforms',wait:'Nothing. Inspection is complete and it conforms',label:'Conforms'},
+  yellow:{name:'Yellow',fill:'#f0c02c',edge:'#b88f12',band:'#fbf6e4',status:'Hold',detail:'More information or input is needed',wait:'More information or input. It is on hold',label:'Hold: needs info'},
+  red:{name:'Red',fill:'#d63f2e',edge:'#9a2a1e',band:'#f6eeec',status:'Non-conforming',detail:'Does not meet the requirement or specification',wait:'A decision from Quality. It does not conform',label:'Non-conforming'},
+  blue:{name:'Blue',fill:'#2f6fd0',edge:'#1f4e97',band:'#edf2fa',status:'Move order',detail:'A move request has been sent in Egennix; waiting for transfer',wait:'Transfer. A move request is in Egennix',label:'Move order'}
+};
+const ORDER=['white','green','yellow','red','blue'];
+const HAND="'Segoe Print','Bradley Hand','Comic Sans MS',cursive";
+const MONO="'IBM Plex Mono',ui-monospace,Menlo,monospace";
+const SANS="'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
+
+function coneG(c,x,baseY,s=1){const k=CONES[c];return `<g transform="translate(${x-30*s},${baseY-76*s}) scale(${s})">
+<ellipse cx="30" cy="77" rx="30" ry="3.5" fill="#000" opacity=".28"/>
+<rect x="3" y="66" width="54" height="10" rx="2" fill="#262b2e"/>
+<path d="M24 4 H36 L50 68 H10 Z" fill="${k.fill}" stroke="${k.edge}" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M18.3 30 H41.7 L43.9 40 H16.1 Z" fill="${k.band}"/>
+<path d="M14.4 48 H45.6 L47.2 55 H12.8 Z" fill="${k.band}"/>
+<path d="M25.5 7 L18 62" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+<rect x="22" y="2" width="16" height="4" rx="2" fill="${k.edge}"/></g>`}
+function coneSVG(c,w=56){return `<svg viewBox="0 0 60 82" width="${w}" role="img" aria-label="${CONES[c].name} cone">${coneG(c,30,79,1)}</svg>`}
+
+function shopBg(u){return `<defs>
+<linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d363b"/><stop offset="1" stop-color="#20282c"/></linearGradient>
+<linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#424c50"/><stop offset="1" stop-color="#2d3539"/></linearGradient>
+<linearGradient id="${u}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d3d8da"/><stop offset=".55" stop-color="#959ea2"/><stop offset="1" stop-color="#5f686d"/></linearGradient>
+<linearGradient id="${u}md" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#848d91"/><stop offset="1" stop-color="#4d555a"/></linearGradient>
+<radialGradient id="${u}g"><stop offset="0" stop-color="#fff6dc" stop-opacity=".55"/><stop offset="1" stop-color="#fff6dc" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="300" fill="url(#${u}w)"/>
+<rect y="300" width="1200" height="340" fill="url(#${u}f)"/>
+<rect y="34" width="1200" height="10" fill="#1a2023"/>
+${[150,450,750,1050].map(x=>`<ellipse cx="${x}" cy="60" rx="140" ry="46" fill="url(#${u}g)"/><rect x="${x-40}" y="44" width="80" height="6" rx="2" fill="#e9e3cf"/>`).join('')}
+${[[30,120,290,192],[360,96,340,216],[760,132,400,180]].map(([x,y,w,h])=>`
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#4b565b"/><rect x="${x}" y="${y}" width="${w}" height="8" rx="4" fill="#5d696f"/>
+<rect x="${x+18}" y="${y+28}" width="${w*0.55}" height="${h*0.5}" rx="4" fill="#182023"/><rect x="${x+18}" y="${y+28}" width="${w*0.55}" height="${h*0.5}" rx="4" fill="#6fb6c9" opacity=".08"/>
+<rect x="${x+w*0.68}" y="${y+30}" width="${w*0.22}" height="${h*0.32}" rx="3" fill="#2b3337"/><rect x="${x+w*0.7}" y="${y+36}" width="${w*0.18}" height="${h*0.12}" rx="2" fill="#4aa3b8" opacity=".55"/>
+<rect x="${x}" y="${y+h-14}" width="${w}" height="14" fill="#3a4448"/>`).join('')}
+<rect y="330" width="1200" height="6" fill="#d8b02a" opacity=".85"/>
+<rect y="604" width="1200" height="6" fill="#d8b02a" opacity=".85"/>
+<path d="M0 420 H1200 M0 520 H1200" stroke="#000" stroke-opacity=".12"/>`}
+
+function skid(x){return `<g><rect x="${x-78}" y="500" width="156" height="8" fill="#9a774d"/><path d="M${x-78} 504 H${x+78}" stroke="#7a5c3a" stroke-width="1"/>
+${[-78,-8,62].map(d=>`<rect x="${x+d}" y="508" width="16" height="12" fill="#7a5c3a"/>`).join('')}<rect x="${x-78}" y="519" width="156" height="3" fill="#000" opacity=".25"/></g>`}
+function ring(x,u){return `<g><ellipse cx="${x}" cy="497" rx="62" ry="14" fill="url(#${u}md)"/><rect x="${x-62}" y="450" width="124" height="47" fill="url(#${u}m)"/><ellipse cx="${x}" cy="450" rx="62" ry="14" fill="#c6ccce"/><ellipse cx="${x}" cy="450" rx="40" ry="8.5" fill="#1c2226"/></g>`}
+function bracket(x,u){return `<g><polygon points="${x-20},460 ${x+60},460 ${x+78},448 ${x-2},448" fill="#c8ced0"/><polygon points="${x-60},420 ${x-20},420 ${x-2},408 ${x-42},408" fill="#c8ced0"/>
+<polygon points="${x+60},460 ${x+78},448 ${x+78},488 ${x+60},500" fill="#646d71"/><polygon points="${x-20},420 ${x-2},408 ${x-2},448 ${x-20},460" fill="#646d71"/>
+<polygon points="${x-60},500 ${x-60},420 ${x-20},420 ${x-20},460 ${x+60},460 ${x+60},500" fill="url(#${u}m)"/><circle cx="${x-40}" cy="446" r="9" fill="#1c2226"/></g>`}
+function bars(x,u){let s='';for(let r=0;r<3;r++){for(let i=0;i<3-r;i++){const cx=x-48+i*22+r*11,cy=488-r*19;s+=`<rect x="${cx}" y="${cy-9}" width="86" height="18" fill="url(#${u}m)"/><circle cx="${cx}" cy="${cy}" r="9.5" fill="#d6dbdd" stroke="#6c757a"/>`}}return `<g>${s}<rect x="${x-10}" y="440" width="7" height="62" fill="#2f5d8a" opacity=".9"/></g>`}
+function housing(x,u,tag=true){return `<g><polygon points="${x-55},425 ${x+55},425 ${x+72},413 ${x-38},413" fill="#c8ced0"/><polygon points="${x+55},425 ${x+72},413 ${x+72},488 ${x+55},500" fill="#646d71"/>
+<rect x="${x-55}" y="425" width="110" height="75" fill="url(#${u}m)"/><circle cx="${x}" cy="462" r="23" fill="#1c2226"/><circle cx="${x}" cy="462" r="23" fill="none" stroke="#e6e9ea" stroke-opacity=".5" stroke-width="2"/>
+${tag?`<path d="M${x+64} 418 L${x+70} 436" stroke="#c9c9c9" stroke-width="1.4"/><rect x="${x+62}" y="434" width="15" height="22" rx="2" fill="#c8372a" transform="rotate(8 ${x+70} 445)"/>`:''}</g>`}
+function shaft(x,u){return `<g><rect x="${x-50}" y="484" width="18" height="16" fill="#3a4246"/><rect x="${x+32}" y="484" width="18" height="16" fill="#3a4246"/>
+<rect x="${x-72}" y="460" width="144" height="28" fill="url(#${u}m)"/><ellipse cx="${x+72}" cy="474" rx="6" ry="14" fill="#a9b1b4"/><rect x="${x-72}" y="466" width="144" height="4" fill="#fff" opacity=".25"/></g>`}
+
+function person(x,fy,s,o){const sk=o.skin||'#c99a78';return `<g transform="translate(${x},${fy}) scale(${s})">
+<ellipse cx="0" cy="0" rx="34" ry="5" fill="#000" opacity=".3"/>
+<path d="M-24 -112 L-27 -8 L-7 -8 L-2 -96 L2 -96 L7 -8 L27 -8 L24 -112 Z" fill="${o.pants}"/>
+<rect x="-31" y="-11" width="25" height="11" rx="4" fill="#1a1d20"/><rect x="6" y="-11" width="25" height="11" rx="4" fill="#1a1d20"/>
+<path d="M-36 -196 L-46 -134 L-38 -128 L-28 -170 Z" fill="${o.shirt}"/><path d="M36 -196 L46 -134 L38 -128 L28 -170 Z" fill="${o.shirt}"/>
+<circle cx="-42" cy="-126" r="6" fill="${sk}"/><circle cx="42" cy="-126" r="6" fill="${sk}"/>
+<rect x="-8" y="-224" width="16" height="14" fill="${sk}"/>
+<path d="M-36 -198 Q-36 -214 -20 -216 L20 -216 Q36 -214 36 -198 L30 -108 L-30 -108 Z" fill="${o.shirt}"/>
+<path d="M-10 -216 L0 -200 L10 -216" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="2"/>
+${o.badge?`<rect x="12" y="-190" width="14" height="9" rx="1.5" fill="#e8e2d0"/>`:''}
+<circle cx="0" cy="-244" r="23" fill="${sk}"/>
+<path d="M-24 -246 Q-24 -272 0 -272 Q24 -272 24 -246 Q20 -258 0 -260 Q-20 -258 -24 -246 Z" fill="${o.hair}"/>
+${o.bun?`<circle cx="0" cy="-274" r="10" fill="${o.hair}"/>`:''}
+<rect x="-19" y="-250" width="38" height="10" rx="4" fill="#bfe4f0" fill-opacity=".75" stroke="#1d2427" stroke-width="1.5"/>
+${o.clip?`<g transform="rotate(-6 34 -150)"><rect x="22" y="-176" width="34" height="46" rx="2" fill="#7a5c3a"/><rect x="25" y="-172" width="28" height="39" fill="#f4f1e8"/><rect x="32" y="-179" width="14" height="6" rx="2" fill="#9aa3a7"/>
+<path d="M28 -164 H50 M28 -158 H50 M28 -152 H44 M28 -146 H50" stroke="#8c949a" stroke-width="1.4"/></g>`:''}
+</g>`}
+const DANA={shirt:'#34506b',pants:'#2b2f36',hair:'#3a2a20',bun:true,clip:true,badge:true};
+const SUP={shirt:'#5d676c',pants:'#2b2f36',hair:'#6b6158',skin:'#e0b796',badge:true};
+
+/* Aisle: five parts in staging. Positions chosen so the activity is not in legend order. */
+const AISLE=[{x:240,c:'yellow',p:'ring',n:'Machined ring'},{x:450,c:'green',p:'bracket',n:'Bracket'},{x:660,c:'white',p:'bars',n:'Bar stock'},{x:870,c:'red',p:'housing',n:'Housing'},{x:1070,c:'blue',p:'shaft',n:'Shaft'}];
+function aisleSVG(u,opt={}){const parts={ring,bracket,bars,housing,shaft};
+  return `<svg viewBox="0 0 1200 640" role="img" aria-label="A machining aisle with five parts on skids, each with a quality cone${opt.labels?', each labeled with its status':''}" ${opt.slice?'preserveAspectRatio="xMidYMid slice"':''}>${shopBg(u)}
+${AISLE.map((a,i)=>`${skid(a.x)}${a.p==='housing'?housing(a.x,u,true):parts[a.p](a.x,u)}${coneG(a.c,a.x+68,524,.82)}
+${opt.num?`<text x="${a.x}" y="560" text-anchor="middle" font-family="${MONO}" font-size="15" fill="#a3adb1">PART ${i+1}</text>`:''}
+${opt.labels?`<g><rect x="${a.x-92}" y="368" width="184" height="32" rx="16" fill="#121618" fill-opacity=".92" stroke="${CONES[a.c].fill}" stroke-width="2"/><circle cx="${a.x-74}" cy="384" r="7" fill="${CONES[a.c].fill}" stroke="#fff" stroke-opacity=".4"/>
+<text x="${a.x+8}" y="389" text-anchor="middle" font-family="${SANS}" font-size="13.5" font-weight="600" fill="#ebe6dc">${CONES[a.c].label}</text><path d="M${a.x} 400 V420" stroke="${CONES[a.c].fill}" stroke-width="2"/></g>`:''}`).join('')}
+${opt.dana===false?'':person(96,632,1.02,DANA)}</svg>`}
+
+/* COD-03 scene: held part with red cone and Hold Tag, Dana and supervisor, tag close-up */
+function holdTagG(tx,ty,s){return `<g transform="translate(${tx},${ty}) scale(${s})">
+<path d="M30 0 H250 L280 30 V470 H0 V30 Z" fill="#c8372a" stroke="#8d2117" stroke-width="2"/>
+<circle cx="140" cy="30" r="12" fill="#f3ece0" stroke="#8d2117" stroke-width="3"/>
+<text x="140" y="98" text-anchor="middle" font-family="${SANS}" font-size="50" font-weight="700" fill="#fff" letter-spacing="6">HOLD</text>
+<rect x="16" y="118" width="248" height="338" rx="3" fill="#fbf8f2"/>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a" letter-spacing=".5">
+<text x="26" y="150">JOB #</text><text x="160" y="150">DATE</text>
+<text x="26" y="192">PART NO.</text><text x="26" y="234">PART NAME</text><text x="26" y="276">REASON</text>
+<text x="26" y="360">INSPECTOR</text><text x="26" y="402">QUANTITY</text><text x="140" y="402">NMR #</text></g>
+<g stroke="#9a9a9a" stroke-width="1"><path d="M66 153 H152 M196 153 H254 M92 195 H254 M106 237 H254 M84 279 H254 M26 318 H254 M106 363 H254 M98 405 H132 M184 405 H254"/></g>
+<g font-family="${HAND}" font-size="16" fill="#1d3c8f">
+<text x="68" y="149">71245-0010</text><text x="198" y="149">11/12/26</text><text x="96" y="191">TS-4417 Rev C</text><text x="108" y="233">Support bracket</text>
+<text x="86" y="275">Bore 2.5032</text><text x="30" y="314">req. 2.500 +.002/-.000</text><text x="110" y="359">QA stamp 07</text><text x="104" y="401">1</text><text x="188" y="401">26-0418</text></g>
+<text x="140" y="440" text-anchor="middle" font-family="${MONO}" font-size="12" fill="#c8372a" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text></g>`}
+function heldSceneSVG(u){return `<svg viewBox="0 0 1200 640" role="img" aria-label="A housing on a skid with a red cone and a Hold Tag. Dana and her supervisor look at it. A close-up shows the Hold Tag fields.">${shopBg(u)}
+<g transform="translate(-320,-173) scale(1.5)">${skid(560)}${housing(560,u,false)}</g>
+<path d="M622 462 L636 492" stroke="#c9c9c9" stroke-width="2"/><rect x="624" y="490" width="26" height="38" rx="3" fill="#c8372a" stroke="#8d2117" transform="rotate(8 637 509)"/>
+${coneG('red',372,622,1.35)}
+${person(112,632,1.0,DANA)}${person(240,636,1.06,{...SUP,clip:false})}
+<path d="M668 500 C 740 470, 800 400, 868 350" fill="none" stroke="#d29a2e" stroke-width="2.5" stroke-dasharray="7 6"/>
+<circle cx="638" cy="510" r="30" fill="none" stroke="#d29a2e" stroke-width="2.5"/>
+<rect x="842" y="70" width="340" height="560" rx="14" fill="#121618" fill-opacity=".9" stroke="#3a454a"/>
+${holdTagG(872,142,1.0)}
+<text x="1012" y="102" text-anchor="middle" font-family="${MONO}" font-size="14" fill="#d29a2e" letter-spacing="2">HOLD TAG CLOSE-UP</text></svg>`}
+
+/* First Article tag, front and back */
+function faTagSVG(){const tag=(x,back)=>`<g transform="translate(${x},40)">
+<path d="M70 0 V-30" stroke="#bdbdbd" stroke-width="2"/><path d="M24 0 H216 L240 24 V330 H0 V24 Z" fill="#2f6fd0" stroke="#1f4e97" stroke-width="2"/>
+<circle cx="120" cy="24" r="10" fill="#f3ece0" stroke="#1f4e97" stroke-width="3"/>
+<rect x="14" y="80" width="212" height="236" rx="3" fill="#fbf8f2"/>
+${back?`<text x="120" y="66" text-anchor="middle" font-family="${SANS}" font-size="17" font-weight="700" fill="#fff" letter-spacing="1.5">FIRST ARTICLE</text>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="26" y="108">ESTABLISHED</text><text x="26" y="146">OPER</text><text x="120" y="146">DATE</text></g>
+<g font-family="${HAND}" font-size="17" fill="#1d3c8f"><text x="64" y="144">30</text><text x="158" y="144">11/12/26</text></g>
+<path d="M60 148 H112 M154 148 H218" stroke="#9a9a9a"/>
+<g transform="rotate(-12 120 230)"><circle cx="120" cy="230" r="52" fill="none" stroke="#b3261e" stroke-width="3.5" opacity=".85"/><circle cx="120" cy="230" r="42" fill="none" stroke="#b3261e" stroke-width="1.5" opacity=".85"/>
+<text x="120" y="212" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">GTC QA</text><text x="120" y="246" text-anchor="middle" font-family="${SANS}" font-size="34" fill="#b3261e" font-weight="700">07</text><text x="120" y="262" text-anchor="middle" font-family="${MONO}" font-size="9" fill="#b3261e">INSPECTOR</text></g>`
+:`<text x="120" y="66" text-anchor="middle" font-family="${SANS}" font-size="22" font-weight="700" fill="#fff" letter-spacing="1.5">FIRST ARTICLE</text>
+<g font-family="${MONO}" font-size="12" fill="#3a3a3a"><text x="26" y="140">JOB #</text><text x="26" y="210">PART #</text></g>
+<path d="M76 143 H218 M84 213 H218" stroke="#9a9a9a"/>
+<g font-family="${HAND}" font-size="19" fill="#1d3c8f"><text x="80" y="139">71245-0010</text><text x="88" y="209">TS-4417</text></g>
+<text x="120" y="290" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#2f6fd0" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text>`}
+<text x="120" y="362" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#a3adb1" letter-spacing="2">${back?'BACK: STAMPED BY INSPECTION':'FRONT'}</text></g>`;
+return `<svg viewBox="0 0 600 420" role="img" aria-label="First Article blue tag. Front shows Job number 71245-0010 and Part number TS-4417. Back shows First Article established at operation 30 with an inspector stamp.">
+<rect width="600" height="420" rx="10" fill="#222a2e"/>${tag(40,false)}${tag(320,true)}</svg>`}
+
+/* Accepted tag + sticker */
+function acceptedSVG(){return `<svg viewBox="0 0 600 400" role="img" aria-label="Green Accepted tag on a finished part, and a green Accepted sticker">
+<rect width="600" height="400" rx="10" fill="#222a2e"/>
+<g transform="translate(40,40)"><path d="M70 0 V-26" stroke="#bdbdbd" stroke-width="2"/><path d="M24 0 H216 L240 24 V320 H0 V24 Z" fill="#2f8f4e" stroke="#1f6a38" stroke-width="2"/>
+<circle cx="120" cy="24" r="10" fill="#f3ece0" stroke="#1f6a38" stroke-width="3"/>
+<text x="120" y="68" text-anchor="middle" font-family="${SANS}" font-size="26" font-weight="700" fill="#fff" letter-spacing="3">ACCEPTED</text>
+<rect x="14" y="84" width="212" height="222" rx="3" fill="#fbf8f2"/>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="24" y="114">JOB #</text><text x="24" y="148">PART #</text><text x="24" y="182">QTY</text><text x="120" y="182">OPER</text><text x="24" y="216">DATE</text></g>
+<path d="M68 117 H216 M76 151 H216 M56 185 H110 M158 185 H216 M64 219 H216" stroke="#9a9a9a"/>
+<g font-family="${HAND}" font-size="16" fill="#1d3c8f"><text x="72" y="113">71245-0010</text><text x="80" y="147">TS-4417 Rev C</text><text x="64" y="181">6</text><text x="164" y="181">90</text><text x="68" y="215">12/02/26</text></g>
+<g transform="rotate(-10 120 252)"><rect x="66" y="228" width="108" height="46" rx="6" fill="none" stroke="#b3261e" stroke-width="3" opacity=".85"/><text x="120" y="248" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">GTC QA 07</text><text x="120" y="266" text-anchor="middle" font-family="${MONO}" font-size="11" fill="#b3261e" font-weight="600">RELEASED</text></g>
+<text x="120" y="300" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#2f8f4e" letter-spacing="2" font-weight="600">TRAINING SAMPLE</text></g>
+<g transform="translate(440,170)"><circle r="78" fill="#2f8f4e" stroke="#fff" stroke-width="5"/><circle r="64" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>
+<text y="-8" text-anchor="middle" font-family="${SANS}" font-size="21" font-weight="700" fill="#fff" letter-spacing="1.5">ACCEPTED</text><text y="18" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#fff">QA 07</text><text y="38" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#fff" opacity=".85">12/02/26</text></g>
+<g font-family="${MONO}" font-size="13" fill="#a3adb1" letter-spacing="2" text-anchor="middle"><text x="160" y="386">TAG</text><text x="440" y="300">OR STICKER</text></g></svg>`}
+
+/* Material ID tag. Neutral color: the real color changes each year (Q04). */
+function matTagSVG(stamped,label){return `<svg viewBox="0 0 300 400" role="img" aria-label="Material identification tag ${label}, ${stamped?'with':'without'} a Quality inspection stamp">
+<path d="M24 10 H276 L296 30 V390 H4 V30 Z" fill="#d9dde6" stroke="#8b93a3" stroke-width="2"/>
+<circle cx="150" cy="30" r="9" fill="#f3ece0" stroke="#8b93a3" stroke-width="3"/>
+<rect x="4" y="48" width="292" height="30" fill="#7d86a0"/><text x="150" y="69" text-anchor="middle" font-family="${SANS}" font-size="15" font-weight="700" fill="#fff" letter-spacing="1.5">MATERIAL IDENTIFICATION</text>
+<g font-family="${MONO}" font-size="11" fill="#3a3a3a"><text x="18" y="106">PART #</text><text x="18" y="140">DESCRIPTION</text><text x="18" y="196">HEAT #</text><text x="160" y="196">QTY</text><text x="18" y="230">PO #</text><text x="160" y="230">REC'D</text></g>
+<g font-family="${MONO}" font-size="14" fill="#141413" font-weight="600"><text x="74" y="107">MAT-174PH-2515</text><text x="18" y="160">17-4PH SS BAR 2.50 X 1.50</text><text x="72" y="197">T7731</text><text x="194" y="197">4</text><text x="56" y="231">88412</text><text x="210" y="231">11/03</text></g>
+<rect x="18" y="252" width="264" height="120" rx="4" fill="#fff" stroke="#8b93a3" stroke-dasharray="${stamped?'0':'6 4'}"/>
+<text x="28" y="270" font-family="${MONO}" font-size="11" fill="#3a3a3a">QC INSPECTION STAMP</text>
+${stamped?`<g transform="rotate(-9 150 320)"><circle cx="150" cy="320" r="40" fill="none" stroke="#b3261e" stroke-width="3.5" opacity=".85"/><text x="150" y="312" text-anchor="middle" font-family="${MONO}" font-size="10" fill="#b3261e" font-weight="600">GTC QA</text><text x="150" y="338" text-anchor="middle" font-family="${SANS}" font-size="26" fill="#b3261e" font-weight="700">07</text></g>`:''}
+<text x="282" y="384" text-anchor="end" font-family="${MONO}" font-size="9" fill="#5a6270" letter-spacing="1">TRAINING SAMPLE</text></svg>`}
+
+/* Traveler header, laid out like the GTC-PD-013 sample. Fictional data (same job as Flow of Work). */
+function travelerSVG(){const z=(id,x,y,w,h)=>`<rect class="tz" data-z="${id}" x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#d29a2e" fill-opacity="0" tabindex="0" role="button" aria-label="${id}"/>`;
+return `<svg viewBox="0 0 1100 520" role="img" aria-label="Sample traveler header. Click the line that shows the quality Tier.">
+<rect width="1100" height="520" rx="8" fill="#fbfaf6"/>
+<g font-family="${MONO}" fill="#1d1d1d">
+<text x="28" y="40" font-size="20" font-weight="600">GTC</text><text x="80" y="40" font-size="11" fill="#555">GENERAL TOOL COMPANY · PRODUCTION FLOOR TRAVELER</text>
+<text x="1072" y="40" font-size="11" fill="#555" text-anchor="end">Printed 11/12/2026 07:42 AM   Page 1</text>
+<path d="M28 54 H1072" stroke="#999"/>
+<text x="28" y="84" font-size="15">Job 71245-0010</text><text x="250" y="84" font-size="15">Part TS-4417</text><text x="440" y="84" font-size="15">Rev C</text><text x="560" y="84" font-size="15">U/M EA</text><text x="690" y="84" font-size="15">Qty 6</text>
+<text x="28" y="112" font-size="13" fill="#333">Description  SUPPORT BRACKET</text><text x="560" y="112" font-size="13" fill="#333">Due 12/04/2026   Sales Order 0000-TRN</text>
+<text x="28" y="136" font-size="13" fill="#333">Customer  TRAINING SAMPLE (no customer shown)</text>
+<path d="M28 152 H1072" stroke="#999"/>
+<g font-size="11" fill="#555"><text x="28" y="174">OPERATION</text><text x="150" y="174">WORK CENTER</text><text x="420" y="174">DNC #</text><text x="540" y="174">OPER QTY</text><text x="660" y="174">SETUP</text><text x="760" y="174">OPER TIME</text><text x="880" y="174">ELAPSED</text></g>
+<path d="M28 184 H1072" stroke="#ccc"/>
+<g font-size="14"><text x="28" y="210">10</text><text x="150" y="210">E010 ENGINEERING</text><text x="540" y="210">1.0</text><text x="660" y="210">2.00</text><text x="760" y="210">0.00</text><text x="880" y="210">2.00</text></g>
+<g font-size="15"><text x="70" y="262" font-weight="600">TIER: 2   DOCUMENTATION REQUIRED</text>
+<text x="70" y="300">PRODUCTION DOCUMENTATION LEVEL: III</text>
+<text x="70" y="338">TECHNICAL CONTACT: MANUFACTURING ENGINEER</text>
+<text x="70" y="376">TECHNICAL REVIEW: ______   REVIEW DATE: __/__/__</text>
+<text x="70" y="414">MATERIAL TYPE: 17-4PH STAINLESS STEEL   SIZE: 2.50" X 1.50" X 6.50"</text>
+<text x="70" y="452">MATERIAL CERTS REQUIRED: YES</text></g></g>
+<text x="550" y="330" text-anchor="middle" font-family="${SANS}" font-size="64" font-weight="700" fill="#2C3539" fill-opacity=".07" transform="rotate(-12 550 330)" letter-spacing="8">TRAINING SAMPLE</text>
+<rect class="tfound" x="60" y="240" width="380" height="32" rx="5" fill="none" stroke="#2f9e5e" stroke-width="3" opacity="0"/>
+${z('job',20,62,215,32)}${z('rev',430,62,100,32)}${z('qty',680,62,100,32)}${z('tier',60,240,380,32)}${z('pdl',60,278,420,32)}${z('mat',60,392,800,32)}</svg>`}
+
+/* As-built drawing (simplified). Shows a Tier 2 record: machinist records all; Quality verifies tolerance .010" or less. */
+function asBuiltSVG(){const rows=[['1','4.000 ±.030','4.006','n/a'],['2','Bore 2.500 +.002/-.000','2.5012','2.5011'],['3','1.250 ±.002','1.2508','1.2507'],['4','.750 ±.015','.748','n/a'],['5','Hole .375 ±.003','.3755','.3756']];
+const b=(n,x,y)=>`<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#1f4e97" stroke-width="2"/><text x="${x}" y="${y+5}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#1f4e97" font-weight="600">${n}</text>`;
+return `<svg viewBox="0 0 1100 520" role="img" aria-label="Sample as-built drawing for a Tier 2 job with five numbered characteristics, the machinist's recorded values, and Quality's in-process verification of the tight-tolerance characteristics">
+<rect width="1100" height="520" rx="8" fill="#fbfaf6"/><rect x="14" y="14" width="1072" height="492" fill="none" stroke="#333" stroke-width="1.5"/>
+<g stroke="#222" stroke-width="2.2" fill="none"><path d="M90 380 V140 H200 V300 H470 V380 Z"/><circle cx="145" cy="220" r="34"/><circle cx="410" cy="340" r="12"/></g>
+<g stroke="#555" stroke-width="1" fill="none"><path d="M90 420 H470 M90 410 V430 M470 410 V430 M520 300 V380 M510 300 H530 M510 380 H530 M60 140 V380 M50 140 H70 M50 380 H70 M145 186 V120"/></g>
+<g font-family="${MONO}" font-size="13" fill="#222"><text x="280" y="445" text-anchor="middle">4.000</text><text x="560" y="345">.750</text><text x="36" y="265" transform="rotate(-90 36 265)" text-anchor="middle">1.250</text><text x="150" y="112">Ø2.500</text><text x="352" y="372">Ø.375</text></g>
+${b(1,280,470)}${b(2,228,108)}${b(3,36,312)}${b(4,560,375)}${b(5,446,300)}
+<g font-family="${MONO}"><rect x="620" y="40" width="440" height="34" fill="#2C3539"/><g font-size="11" fill="#fff"><text x="632" y="62">CHAR</text><text x="686" y="62">REQUIREMENT</text><text x="880" y="62">MACHINIST</text><text x="976" y="62">QUALITY</text></g>
+${rows.map((r,i)=>`<rect x="620" y="${74+i*44}" width="440" height="44" fill="${i%2?'#f1efe8':'#fff'}"/><text x="644" y="${101+i*44}" font-size="13" fill="#1f4e97" font-weight="600">${r[0]}</text><text x="686" y="${101+i*44}" font-size="12.5" fill="#222">${r[1]}</text>
+<text x="880" y="${101+i*44}" font-family="${HAND}" font-size="16" fill="#1d3c8f">${r[2]}</text><text x="976" y="${101+i*44}" ${r[3]==='n/a'?`font-size="12" fill="#999"`:`font-family="${HAND}" font-size="16" fill="#b3261e"`}>${r[3]}</text>`).join('')}
+<rect x="620" y="40" width="440" height="254" fill="none" stroke="#333"/>
+<text x="620" y="318" font-size="11" fill="#444">Stamps: machinist M-112 · Quality QA 07</text>
+<rect x="620" y="400" width="440" height="92" fill="none" stroke="#333"/><path d="M620 430 H1060 M840 430 V492" stroke="#333"/>
+<text x="632" y="421" font-size="13" font-weight="600" fill="#222">AS-BUILT DRAWING · TRAINING SAMPLE</text>
+<g font-size="11" fill="#444"><text x="632" y="454">PART TS-4417  REV C</text><text x="632" y="478">JOB 71245-0010  OPER 30</text><text x="852" y="454">TIER 2</text><text x="852" y="478">SHEET 1 OF 1</text></g></g></svg>`}
+
+/* small icons for tier cards */
+const IC={
+  you:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="8" r="5" fill="#d29a2e"/><path d="M3 24 Q3 14 13 14 Q23 14 23 24 Z" fill="#d29a2e"/></svg>`,
+  qa:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="#4fb37a" stroke-width="3"/><path d="M16 16 L23 23" stroke="#4fb37a" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+  doc:`<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M5 2 H16 L21 7 V24 H5 Z" fill="none" stroke="#a3adb1" stroke-width="2"/><path d="M8 11 H18 M8 15 H18 M8 19 H14" stroke="#a3adb1" stroke-width="1.6"/></svg>`
+};
+
+</script>
+<script>
+/* ===== COURSE ENGINE: state lives in memory only; a refresh resets it. ===== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const app=$('#app');
+let S;
+function reset(){S={i:0,rev:S?S.rev:false,done:{},tries:{},c02:0,sortPlaced:{},aisle:{},aisleAct:null,c03:null,seq:[],seqOk:false,idtag:null,tierFound:false,tierSort:{},kcQ:0,kc:[{},{},{}]}}
+function tri(k){S.tries[k]=(S.tries[k]||0)+1}
+function shuffle(a,seed){const r=[...a];let s=seed;for(let i=r.length-1;i>0;i--){s=(s*9301+49297)%233280;const j=Math.floor(s/233280*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+function narr(t){return `<div class="narr"><b>Narration</b>${t}</div>`}
+function eyebrow(sc){return `<div class="eyebrow">${sc.id} · ${sc.mod} · ${sc.time}</div>`}
+function unlock(id){S.done[id]=true;const b=$('#next');if(b){b.disabled=false;const h=$('#lockhint');if(h)h.remove()}updateTrack()}
+const KC=[
+ {q:'Dana finishes the first part of a six-piece lot. What happens before she runs part two?',o:[
+  ['Run all six, then send the lot to inspection together.','The First Article must be approved before the rest of the lot continues (QA-002).'],
+  ['Tag it First Article and have it approved before the rest of the lot runs.','Correct. The First Article proves the process; the rest of the lot waits for approval (QA-002).'],
+  ['Stamp it herself and keep going if it looks right.','The First Article needs approval, recorded in Egennix and on the tag.']],a:1},
+ {q:'The traveler says TIER 1. Who records inspection results on the as-built drawing?',o:[
+  ['Only Quality.','On Tier I the machinist records every characteristic first.'],
+  ['Dana records every characteristic she generates; then Quality inspects 100% and records too.','Correct. Tier I is 200% inspection: machinist plus Quality (QA-001).'],
+  ['No one; Tier 1 needs no documentation.','That describes Tier III, the least demanding tier.']],a:1},
+ {q:'A part next to Dana\'s machine has a red cone and a Hold Tag. Her supervisor is busy and the next operation is waiting. What does she do?',o:[
+  ['Leave the part alone; it is non-conforming and on hold until Quality releases it.','Correct. Red means non-conforming. Only an approved plan and Quality move it on (QA-001, QA-002).'],
+  ['Swap the red cone for a white one so Quality looks at it again.','Never move or change a cone or tag (see Q01).'],
+  ['Rework the feature so the next operation can start.','Never rework without an approved rework or repair plan (QA-001).']],a:0}
+];
+const SEQ=['Run the first part','Tag it First Article','Quality inspects and approves','Run the rest of the lot'];
+const TIER_ST=[
+ {t:'You record all characteristics on the as-built drawing as you make them. Quality verifies in process each one with a tolerance of .010" or less.',a:'II'},
+ {t:'At final inspection, Quality records the results on an Inspection Report.',a:'I'},
+ {t:'Little or no documentation. You verify and record what you generate; Quality steps in only if a First Article is needed on a multi-part job.',a:'III'},
+ {t:'You inspect and record every characteristic you generate. Then Quality inspects 100% and records them too.',a:'I'}
+];
+
+/* ---------- reviewer notes data ---------- */
+const F=(lvl,t,b)=>({lvl,t,b});
+const NOTES={
+ cover:{time:'n/a',obj:'n/a',activity:'None. Cover and objectives.',visual:'Aisle illustration from COD-01 as a faded background; text wordmark (no GTC logo file in the project).',dev:'Review copy v0.1 built from GTC_Code_Cones_Tags_Tiers_Course_Outline_Storyboard_v0.1.docx (11/11/2026). Self-contained HTML; state is in memory only. Add #review to the link to open with notes on.',
+  assets:[['GTC logo','stand'],['Aisle illustration','built']],
+  flags:[F('med','Q07 · Medium · Tim Waldron / George Hanshaw','Code is listed as an Existing class. How is it delivered today (binder pages QA-001 and QA-002 reviewed with the supervisor)? Does this eLearning replace that, or support it?'),
+   F('low','Q08 · Low · George Hanshaw','Flow of Work FOW-10 and FOW-KC2 preview cones and tiers. Keep FOW light and point here, or remove the cone check (FOW-KC2) from Flow of Work?'),
+   F('bld','Build note · Narration','Narration is shown as on-screen captions only. No audio is recorded in this review copy.'),
+   F('bld','Build note · LMS','Review copy only. No SCORM wrapper, so no completion is reported to the GTC LMS. The Kirkpatrick Level 1 survey link is a placeholder.')]},
+ 'COD-01':{time:'45 sec',obj:'All',activity:'None; the five parts on screen become the activity in COD-02.',visual:'A machining aisle with five parts on skids, each with a different colored cone (white, green, yellow, red, blue). Dana walks past with her traveler.',dev:'Dana is the same fictional persona used in the onboarding courses.',
+  assets:[['Aisle with five coned parts (illustration)','stand'],['Dana figure (illustration)','stand'],['GTC aisle photo with real cones','need']],
+  flags:[F('bld','Build note · Part order','The cones in the aisle are deliberately not in legend order (yellow, green, white, red, blue), so the COD-02 aisle activity is not a repeat of the cone sort.')]},
+ 'COD-02':{time:'2 min',obj:'O1',activity:'Drag each cone onto the matching status. Then click the five parts from COD-01 and say what each one is waiting for.',visual:'The five cones side by side with their labels, then the same five parts from COD-01 with click targets.',dev:'Source: GTC-QA-002 page 1 (Quality Cones) and page 3 (yellow hold cone). Blue cone ties to the move request in Flow of Work (FOW-11, AD-044). Cone sort works by drag or by tap-then-tap (phones, keyboard).',
+  assets:[['Five cone illustrations','stand'],['Photos of the five real cones','need']],
+  flags:[F('med','Q01 · Medium · Quality Lab Lead (name needed)','Who places and removes each cone color? QA-002 names Supervisors and MEs for yellow. Who places white, green and red, and may a machinist ever move a cone? (KC question 3, option B feedback depends on this.)'),
+   F('bld','Build note · Seat time','2 minutes covers the legend, the cone sort and the five-part aisle check. Worth timing in a pilot.'),
+   F('bld','Build note · Wording','The aisle answers ("what is it waiting for") are paraphrased from the QA-002 meanings. Confirm the green and red wording reads right to the floor.')]},
+ 'COD-03':{time:'1 min 30 sec',obj:'O2',activity:'Choice: "You find a feature out of tolerance on a part you just machined. What first?" Fix it now / tell your supervisor now / finish the lot, then report.',visual:'A part on a skid with a red cone and a Hold Tag tied to it; close-up of the Hold Tag fields. Inset: a supervisor and Dana looking at the part.',dev:'Sources: QA-002 page 3 (Hold Tags; Quality may place a Hold Tag without an NMR, e.g., weld repairs), QA-001 (NMR purpose, notify supervisor, approved rework plans only). Hold Tag rebuilt from the QA-002 page 3 field layout, filled with TRAINING SAMPLE data.',
+  assets:[['Hold Tag close-up (rebuilt from QA-002 layout)','stand'],['Held part, red cone, Dana and supervisor (illustration)','stand'],['Photo of a real Hold Tag (data covered)','need'],['Photo: supervisor and machinist at a held part','need']],
+  flags:[F('med','Q02 · Medium · Tim Waldron','Should standing rework and repair plans (QA-001) be named here, or only "ask your supervisor"? Who may initiate an NMR at GTC?'),
+   F('bld','Build note · Tag color','QA-002 does not state the Hold Tag color. It is drawn red to match the red cone. Confirm against a real tag.'),
+   F('bld','Build note · Inspector field','The INSPECTOR field shows a stamp number (QA 07), not a name. Confirm what Quality writes there.'),
+   F('bld','Build note · Feedback text','The storyboard gives no feedback for the three choices. The feedback shown was drafted from the on-screen text and needs SME approval.')]},
+ 'COD-04':{time:'2 min',obj:'O3',activity:'Put four steps in order: run first part, tag it First Article, Quality inspects and approves, run the rest of the lot.',visual:'A First Article blue tag (JOB #, PART #); the back of the tag with an inspector stamp; the First Article button in Egennix (clean capture). Inset: program header line "FROZEN PROCESS. NO CHANGES ALLOWED" from PD-203.',dev:'Sources: QA-002 page 2 (First Article Blue Tag), QA-001 (First Articles require 200% inspection on Tier I and II), PD-004 (First Articles stamping), PD-203 sample program. Supports PD-230 Sec. 2 "Reviews the Frozen process" and "Explains how to process a first article part."',
+  assets:[['First Article tag front and back (rebuilt from QA-002 layout)','stand'],['Program header inset (styled on the PD-203 sample)','built'],['Egennix First Article button, clean capture','need'],['Photo of a real First Article tag, front and stamped back','need']],
+  flags:[F('high','Q03 · High · Wes England / Tim Waldron','PD-004 lets the operator note that First Article was established on the previous job if nothing changed (machine, setup, program, operator, tooling). Teach this to new machinists now, or only later in Level 1?'),
+   F('bld','Build note · Tag back','The back-of-tag layout (Established, Oper, Date, round inspector stamp) is illustrative. QA-002 only says inspection records and stamps the back.'),
+   F('bld','Build note · Program header','Only the "FROZEN PROCESS. NO CHANGES ALLOWED" line is from PD-203. The other header lines use fictional DNC and print numbers in the PD-203 format.')]},
+ 'COD-05':{time:'1 min 15 sec',obj:'O4',activity:'Spot the problem: two material ID tags, one missing the Quality stamp. Click the one you would not use.',visual:'Left: a finished part with a green Accepted tag. Right: raw material with a material identification tag, the inspection stamp and part number circled.',dev:'Source: QA-002 page 2 (Accepted Green Tag) and page 3 (Identification Tags). Supports PD-230 Sec. 3 "Explains material identification tags." Final inspection and shipping are in Flow of Work FOW-15.',
+  assets:[['Accepted tag and sticker (generic)','stand'],['Two material ID tags (generic, neutral color)','stand'],['Photos: real Accepted tag or sticker; real material ID tag','need']],
+  flags:[F('low','Q04 · Low · Receiving / Quality (names needed)','What color is the material ID tag this year, and where is the color chart posted (QA-002 says Receiving)?'),
+   F('bld','Build note · Tag layouts','QA-002 shows no layout for the Accepted tag or the material ID tag. Both are generic designs. The ID tag is drawn in a neutral gray until Q04 is answered.'),
+   F('bld','Build note · Part number check','Both ID tags match the router, so the only difference is the missing stamp. A second version could add a wrong part number.')]},
+ 'COD-06':{time:'2 min 30 sec',obj:'O5',activity:'Hotspot the Tier on a sample traveler header. Then sort four statements into Tier I, II or III.',visual:'Three columns (Tier I, II, III) with icons for who inspects and who records. Inset: traveler header with "TIER: 2" circled (TRAINING SAMPLE).',dev:'Sources: QA-001 (Quality Tiers; Control of Production Process Changes: prints not updated on the floor), PD-013 (Tier field on the traveler), PD-004 (stamp as personal warranty). Supports PD-230 Sec. 2 "Explains the three tiers." Traveler rebuilt from the PD-013 sample with the Flow of Work job (71245-0010, TS-4417 Rev C, Tier 2); the customer name is removed.',
+  assets:[['Traveler header (rebuilt from PD-013)','built'],['Tier I, II, III columns with icons','built'],['As-built drawing (simplified, TRAINING SAMPLE)','stand']],
+  flags:[F('med','Q05 · Medium · Quality Manager (name needed)','Confirm the tier rules in QA-001 (Jan 2022) are current, including the .010" in-process threshold for Tier II. Also: is .010" the total tolerance band or the plus/minus value? The as-built sample avoids the ambiguous case.'),
+   F('low','Q06 · Low · Document control','PD-013 says "See Quality Review GTC-PD-003" for tier definitions; the Quality Review document is GTC-QA-001. Correct the reference in PD-013?'),
+   F('bld','Build note · Look-alike field','"PRODUCTION DOCUMENTATION LEVEL: III" sits right under "TIER: 2" on the traveler and is a likely mix-up. The hotspot gives it its own feedback. Should the course explain that field, or leave it for Reading the Traveler?'),
+   F('bld','Build note · Numerals','The course uses Roman numerals (Tier I, II, III); the traveler prints "TIER: 2" and the KC says "TIER 1". The feedback says both forms mean the same.'),
+   F('bld','Build note · Sort statements','The storyboard does not list the four statements. They were drafted from the on-screen text and need SME approval.'),
+   F('bld','Build note · As-built layout','The as-built drawing and its characteristic table are illustrative. Swap in a GTC as-built drawing or operator claim sheet (TRAINING SAMPLE) when available.')]},
+ 'COD-KC1':{time:'1 min 30 sec',obj:'O2, O3, O5',activity:'Three scenario questions. Two attempts per question, then the correct answer is shown. Not graded.',visual:'Not applicable.',dev:'Avoids the yellow-cone question already used in Flow of Work (FOW-KC2). Question and feedback text are as written in the storyboard.',
+  assets:[],
+  flags:[F('med','Depends on Q01','Question 3, option B feedback ("Never move or change a cone or tag") depends on the answer to Q01 (COD-02).')]},
+ 'COD-07':{time:'30 sec',obj:'All',activity:'None. Kirkpatrick Level 1 survey on exit.',visual:'The aisle from COD-01, now with each part labeled with its status.',dev:'Kirkpatrick L1 survey link on exit. The tries summary is for the learner only and is not recorded.',
+  assets:[['Labeled aisle (illustration)','stand'],['Kirkpatrick L1 survey link','need']],
+  flags:[F('bld','Build note · PD-230','The five PD-230 Section 2 lines are listed by topic, as in the storyboard. Swap in the exact PD-230 line wording if you want it to match the sign-off sheet.')]}
+};
+
+/* ---------- screens ---------- */
+const SCREENS=[
+{id:'cover',mod:'Start',time:'',title:'Code',auto:true,render(){return `<section class="cover fadein"><div class="bg" aria-hidden="true">${aisleSVG('cv',{slice:true})}</div>
+<div class="logos"><div class="wm"><b>GTC</b><span>GENERAL TOOL COMPANY</span></div><span class="rc">Review copy v0.1 · 11/12/2026</span></div>
+<div class="cover-inner"><div class="eyebrow">GTC Machinist Program · Level 1 · Step A · Documentation &amp; Paperwork</div>
+<h1>Code</h1><div class="h1sub">Quality cones, tags and tiers</div>
+<p class="sub">Read a part's status at a glance, and know what to do when a part is on hold or does not conform.</p>
+<div class="meta"><div><b>Time</b><span>About 12 minutes</span></div><div><b>For</b><span>New-hire machinists, both veins</span></div><div><b>Prepares you for</b><span>Five PD-230 Section 2 lines</span></div><div><b>Sources</b><span>GTC-QA-002 · GTC-QA-001</span></div></div>
+<div class="actions"><button class="btn" id="start">Start the course</button></div></div></section>
+<div class="row2" style="margin-top:22px"><div class="panel"><h3>By the end you will be able to</h3><ul class="objs">
+<li><b>O1</b>Name the five quality cone colors and what each one means.</li>
+<li><b>O2</b>Explain what a red cone and Hold Tag mean, and what to do when you find a non-conformance.</li>
+<li><b>O3</b>Explain how a First Article is tagged and approved before the rest of the lot runs, and what a frozen process is.</li>
+<li><b>O4</b>Recognize the Accepted tag and the material identification tag, and what to check on each.</li>
+<li><b>O5</b>Explain the three quality tiers and what each one requires of the machinist.</li></ul></div>
+<div class="panel"><h3>How this course works</h3><div class="onscreen" style="font-size:15px"><p>Seven short screens and one knowledge check. Each screen has a quick activity; finish it to move on.</p>
+<p>The knowledge check is not graded. You get two tries per question.</p><p>After the course, you show these skills on real jobs over weeks 1 to 4. Your trainer and supervisor initial the matching PD-230 Section 2 lines.</p></div></div></div>`},
+ mount(){$('#start').onclick=()=>go(1)}},
+
+{id:'COD-01',mod:'Module A: Start here',time:'45 sec',title:'Read a part at a glance',auto:true,render(){return `<section class="screen split fadein">
+<div class="mediacol"><div class="media">${aisleSVG('a1',{})}</div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen">
+<p>Walk any aisle at GTC and you will see colored cones on parts and tags tied to them.</p>
+<p>They are a <strong>code</strong>. Without reading a single document, they tell you whether a part is waiting, good, on hold, bad or about to move.</p>
+<p>In this course: the <strong>five cones</strong>, the <strong>four tags</strong>, and the <strong>three quality tiers</strong>.</p></div>
+${narr('Dana passes five parts on her way to her machine, each with a different cone. By the end of this course, she will know what every one of them means.')}</div></section>`}},
+
+{id:'COD-02',mod:'Module B: Cones',time:'2 min',title:'The five quality cones',render(){
+ const legend=`<div class="legend">${ORDER.map(c=>`<div class="lc">${coneSVG(c,58)}<b>${CONES[c].name.toUpperCase()}</b><span>${CONES[c].status}</span><small>${CONES[c].detail}</small></div>`).join('')}</div>`;
+ let media,act;
+ if(S.c02===0){media=`${legend}<div class="warnbox"><b>Yellow, no tag.</b> Supervisors and Manufacturing Engineers may place a yellow cone for any number of reasons, with no tag. They remove it once they have the information.</div>`;
+  act=`<div class="panel"><div class="steps-lbl">Activity · 2 parts</div><p>1. Sort the five cones onto their meanings.<br>2. Check the five parts in Dana's aisle.</p><div class="actions"><button class="btn" id="c02go">Start the cone sort</button></div></div>`}
+ else if(S.c02===1){const tray=shuffle(ORDER,7).filter(c=>!S.sortPlaced[c]);const slots=shuffle(ORDER,3);
+  media=`<div class="sortbox"><div class="steps-lbl">Cones · drag one onto its meaning, or tap a cone and then tap the meaning</div>
+  <div class="tray" id="tray">${tray.map(c=>`<button class="dcone" data-c="${c}" aria-label="${CONES[c].name} cone">${coneSVG(c,50)}</button>`).join('')}</div>
+  <div class="slots">${slots.map(c=>`<button class="slot ${S.sortPlaced[c]?'ok':''}" data-c="${c}"><span class="drop">${S.sortPlaced[c]?coneSVG(c,44):''}</span><span class="stx"><b>${CONES[c].status}</b><small>${CONES[c].detail}</small></span></button>`).join('')}</div></div>`;
+  act=`<div class="panel"><div class="steps-lbl">Activity 1 of 2 · Cone sort</div><p>Match each cone to what it means.</p><div class="fb" id="fb" aria-live="polite"></div></div>`}
+ else {media=`<div class="media" id="aislemedia">${aisleSVG('a2',{num:true})}${AISLE.map((a,i)=>`<button class="hs ${S.aisle[i]?'seen':''} ${S.aisleAct===i?'act':''}" data-i="${i}" style="left:${a.x/12}%;top:63%" aria-label="Part ${i+1}, ${a.n}, ${CONES[a.c].name} cone">${i+1}</button>`).join('')}</div>`;
+  const n=Object.keys(S.aisle).length;let q='<p class="hint">Click a numbered part to check it.</p>';
+  if(S.aisleAct!==null){const a=AISLE[S.aisleAct];const opts=shuffle(ORDER,S.aisleAct+11);
+   q=`<p><b>Part ${S.aisleAct+1}: ${a.n}.</b> It has a <b style="color:${CONES[a.c].fill==='#efefea'?'#fff':CONES[a.c].fill}">${CONES[a.c].name.toLowerCase()}</b> cone. What is it waiting for?</p>
+   <div class="opts">${opts.map((c,k)=>`<button class="opt ${S.aisle[S.aisleAct]&&c===a.c?'good':''}" data-c="${c}" ${S.aisle[S.aisleAct]?'disabled':''}><span class="l">${'ABCDE'[k]}</span><span>${CONES[c].wait}</span></button>`).join('')}</div><div class="fb" id="fb" aria-live="polite"></div>`}
+  act=`<div class="panel"><div class="steps-lbl">Activity 2 of 2 · Dana's aisle · ${n} of 5 checked</div>${q}</div>`}
+ return `<section class="screen split fadein"><div class="mediacol">${media}</div><div class="side">${eyebrow(this)}<h2>${this.title}</h2>
+ ${S.c02===0?'':`<div class="onscreen"><p>Five colors, five meanings. <strong>Green</strong> is the only one that says the part is good to go.</p></div>`}
+ ${narr('Five colors, five meanings. Green is the only color that says the part is good to go. Yellow and red both mean leave it alone and ask.')}${act}</div></section>`},
+ mount(){
+  if(S.c02===0){$('#c02go').onclick=()=>{S.c02=1;render(true)}}
+  else if(S.c02===1){conesDnD()}
+  else{$$('#aislemedia .hs').forEach(b=>b.onclick=()=>{S.aisleAct=+b.dataset.i;render();$('.side .panel').scrollIntoView({block:'nearest',behavior:'smooth'})});
+   $$('.side .opt').forEach(b=>b.onclick=()=>{const a=AISLE[S.aisleAct];tri('aisle');
+    if(b.dataset.c===a.c){S.aisle[S.aisleAct]=true;render();const fb=$('#fb');fb.className='fb good';fb.textContent=`Right. ${CONES[a.c].name}: ${CONES[a.c].status.toLowerCase()}.`+(Object.keys(S.aisle).length===5?' All five parts checked.':' Pick another part.');if(Object.keys(S.aisle).length===5)unlock('COD-02')}
+    else{b.classList.add('bad');b.disabled=true;const fb=$('#fb');fb.className='fb bad';fb.textContent=`Not quite. That describes a ${CONES[b.dataset.c].name.toLowerCase()} cone. Try again.`}})}
+  if(Object.keys(S.aisle).length===5)unlock('COD-02')}},
+
+{id:'COD-03',mod:'Module B: Cones',time:'1 min 30 sec',title:'Red cone, Hold Tag and the NMR',render(){
+ const opts=[['Fix it now.','bad','Not on your own. Never rework or repair a non-conformance without an approved rework or repair plan (QA-001). Tell your supervisor first.'],
+  ['Tell your supervisor now.','good','Right. Report it right away. The sooner your supervisor knows, the better the chance of finding the cause and fixing it for good.'],
+  ['Finish the lot, then report.','bad','Waiting can turn one bad part into a bad lot. Tell your supervisor immediately.']];
+ return `<section class="screen split fadein"><div class="mediacol"><div class="media">${heldSceneSVG('h3')}</div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><ul>
+<li><strong>Quality</strong> generates a <strong>Hold Tag</strong> to put a hold on a non-conforming part; it goes with a <strong>red cone</strong>.</li>
+<li>The Hold Tag records the job, part, reason, quantity, inspector and NMR number.</li>
+<li>A <strong>Non-conforming Material Report (NMR)</strong> documents the non-conformance. It gathers facts for a fix, not to point fingers.</li></ul></div>
+<div class="alert"><b>Found a non-conformance?</b> Tell your supervisor immediately. Never rework or repair it without an approved rework or repair plan (GTC-QA-001).</div>
+${narr('Finding a problem early is a good thing. The sooner your supervisor knows, the better the chance of finding the cause and fixing it for good.')}
+<div class="panel"><div class="steps-lbl">Your call</div><p><b>You find a feature out of tolerance on a part you just machined. What first?</b></p>
+<div class="opts">${opts.map((o,k)=>`<button class="opt ${S.c03===true&&o[1]==='good'?'good':''}" data-k="${k}" ${S.c03===true?'disabled':''}><span class="l">${'ABC'[k]}</span><span>${o[0]}</span></button>`).join('')}</div>
+<div class="fb ${S.c03===true?'good':''}" id="fb" aria-live="polite">${S.c03===true?opts[1][2]:''}</div></div></div></section>`},
+ mount(){const msgs=[...$$('.opt')].map((b,k)=>k);
+  $$('.opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;tri('c03');const fbt=['Not on your own. Never rework or repair a non-conformance without an approved rework or repair plan (QA-001). Tell your supervisor first.','Right. Report it right away. The sooner your supervisor knows, the better the chance of finding the cause and fixing it for good.','Waiting can turn one bad part into a bad lot. Tell your supervisor immediately.'][k];
+   const fb=$('#fb');if(k===1){S.c03=true;$$('.opt').forEach(o=>o.disabled=true);b.classList.add('good');fb.className='fb good';fb.textContent=fbt;unlock('COD-03')}else{b.classList.add('bad');b.disabled=true;fb.className='fb bad';fb.textContent=fbt+' Try again.'}});
+  if(S.c03===true)unlock('COD-03')}},
+
+{id:'COD-04',mod:'Module C: Tags',time:'2 min',title:'First Article: the blue tag',render(){
+ const pool=shuffle(SEQ,5).filter(s=>!S.seq.includes(s));
+ return `<section class="screen split fadein"><div class="mediacol">
+<div class="fig"><div class="cap">First Article blue tag</div>${faTagSVG()}</div>
+<div class="row2"><div class="asset"><span class="tagl">Asset needed · Business Systems Engineer</span><h4>Egennix: First Article button</h4><p>A clean screen capture of the First Article button in Egennix goes here. Inspection activates it to mark the First Article established.</p><span class="mock-btn">[ First Article ]</span></div>
+<div class="fig"><div class="cap">Program header · GTC-PD-203 style</div><pre class="code"><span class="c">% 52310-01 G70 * ; UPLOADED 11/12/2026 09:14 AM</span>
+<span class="hl">; FROZEN PROCESS. NO CHANGES ALLOWED !</span>
+<span class="c">; MACHINE : TRAINING SAMPLE
+; DNC NO 52310-01.1  PRINT TS-4417
+; DWG REV C  OPER 30  PGM REV -</span></pre></div></div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><ul>
+<li>The first part of a lot is tagged as the <strong>First Article</strong>, and that ID stays with it through the process.</li>
+<li>The First Article must be <strong>approved</strong> for the operation before the rest of the lot continues.</li>
+<li>Its conformance is recorded on the <strong>as-built drawing</strong> or the operator's claim sheet.</li>
+<li>Inspection marks it established by activating the First Article button in <strong>Egennix</strong> and stamping the back of the tag.</li></ul></div>
+<div class="warnbox"><b>Why:</b> the First Article proves a good, repeatable process. That process is then <b>frozen</b>; that is why a program header may read "FROZEN PROCESS. NO CHANGES ALLOWED."</div>
+${narr('The First Article is your proof that the setup is right. Nothing else in the lot runs until it is approved. Once it is, the process is frozen, so every part after it is made the same way.')}
+<div class="panel"><div class="steps-lbl">Put the steps in order</div><p class="hint">Tap the steps in the order they happen. Tap a filled slot to clear it.</p>
+<div class="seq">${[0,1,2,3].map(k=>`<button class="seqslot ${S.seq[k]?'filled':''} ${S.seqOk?'right':''}" data-k="${k}" ${S.seqOk?'disabled':''}><i>${k+1}</i><span>${S.seq[k]||''}</span></button>`).join('')}</div>
+<div class="pool">${pool.map(s=>`<button data-s="${s}">${s}</button>`).join('')}</div>
+<div class="actions"><button class="btn" id="seqchk" ${S.seq.length===4&&!S.seqOk?'':'disabled'}>Check the order</button></div>
+<div class="fb ${S.seqOk?'good':''}" id="fb" aria-live="polite">${S.seqOk?'Right. The rest of the lot waits until the First Article is approved.':''}</div></div></div></section>`},
+ mount(){
+  $$('.pool button').forEach(b=>b.onclick=()=>{const i=S.seq.findIndex(x=>!x);if(i>=0)S.seq[i]=b.dataset.s;else S.seq.push(b.dataset.s);render()});
+  $$('.seqslot').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(S.seq[k]){S.seq[k]=undefined;render()}});
+  const c=$('#seqchk');c.onclick=()=>{tri('seq');const wrong=S.seq.map((s,k)=>s!==SEQ[k]);
+   if(!wrong.some(Boolean)){S.seqOk=true;render();unlock('COD-04')}else{$$('.seqslot').forEach((el,k)=>el.classList.add(wrong[k]?'wrong':'right'));const fb=$('#fb');fb.className='fb bad';fb.textContent='Not yet. The red steps are out of place. Remember: nothing else runs until Quality approves the First Article. Tap a red step to clear it and try again.'}};
+  if(S.seqOk)unlock('COD-04')}},
+
+{id:'COD-05',mod:'Module C: Tags',time:'1 min 15 sec',title:'Accepted tags and material ID tags',render(){
+ const st=S.idtag;
+ return `<section class="screen split fadein"><div class="mediacol">
+<div class="fig"><div class="cap">Accepted tag · finished part released by Quality</div>${acceptedSVG()}</div>
+<div class="fig"><div class="cap">Spot the problem · which material would you not use?</div>
+<div class="router"><span><b>TRAVELER</b> Job 71245-0010</span><span><b>MATERIAL</b> MAT-174PH-2515</span><span>17-4PH SS 2.50" X 1.50"</span></div>
+<div class="idtags">${['A','B'].map(l=>`<button class="tagbtn ${st&&l==='B'?'good':''} ${st==='A'&&false?'bad':''}" data-l="${l}" ${st==='done'?'disabled':''}>${matTagSVG(l==='A',l)}<span class="tl">Tag ${l}</span></button>`).join('')}</div></div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><ul>
+<li><strong>Accepted tag</strong> (green tag or sticker): on every Tier I and II job, all parts are submitted to Quality. The Accepted tag is the final review and releases the part. <b>No tag, no release.</b></li>
+<li><strong>Material identification tag:</strong> attached by Receiving when material arrives and is entered in Egennix inventory.</li>
+<li>Before you use material on a job, check the tag has <strong>Quality's inspection stamp</strong> and the <strong>part number matches the router</strong>.</li></ul></div>
+<div class="warnbox">The ID tag is often called the "green tag," but its color changes each year. Missing stamp or wrong data? Tell your supervisor.</div>
+${narr('Two tags, two checks. Accepted means Quality has released the finished part. The ID tag means the material is what the router says it is.')}
+<div class="panel"><div class="steps-lbl">Spot the problem</div><p>Compare both material ID tags with the traveler. Click the one you would <b>not</b> use.</p><div class="fb ${st==='done'?'good':''}" id="fb" aria-live="polite">${st==='done'?'Right. Tag B has no Quality inspection stamp. Do not use it; tell your supervisor.':''}</div></div></div></section>`},
+ mount(){$$('.tagbtn').forEach(b=>b.onclick=()=>{tri('idtag');const fb=$('#fb');
+  if(b.dataset.l==='B'){S.idtag='done';$$('.tagbtn').forEach(x=>x.disabled=true);b.classList.add('good');fb.className='fb good';fb.textContent='Right. Tag B has no Quality inspection stamp. Do not use it; tell your supervisor.';unlock('COD-05')}
+  else{b.classList.add('bad');fb.className='fb bad';fb.textContent='Tag A has the Quality stamp, and its part number matches the router. That one is good to use. Look again at Tag B.';setTimeout(()=>b.classList.remove('bad'),1600)}});
+  if(S.idtag==='done')unlock('COD-05')}},
+
+{id:'COD-06',mod:'Module D: Quality tiers',time:'2 min 30 sec',title:'The three quality tiers',render(){
+ const sorted=Object.keys(S.tierSort).length;
+ return `<section class="screen split fadein"><div class="mediacol">
+<div class="fig"><div class="cap">Step 1 · Find the Tier on the traveler</div><div class="trav ${S.tierFound?'found':''}" id="trav">${travelerSVG()}</div><span class="scrollhint">Swipe sideways to see the whole traveler.</span></div>
+<div class="tiers">
+<div class="tier t1"><h3>Tier I <small>Most demanding</small></h3><div class="r">${IC.you}<span><b>You</b> inspect every characteristic you generate and record it on the as-built drawing.</span></div><div class="r">${IC.qa}<span><b>Quality</b> then inspects 100% and records too. That is 200% inspection.</span></div><div class="r">${IC.doc}<span>At final inspection, Quality records results on an <b>Inspection Report</b>.</span></div></div>
+<div class="tier t2"><h3>Tier II</h3><div class="r">${IC.you}<span><b>You</b> record all characteristics on the as-built drawing as you generate them.</span></div><div class="r">${IC.qa}<span><b>Quality</b> verifies in process every characteristic with a tolerance of .010" or less.</span></div></div>
+<div class="tier t3"><h3>Tier III <small>Least demanding</small></h3><div class="r">${IC.you}<span><b>You</b> verify and record the characteristics you generate. Little or no documentation.</span></div><div class="r">${IC.qa}<span><b>Quality:</b> no intervention unless a First Article is required on a multi-part job.</span></div></div></div>
+<div class="fig"><div class="cap">What recording looks like · as-built drawing for this Tier 2 job</div><div class="abw">${asBuiltSVG()}</div></div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>The <strong>Tier</strong> is printed on the traveler. It sets how much inspection and documentation the job needs (GTC-QA-001).</p></div>
+<div class="warnbox">On Tier I and II, First Articles always get 200% inspection. Prints are never updated on the floor.</div>
+${narr('Tier I is the most demanding, Tier III the least. But on every tier, you check and record what you make, and your stamp says it is right.')}
+<div class="panel"><div class="steps-lbl">Step 1 · Hotspot</div><p>Click the line on the traveler that tells you the quality Tier.</p><div class="fb ${S.tierFound?'good':''}" id="fb1" aria-live="polite">${S.tierFound?'Found it. TIER: 2. The traveler prints the number (2); the course writes it as Tier II. Same thing.':''}</div></div>
+<div class="panel ${S.tierFound?'':'locked'}" id="sortp"><div class="steps-lbl">Step 2 · Sort · ${sorted} of 4 done</div><p>Which tier does each statement describe?</p>
+<div class="stl">${TIER_ST.map((s,k)=>`<div class="st ${S.tierSort[k]?'ok':''}"><span>${s.t}</span><div class="bt">${['I','II','III'].map(t=>`<button data-k="${k}" data-t="${t}" ${S.tierSort[k]?'disabled':''} class="${S.tierSort[k]&&t===s.a?'good':''}" aria-label="Tier ${t}">${t}</button>`).join('')}</div></div>`).join('')}</div>
+<div class="fb ${sorted===4?'good':''}" id="fb2" aria-live="polite">${sorted===4?'All four sorted.':''}</div></div></div></section>`},
+ mount(){
+  const fbz={job:'That is the job number. Look lower, in the notes block.',rev:'That is the drawing revision. The Tier is in the notes block below.',qty:'That is the lot quantity. Look for the word TIER.',pdl:'Close, but that is the production documentation level, not the quality Tier. Look one line up.',mat:'That is the material line. Look for the word TIER.'};
+  $$('#trav .tz').forEach(z=>{const h=()=>{const id=z.dataset.z;tri('tierhs');const fb=$('#fb1');
+   if(id==='tier'){S.tierFound=true;render();if(Object.keys(S.tierSort).length===4)unlock('COD-06')}else{z.classList.add('miss');setTimeout(()=>z.classList.remove('miss'),900);fb.className='fb bad';fb.textContent=fbz[id]}};
+   z.addEventListener('click',h);z.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();h()}})});
+  $$('#sortp .bt button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;tri('tiersort');const fb=$('#fb2');
+   if(b.dataset.t===TIER_ST[k].a){S.tierSort[k]=true;const y=window.scrollY;render();window.scrollTo(0,y);if(Object.keys(S.tierSort).length===4&&S.tierFound)unlock('COD-06')}
+   else{b.classList.add('bad');b.disabled=true;fb.className='fb bad';fb.textContent=`Not Tier ${b.dataset.t}. Check the three columns and try again.`}});
+  if(S.tierFound&&Object.keys(S.tierSort).length===4)unlock('COD-06')}},
+
+{id:'COD-KC1',mod:'Module E: Check and debrief',time:'1 min 30 sec',title:'Knowledge check: three scenarios',render(){
+ const qi=S.kcQ,q=KC[qi],st=S.kc[qi];const resolved=st.ok||st.shown;
+ return `<section class="kc fadein">${eyebrow(this)}<div class="qdots">${KC.map((_,k)=>`<span class="${k===qi?'now':S.kc[k].ok?'ok':S.kc[k].shown?'shown':''}"></span>`).join('')}</div>
+<div class="prompt-band"><div class="steps-lbl">Question ${qi+1} of 3 · two tries · not graded</div><h2>${q.q}</h2></div>
+<div class="opts">${q.o.map((o,k)=>{const tried=(st.tried||[]).includes(k);const cls=(resolved&&k===q.a)?'good':tried?'bad':'';return `<button class="opt ${cls}" data-k="${k}" ${resolved||tried?'disabled':''}><span class="l">${'ABC'[k]}</span><span>${o[0]}${(tried||(resolved&&k===q.a))?`<br><small style="color:var(--muted)">${o[1]}</small>`:''}</span></button>`}).join('')}</div>
+<div class="fb ${st.ok?'good':st.shown?'':'bad'}" aria-live="polite">${st.ok?'Correct.':st.shown?'The correct answer is shown above in green.':(st.tried||[]).length?'Not quite. One more try.':''}</div>
+<div class="actions">${resolved&&qi<2?'<button class="btn" id="nextq">Next question</button>':''}${resolved&&qi===2?'<span class="hint">All three done. Continue to the debrief.</span>':''}</div></section>`},
+ mount(){const q=KC[S.kcQ],st=S.kc[S.kcQ];
+  $$('.kc .opt').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;tri('kc'+(S.kcQ+1));st.tried=st.tried||[];
+   if(k===q.a)st.ok=true;else{st.tried.push(k);if(st.tried.length>=2)st.shown=true}render();if(S.kcQ===2&&(st.ok||st.shown))unlock('COD-KC1')});
+  const n=$('#nextq');if(n)n.onclick=()=>{S.kcQ++;render()};
+  if(S.kc[2].ok||S.kc[2].shown)unlock('COD-KC1')}},
+
+{id:'COD-07',mod:'Module E: Check and debrief',time:'30 sec',title:'Debrief: you can read the code',auto:true,last:true,render(){
+ const rows=[['Cone sort','sort'],['Dana\'s aisle (5 parts)','aisle'],['Red cone choice','c03'],['First Article order','seq'],['Spot the ID tag','idtag'],['Find the Tier','tierhs'],['Tier sort (4)','tiersort'],['Check question 1','kc1'],['Check question 2','kc2'],['Check question 3','kc3']];
+ const min={aisle:5,tiersort:4,sort:5};
+ return `<section class="screen split fadein"><div class="mediacol"><div class="media">${aisleSVG('a7',{labels:true})}</div>
+<div class="recap"><div><b>5</b><span>cones</span></div><div><b>4</b><span>tags</span></div><div><b>3</b><span>tiers</span></div></div></div>
+<div class="side">${eyebrow(this)}<h2>${this.title}</h2><div class="onscreen"><p>Five cones, four tags, three tiers. You can now read a part's status at a glance.</p>
+<p><strong>Next:</strong> show your trainer on a real job. Your supervisor initials the PD-230 Section 2 lines as you go:</p>
+<ol class="pd"><li>The three tiers</li><li>The frozen process</li><li>Cones and tags</li><li>Processing a First Article</li><li>Non-conforming parts</li></ol></div>
+${narr('Now the cones and tags in the aisle mean something. Keep reading them every day.')}
+<div class="panel"><div class="steps-lbl">How it went</div><table class="tries">${rows.map(([n,k])=>{const t=S.tries[k]||0,m=min[k]||1;const sh=k.startsWith('kc')&&S.kc[+k[2]-1].shown;return `<tr><td>${n}</td><td class="${!t?'':sh?'more':t<=m?'first':'more'}">${!t?'skipped':sh?'answer shown':t<=m?'first try':(t-m)+' extra '+(t-m===1?'try':'tries')}</td></tr>`}).join('')}</table></div>
+<div class="actions"><button class="btn" id="survey">Take the 1-minute survey</button><button class="btn ghost" id="restart">Restart the course</button></div>
+<div class="hint" id="svh"></div></div></section>`},
+ mount(){$('#survey').onclick=()=>{$('#svh').textContent='Survey link placeholder. The Kirkpatrick Level 1 survey will be configured in the GTC LMS before launch.'};$('#restart').onclick=()=>{reset();go(0)}}}
+];
+
+/* ---------- cone drag and drop (pointer drag, or tap a cone then tap a meaning) ---------- */
+function conesDnD(){const ghost=$('#ghost');let sel=null,drag=null;
+ const place=(btn,slot)=>{const c=btn.dataset.c;tri('sort');const fb=$('#fb');
+  if(slot.classList.contains('ok'))return;
+  if(slot.dataset.c===c){S.sortPlaced[c]=true;slot.classList.add('ok');$('.drop',slot).innerHTML=coneSVG(c,44);btn.remove();sel=null;fb.className='fb good';fb.textContent=`Right. ${CONES[c].name}: ${CONES[c].status.toLowerCase()}.`;
+   if(Object.keys(S.sortPlaced).length===5){fb.textContent='All five cones placed. Next, check the parts in Dana\'s aisle.';setTimeout(()=>{S.c02=2;render(true)},1100)}}
+  else{slot.classList.remove('no');void slot.offsetWidth;slot.classList.add('no');fb.className='fb bad';fb.textContent=`Not that one. A ${CONES[c].name.toLowerCase()} cone does not mean "${CONES[slot.dataset.c].status.toLowerCase()}". Try again.`}
+  $$('.dcone').forEach(b=>b.classList.remove('sel'))};
+ $$('.dcone').forEach(btn=>{
+  btn.addEventListener('pointerdown',e=>{drag={btn,x:e.clientX,y:e.clientY,moved:false,id:e.pointerId};btn.setPointerCapture(e.pointerId)});
+  btn.addEventListener('pointermove',e=>{if(!drag||drag.btn!==btn)return;if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){drag.moved=true;ghost.innerHTML=coneSVG(btn.dataset.c,56);ghost.style.display='block';btn.style.opacity=.3}
+   if(drag.moved){ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';const t=document.elementFromPoint(e.clientX,e.clientY);$$('.slot').forEach(s=>s.classList.toggle('hot',!!t&&s.contains(t)&&!s.classList.contains('ok')))}});
+  const end=e=>{if(!drag||drag.btn!==btn)return;const d=drag;drag=null;ghost.style.display='none';btn.style.opacity='';$$('.slot').forEach(s=>s.classList.remove('hot'));
+   if(d.moved){btn.dataset.justDragged='1';const t=document.elementFromPoint(e.clientX,e.clientY);const slot=t&&t.closest('.slot');if(slot)place(btn,slot)}};
+  btn.addEventListener('pointerup',end);btn.addEventListener('pointercancel',end);
+  btn.addEventListener('click',()=>{if(btn.dataset.justDragged){delete btn.dataset.justDragged;return}
+   $$('.dcone').forEach(b=>b.classList.toggle('sel',b===btn&&sel!==btn));sel=sel===btn?null:btn;
+   if(sel){const fb=$('#fb');fb.className='fb';fb.textContent=`${CONES[btn.dataset.c].name} cone selected. Now tap its meaning.`}})});
+ $$('.slot').forEach(slot=>slot.addEventListener('click',()=>{if(sel)place(sel,slot);else if(!slot.classList.contains('ok')){const fb=$('#fb');fb.className='fb';fb.textContent='Pick a cone first, then its meaning.'}}))}
+
+/* ---------- render / nav ---------- */
+function notesHTML(sc){const n=NOTES[sc.id];if(!n)return '';
+ const pill={built:['p-built','Built'],stand:['p-stand','Stand-in'],need:['p-need','Asset needed']};
+ return `<section class="rev" aria-label="Reviewer notes"><div class="rev-head"><h3>Reviewer notes · <span class="id">${sc.id}</span></h3>
+<label class="jump">Jump to <select id="jumpsel">${SCREENS.map((s,k)=>`<option value="${k}" ${k===S.i?'selected':''}>${s.id==='cover'?'Cover':s.id+' '+s.title}</option>`).join('')}</select></label></div>
+<div class="rev-grid"><div><b class="k">Screen</b><span class="id">${sc.id}</span></div><div><b class="k">Module</b><span>${sc.mod}</span></div><div><b class="k">Time</b><span>${n.time}</span></div><div><b class="k">Objective</b><span>${n.obj}</span></div></div>
+<div class="rev-long"><div><b class="k">Activity (storyboard)</b><span>${n.activity}</span></div><div><b class="k">Visual brief (storyboard)</b><span>${n.visual}</span></div><div><b class="k">Developer notes and sources</b><span>${n.dev}</span></div></div>
+${n.assets.length?`<div><b class="k">Graphics on this screen</b><ul class="assets">${n.assets.map(([a,s])=>`<li><span class="pill ${pill[s][0]}">${pill[s][1]}</span>${a}</li>`).join('')}</ul></div>`:''}
+${n.flags.length?`<div class="flags"><b class="k">Flagged for review</b>${n.flags.map(f=>`<div class="flag ${f.lvl}"><b>${f.t}</b>${f.b}</div>`).join('')}</div>`:''}
+<div class="legendflags"><span>Red: high priority GTC question</span><span>Amber: medium</span><span>Gray: low</span><span>Blue: build note from the developer</span></div></section>`}
+function navHTML(sc){if(sc.id==='cover')return '';const ok=S.done[sc.id]||sc.auto;
+ return `<div class="navbar"><button class="btn ghost" id="back">Back</button><div class="r">${ok||sc.last?'':'<span class="hint" id="lockhint">Finish the activity to continue.</span>'}${sc.last?'':`<button class="btn" id="next" ${ok||S.rev?'':'disabled'}>${S.rev&&!ok?'Skip (reviewer)':'Continue'}</button>`}</div></div>`}
+function updateTrack(){const t=$('#track');t.innerHTML=SCREENS.map((s,k)=>`<button class="${k===S.i?'now':(S.done[s.id]||k<S.i)?'done':''}" data-k="${k}" aria-label="${s.id}" ${S.rev?'':'tabindex="-1"'}></button>`).join('');
+ $$('#track button').forEach(b=>b.onclick=()=>{if(S.rev)go(+b.dataset.k)});
+ const sc=SCREENS[S.i];$('#tlabel').textContent=sc.id==='cover'?'Start':`${sc.id} · ${S.i} of ${SCREENS.length-1}`}
+function render(top){const sc=SCREENS[S.i];if(sc.auto)S.done[sc.id]=true;
+ app.innerHTML=sc.render()+navHTML(sc)+(S.rev?notesHTML(sc):'');
+ if(!top)$$('.fadein',app).forEach(e=>e.classList.remove('fadein'));
+ if(sc.mount)sc.mount();
+ const b=$('#back');if(b)b.onclick=()=>go(S.i-1);const n=$('#next');if(n)n.onclick=()=>go(S.i+1);
+ const j=$('#jumpsel');if(j)j.onchange=()=>go(+j.value);
+ updateTrack();if(top)window.scrollTo({top:0})}
+function go(k){S.i=Math.max(0,Math.min(SCREENS.length-1,k));render(true)}
+$('#revt').onclick=()=>{S.rev=!S.rev;$('#revt').setAttribute('aria-pressed',S.rev);document.body.classList.toggle('revmode',S.rev);render()};
+reset();
+if(location.hash.includes('review')){S.rev=true;$('#revt').setAttribute('aria-pressed','true');document.body.classList.add('revmode')}
+render(true);
+
+</script>
+</body></html>
