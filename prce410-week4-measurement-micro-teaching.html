@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 410 Week 4: The 5-Minute Micro-Teaching Studio: Literature to Measurement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 410 &middot; Week 4 Application Practice</p>
+<h1>The 5-Minute Micro-Teaching Studio: Literature to Measurement</h1>
+<p>Practice the developmental progression of measurement (direct comparison, non-standard units, and standard units) by responding to a simulated child's realistic misconceptions, using children's literature as the launch.</p>
+<div class="meta"><span class="pill">Week 4</span><span class="pill">About 30 minutes</span><span class="pill">Ungraded practice</span><span class="pill">5 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: Measurement and Data; integrating children's literature; SMP 6, 7; TPE 7.5i, 7.6, 7.9, 8.2</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 410 Counting, Comparing, Constructing: Math in Early Childhood</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week4", "title": "The 5-Minute Micro-Teaching Studio: Literature to Measurement", "course": "PRCE 410", "stations": [{"title": "Framing: Three Phases of Measurement", "lead": "<p>In a live triad, three candidates each teach one phase while peers role-play young learners. Here, a simulated child named Sam plays the learner, and you play all three teachers.<\/p>", "comps": [{"type": "sort", "id": "w4_phases", "prompt": "Match each activity to its measurement phase.", "cats": ["Direct comparison", "Non-standard units", "Standard units"], "optional": false, "items": [{"t": "Stand back to back to see who is taller.", "a": 0, "w": "", "hint": ""}, {"t": "Measure the rug with linking cubes.", "a": 1, "w": "", "hint": ""}, {"t": "Use a ruler to measure a book in inches.", "a": 2, "w": "", "hint": ""}, {"t": "Line up two snakes made of clay to see which is longer.", "a": 0, "w": "", "hint": ""}, {"t": "Measure the table with paper clips.", "a": 1, "w": "", "hint": ""}, {"t": "Read How Big Is a Foot? and then measure with a ruler.", "a": 2, "w": "", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "sort", "id": "w4_books", "prompt": "Which phase does each book launch best?", "cats": ["Direct comparison", "Moving from non-standard to standard units", "Counting, not measurement"], "optional": false, "items": [{"t": "<em>Goldilocks and the Three Bears<\/em> (big, middle-sized, small)", "a": 0, "w": "", "hint": ""}, {"t": "<em>How Big Is a Foot?<\/em> (a bed measured with different people's feet)", "a": 1, "w": "", "hint": ""}, {"t": "<em>Mouse Count<\/em> (a snake collects mice in a jar)", "a": 2, "w": "Mouse Count is a counting book. It is great for number sense, not measurement.", "hint": ""}], "hint": null, "after": null, "heading": null}], "short": "Framing"}, {"title": "Round 1: Direct Comparison", "lead": "<p>You are Teacher A. Sam compares two ribbons.<\/p>", "comps": [{"type": "custom", "id": "align", "summary": "Direct comparison demo:", "heading": null, "optional": false}, {"type": "mc", "id": "w4_r1", "prompt": "What misconception did Sam show, and what is your best next move?", "options": [{"t": "Sam ignored where the ribbons start. Ask Sam to line up the ends and compare again.", "c": true, "f": "Aligning a common baseline is the key idea of direct comparison."}, {"t": "Sam needs a ruler. Hand Sam a ruler.", "c": false, "f": "Standard units come later; Sam first needs to compare fairly."}, {"t": "Sam is correct; the end that sticks out is longer.", "c": false, "f": "Length depends on both ends, not one."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Round 1"}, {"title": "Round 2: Non-Standard Units", "lead": "<p>You are Teacher B. Sam measures the same crayon several times with paper clips. Diagnose each attempt.<\/p>", "comps": [{"type": "sort", "id": "w4_clips", "prompt": "What happened in each measurement?", "cats": ["Units placed correctly", "Gaps between units", "Overlapping units", "Mixed unit sizes"], "optional": false, "items": [{"t": "<svg viewBox=\"0 0 310 90\" width=\"280\" role=\"img\" aria-label=\"Five equal paper clips placed end to end with no gaps under the crayon\" style=\"display:block;margin:4px 0\"><rect x=\"20\" y=\"22\" width=\"250\" height=\"24\" fill=\"#1f4e8c\"/><polygon points=\"270,22 292,34 270,46\" fill=\"#1f4e8c\"/><rect x=\"20\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"70\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"120\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"170\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"220\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><\/svg>", "a": 0, "w": "End to end, no gaps or overlaps: the crayon is 5 clips long.", "hint": ""}, {"t": "<svg viewBox=\"0 0 310 90\" width=\"280\" role=\"img\" aria-label=\"Four paper clips with spaces between them under the crayon\" style=\"display:block;margin:4px 0\"><rect x=\"20\" y=\"22\" width=\"250\" height=\"24\" fill=\"#1f4e8c\"/><polygon points=\"270,22 292,34 270,46\" fill=\"#1f4e8c\"/><rect x=\"20\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"82\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"144\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"206\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><\/svg>", "a": 1, "w": "Gaps make the count too small.", "hint": ""}, {"t": "<svg viewBox=\"0 0 310 90\" width=\"280\" role=\"img\" aria-label=\"Six paper clips overlapping each other under the crayon\" style=\"display:block;margin:4px 0\"><rect x=\"20\" y=\"22\" width=\"250\" height=\"24\" fill=\"#1f4e8c\"/><polygon points=\"270,22 292,34 270,46\" fill=\"#1f4e8c\"/><rect x=\"20\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"60\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"100\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"140\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"180\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"220\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><\/svg>", "a": 2, "w": "Overlaps make the count too large.", "hint": ""}, {"t": "<svg viewBox=\"0 0 310 90\" width=\"280\" role=\"img\" aria-label=\"Paper clips of different lengths placed under the crayon\" style=\"display:block;margin:4px 0\"><rect x=\"20\" y=\"22\" width=\"250\" height=\"24\" fill=\"#1f4e8c\"/><polygon points=\"270,22 292,34 270,46\" fill=\"#1f4e8c\"/><rect x=\"20\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"70\" y=\"60\" width=\"30\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"100\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"150\" y=\"60\" width=\"70\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><rect x=\"220\" y=\"60\" width=\"50\" height=\"16\" rx=\"8\" fill=\"none\" stroke=\"#262523\" stroke-width=\"3\"/><\/svg>", "a": 3, "w": "Units must all be the same size.", "hint": ""}], "hint": "Each picture shows the crayon on top and Sam's paper clips below it.", "after": null, "heading": null}, {"type": "mc", "id": "w4_r2", "prompt": "Sam asks, \"Why is the table more paper clips long than spoons long?\" What understanding does this question build?", "options": [{"t": "The smaller the unit, the more units it takes to measure the same length.", "c": true, "f": "This inverse relationship between unit size and count is a big idea of measurement."}, {"t": "The table changed length.", "c": false, "f": "The table stayed the same; the unit changed."}, {"t": "Spoons are a standard unit.", "c": false, "f": "Spoons and paper clips are both non-standard units."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Round 2"}, {"title": "Round 3: Standard Units", "lead": "<p>You are Teacher C. Sam is introduced to the ruler after reading <em>How Big Is a Foot?<\/em><\/p>", "comps": [{"type": "custom", "id": "ruler", "summary": "Ruler demo:", "heading": null, "optional": false}, {"type": "mc", "id": "w4_r3", "prompt": "Which teacher move best reinforces spatial alignment on a ruler?", "options": [{"t": "Have Sam build a paper-strip ruler from equal units and count the units, then compare it to the real ruler's 0 mark.", "c": true, "f": "Building the ruler shows that each number counts a whole space from 0."}, {"t": "Tell Sam to always subtract 1.", "c": false, "f": "A trick hides the idea and fails when objects start elsewhere."}, {"t": "Skip rulers until third grade.", "c": false, "f": "Standard units are appropriate once iteration is secure."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Round 3"}, {"title": "Synthesis", "lead": "<p>In a live triad you would document your top strategies on a shared slide. Capture yours here.<\/p>", "comps": [{"type": "text", "id": "w4_strats", "label": "Your top two strategies for correcting measurement misconceptions", "hint": null, "starter": null, "model": "1) Always align a common starting point before comparing, and ask children to check the start. 2) Let children build their own unit rulers so they see that each number counts a space from 0.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w4_why", "label": "Why can rushing children to standard rulers before they master non-standard iteration lead to persistent errors?", "hint": null, "starter": null, "model": "Without iterating units themselves, children read the ruler as a list of numbers instead of a row of equal units, so they start at 1, read the end number, or ignore gaps.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Synthesis"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.align = function(root, api){
+  const {h} = api;
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 420 160'); svg.setAttribute('width','420'); svg.setAttribute('role','img');
+  const t=document.createElementNS(NS,'title'); svg.append(t);
+  const red=document.createElementNS(NS,'rect'), blue=document.createElementNS(NS,'rect');
+  Object.entries({x:40,y:40,width:300,height:26,fill:'#A8353A'}).forEach(([a,v])=>red.setAttribute(a,v));
+  Object.entries({x:90,y:96,width:280,height:26,fill:'#1f4e8c'}).forEach(([a,v])=>blue.setAttribute(a,v));
+  const base=document.createElementNS(NS,'line'); Object.entries({x1:40,y1:20,x2:40,y2:140,stroke:'#262523','stroke-dasharray':'5 5','stroke-width':2}).forEach(([a,v])=>base.setAttribute(a,v));
+  svg.append(base, red, blue);
+  t.textContent='A red ribbon and a blue ribbon. The blue ribbon starts farther right, so its end sticks out past the red one.';
+  const speech=h('p',{class:'speech','aria-live':'polite'},'Sam: "The blue one is longer because it sticks out more!"');
+  const box=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  const btn=h('button',{class:'btn',type:'button',onclick:()=>{
+    blue.setAttribute('x',40); t.textContent='Both ribbons now start at the same line. The red ribbon is longer.';
+    speech.textContent='Sam: "Oh! When they start at the same place, the red one is longer."';
+    api.fb(box,'ok','<p><strong>Aligning the endpoints</strong> makes a fair direct comparison. Red is 300 units long and blue is 280.</p>'); btn.disabled=true; api.result('Aligned endpoints; red is longer'); api.done();
+  }},'Line up the starting ends');
+  root.append(h('div',{class:'scene'},svg,h('div',{},speech)),h('div',{class:'btnrow'},btn),box);
+};
+
+CUSTOM.ruler = function(root, api){
+  const {h} = api;
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 520 140'); svg.setAttribute('width','520'); svg.setAttribute('role','img');
+  svg.innerHTML='<title>A ruler marked 0 to 8 inches. A crayon starts at the 1 inch mark and ends at the 6 inch mark.</title>'
+   +'<rect x="20" y="70" width="480" height="50" fill="#f3e3b5" stroke="#262523" stroke-width="2"/>'
+   +[...Array(9).keys()].map(n=>`<line x1="${40+n*56}" y1="70" x2="${40+n*56}" y2="${n%1?90:98}" stroke="#262523" stroke-width="2"/><text x="${40+n*56}" y="114" text-anchor="middle" font-size="15" font-family="Arial" fill="#262523">${n}</text>`).join('')
+   +'<rect x="96" y="30" width="270" height="26" fill="#1f4e8c"/><polygon points="366,30 380,43 366,56" fill="#1f4e8c"/>';
+  const inp=h('input',{type:'number',id:'ru_len',style:'width:90px'});
+  const box=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  root.append(h('div',{class:'scene'},svg,h('p',{class:'speech'},'Sam: "It\'s 6 inches, because it ends at 6!"')),
+    h('p',{},h('label',{for:'ru_len',class:'kbd'},'How long is the crayon really (to the nearest inch)? '),inp,' ',
+      h('button',{class:'btn',type:'button',onclick:()=>{ if(+inp.value===5){api.fb(box,'ok','<p><strong>5 inches.</strong> The crayon starts at 1, not 0, so it covers the spaces from 1 to 6: five whole inches. Count the spaces, not the numbers.</p>');api.result('Crayon length 5 inches');api.done();} else api.fb(box,'no','<p>Count the inch spaces the crayon covers, starting where the crayon starts.</p>'); }},'Check')),box);
+};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce410-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

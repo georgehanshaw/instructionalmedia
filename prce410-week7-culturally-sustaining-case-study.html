@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 410 Week 7: Culturally Sustaining Math Case Study: Multilingual and Neurodiverse Learners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 410 &middot; Week 7 Application Practice</p>
+<h1>Culturally Sustaining Math Case Study: Multilingual and Neurodiverse Learners</h1>
+<p>Analyze two learner vignettes with an asset-based lens, then design a dual-language math task or a trauma-informed adaptation that opens access without lowering rigor.</p>
+<div class="meta"><span class="pill">Week 7</span><span class="pill">About 30 minutes</span><span class="pill">Ungraded practice</span><span class="pill">4 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: supporting multilingual learners; IEP/504 accommodations; trauma-informed math; SMP 1, 3; TPE 1.2, 2.7, 3.2, 3.5, 4.2, 4.3</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 410 Counting, Comparing, Constructing: Math in Early Childhood</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week7", "title": "Culturally Sustaining Math Case Study: Multilingual and Neurodiverse Learners", "course": "PRCE 410", "stations": [{"title": "Case Setup: Asset Pedagogy", "lead": "<p>\"A child's home language and neurodivergence are assets, not deficits to be remediated. Today you will adapt mathematical environments to welcome every child's full identity.\"<\/p>", "comps": [{"type": "info", "html": "<div class=\"grid2\">\n<div class=\"tile\"><h3 style=\"margin-top:0\">Mateo, 1st grade (Challenge A)<\/h3><p>Mateo arrived from Guatemala six months ago and speaks Spanish at home. He counts confidently to 50 in Spanish and solves addition with objects, but he freezes during English word problems and rarely speaks during whole-group number talks. His teacher's assessments are all in English and timed.<\/p><\/div>\n<div class=\"tile\"><h3 style=\"margin-top:0\">Lily, 3rd grade (Challenge B)<\/h3><p>Lily's family lost their home in a wildfire last year. She becomes dysregulated during timed fact tests, tears up her paper when she makes a mistake, and shuts down during competitive math games. When she feels safe, she shows strong reasoning with fractions and patterns.<\/p><\/div>\n<\/div>", "heading": null, "id": null}, {"type": "sort", "id": "w7_asset", "prompt": "Sort each statement about these learners.", "cats": ["Asset-based", "Deficit-based"], "optional": false, "items": [{"t": "Mateo can already count to 50 and add with objects in Spanish; I can build on that.", "a": 0, "w": "", "hint": ""}, {"t": "Mateo can't do math until his English improves.", "a": 1, "w": "", "hint": "Mateo's math knowledge exists in Spanish right now."}, {"t": "Lily shows strong reasoning when she feels safe, so I will design for safety.", "a": 0, "w": "", "hint": ""}, {"t": "Lily is just a behavior problem during math.", "a": 1, "w": "", "hint": "Her responses are signals about stress, not about her math ability."}, {"t": "Mateo's home language is a resource for learning math vocabulary.", "a": 0, "w": "", "hint": ""}], "hint": null, "after": null, "heading": null}], "short": "Setup"}, {"title": "Challenge A: Dual-Language Math Task (Mateo)", "lead": "<p>Complete Challenge A, Challenge B, or both.<\/p>", "comps": [{"type": "mc", "id": "w7_context", "prompt": "Choose an authentic cultural setting for a word problem.", "options": [{"t": "A family visit to the mercado to buy tortillas and fruit", "c": true, "f": "A familiar context lets Mateo use what he knows."}, {"t": "A kitchen cooking routine, measuring beans for dinner", "c": true, "f": "Kitchen routines are rich and familiar."}, {"t": "A trip to a ski resort", "c": false, "f": "This may not connect to Mateo's experiences; choose a context from his life."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": true}, {"type": "sort", "id": "w7_cognates", "prompt": "Match each Spanish math word to its English cognate.", "cats": ["pattern", "classify", "number", "sum", "triangle", "divide"], "optional": true, "items": [{"t": "patr\u00f3n", "a": 0, "w": "", "hint": ""}, {"t": "clasificar", "a": 1, "w": "", "hint": ""}, {"t": "n\u00famero", "a": 2, "w": "", "hint": ""}, {"t": "suma", "a": 3, "w": "", "hint": ""}, {"t": "tri\u00e1ngulo", "a": 4, "w": "", "hint": ""}, {"t": "dividir", "a": 5, "w": "", "hint": ""}], "hint": "Cognates share meaning and similar spelling. They help children connect languages.", "after": null, "heading": null}, {"type": "text", "id": "w7_problem", "label": "Write your word problem in English with Spanish words woven in, and note the realia or visuals you will use.", "hint": null, "starter": null, "model": "Mateo y su mam\u00e1 van al mercado. They buy 6 mangos and 5 more mangos. \u00bfCu\u00e1ntos mangos tienen en total? How many mangos in all? Realia: real or toy mangos, a picture label with \"mango / mango\" and \"total / total.\"", "rows": 4, "heading": null, "optional": true, "min": 15}, {"type": "checklist", "id": "w7_modes", "prompt": "My task directions let Mateo show his reasoning through...", "items": ["Gestures and pointing", "Building with objects", "Drawing", "Speaking in Spanish or English", "Bilingual visual labels"], "need": 0, "heading": null}], "short": "Challenge A"}, {"title": "Challenge B: Universal Design and Trauma-Informed Adaptation (Lily)", "lead": "<p>Transform a high-stress routine, a timed counting race on the carpet, into an inclusive, low-anxiety investigation that still keeps the math rigorous.<\/p>", "comps": [{"type": "sort", "id": "w7_transform", "prompt": "For each element of the old routine, choose the better replacement.", "cats": ["Keeps rigor and lowers stress", "Lowers stress but loses rigor", "Keeps the stress"], "optional": true, "items": [{"t": "Replace the timer with \"take the time you need, then explain how you counted.\"", "a": 0, "w": "", "hint": ""}, {"t": "Replace the public scoreboard with partner talk about strategies.", "a": 0, "w": "", "hint": ""}, {"t": "Skip the counting task and let Lily color instead.", "a": 1, "w": "", "hint": "Avoiding the math lowers stress but removes the learning."}, {"t": "Keep the race but let Lily go last.", "a": 2, "w": "", "hint": ""}, {"t": "Offer a quiet sorting tray at a table instead of the crowded carpet.", "a": 0, "w": "", "hint": ""}, {"t": "Count by tens to 100 as a choral chant with no individual turns.", "a": 0, "w": "", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "checklist", "id": "w7_sensory", "prompt": "Sensory accommodations I would embed (choose any):", "items": ["Weighted math counters", "Quiet sorting trays", "Flexible seating options", "A calm-down corner with a visual timer for breaks", "A preview of the routine before it starts"], "need": 0, "heading": null}, {"type": "text", "id": "w7_obs", "label": "Describe an alternative observational assessment you could use for IEP documentation that honors the child's processing pace.", "hint": null, "starter": null, "model": "During small-group pattern work, I use a checklist (extends a pattern, names the core unit, explains a rule) and write anecdotal notes over three days. Lily can show each skill with blocks or by talking, with no time limit.", "rows": 4, "heading": null, "optional": true, "min": 15}], "short": "Challenge B"}, {"title": "Strategy Swap Pitch", "lead": "<p>In class, rooms pair up for a 5-minute pitch. Write your pitch here so it is ready to share.<\/p>", "comps": [{"type": "text", "id": "w7_pitch", "label": "Your pitch: here was the barrier, here is how our accommodation opened access, and here is how it preserved cognitive rigor.", "hint": null, "starter": "The barrier was... Our accommodation opened access by... It preserved rigor because...", "model": "The barrier was that all of Mateo's math tasks were in timed English. Our bilingual mercado problem with real mangos opened access by letting him use Spanish and objects. It preserved rigor because he still solved 6 + 5 and explained his strategy.", "rows": 5, "heading": null, "optional": false, "min": 15}, {"type": "mc", "id": "w7_tpe", "prompt": "Which choice best describes an adaptation that opens access while preserving cognitive rigor?", "options": [{"t": "Changing how the content is presented and how students show learning while keeping the learning goal the same", "c": true, "f": ""}, {"t": "Lowering the learning goal for students with IEPs", "c": false, "f": "Lowering goals is a modification, used only when an IEP calls for it."}, {"t": "Giving every student the same worksheet for fairness", "c": false, "f": "Fair does not always mean the same."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Closing synthesis<\/p><p>Adapting how content is presented and how children show learning, while holding the learning goal steady, is the heart of TPE 3.5 and of culturally sustaining mathematics.<\/p><\/div>", "heading": null, "id": null}], "short": "Pitch"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce410-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

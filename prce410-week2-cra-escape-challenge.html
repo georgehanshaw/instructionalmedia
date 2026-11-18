@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 410 Week 2: CRA Escape Challenge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 410 &middot; Week 2 Application Practice</p>
+<h1>CRA Escape Challenge</h1>
+<p>Many young learners hit a cliff between handling objects and solving written equations. In this escape challenge you will build a concrete-representational-abstract (CRA) bridge for one child, with language supports and UDL checks along the way.</p>
+<div class="meta"><span class="pill">Week 2</span><span class="pill">About 30 minutes</span><span class="pill">Ungraded practice</span><span class="pill">3 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: Operations and Algebraic Thinking; UDL; academic language development; SMP 1, 2; TPE 3.6, 5.3, 8.5, 8.6, 8.8</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 410 Counting, Comparing, Constructing: Math in Early Childhood</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week2", "title": "CRA Escape Challenge", "course": "PRCE 410", "stations": [{"title": "Concrete Modeling", "lead": "<div class=\"callout\"><p class=\"eyebrow\">The case<\/p><p>A first grader easily counts 7 bears and 5 bears when holding them. When given the paper equation 7 + 5 = ___, they freeze or write \"75.\" Unlock three stations to build this child's conceptual bridge. Each station must be solved before the next one unlocks.<\/p><\/div>", "comps": [{"type": "custom", "id": "tenframe", "summary": "Ten-frame model:", "heading": "Lock 1: Model 7 + 5 on ten frames", "optional": false}, {"type": "mc", "id": "w2_motor", "prompt": "Which two modifications support a child with fine-motor differences? Choose two.", "options": [{"t": "Larger bears or counters that are easier to grasp", "c": true, "f": "Bigger objects reduce the fine-motor demand."}, {"t": "A ten frame with raised wells or a magnetic board so counters stay in place", "c": true, "f": "Counters that stay put let the child focus on the math."}, {"t": "Smaller counters so more fit on the desk", "c": false, "f": "Smaller pieces are harder to pick up."}, {"t": "A timer so the child works faster", "c": false, "f": "Speed adds stress and does not support the motor need."}], "multi": true, "hint": null, "after": null, "heading": "Lock 2: Fine-motor access", "optional": false}], "short": "Concrete"}, {"title": "Representational Bridge and Word Wall", "lead": "<p>Now connect the bears to pictures. Then build a two-tier word wall so every child has language for the same idea.<\/p>", "comps": [{"type": "custom", "id": "jumps", "summary": "Number line:", "heading": "Lock 3: Open number line", "optional": false}, {"type": "sort", "id": "w2_words", "prompt": "Sort the word wall terms into tiers.", "cats": ["PK/TK level (intuitive, with picture icons)", "Grade 2 level (formal discourse)"], "optional": false, "items": [{"t": "put together", "a": 0, "w": "", "hint": ""}, {"t": "join", "a": 0, "w": "", "hint": ""}, {"t": "take away", "a": 0, "w": "", "hint": ""}, {"t": "how many in all", "a": 0, "w": "", "hint": ""}, {"t": "sum", "a": 1, "w": "", "hint": ""}, {"t": "addend", "a": 1, "w": "", "hint": ""}, {"t": "difference", "a": 1, "w": "", "hint": ""}, {"t": "equation", "a": 1, "w": "", "hint": ""}], "hint": "Both tiers describe the same actions. The formal tier adds precise vocabulary.", "after": null, "heading": "Lock 4: Two-tier word wall"}, {"type": "text", "id": "w2_frame", "label": "Write a Grade 2 sentence frame for 7 + 5, and the matching PK/TK phrase.", "hint": null, "starter": "Grade 2: The sum of ___ and ___ is ___. PK/TK: ___ bears put together with ___ bears make ___ bears.", "model": "Grade 2: The sum of 7 and 5 is 12. 7 and 5 are the addends. PK/TK: 7 bears put together with 5 bears make 12 bears.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Representational"}, {"title": "Abstract Formative Check with UDL", "lead": "<p>The child is ready for symbols. Design checks that show conceptual understanding through multiple means of action and expression, not timed paper-and-pencil drills.<\/p>", "comps": [{"type": "sort", "id": "w2_checks", "prompt": "Sort each assessment idea.", "cats": ["Flexible UDL check of understanding", "Timed drill or memory only"], "optional": false, "items": [{"t": "The child records an audio explanation of how they solved 7 + 5 on a tablet.", "a": 0, "w": "", "hint": ""}, {"t": "A tactile sort: match equation cards to ten-frame cards that show the same total.", "a": 0, "w": "", "hint": ""}, {"t": "A one-minute sheet of 30 addition facts.", "a": 1, "w": "", "hint": ""}, {"t": "\"Show me with cubes, then write the number sentence.\"", "a": 0, "w": "", "hint": ""}, {"t": "A flash card race between two children.", "a": 1, "w": "", "hint": ""}], "hint": null, "after": null, "heading": "Lock 5: Choose your checks"}, {"type": "text", "id": "w2_mycheck", "label": "Describe two flexible checks you would use with this child.", "hint": "Name the action or expression option each one offers (speaking, building, drawing, sorting, writing).", "starter": null, "model": "1) The child builds 7 + 5 with cubes, then points to the ten and explains where the 2 extra came from while I take notes. 2) The child sorts six equation cards onto matching ten-frame pictures; I photograph the sort.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w2_debrief", "label": "Debrief: How does replacing timed drills with flexible checks support trauma-informed, empathy-centered math?", "hint": null, "starter": null, "model": "Timed drills can trigger anxiety and make some children shut down. Flexible checks give every child a safe way to show what they understand, so I learn more and the child keeps their confidence.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Abstract"}], "lockNext": true}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.tenframe = function(root, api){
+  const {h} = api;
+  let red = 0, blue = 0, moved = false;
+  const NS='http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 520 150'); svg.setAttribute('width','520'); svg.setAttribute('role','img');
+  const desc = document.createElementNS(NS,'title'); svg.append(desc);
+  function frameCells(ox){ const cells=[]; for(let r=0;r<2;r++)for(let c=0;c<5;c++)cells.push([ox+c*46,20+r*56]); return cells; }
+  const A = frameCells(10), B = frameCells(280);
+  function draw(){
+    [...svg.querySelectorAll('rect,circle')].forEach(n=>n.remove());
+    [A,B].forEach(F=>F.forEach(([x,y])=>{const r=document.createElementNS(NS,'rect');Object.entries({x,y,width:46,height:56,fill:'#fff',stroke:'#262523','stroke-width':2}).forEach(([a,v])=>r.setAttribute(a,v));svg.append(r);}));
+    const fa = [], fb = [];
+    for(let i=0;i<red;i++) fa.push('#A8353A');
+    if(moved){ for(let i=0;i<3;i++) fa.push('#1f4e8c'); for(let i=0;i<blue-3;i++) fb.push('#1f4e8c'); }
+    else for(let i=0;i<blue;i++) fb.push('#1f4e8c');
+    fa.forEach((c,i)=>dot(A[i],c)); fb.forEach((c,i)=>dot(B[i],c));
+    const fa_n = fa.length, fb_n = fb.length;
+    desc.textContent = 'Two ten frames. First frame: ' + fa_n + ' counters. Second frame: ' + fb_n + ' counters.';
+    status.textContent = 'First ten frame: ' + fa_n + (moved ? ' (7 red and 3 blue)' : ' red') + '. Second ten frame: ' + fb_n + ' blue.';
+  }
+  function dot([x,y],c){const d=document.createElementNS(NS,'circle');Object.entries({cx:x+23,cy:y+28,r:16,fill:c,stroke:'#262523','stroke-width':1.5}).forEach(([a,v])=>d.setAttribute(a,v));svg.append(d);}
+  const status = h('p', {'aria-live':'polite', class:'kbd'});
+  const addR = h('button', {class:'btn', type:'button', onclick:()=>{ if(red<7){red++;draw();check();} }}, 'Add a red bear (7 total)');
+  const addB = h('button', {class:'btn', type:'button', onclick:()=>{ if(blue<5){blue++;draw();check();} }}, 'Add a blue bear (5 total)');
+  const q = h('div', {hidden:true});
+  const inp = h('input', {type:'number', id:'tf_move', min:0, max:5, style:'width:90px'});
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const code = h('input', {type:'number', id:'tf_code', style:'width:90px'});
+  const codeBox = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const codeWrap = h('div', {hidden:true}, h('p', {}, h('label', {for:'tf_code', class:'kbd'}, 'Unlock code: how many bears in all? '), code, ' ',
+     h('button', {class:'btn', type:'button', onclick:()=>{ if(+code.value===12){ api.fb(codeBox,'ok','<p><strong>Lock opened.</strong> 7 + 5 = 10 + 2 = 12. Making ten turns a hard fact into an easy one.</p>'); api.result('Made ten: moved 3, total 12'); api.done(); } else api.fb(codeBox,'no','<p>Count the full frame (10) and the extras.</p>'); }}, 'Try the code')), codeBox);
+  q.append(h('p', {}, h('label', {for:'tf_move', class:'kbd'}, 'How many blue bears should move to fill the first ten frame? '), inp, ' ',
+    h('button', {class:'btn', type:'button', onclick:()=>{ if(+inp.value===3){ moved=true; draw(); api.fb(box,'ok','<p><strong>Yes.</strong> 7 needs 3 more to make 10. Watch the frames: now there is one full ten and 2 extra.</p>'); codeWrap.hidden=false; } else api.fb(box,'no','<p>Count the empty boxes in the first frame.</p>'); api.resize(); }}, 'Move them')), box);
+  function check(){ if(red===7&&blue===5){ q.hidden=false; addR.disabled=true; addB.disabled=true; } api.resize(); }
+  root.append(h('div',{class:'scene'}, svg, status), h('div',{class:'btnrow'}, addR, addB), q, codeWrap);
+  draw();
+};
+
+CUSTOM.jumps = function(root, api){
+  const {h} = api;
+  const NS='http://www.w3.org/2000/svg';
+  let pos = 7; const path = [7];
+  const svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 560 140'); svg.setAttribute('width','560'); svg.setAttribute('role','img');
+  const t = document.createElementNS(NS,'title'); svg.append(t);
+  const x = n => 30 + n*33;
+  function draw(){
+    [...svg.querySelectorAll('line,text,path,circle')].forEach(n=>n.remove());
+    const ln=document.createElementNS(NS,'line');Object.entries({x1:20,y1:100,x2:540,y2:100,stroke:'#262523','stroke-width':3}).forEach(([a,v])=>ln.setAttribute(a,v));svg.append(ln);
+    for(let n=0;n<=15;n++){const tk=document.createElementNS(NS,'line');Object.entries({x1:x(n),y1:92,x2:x(n),y2:108,stroke:'#262523','stroke-width':2}).forEach(([a,v])=>tk.setAttribute(a,v));svg.append(tk);
+      const tx=document.createElementNS(NS,'text');Object.entries({x:x(n),y:128,'text-anchor':'middle','font-size':15,'font-family':'Arial',fill:n===10?'#7C2429':'#262523','font-weight':n===10?700:400}).forEach(([a,v])=>tx.setAttribute(a,v));tx.textContent=n;svg.append(tx);}
+    for(let i=1;i<path.length;i++){const a=x(path[i-1]),b=x(path[i]),m=(a+b)/2,hgt=Math.min(70,18+(b-a)*0.45);
+      const p=document.createElementNS(NS,'path');p.setAttribute('d',`M${a},96 Q${m},${96-hgt*1.6} ${b},96`);p.setAttribute('fill','none');p.setAttribute('stroke','#A8353A');p.setAttribute('stroke-width',3);svg.append(p);
+      const l=document.createElementNS(NS,'text');Object.entries({x:m,y:96-hgt*0.85,'text-anchor':'middle','font-size':15,'font-weight':700,'font-family':'Arial',fill:'#7C2429'}).forEach(([k,v])=>l.setAttribute(k,v));l.textContent='+'+(path[i]-path[i-1]);svg.append(l);}
+    const c=document.createElementNS(NS,'circle');Object.entries({cx:x(pos),cy:100,r:8,fill:'#1f4e8c'}).forEach(([a,v])=>c.setAttribute(a,v));svg.append(c);
+    t.textContent='Open number line from 0 to 15. Jumps so far: ' + path.join(' to ') + '.';
+    st.textContent = 'You are at ' + pos + '. Jumps: ' + (path.length>1 ? path.slice(1).map((p,i)=>'+'+(p-path[i])).join(', ') : 'none yet') + '.';
+  }
+  const st = h('p', {'aria-live':'polite', class:'kbd'});
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  function jump(k){
+    if (pos + k > 15) { api.fb(box,'no','<p>That jump goes past the end of the number line. Start over and try a smaller jump.</p>'); return; }
+    pos += k; path.push(pos); draw();
+    if (pos === 12) {
+      const friendly = path.includes(10);
+      api.fb(box,'ok', '<p><strong>You landed on 12.</strong> ' + (friendly ? 'You jumped to the friendly ten first (7 + 3 = 10, then 10 + 2 = 12). That is the same make-ten strategy you modeled with the ten frames.' : 'Now try again and land on 10 first. Jumping to a friendly ten connects the number line to the ten frame.') + '</p>');
+      api.result('Jumps ' + path.join(' to ') + (friendly ? ' (used friendly ten)' : ''));
+      if (friendly) api.done();
+    } else if (pos > 12) api.fb(box,'no','<p>You passed 12. Start over and plan your jumps.</p>');
+    else { box.className='fb'; box.innerHTML=''; }
+    api.resize();
+  }
+  const row = h('div', {class:'btnrow'}, ...[1,2,3,5].map(k => h('button', {class:'btn', type:'button', onclick:()=>jump(k)}, 'Jump +'+k)),
+    h('button', {class:'btn secondary', type:'button', onclick:()=>{pos=7;path.length=0;path.push(7);draw();box.className='fb';box.innerHTML='';}}, 'Start over'));
+  root.append(h('p', {}, 'Start at 7. Use jumps to show 7 + 5 on the open number line. Can you get there by landing on 10 first?'), h('div',{class:'scene'}, svg, st), row, box);
+  draw();
+};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce410-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>
