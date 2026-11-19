@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 7: Writer&#x27;s Workshop Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+<style>
+
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:0 0 14px}
+.dossier h3{margin:0 0 6px}
+table.data{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0 12px;background:#fff}
+table.data th,table.data td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.data th{background:var(--cream);color:var(--ink)}
+table.data caption{text-align:left;font-weight:700;color:var(--ink);padding:0 0 6px}
+.lock{border:2px dashed #7C2429;border-radius:10px;padding:12px 16px;background:#fff;margin-top:10px}
+.lock.open{border-style:solid;border-color:#2e6b3a;background:#eef7ef}
+.lock p{margin:0}
+.panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px;background:#fff}
+.panel h3{margin:0 0 6px}
+.calc{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:8px 0}
+.calc label{display:flex;flex-direction:column;font-size:15px;font-weight:700;color:var(--ink)}
+.calc input,.calc select{margin-top:4px;width:150px}
+.preview{font-size:19px;font-weight:700;color:var(--ink);background:var(--cream);border:1px dashed var(--brick);border-radius:8px;padding:10px 14px;margin:8px 0;min-height:46px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle;background:#fff;border:1px solid var(--line);color:var(--deep)}
+
+.draft{background:#fff;border:1px solid var(--line);border-left:6px solid #1f1f1f;border-radius:10px;padding:12px 16px;margin:8px 0 12px;font-family:'Comic Sans MS','Comic Neue','Public Sans',Arial,sans-serif;font-size:18px;color:var(--ink)}
+.transcript{border:1px solid var(--line);border-radius:10px;background:var(--cream);padding:10px 14px;margin:8px 0 12px}
+.transcript p{margin:0 0 6px}
+.transcript .t{color:var(--deep);font-weight:700}
+.transcript .c{color:#1f1f1f}
+.choices{display:grid;gap:8px;margin:8px 0}
+.choices button{font:inherit;text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:10px 14px;cursor:pointer}
+.choices button:hover{border-color:var(--brick)}
+.stepname{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0 0 4px}
+.pair{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 12px;background:#fff}
+.pair .src{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 8px}
+.pair .src span{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:4px 10px;color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 7 Application Practice</p>
+<h1>Writer&#x27;s Workshop Simulator</h1>
+<p>Run a writing conference with a 2nd grader, combine simple sentences into compound and complex ones, sort narrative and informational text structures, and draft a note to families.</p>
+<div class="meta"><span class="pill">Week 7</span><span class="pill">About 30 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA ELA/ELD Framework (Effective Expression; Language Development); CA ELD Standards Part II (Connecting and Condensing Ideas); TPE 7.4, 7.7, 7.8, 7.9</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week7", "title": "Writer's Workshop Simulator", "course": "PRCE 420", "stations": [{"title": "Workshop Briefing", "lead": "<p>This week you step into a 2nd grade Writer's Workshop. You will run a writing conference, combine sentences, sort text structures, and draft a note to families.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">How a Writer's Workshop runs<\/p><p><strong>Mini-lesson<\/strong> (about 10 minutes): the teacher models one craft or convention.<br><strong>Independent writing<\/strong>: children write while the teacher confers with individuals and small groups.<br><strong>Share<\/strong>: a few writers share and the class gives feedback.<\/p><p style=\"margin:0\">A writing conference usually follows four moves: <strong>research<\/strong> what the writer is doing, <strong>compliment<\/strong> something specific, <strong>teach<\/strong> one point, and <strong>link<\/strong> it to future writing.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w7_role", "prompt": "During independent writing time, what is the teacher's main job?", "options": [{"t": "Grading yesterday's drafts at her desk", "c": false, "f": "Independent writing is the teacher's best time to coach writers directly."}, {"t": "Conferring with individual writers and small groups", "c": true, "f": "Yes. Conferences are where most individualized teaching happens."}, {"t": "Teaching a second mini-lesson to the whole class", "c": false, "f": "The mini-lesson is short on purpose, so children get long stretches of time to write."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Briefing"}, {"title": "Conference Simulator", "lead": "<p>Ava is a 2nd grader. Read her draft, then run the conference one move at a time. Each choice shows how Ava responds.<\/p><div class=\"draft\">My dog Biscut. I have a dog. He is brown. He is fun. We play. The end.<\/div>", "comps": [{"type": "custom", "id": "conf", "summary": "Writing conference:", "heading": null, "optional": false}, {"type": "text", "id": "w7_conf", "label": "What did you notice about how Ava responded to the different moves? What will you remember for your microteaching in class?", "hint": null, "starter": null, "model": "Ava wrote more and cared more when I started by asking about her work and complimented something specific. When the move focused on errors or tried to fix everything at once, she shut down. In class I will keep my teaching point to one strategy, model it with my own example, and end by telling the writer exactly what to try next.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Conference"}, {"title": "Sentence Combiner", "lead": "<p>Combine each pair into one sentence. Pick a connector and watch the new sentence appear. Your goal is to keep the meaning shown.<\/p>", "comps": [{"type": "custom", "id": "combine", "summary": "Sentence combining:", "heading": null, "optional": false}, {"type": "mc", "id": "w7_complex", "prompt": "Which of these is a <strong>complex<\/strong> sentence?", "options": [{"t": "The bell rang, and the children lined up.", "c": false, "f": "This joins two independent clauses with \"and\", so it is compound."}, {"t": "Because the bell rang, the children lined up.", "c": true, "f": "Yes. \"Because the bell rang\" is a dependent clause joined to an independent clause."}, {"t": "The children lined up quickly.", "c": false, "f": "This is a simple sentence with one clause."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Sentences"}, {"title": "Text Structure Sort", "lead": "<p>Informational texts are organized in predictable ways, and narratives have their own structure. Sort each example.<\/p>", "comps": [{"type": "sort", "id": "w7_struct", "prompt": "Which structure does each passage use?", "cats": ["Sequence", "Compare and contrast", "Cause and effect", "Problem and solution", "Description"], "optional": false, "items": [{"t": "First, the frog lays eggs in the pond. Next, tadpoles hatch. Then they grow legs. Finally, they hop onto land as frogs.", "a": 0, "w": "Signal words: first, next, then, finally.", "hint": ""}, {"t": "Frogs and toads are both amphibians. Frogs have smooth, wet skin, but toads have dry, bumpy skin.", "a": 1, "w": "Signal words: both, but.", "hint": ""}, {"t": "Because the pond dried up in the summer heat, many tadpoles could not survive.", "a": 2, "w": "Signal word: because.", "hint": "Does the passage explain why something happened?"}, {"t": "Frogs kept getting hit on the road near the pond. The town built a small tunnel so frogs could cross safely.", "a": 3, "w": "A problem (frogs on the road) and a solution (the tunnel).", "hint": ""}, {"t": "The poison dart frog is tiny and bright blue, with black spots and sticky toe pads.", "a": 4, "w": "It tells what the frog is like.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "sort", "id": "w7_feat", "prompt": "Two texts about frogs: one is a narrative and one is informational. Which features belong to each?", "cats": ["Narrative", "Informational"], "optional": false, "items": [{"t": "Characters and dialogue (\"Hop with me!\" said Fred.)", "a": 0, "w": "", "hint": ""}, {"t": "A problem the main character must solve", "a": 0, "w": "", "hint": ""}, {"t": "A beginning, middle, and end with a resolution", "a": 0, "w": "", "hint": ""}, {"t": "Headings and labeled diagrams", "a": 1, "w": "", "hint": ""}, {"t": "Facts written in present tense (Frogs eat insects.)", "a": 1, "w": "", "hint": ""}, {"t": "A glossary of science words", "a": 1, "w": "", "hint": ""}], "hint": null, "after": "Reading both on the same topic helps children see how purpose shapes structure.", "heading": null}], "short": "Structures"}, {"title": "Family Literacy Partners", "lead": "<p>Strong family partnerships start from what families already do. Messages home work best when they are short, free of jargon, asset-based, and welcoming of the home language.<\/p>", "comps": [{"type": "mc", "id": "w7_family", "prompt": "Which sentence for a note home is the most family-friendly?", "options": [{"t": "\"Your child is below benchmark on oral reading fluency and needs intervention.\"", "c": false, "f": "Accurate, but full of jargon and focused on a deficit."}, {"t": "\"Reading together in any language, including your home language, helps your child grow as a reader. Try asking, 'What do you think will happen next?'\"", "c": true, "f": "Yes. It values the home language, is easy to understand, and gives one simple thing to try."}, {"t": "\"Please make sure your child reads 20 minutes in English every night or they will fall behind.\"", "c": false, "f": "It assumes English only and leads with a warning instead of a partnership."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w7_letter", "label": "Draft a short note (3 to 5 sentences) to families of your 2nd or 3rd graders about one way to support writing or reading at home.", "hint": null, "starter": "Dear families, this month our class is learning to ___. You can help at home by ___. ", "model": "Dear families, this month our class is learning to tell stories with a clear beginning, middle, and end. You can help at home by asking your child to tell you about the best part of their day, in whatever language you speak together. Ask, \"What happened first? Then what?\" Stories told out loud become stories written down. Thank you for being our partners!", "rows": 5, "heading": null, "optional": false, "min": 40}], "short": "Families"}, {"title": "Share Circle", "lead": "<p>Every workshop ends with sharing. Reflect on what you will bring into your own classroom.<\/p>", "comps": [{"type": "text", "id": "w7_sig", "label": "Signature Assignment Part 3 is due this week. Which element of today's practice (conferring, sentence combining, text structures, or family partnership) will you build into your 2nd or 3rd grade lesson plan, and how?", "hint": null, "starter": null, "model": "I will add a sentence-combining warm-up to my 3rd grade lesson. Students will combine two short sentences about our science topic using because, so, or although, and then use one combined sentence in their own writing during the learning center.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w7_faith", "label": "2 Timothy 3:15 speaks of knowing the scriptures from childhood. How does early exposure to stories build the background knowledge children bring to writing?", "hint": null, "starter": null, "model": null, "rows": 4, "heading": null, "optional": true, "min": 15}], "short": "Share"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.conf = function(root, api){
+  const {h} = api;
+  const steps = [
+    {name:'Research', q:'Ava is staring at her paper. How do you open the conference?', opts:[
+      {t:'"Ava, what are you working on as a writer today?"', best:true, kid:'"I\'m writing about my dog Biscuit. But I don\'t know what else to say."', f:'Yes. An open research question lets Ava name her own work and her own problem.'},
+      {t:'"Let\'s fix your spelling first."', kid:'(Ava erases \"Biscut\" and stops writing.)', f:'Starting with errors tells Ava that correctness matters more than her ideas. She shuts down.'},
+      {t:'"This is too short. You need to write more."', kid:'"...Okay." (She adds \"He is nice.\")', f:'She adds words, but she has no strategy for adding meaning. Research first, then decide what to teach.'}]},
+    {name:'Compliment', q:'Now name something she is already doing well.', opts:[
+      {t:'"Good job!"', kid:'(Ava shrugs.)', f:'Kind, but too general. Ava does not learn what to keep doing.'},
+      {t:'"You told me three true things about Biscuit, and every sentence stays on one topic. Writers do that so readers don\'t get lost."', best:true, kid:'(Ava smiles and sits up.) "He IS my topic."', f:'Yes. A specific compliment names a craft move so she will repeat it.'},
+      {t:'"Your handwriting is really neat."', kid:'"Thanks."', f:'True, but handwriting is not the craft of writing. Compliment something about her ideas or organization.'}]},
+    {name:'Teach', q:'Choose one teaching point and how you will teach it.', opts:[
+      {t:'"Let\'s fix capitals, periods, spelling, and paragraphs today."', kid:'(Ava looks overwhelmed.)', f:'Too many points at once. A conference teaches one thing she can use today.'},
+      {t:'"Writers zoom in on one small moment. Watch me: \'Biscuit dropped his slimy ball on my shoe and wagged so hard his whole body wiggled.\' What is one moment with Biscuit you could zoom in on?"', best:true, kid:'"When he jumped in the bathtub with me!"', f:'Yes. One clear craft point, modeled, then handed right back to her.'},
+      {t:'"Here, I\'ll write the next sentence for you."', kid:'(Ava watches you write.)', f:'Writing it for her solves today\'s page, but she does not learn a strategy for next time.'}]},
+    {name:'Link', q:'How do you close the conference?', opts:[
+      {t:'"Okay, go back to your seat."', kid:'(Ava goes back but is unsure what to do.)', f:'Close with a clear link so she knows what to try and that you will check back.'},
+      {t:'"Try zooming in on the bathtub moment now. Any time you write, you can zoom in like this. I\'ll check back before share time."', best:true, kid:'"Okay!" (Ava starts writing right away.)', f:'Yes. The link names the strategy, says when to use it, and sets a check-back.'}]}
+  ];
+  let k = 0;
+  const log = h('div', {class:'transcript', 'aria-live':'polite'});
+  const stage = h('div');
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const path = [];
+  function add(cls, who, t){ log.append(h('p', {}, h('span', {class:cls}, who + ': '), h('span', {html:t}))); }
+  function render(){
+    stage.innerHTML = '';
+    if (k >= steps.length) {
+      api.fb(box, 'ok', '<p><strong>Conference complete.</strong> Research, compliment, teach, link: about three to five minutes, and Ava leaves with one strategy she can use again.</p>');
+      api.done(true); api.result('Completed (first tries: ' + path.join('; ') + ')'); api.resize(); return;
+    }
+    const s = steps[k];
+    stage.append(h('p', {class:'stepname'}, 'Step ' + (k+1) + ' of ' + steps.length + ': ' + s.name), h('p', {class:'kbd'}, s.q));
+    const ch = h('div', {class:'choices'});
+    let first = true;
+    s.opts.forEach(o => ch.append(h('button', {type:'button', onclick: () => {
+      if (first) { path.push(s.name + (o.best ? ' best' : ' revised')); first = false; }
+      if (o.best) { add('t', 'You', o.t); add('c', 'Ava', o.kid); box.className = 'fb'; box.innerHTML = ''; api.fb(box, 'ok', '<p>' + o.f + '</p>'); k++; setTimeout(render, 0); }
+      else { api.fb(box, 'no', '<p><strong>Ava\'s reaction:</strong> ' + o.kid + '</p><p>' + o.f + ' Try another move.</p>'); }
+      api.resize();
+    }}, h('span', {html:o.t}))));
+    stage.append(ch);
+    api.resize();
+  }
+  root.append(h('p', {class:'kbd', style:'margin:0'}, 'Conference transcript'), log, stage, box);
+  add('c', 'Narrator', 'You kneel beside Ava during independent writing.');
+  render();
+};
+
+CUSTOM.combine = function(root, api){
+  const {h} = api;
+  const conns = ['and','but','so','because','although','when','after'];
+  const kind = c => ['and','but','so'].includes(c) ? 'Compound' : 'Complex';
+  const P = [
+    {a:'The puppy was tired.', b:'It kept playing.', keep:'The puppy kept playing even though it was tired (contrast).', out:{
+      and:['The puppy was tired, and it kept playing.', false, 'Grammatical, but "and" loses the contrast.'],
+      but:['The puppy was tired, but it kept playing.', true, '"But" signals the contrast.'],
+      so:['The puppy was tired, so it kept playing.', false, '"So" signals a result, and being tired would not make it keep playing.'],
+      because:['The puppy was tired because it kept playing.', false, 'This changes the meaning: now the playing caused the tiredness.'],
+      although:['Although the puppy was tired, it kept playing.', true, '"Although" makes a complex sentence that keeps the contrast.'],
+      when:['When the puppy was tired, it kept playing.', false, '"When" signals time, not contrast. It sounds odd.'],
+      after:['After the puppy was tired, it kept playing.', false, '"After" signals sequence, not contrast.']}},
+    {a:'It started to rain.', b:'We went inside.', keep:'The rain caused us to go inside (cause and effect).', out:{
+      and:['It started to rain, and we went inside.', false, 'Grammatical, but "and" only adds. It does not show the cause.'],
+      but:['It started to rain, but we went inside.', false, '"But" signals a contrast that is not there.'],
+      so:['It started to rain, so we went inside.', true, '"So" shows the effect.'],
+      because:['We went inside because it started to rain.', true, '"Because" names the cause in a complex sentence.'],
+      although:['Although it started to rain, we went inside.', false, '"Although" signals contrast, which does not fit.'],
+      when:['When it started to rain, we went inside.', true, '"When" shows the rain triggered the action.'],
+      after:['After it started to rain, we went inside.', false, 'Close, but "after" only shows order, not the cause the reader needs to see.']}},
+    {a:'Lena finished her book.', b:'She wrote a review.', keep:'First Lena finished the book, then she wrote the review (sequence).', out:{
+      and:['Lena finished her book, and she wrote a review.', true, 'A compound sentence that keeps the order.'],
+      but:['Lena finished her book, but she wrote a review.', false, '"But" signals a contrast that is not there.'],
+      so:['Lena finished her book, so she wrote a review.', false, 'Possible, but it claims a cause. The meaning to keep is order.'],
+      because:['Lena finished her book because she wrote a review.', false, 'This reverses the logic.'],
+      although:['Although Lena finished her book, she wrote a review.', false, '"Although" signals a contrast that is not there.'],
+      when:['When Lena finished her book, she wrote a review.', true, 'A complex sentence that shows the order.'],
+      after:['After Lena finished her book, she wrote a review.', true, '"After" makes the sequence explicit.']}}
+  ];
+  const done = P.map(() => false);
+  P.forEach((p, i) => {
+    const id = 'cb_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose a connector...'), ...conns.map(c => h('option', {value:c}, c)));
+    const prev = h('div', {class:'preview', 'aria-live':'polite'}, ' ');
+    const mk = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    sel.addEventListener('change', () => {
+      const o = p.out[sel.value];
+      if (!o) { prev.textContent = ' '; mk.className = 'fb'; mk.innerHTML = ''; return; }
+      prev.innerHTML = o[0] + ' <span class="tag">' + kind(sel.value) + '</span>';
+      api.fb(mk, o[1] ? 'ok' : 'no', '<p><strong>' + (o[1] ? 'Meaning kept.' : 'Try another connector.') + '</strong> ' + o[2] + '</p>');
+      if (o[1]) done[i] = true;
+      const all = done.every(Boolean);
+      api.done(all); api.result(all ? 'Combined all 3 sentence pairs' : done.filter(Boolean).length + ' of 3 combined');
+      api.resize();
+    });
+    root.append(h('div', {class:'pair'},
+      h('p', {class:'kbd', style:'margin:0'}, 'Pair ' + (i+1)),
+      h('div', {class:'src'}, h('span', {}, p.a), h('span', {}, p.b)),
+      h('p', {class:'hint', style:'margin:0 0 6px'}, 'Meaning to keep: ' + p.keep),
+      h('label', {for:id, class:'kbd'}, 'Connector '), sel, prev, mk));
+  });
+};
+
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

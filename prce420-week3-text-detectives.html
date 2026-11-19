@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 3: Text Detectives: The Decodable Text Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+<style>
+
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:0 0 14px}
+.dossier h3{margin:0 0 6px}
+table.data{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0 12px;background:#fff}
+table.data th,table.data td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.data th{background:var(--cream);color:var(--ink)}
+table.data caption{text-align:left;font-weight:700;color:var(--ink);padding:0 0 6px}
+.lock{border:2px dashed #7C2429;border-radius:10px;padding:12px 16px;background:#fff;margin-top:10px}
+.lock.open{border-style:solid;border-color:#2e6b3a;background:#eef7ef}
+.lock p{margin:0}
+.panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px;background:#fff}
+.panel h3{margin:0 0 6px}
+.calc{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:8px 0}
+.calc label{display:flex;flex-direction:column;font-size:15px;font-weight:700;color:var(--ink)}
+.calc input,.calc select{margin-top:4px;width:150px}
+.preview{font-size:19px;font-weight:700;color:var(--ink);background:var(--cream);border:1px dashed var(--brick);border-radius:8px;padding:10px 14px;margin:8px 0;min-height:46px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle;background:#fff;border:1px solid var(--line);color:var(--deep)}
+
+.passage{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:8px 0;line-height:2.3}
+.wtok{font:inherit;font-size:18px;border:1px solid transparent;background:transparent;color:var(--ink);border-radius:6px;padding:1px 4px;margin:0 1px;cursor:pointer}
+.wtok:hover{border-color:var(--brick)}
+.wtok[aria-pressed="true"]{background:#fff;border:2px solid var(--brick);color:var(--deep);text-decoration:underline wavy var(--brick)}
+.wtok.miss{outline:3px solid #b07d00;outline-offset:1px}
+.meter{display:flex;align-items:center;gap:10px;margin:6px 0 4px;font-weight:700;color:var(--ink)}
+.meter .track{flex:1;height:12px;background:#e4ddd6;border-radius:99px;overflow:hidden;position:relative}
+.meter .fill{height:100%;background:var(--brick);width:0;transition:width .25s}
+.meter .goal{position:absolute;top:-3px;bottom:-3px;width:3px;background:#000;left:90%}
+.scope{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.scope{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 3 Application Practice</p>
+<h1>Text Detectives: The Decodable Text Lab</h1>
+<p>Sort phonics evidence, count sounds, measure how decodable two passages really are, review a kindergarten screener, and make over a preschool lesson so it is active and motivating.</p>
+<div class="meta"><span class="pill">Week 3</span><span class="pill">About 35 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA Preschool Learning Foundations (Phonological Awareness; Alphabetics and Word/Print Recognition); CA ELA/ELD Framework (Foundational Skills); California Dyslexia Guidelines (Screening); TPE 7.2, 7.4, 7.5, 7.10</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week3", "title": "Text Detectives: The Decodable Text Lab", "course": "PRCE 420", "stations": [{"title": "Detective Briefing", "lead": "<p>You have been called to the Kindergarten and 1st grade wing to investigate how children figure out words. Your toolkit: phonics patterns, sound boxes, a decodability meter, and a screener report. Solve each case, then make over a lesson so it is active and motivating.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Two directions, one code<\/p><p><strong>Decoding<\/strong> goes from print to speech: the child sees letters, says the sounds, and blends them into a word. <strong>Encoding<\/strong> goes from speech to print: the child hears a word, segments its sounds, and spells each one. Teaching them together strengthens both, because each one practices the same sound-spelling links.<\/p><p style=\"margin:0\"><strong>Connected decodable text<\/strong> is made of sentences that tell a real story, where nearly every word uses patterns the children have already been taught, plus a few taught heart words.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w3_enc", "prompt": "A child hears the word <em>ship<\/em>, says /sh/ /i/ /p/, and writes s-h-i-p. Which skill is she practicing?", "options": [{"t": "Decoding", "c": false, "f": "Decoding starts from print. She started from a spoken word."}, {"t": "Encoding", "c": true, "f": "Yes. She went from speech to print: she segmented the sounds and spelled each one."}, {"t": "Sight word recognition", "c": false, "f": "She worked through the sounds one by one rather than recognizing the word instantly."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w3_cdt", "prompt": "Which text is the best example of <em>connected decodable text<\/em> for children who have learned CVC words and the digraph sh?", "options": [{"t": "A list of CVC words: <em>cat, sit, hop, mud, shed<\/em>", "c": false, "f": "These words are decodable, but a list is not connected text. It does not tell a story."}, {"t": "<em>Sam had a fish. The fish hid in a shell. Sam got a net.<\/em>", "c": true, "f": "Yes. The sentences connect into a small story, and every word is decodable or a taught heart word."}, {"t": "<em>The little rabbit hopped quietly through the meadow.<\/em>", "c": false, "f": "This sentence uses blends, multisyllable words, and patterns the children have not learned, so they would have to guess."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Briefing"}, {"title": "Evidence Locker: Word Sorts", "lead": "<p>Sort the evidence by pattern, then count the sounds the way you would with Elkonin boxes.<\/p>", "comps": [{"type": "sort", "id": "w3_sort", "prompt": "Sort each word by the phonics pattern it was chosen to practice.", "cats": ["Short vowel CVC only (no blend or digraph)", "Consonant digraph", "Consonant blend", "Silent e (VCe)"], "optional": false, "items": [{"t": "map", "a": 0, "w": "Three sounds, one short vowel, no blend or digraph.", "hint": ""}, {"t": "fin", "a": 0, "w": "A simple closed syllable with a short i.", "hint": ""}, {"t": "chop", "a": 1, "w": "ch is a digraph: two letters, one sound.", "hint": ""}, {"t": "shed", "a": 1, "w": "sh is a digraph.", "hint": ""}, {"t": "thin", "a": 1, "w": "th is a digraph.", "hint": ""}, {"t": "flag", "a": 2, "w": "fl is a blend: two consonants, two sounds you can still hear.", "hint": "Say it slowly. Can you hear both /f/ and /l/?"}, {"t": "stomp", "a": 2, "w": "st and mp are both blends.", "hint": ""}, {"t": "cake", "a": 3, "w": "The silent e makes the a say its name.", "hint": "Look at the last letter."}, {"t": "rope", "a": 3, "w": "The silent e makes the o long.", "hint": ""}], "hint": "Ask yourself: what does this word practice beyond a basic short vowel?", "after": null, "heading": null}, {"type": "sort", "id": "w3_boxes", "prompt": "Sound boxes: how many boxes (phonemes) does each word need?", "cats": ["3 sounds", "4 sounds", "5 sounds"], "optional": false, "items": [{"t": "ship", "a": 0, "w": "/sh/ /i/ /p/. The digraph sh is one sound, so it takes one box.", "hint": "sh makes one sound."}, {"t": "thick", "a": 0, "w": "/th/ /i/ /k/. Both th and ck are one sound each.", "hint": ""}, {"t": "cake", "a": 0, "w": "/k/ /ā/ /k/. The silent e has no sound of its own.", "hint": "Does the e make a sound?"}, {"t": "flag", "a": 1, "w": "/f/ /l/ /a/ /g/. Each letter in a blend keeps its own sound.", "hint": ""}, {"t": "lunch", "a": 1, "w": "/l/ /u/ /n/ /ch/.", "hint": ""}, {"t": "crab", "a": 1, "w": "/k/ /r/ /a/ /b/.", "hint": ""}, {"t": "stomp", "a": 2, "w": "/s/ /t/ /o/ /m/ /p/.", "hint": ""}, {"t": "blend", "a": 2, "w": "/b/ /l/ /e/ /n/ /d/.", "hint": ""}], "hint": null, "after": "Counting sounds, not letters, is the key encoding move children need before they spell.", "heading": null}], "short": "Word Sorts"}, {"title": "Case Files: The Decodability Meter", "lead": "<p>Your team is choosing a connected text for Tuesday's small group. Study the scope card, then click every word in each passage that the group <strong>cannot<\/strong> decode yet. The meter updates as you mark words.<\/p>", "comps": [{"type": "info", "html": "<div class=\"scope\"><div class=\"callout\" style=\"margin:0\"><p class=\"eyebrow\">Scope card: already taught<\/p><ul style=\"margin:0;padding-left:20px\"><li>All single consonants<\/li><li>Short vowels a, e, i, o, u in closed syllables (CVC)<\/li><li>Digraphs sh, ch, th, and ck<\/li><li>Heart words: the, a, is, to, was, of, and, has<\/li><\/ul><\/div><div class=\"callout\" style=\"margin:0\"><p class=\"eyebrow\">Not yet taught<\/p><ul style=\"margin:0;padding-left:20px\"><li>Consonant blends (st, fl, nd, gl...)<\/li><li>Silent e (VCe)<\/li><li>Vowel teams (ee, ai, oa...)<\/li><li>R-controlled vowels<\/li><\/ul><\/div><\/div>", "heading": null, "id": null}, {"type": "custom", "id": "decode", "summary": "Decodability check:", "heading": null, "optional": false}, {"type": "mc", "id": "w3_pick", "prompt": "Which passage should the team use for Tuesday's small group?", "options": [{"t": "Passage A, because it has more interesting words", "c": false, "f": "Interesting words matter, but about one word in five would push these children to guess, which is the habit decodable text is meant to break."}, {"t": "Passage B, because nearly every word matches what the group has been taught", "c": true, "f": "Yes. Passage B clears the 90% goal, so children practice the code they know and build confidence. The one blend word (glad) can be pre-taught or supported."}, {"t": "Neither, because decodable texts cannot tell a real story", "c": false, "f": "Passage B is short, but it has a character, a problem, and a resolution."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w3_meaning", "label": "Passage B is decodable. Is it also a satisfying story? Suggest one way to add meaning or fun without breaking decodability.", "hint": "Think about dialogue, a small surprise, or a question children could answer.", "starter": null, "model": "It has a beginning, a problem, and a happy ending, so it does tell a story, but it is thin. I could add a line of dialogue using only taught patterns, like \"Mom! The hat is wet!\" said Chip, or add a picture prompt so children predict where Mom will put the hat. Both add meaning while keeping every word decodable.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Decodability"}, {"title": "Case File: The Screener", "lead": "<p>Universal screening checks every child, early, so no one waits to fail. A screener does not diagnose dyslexia. It flags risk so the team can teach and watch more closely.<\/p>", "comps": [{"type": "info", "html": "<table class=\"data\"><caption>Fall universal screener, kindergarten (fictional data)<\/caption>\n<thead><tr><th scope=\"col\">Child<\/th><th scope=\"col\">Letter naming<\/th><th scope=\"col\">Phonemic awareness<\/th><th scope=\"col\">Rapid naming (RAN)<\/th><th scope=\"col\">Notes<\/th><\/tr><\/thead>\n<tbody>\n<tr><th scope=\"row\">Noor<\/th><td>Below benchmark<\/td><td>Below benchmark<\/td><td>Below benchmark (slow)<\/td><td>Family shared that a parent \"always struggled with reading.\"<\/td><\/tr>\n<tr><th scope=\"row\">Sofia<\/th><td>At benchmark<\/td><td>Below benchmark (screened in English)<\/td><td>At benchmark<\/td><td>Spanish is the main home language. Family says she loves rhyming songs in Spanish.<\/td><\/tr>\n<tr><th scope=\"row\">Ben<\/th><td>Above benchmark<\/td><td>At benchmark<\/td><td>At benchmark<\/td><td>Quiet during whole-group time.<\/td><\/tr>\n<\/tbody><\/table>", "heading": null, "id": null}, {"type": "mc", "id": "w3_noor", "prompt": "Which child shows the pattern most associated with risk for dyslexia?", "options": [{"t": "Noor", "c": true, "f": "Yes. Weak phonemic awareness, slow rapid naming, and a family history of reading difficulty together are key risk signs named in the California Dyslexia Guidelines."}, {"t": "Sofia", "c": false, "f": "Sofia's only low score is phonemic awareness in English, and her letter naming and rapid naming are on track. Her language background needs to be considered first."}, {"t": "Ben", "c": false, "f": "Ben is at or above benchmark on every measure. Being quiet is not a reading risk sign."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w3_noor_next", "prompt": "What is the best next step for Noor?", "options": [{"t": "Tell her family that the screener shows she has dyslexia", "c": false, "f": "A screener flags risk. It cannot diagnose. Saying so could alarm the family and is not accurate."}, {"t": "Wait until 1st grade to see whether she grows out of it", "c": false, "f": "Waiting lets the gap widen. Early support is far more effective than later intervention."}, {"t": "Start targeted small-group work on phonemic awareness and letter sounds now, check her progress every few weeks, and share the results with her family", "c": true, "f": "Yes. Teach now, monitor closely, and partner with the family. If she does not respond to good instruction, the team can consider further evaluation."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w3_sofia", "prompt": "Before treating Sofia's phonemic awareness score as a risk flag, what should the team consider?", "options": [{"t": "Nothing. A low score is a low score in any language.", "c": false, "f": "Phonological skills transfer across languages. Screening only in English can make a child who is still learning English look at risk."}, {"t": "Her skills in Spanish, her English language development, and how she responds to strong Tier 1 instruction", "c": true, "f": "Yes. Check phonological skills in her home language when possible, keep Tier 1 strong, and monitor. This avoids both over-identifying and under-identifying multilingual learners."}, {"t": "Moving her to an English-only reading group", "c": false, "f": "Her Spanish is an asset that supports English reading. Removing it would not help."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w3_faith", "label": "Micah 6:8 asks us to do justly and love mercy. What would that look like when you share Noor's screener results with her family?", "hint": null, "starter": null, "model": "Doing justly means telling the family the truth clearly, in plain language, and acting quickly so Noor gets the instruction she deserves. Loving mercy means leading with her strengths, inviting the parent's own experience without blame, and making a plan together so the family leaves hopeful instead of afraid.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Screener"}, {"title": "Lesson Plan Makeover", "lead": "<p>Here is a preschool lesson that needs a makeover: <em>\"Children sit at tables and circle the pictures on a worksheet that begin with /m/.\"<\/em> Active and motivating instruction keeps the explicit teaching but adds play, movement, music, and choice.<\/p>", "comps": [{"type": "mc", "id": "w3_makeover", "prompt": "Which changes make the lesson more active and motivating while keeping it explicit? Choose all that apply.", "options": [{"t": "A mystery bag: children pull out objects and sort them by whether they start with /m/", "c": true, "f": "Yes. Hands-on and playful, and it still targets the sound."}, {"t": "Movement: children jump when they hear a word that starts with /m/", "c": true, "f": "Yes. Movement keeps young children engaged and gives you a quick check of every child."}, {"t": "A short /m/ song with a hand motion for the sound", "c": true, "f": "Yes. Music and gesture make the sound memorable."}, {"t": "Drop the modeling and let children explore the objects freely", "c": false, "f": "Active does not mean unstructured. Keep the explicit modeling of the sound first."}, {"t": "A tablet sound game that gives immediate feedback", "c": true, "f": "Yes. Technology can add practice and feedback when it targets the skill."}, {"t": "Two more worksheet pages for extra practice", "c": false, "f": "More worksheets add time, not engagement."}], "multi": true, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w3_my_makeover", "label": "Make over one part of your own preschool lesson plan (Signature Assignment Part 1, due this week). Name the part and the active element you will add.", "hint": "One or two sentences is enough.", "starter": null, "model": "In my learning center, children were going to trace letters. I will turn it into a \"letter bakery\" where they roll playdough letters, say each sound, and \"sell\" a word they built to a friend.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Makeover"}, {"title": "Case Closed", "lead": "<p>Pull your evidence together.<\/p>", "comps": [{"type": "text", "id": "w3_debrief", "label": "In three or four sentences: how do decoding, encoding, and connected decodable text work together to build word recognition?", "hint": null, "starter": null, "model": "Decoding teaches children to turn letters into sounds and blend them, and encoding asks them to turn sounds back into letters, so the two practice the same sound-spelling links from both directions. Connected decodable text gives them a real reason to use those links in sentences, so they read for meaning instead of guessing. Over many successful reads, the words become automatic, which frees attention for comprehension.", "rows": 5, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w3_field", "label": "Looking ahead to your fieldwork: what will you look for to tell whether the texts children read match what they have been taught?", "hint": "Name one specific thing you could notice or ask the teacher.", "starter": null, "model": null, "rows": 4, "heading": null, "optional": true, "min": 15}], "short": "Case Closed"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.decode = function(root, api){
+  const {h} = api;
+  const P = [
+    {name:'Passage A: "Chip and the Ship"', text:'Chip is a fish. Chip can swim in the pond. The pond is big and deep. Chip sees a ship. The ship has a red flag. Chip hid in the mud.',
+     not:{swim:'sw is a consonant blend, not yet taught', pond:'nd is a final consonant blend, not yet taught', deep:'ee is a vowel team, not yet taught', sees:'ee is a vowel team, not yet taught', flag:'fl is a consonant blend, not yet taught'}},
+    {name:'Passage B: "Chip and the Red Hat"', text:'Chip had a big red hat. Mom got the hat wet in the tub. Chip was sad. Mom set the hat on a rack. The sun hit the hat. Then Chip had the hat back. Chip was glad.',
+     not:{glad:'gl is a consonant blend, not yet taught'}}
+  ];
+  const solved = [false, false];
+  P.forEach((p, pi) => {
+    const words = p.text.split(' ');
+    const toks = words.map(w => {
+      const bare = w.replace(/[^A-Za-z]/g,'').toLowerCase();
+      const b = h('button', {type:'button', class:'wtok', 'aria-pressed':'false'}, w);
+      b.dataset.bare = bare;
+      b.addEventListener('click', () => { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); b.classList.remove('miss'); upd(); });
+      return b;
+    });
+    const fill = h('div', {class:'fill'});
+    const pct = h('span', {}, '100%');
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    function upd(){
+      const marked = toks.filter(t => t.getAttribute('aria-pressed') === 'true').length;
+      const v = Math.round(1000 * (toks.length - marked) / toks.length) / 10;
+      fill.style.width = v + '%'; pct.textContent = v + '% decodable (' + (toks.length - marked) + ' of ' + toks.length + ' words)';
+    }
+    const check = h('button', {class:'btn', type:'button', onclick: () => {
+      let missed = [], extra = [];
+      toks.forEach(t => {
+        const should = Object.prototype.hasOwnProperty.call(p.not, t.dataset.bare);
+        const on = t.getAttribute('aria-pressed') === 'true';
+        t.classList.toggle('miss', should && !on);
+        if (should && !on) missed.push(t.dataset.bare);
+        if (!should && on) extra.push(t.dataset.bare);
+      });
+      if (!missed.length && !extra.length) {
+        const n = toks.length, k = toks.filter(t => p.not[t.dataset.bare]).length;
+        const v = Math.round(1000*(n-k)/n)/10;
+        const why = [...new Set(toks.filter(t => p.not[t.dataset.bare]).map(t => t.dataset.bare))].map(b => '<strong>' + b + '</strong>: ' + p.not[b]).join('; ');
+        api.fb(box, 'ok', '<p><strong>Case solved.</strong> ' + v + '% of the words are decodable for this group. ' + why + '.</p>');
+        solved[pi] = true;
+      } else {
+        let msg = '<p><strong>Not quite.</strong></p>';
+        if (missed.length) msg += '<p>' + missed.length + ' word' + (missed.length>1?'s use':' uses') + ' a pattern this group has not been taught yet (outlined in gold). Check for blends and vowel teams.</p>';
+        if (extra.length) msg += '<p>You marked ' + [...new Set(extra)].join(', ') + '. Check the scope card: ' + (extra.length>1?'these are':'this is') + ' decodable, or a heart word the group already knows.</p>';
+        api.fb(box, 'no', msg);
+        solved[pi] = false;
+      }
+      const both = solved[0] && solved[1];
+      api.done(both);
+      api.result(both ? 'Passage A 80.6% decodable (swim, pond x2, deep, sees, flag); Passage B 97.4% decodable (glad)' : (solved[0]||solved[1] ? 'One passage solved' : ''));
+      api.resize();
+    }}, 'Check this passage');
+    root.append(h('div', {class:'panel'},
+      h('h3', {}, p.name),
+      h('div', {class:'passage'}, ...toks.flatMap((t,i) => i ? [' ', t] : [t])),
+      h('div', {class:'meter'}, h('span', {}, 'Decodability'), h('div', {class:'track', 'aria-hidden':'true'}, fill, h('span', {class:'goal', title:'90% goal'})), pct),
+      h('p', {class:'hint', style:'margin:0'}, 'The black line marks the team goal of 90%.'),
+      h('div', {class:'btnrow'}, check), box));
+    upd();
+  });
+};
+
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

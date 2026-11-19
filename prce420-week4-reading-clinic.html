@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 4: The Reading Clinic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+<style>
+
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:0 0 14px}
+.dossier h3{margin:0 0 6px}
+table.data{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0 12px;background:#fff}
+table.data th,table.data td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.data th{background:var(--cream);color:var(--ink)}
+table.data caption{text-align:left;font-weight:700;color:var(--ink);padding:0 0 6px}
+.lock{border:2px dashed #7C2429;border-radius:10px;padding:12px 16px;background:#fff;margin-top:10px}
+.lock.open{border-style:solid;border-color:#2e6b3a;background:#eef7ef}
+.lock p{margin:0}
+.panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px;background:#fff}
+.panel h3{margin:0 0 6px}
+.calc{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:8px 0}
+.calc label{display:flex;flex-direction:column;font-size:15px;font-weight:700;color:var(--ink)}
+.calc input,.calc select{margin-top:4px;width:150px}
+.preview{font-size:19px;font-weight:700;color:var(--ink);background:var(--cream);border:1px dashed var(--brick);border-radius:8px;padding:10px 14px;margin:8px 0;min-height:46px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle;background:#fff;border:1px solid var(--line);color:var(--deep)}
+
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 4 Application Practice</p>
+<h1>The Reading Clinic</h1>
+<p>Tag a teacher think-aloud, score three running records, diagnose spelling stages from writing samples, and audit a classroom library for mirror and window texts.</p>
+<div class="meta"><span class="pill">Week 4</span><span class="pill">About 35 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA ELA/ELD Framework (Foundational Skills: Fluency; Meaning Making); California Dyslexia Guidelines (Chapter 11); TPE 7.3, 7.5, 7.6, 7.10</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week4", "title": "The Reading Clinic", "course": "PRCE 420", "stations": [{"title": "Clinic Intake", "lead": "<p>Welcome to the Reading Clinic. This week moves from words to meaning. You will tag a teacher's think-aloud, score three running records, diagnose spelling stages, and audit a classroom library.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Fluency is the bridge<\/p><p>Fluent reading has three parts: <strong>accuracy<\/strong> (reading the words correctly), <strong>rate<\/strong> (a reasonable pace), and <strong>prosody<\/strong> (phrasing and expression that sound like talking). When word reading is accurate and automatic, attention is free for comprehension. That is why fluency is often called the bridge between word recognition and understanding.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w4_fluency", "prompt": "A 2nd grader reads quickly but makes many errors and sounds flat. Which part of fluency should the teacher address first?", "options": [{"t": "Rate: push for an even faster pace", "c": false, "f": "Speed without accuracy builds a guessing habit."}, {"t": "Accuracy: make sure the words are read correctly", "c": true, "f": "Yes. Accuracy comes first. Rate and prosody grow on top of accurate word reading."}, {"t": "Prosody only: practice reading with expression", "c": false, "f": "Expression matters, but practicing expression on words read wrong will not fix the underlying problem."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Intake"}, {"title": "Think-Aloud Lab", "lead": "<p>A teacher is modeling a think-aloud with a picture book called <em>Rosa's Garden<\/em>. Tag each thing she says with the strategy she is making visible.<\/p>", "comps": [{"type": "sort", "id": "w4_think", "prompt": "Which strategy is the teacher modeling?", "cats": ["Predict", "Question", "Visualize", "Connect"], "optional": false, "items": [{"t": "\"The cover shows a girl holding a tiny seed. I bet this story is about growing something.\"", "a": 0, "w": "She uses clues to say what will happen.", "hint": ""}, {"t": "\"Hmm, why does Rosa look worried when the rain stops?\"", "a": 1, "w": "She asks a question that pushes her to read on.", "hint": ""}, {"t": "\"I can picture the dry, cracked dirt and Rosa's watering can tipping over.\"", "a": 2, "w": "She builds a mental image from the words.", "hint": ""}, {"t": "\"This reminds me of the summer my tomato plant wilted.\"", "a": 3, "w": "A text-to-self connection.", "hint": ""}, {"t": "\"The sprout is finally poking up, so I think Rosa will enter it in the fair after all.\"", "a": 0, "w": "She uses new evidence to update a prediction.", "hint": "Is she wondering, or saying what she thinks will happen?"}, {"t": "\"Rosa is like the boy in our last read-aloud who kept trying even when it was hard.\"", "a": 3, "w": "A text-to-text connection.", "hint": ""}, {"t": "\"I wonder what Rosa will do if the sprout doesn't grow in time.\"", "a": 1, "w": "\"I wonder\" signals a question.", "hint": ""}, {"t": "\"In my mind I can see the green sprout curling up through the soil.\"", "a": 2, "w": "\"In my mind I can see\" signals visualizing.", "hint": ""}], "hint": null, "after": "Notice how short each move is. A good think-aloud models the thinking, then gets back to the story.", "heading": null}, {"type": "text", "id": "w4_mine", "label": "Write one think-aloud line you could say while reading the favorite children's book you are bringing to class. Name the book and the strategy.", "hint": "For example: Predict, Question, Visualize, or Connect.", "starter": null, "model": "Book: a story about a girl who wants to fly a kite. Strategy: Predict. \"The wind is getting stronger and her kite string is tangled in the tree, so I think something is going to go wrong. Let's read on and check.\"", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Think-Aloud"}, {"title": "Fluency Check", "lead": "<p>Score three one-minute running records. Then decide each child's level for that text.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Clinic formulas<\/p><p><strong>Words correct per minute (WCPM)<\/strong> = (words read &minus; errors) &divide; minutes<br><strong>Accuracy<\/strong> = (words read &minus; errors) &divide; words read &times; 100<\/p><p style=\"margin:0\"><strong>Levels used in this clinic:<\/strong> 95-100% independent, 90-94% instructional, below 90% frustration. To judge rate, teachers compare WCPM to grade-level oral reading fluency norms, such as Hasbrouck and Tindal's.<\/p><\/div>", "heading": null, "id": null}, {"type": "custom", "id": "wcpm", "summary": "Running records:", "heading": null, "optional": false}, {"type": "mc", "id": "w4_luis", "prompt": "Luis reads accurately enough, but his teacher notes he reads word by word with no expression. Which next step fits best?", "options": [{"t": "Move him to harder books so he is challenged", "c": false, "f": "Harder text would lower his accuracy and make phrasing even harder."}, {"t": "Repeated reading and readers theater with modeled phrasing, so he hears and then practices how the text should sound", "c": true, "f": "Yes. Repeated reading builds automaticity, and readers theater gives a real reason to practice phrasing and expression."}, {"t": "Timed drills where he tries to beat his own speed every day", "c": false, "f": "Pushing speed alone can make reading even more robotic. Prosody needs modeling and meaningful rereading."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Fluency"}, {"title": "Spelling Stage Diagnostician", "lead": "<p>Children's misspellings show what they know about how words work. Use Gentry's developmental spelling stages to diagnose each sample.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Gentry's spelling stages<\/p><ul style=\"margin:0;padding-left:20px\"><li><strong>Precommunicative:<\/strong> letters or letter-like marks with no link to sounds.<\/li><li><strong>Semiphonetic:<\/strong> one to three letters stand for a few sounds, often the first and last.<\/li><li><strong>Phonetic:<\/strong> every sound the child hears is represented, spelled the way it sounds.<\/li><li><strong>Transitional:<\/strong> a vowel in every syllable and familiar spelling patterns, sometimes in the wrong place.<\/li><li><strong>Conventional:<\/strong> most words are spelled correctly.<\/li><\/ul><\/div>", "heading": null, "id": null}, {"type": "sort", "id": "w4_stage", "prompt": "Diagnose the stage for each sample (target word, then what the child wrote).", "cats": ["Precommunicative", "Semiphonetic", "Phonetic", "Transitional", "Conventional"], "optional": false, "items": [{"t": "<em>dragon<\/em> written as <strong>b K o T m<\/strong>", "a": 0, "w": "Random letters with no sound match.", "hint": ""}, {"t": "<em>bike<\/em> written as <strong>BK<\/strong>", "a": 1, "w": "Just the first and last sounds.", "hint": "How many of the sounds are represented?"}, {"t": "<em>dragon<\/em> written as <strong>D<\/strong>", "a": 1, "w": "One letter for the first sound.", "hint": ""}, {"t": "<em>dress<\/em> written as <strong>JRAS<\/strong>", "a": 2, "w": "Every sound is there, spelled as the child hears it: /dr/ often sounds like /jr/, and the letter name A is the closest match to short e.", "hint": "Say dress slowly. Is every sound represented?"}, {"t": "<em>bottom<\/em> written as <strong>BODM<\/strong>", "a": 2, "w": "Every sound is represented, and the middle t sounds like /d/ in speech.", "hint": ""}, {"t": "<em>eagle<\/em> written as <strong>EAGUL<\/strong>", "a": 3, "w": "A vowel in every syllable and a vowel team (ea), not yet the conventional -le ending.", "hint": ""}, {"t": "<em>make<\/em> written as <strong>MAEK<\/strong>", "a": 3, "w": "The child knows long a needs a marker but places the e in the wrong spot.", "hint": "The child knows a pattern. Is it in the right place?"}, {"t": "<em>The dragon flew home.<\/em> written correctly", "a": 4, "w": "Conventional spelling.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "mc", "id": "w4_plan", "prompt": "A child writes JRAS for <em>dress<\/em> and BODM for <em>bottom<\/em>. Which plan fits best?", "options": [{"t": "Correct every misspelled word in red so the child sees the right spelling", "c": false, "f": "Marking every error does not teach the pattern and can discourage a young writer."}, {"t": "Explicit instruction on consonant blends and short vowels, with word sorts and sound boxes that link each sound to its spelling", "c": true, "f": "Yes. This child hears every sound. The next step is learning how those sounds are conventionally spelled."}, {"t": "Teach Greek and Latin roots", "c": false, "f": "Roots are for much later. This child is still mapping single sounds to letters."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Spelling"}, {"title": "Mirror Text Audit", "lead": "<p>Children need books that are <strong>mirrors<\/strong> (they see themselves) and <strong>windows<\/strong> (they see other lives). Audit this classroom library.<\/p>", "comps": [{"type": "info", "html": "<table class=\"data\"><caption>Classroom library snapshot: 1st grade (eight most-read books)<\/caption>\n<thead><tr><th scope=\"col\">Book (fictional titles)<\/th><th scope=\"col\">Main character(s)<\/th><th scope=\"col\">Language<\/th><th scope=\"col\">Type<\/th><\/tr><\/thead><tbody>\n<tr><td>Max the Fire Truck<\/td><td>A talking fire truck<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>Grandpa's Garden<\/td><td>A white boy and his grandfather, suburban home<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>Princess Pearl<\/td><td>A white girl who waits in a castle to be rescued<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>The Big Game<\/td><td>A team of boys playing soccer<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>My Busy City<\/td><td>Many people of different backgrounds in the photos<\/td><td>English<\/td><td>Informational<\/td><\/tr>\n<tr><td>Bunny Hops Home<\/td><td>A rabbit family<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>Sam's First Day<\/td><td>A white boy starting school<\/td><td>English<\/td><td>Story<\/td><\/tr>\n<tr><td>Desert Animals<\/td><td>Photos of animals<\/td><td>English<\/td><td>Informational<\/td><\/tr>\n<\/tbody><\/table>\n<p style=\"margin:0\"><strong>The class:<\/strong> about 40% of families speak Spanish at home and 20% speak Tagalog. One child uses a wheelchair, and one child has Down syndrome.<\/p>", "heading": null, "id": null}, {"type": "mc", "id": "w4_gaps", "prompt": "Which gaps does this library have? Choose all that apply.", "options": [{"t": "No books in the children's home languages, and no bilingual books", "c": true, "f": "Yes. Spanish and Tagalog speakers see no mirror of their home language."}, {"t": "No characters with disabilities", "c": true, "f": "Yes. Two children in the class have no mirror on these shelves."}, {"t": "The only story with a girl as the main character casts her as waiting to be rescued", "c": true, "f": "Yes. Gender roles are narrow."}, {"t": "No informational texts", "c": false, "f": "Two of the eight books are informational."}, {"t": "No animal stories", "c": false, "f": "Bunny Hops Home is an animal story."}], "multi": true, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w4_add", "label": "Name two kinds of books you would add first for this class, and explain why each one matters.", "hint": null, "starter": null, "model": "First, bilingual Spanish-English and Tagalog-English picture books, so children see their home languages valued at school and families can read along. Second, stories where a character who uses a wheelchair or has Down syndrome is the hero of an everyday adventure, so those children see themselves as the main character and classmates see disability as a normal part of life.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Mirror Texts"}, {"title": "Discharge Notes", "lead": "<p>Wrap up your clinic shift.<\/p>", "comps": [{"type": "text", "id": "w4_debrief", "label": "In three or four sentences, explain how fluency and comprehension depend on each other, using one child from today's clinic as an example.", "hint": null, "starter": null, "model": "Kiara read the passage at 88% accuracy, so she was spending her attention figuring out words and had little left for meaning. Accurate, automatic word reading frees up attention for comprehension, and good prosody shows that a reader is grouping words into meaningful phrases. That is why fluency work has to build accuracy first, then rate and expression, with texts at the right level.", "rows": 5, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w4_field", "label": "For Fieldwork Reflection #2: what is one sign of comprehension, or of a breakdown in comprehension, that you could watch for in your observation?", "hint": "Think about retelling, questions children ask, or how they read aloud.", "starter": null, "model": null, "rows": 4, "heading": null, "optional": true, "min": 15}], "short": "Debrief"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.wcpm = function(root, api){
+  const {h} = api;
+  const cases = [
+    {name:'Dev', grade:'Grade 2, winter', words:112, errors:4, secs:60, level:'Independent'},
+    {name:'Kiara', grade:'Grade 1, spring', words:75, errors:9, secs:90, level:'Frustration'},
+    {name:'Luis', grade:'Grade 3, fall', words:140, errors:10, secs:120, level:'Instructional'}
+  ];
+  const ok = cases.map(() => false);
+  cases.forEach((c, i) => {
+    const w = Math.round(((c.words - c.errors) / (c.secs / 60)) * 10) / 10;
+    const a = Math.round(((c.words - c.errors) / c.words) * 1000) / 10;
+    const idw = 'wc_w' + i, ida = 'wc_a' + i, idl = 'wc_l' + i;
+    const iw = h('input', {type:'number', id:idw, step:'0.1', inputmode:'decimal'});
+    const ia = h('input', {type:'number', id:ida, step:'0.1', inputmode:'decimal'});
+    const il = h('select', {id:idl}, h('option', {value:''}, 'Choose...'), ...['Independent','Instructional','Frustration'].map(x => h('option', {value:x}, x)));
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    const btn = h('button', {class:'btn', type:'button', onclick: () => {
+      const vw = parseFloat(iw.value), va = parseFloat(ia.value), vl = il.value;
+      const msgs = [];
+      const gw = Math.abs(vw - w) <= 1, ga = Math.abs(va - a) <= 1, gl = vl === c.level;
+      if (!gw) msgs.push('<p>Words correct per minute: subtract the errors from the words read, then divide by the minutes. ' + c.secs + ' seconds is ' + (c.secs/60) + (c.secs===60?' minute':' minutes') + '.</p>');
+      if (!ga) msgs.push('<p>Accuracy: divide the words read correctly by the total words read, then multiply by 100.</p>');
+      if (!gl) msgs.push('<p>Level: use the accuracy rate and the clinic bands (95-100% independent, 90-94% instructional, below 90% frustration).</p>');
+      ok[i] = gw && ga && gl;
+      if (ok[i]) api.fb(box, 'ok', '<p><strong>Correct.</strong> ' + c.name + ' reads ' + w + ' words correct per minute with ' + a + '% accuracy: ' + c.level.toLowerCase() + ' level for this text.</p>');
+      else api.fb(box, 'no', '<p><strong>Not yet.</strong></p>' + msgs.join(''));
+      const all = ok.every(Boolean);
+      api.done(all);
+      api.result(all ? cases.map(x => x.name + ' ' + Math.round(((x.words-x.errors)/(x.secs/60))*10)/10 + ' WCPM, ' + Math.round(((x.words-x.errors)/x.words)*1000)/10 + '%, ' + x.level).join('; ') : ok.filter(Boolean).length + ' of 3 records scored');
+      api.resize();
+    }}, 'Check this record');
+    root.append(h('div', {class:'panel'},
+      h('h3', {}, c.name + ' (' + c.grade + ')'),
+      h('p', {style:'margin:0 0 6px'}, 'Words read: ' + c.words + ' · Errors: ' + c.errors + ' · Time: ' + c.secs + ' seconds'),
+      h('div', {class:'calc'},
+        h('label', {for:idw}, 'Words correct per minute', iw),
+        h('label', {for:ida}, 'Accuracy (%)', ia),
+        h('label', {for:idl}, 'Level for this text', il)),
+      h('div', {class:'btnrow'}, btn), box));
+  });
+};
+
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

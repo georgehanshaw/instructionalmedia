@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 8: The Literacy Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+<style>
+
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:0 0 14px}
+.dossier h3{margin:0 0 6px}
+table.data{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0 12px;background:#fff}
+table.data th,table.data td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.data th{background:var(--cream);color:var(--ink)}
+table.data caption{text-align:left;font-weight:700;color:var(--ink);padding:0 0 6px}
+.lock{border:2px dashed #7C2429;border-radius:10px;padding:12px 16px;background:#fff;margin-top:10px}
+.lock.open{border-style:solid;border-color:#2e6b3a;background:#eef7ef}
+.lock p{margin:0}
+.panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px;background:#fff}
+.panel h3{margin:0 0 6px}
+.calc{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:8px 0}
+.calc label{display:flex;flex-direction:column;font-size:15px;font-weight:700;color:var(--ink)}
+.calc input,.calc select{margin-top:4px;width:150px}
+.preview{font-size:19px;font-weight:700;color:var(--ink);background:var(--cream);border:1px dashed var(--brick);border-radius:8px;padding:10px 14px;margin:8px 0;min-height:46px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle;background:#fff;border:1px solid var(--line);color:var(--deep)}
+
+.kid{border:1px solid var(--line);border-left:6px solid var(--brick);border-radius:10px;padding:12px 16px;margin:0 0 12px;background:#fff}
+.kid h3{margin:0 0 4px}
+.kid select{width:100%;margin:6px 0}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.paths div{border-radius:8px;padding:10px 12px;font-size:15px}
+.paths .up{background:var(--okbg);border-left:5px solid var(--ok)}
+.paths .down{background:var(--nobg);border-left:5px solid var(--brick)}
+.paths p{margin:0}
+@media (max-width:640px){.paths{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 8 Application Practice</p>
+<h1>The Literacy Journey</h1>
+<p>Make inferences from a picture, build a ladder of higher-order questions, score a retelling, and check in on the four readers from Week 1 to see how support changes their paths.</p>
+<div class="meta"><span class="pill">Week 8</span><span class="pill">About 25 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA ELA/ELD Framework (Meaning Making); Scarborough's Reading Rope (Verbal Reasoning); TPE 7.1, 7.4, 7.6, 7.10</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week8", "title": "The Literacy Journey", "course": "PRCE 420", "stations": [{"title": "Final Briefing", "lead": "<p>This is the last stop of the course. You will make inferences, build a ladder of questions, score a retelling, and then check in on the four young readers you met in Week 1.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Verbal reasoning<\/p><p>The verbal reasoning strand of the Reading Rope is about thinking beyond the words: making inferences, understanding figurative language, and taking another's perspective. An <strong>inference<\/strong> combines <strong>evidence in the text or picture<\/strong> with <strong>what the reader already knows<\/strong>.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w8_inf", "prompt": "In <em>The Three Little Pigs<\/em>, which statement is an inference rather than a detail stated in the story?", "options": [{"t": "The first pig built his house of straw.", "c": false, "f": "The story says this directly."}, {"t": "The third pig was the most patient of the three.", "c": true, "f": "Yes. The story never says \"patient,\" but readers infer it because he took the time to build with bricks."}, {"t": "The wolf blew down the house of sticks.", "c": false, "f": "This happens directly in the story."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Briefing"}, {"title": "Picture Inference", "lead": "<p>Look closely at the picture. What happened here? Use only what you can see, plus what you know.<\/p>", "comps": [{"type": "info", "html": "<div class=\"scene\"><svg viewBox=\"0 0 640 330\" role=\"img\" aria-labelledby=\"scnT scnD\" xmlns=\"http://www.w3.org/2000/svg\">\n<title id=\"scnT\">Picture for inference<\/title>\n<desc id=\"scnD\">A kitchen. On the table is a round cake with candles and one wedge-shaped slice missing. A party hat sits beside the cake. On the floor, an empty plate lies tipped over next to a few crumbs. A brown dog sits next to the plate with a white smear on its nose, looking away. A wall clock shows three o'clock, and a banner hangs on the wall.<\/desc>\n<rect x=\"0\" y=\"0\" width=\"640\" height=\"250\" fill=\"#F5F2EF\"/>\n<rect x=\"0\" y=\"250\" width=\"640\" height=\"80\" fill=\"#e4ddd6\"/>\n<g stroke=\"#7C2429\" stroke-width=\"2\" fill=\"none\"><path d=\"M60 30 Q 200 70 340 30 Q 470 70 600 30\"/><\/g>\n<g fill=\"#A8353A\"><path d=\"M90 38 l14 26 l14 -22z\"/><path d=\"M160 50 l14 26 l14 -24z\"/><path d=\"M230 52 l14 26 l14 -26z\"/><path d=\"M400 52 l14 26 l14 -26z\"/><path d=\"M470 50 l14 26 l14 -24z\"/><path d=\"M540 40 l14 26 l14 -22z\"/><\/g>\n<circle cx=\"560\" cy=\"130\" r=\"34\" fill=\"#fff\" stroke=\"#262523\" stroke-width=\"3\"/>\n<line x1=\"560\" y1=\"130\" x2=\"560\" y2=\"106\" stroke=\"#262523\" stroke-width=\"3\"/><line x1=\"560\" y1=\"130\" x2=\"580\" y2=\"130\" stroke=\"#262523\" stroke-width=\"3\"/>\n<rect x=\"90\" y=\"170\" width=\"300\" height=\"14\" fill=\"#7C2429\"/>\n<rect x=\"105\" y=\"184\" width=\"12\" height=\"96\" fill=\"#7C2429\"/><rect x=\"363\" y=\"184\" width=\"12\" height=\"96\" fill=\"#7C2429\"/>\n<ellipse cx=\"240\" cy=\"172\" rx=\"86\" ry=\"12\" fill=\"#fff\" stroke=\"#55504a\"/>\n<path d=\"M175 165 V 125 A 65 16 0 0 1 305 125 V 165 A 65 16 0 0 1 175 165 Z\" fill=\"#F7E7C6\" stroke=\"#55504a\" stroke-width=\"2\"/>\n<ellipse cx=\"240\" cy=\"125\" rx=\"65\" ry=\"16\" fill=\"#fff\" stroke=\"#55504a\" stroke-width=\"2\"/>\n<path d=\"M175 140 A 65 16 0 0 0 305 140\" fill=\"none\" stroke=\"#E8B4B8\" stroke-width=\"5\"/>\n<path d=\"M240 125 L 306 125 L 306 168 A 65 16 0 0 1 272.5 180 L 272.5 139 Z\" fill=\"#F5F2EF\"/>\n<path d=\"M240 125 L 272.5 139 L 272.5 179 L 240 165 Z\" fill=\"#EBD3A4\" stroke=\"#55504a\" stroke-width=\"2\"/>\n<path d=\"M240 141 L 272.5 155\" stroke=\"#E8B4B8\" stroke-width=\"5\"/>\n<path d=\"M240 125 L 305 125\" stroke=\"#55504a\" stroke-width=\"2\"/>\n<g stroke=\"#262523\" stroke-width=\"3\"><line x1=\"205\" y1=\"122\" x2=\"205\" y2=\"102\"/><line x1=\"228\" y1=\"118\" x2=\"228\" y2=\"98\"/><\/g>\n<g fill=\"#A8353A\"><ellipse cx=\"205\" cy=\"97\" rx=\"4\" ry=\"7\"/><ellipse cx=\"228\" cy=\"93\" rx=\"4\" ry=\"7\"/><\/g>\n<path d=\"M330 162 L 350 112 L 370 162 Z\" fill=\"#1a5fb4\"/><circle cx=\"350\" cy=\"110\" r=\"6\" fill=\"#A8353A\"/>\n<ellipse cx=\"455\" cy=\"292\" rx=\"44\" ry=\"9\" fill=\"#fff\" stroke=\"#55504a\" stroke-width=\"2\" transform=\"rotate(-12 455 292)\"/>\n<g fill=\"#C9A26A\"><circle cx=\"420\" cy=\"305\" r=\"3\"/><circle cx=\"432\" cy=\"310\" r=\"2.5\"/><circle cx=\"498\" cy=\"300\" r=\"3\"/><\/g>\n<g fill=\"#8B5A2B\"><ellipse cx=\"560\" cy=\"262\" rx=\"40\" ry=\"34\"/><circle cx=\"588\" cy=\"212\" r=\"26\"/><ellipse cx=\"604\" cy=\"222\" rx=\"16\" ry=\"11\"/><ellipse cx=\"575\" cy=\"196\" rx=\"9\" ry=\"18\" transform=\"rotate(-20 575 196)\"/><rect x=\"535\" y=\"285\" width=\"14\" height=\"22\" rx=\"5\"/><rect x=\"568\" y=\"285\" width=\"14\" height=\"22\" rx=\"5\"/><\/g>\n<ellipse cx=\"612\" cy=\"216\" rx=\"9\" ry=\"6\" fill=\"#fff\"/><circle cx=\"618\" cy=\"222\" r=\"4\" fill=\"#262523\"/><circle cx=\"596\" cy=\"206\" r=\"3.5\" fill=\"#262523\"/>\n<\/svg><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w8_pic", "prompt": "Which inference is best supported by the evidence?", "options": [{"t": "It is the dog's birthday party.", "c": false, "f": "Nothing in the picture connects the party to the dog."}, {"t": "The dog ate the missing slice of cake.", "c": true, "f": "Yes. The missing slice, the empty plate on the floor, the crumbs, and the frosting on the dog's nose all point the same way. The dog looking away is a fun extra clue."}, {"t": "The cake is chocolate.", "c": false, "f": "We cannot tell the flavor from the picture. This is a guess, not an inference."}, {"t": "The party is over and everyone went home.", "c": false, "f": "The candles are still on the cake and the hat is unused. There is no evidence the party ended."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w8_claim", "label": "Write an inference about a different detail in the picture, with your evidence and your background knowledge.", "hint": null, "starter": "I think ___ because I see ___ and I know ___.", "model": "I think the party has not started yet because I see the candles are still standing and the party hat is sitting on the table, and I know people usually wear hats and blow out candles during the party.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Inference"}, {"title": "Question Ladder", "lead": "<p>Higher-order questions push children to analyze, evaluate, and create. Sort these read-aloud questions about <em>The Three Little Pigs<\/em> by level of Bloom's Taxonomy.<\/p>", "comps": [{"type": "sort", "id": "w8_bloom", "prompt": "Which level of thinking does each question ask for?", "cats": ["Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"], "optional": false, "items": [{"t": "What did the first pig use to build his house?", "a": 0, "w": "Recall of a detail.", "hint": ""}, {"t": "Why did the straw house fall down so easily?", "a": 1, "w": "Explaining an idea in the story.", "hint": ""}, {"t": "Which material in our classroom would you use to build a wolf-proof house? Why?", "a": 2, "w": "Using the story's idea in a new situation.", "hint": "Is the child using the idea in a brand-new place?"}, {"t": "How are the three houses alike, and how are they different?", "a": 3, "w": "Comparing parts.", "hint": ""}, {"t": "Was the third pig a good brother? Explain your thinking.", "a": 4, "w": "Making and defending a judgment.", "hint": ""}, {"t": "Make up a new ending where the wolf and the pigs become friends.", "a": 5, "w": "Producing something new.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "text", "id": "w8_myq", "label": "Write one Evaluate or Create question for the favorite children's book you shared in Week 4.", "hint": null, "starter": null, "model": "Evaluate: \"Should the main character have kept the secret from her friend? Why or why not?\"", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Questions"}, {"title": "Retell Check", "lead": "<p>Retelling shows whether a child understood and can organize a story. Read Tomas's retelling.<\/p>", "comps": [{"type": "info", "html": "<div class=\"dossier\"><p class=\"eyebrow\">Retelling transcript<\/p><h3>Tomas, Grade 1: <em>The Three Little Pigs<\/em><\/h3><p style=\"margin:0\">\"There was pigs. And the wolf blowed the house down. Then he blowed the other house down too. The end.\"<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w8_retell", "prompt": "Which elements did Tomas include? Choose all that apply.", "options": [{"t": "He names the main characters (the pigs and the wolf).", "c": true, "f": "Yes, though only as a group: \"pigs.\""}, {"t": "He tells some key events in order.", "c": true, "f": "Yes. He tells two of the three house events, in order."}, {"t": "He describes the setting.", "c": false, "f": "There is no mention of where or when the story happens."}, {"t": "He tells how the story ends.", "c": false, "f": "He leaves out the brick house and the resolution."}, {"t": "He uses language from the story, such as \"huff and puff.\"", "c": false, "f": "He uses his own words, not the story's language."}], "multi": true, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w8_next", "prompt": "What is the best next step for Tomas?", "options": [{"t": "Have him reread the story silently three more times", "c": false, "f": "Rereading alone will not show him what a full retelling includes."}, {"t": "Use a story map with picture cards for beginning, middle, and end, and prompt with \"How did it end?\"", "c": true, "f": "Yes. Visual supports help him organize the whole story, and the prompt targets what he left out."}, {"t": "Ask him to write the retelling instead of telling it", "c": false, "f": "Writing adds load. He needs to organize the story orally first."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Retell"}, {"title": "The Literacy Journey", "lead": "<p>Remember Amari, Jaxson, Elena, and Leilani from the Week 1 Escape Room? A year has passed. Each one got the Week 1 intervention you prescribed. Choose the best next support from what you have learned since, then see the two paths their reading lives could take.<\/p>", "comps": [{"type": "custom", "id": "journey", "summary": "Literacy Journey:", "heading": null, "optional": false}, {"type": "text", "id": "w8_me", "label": "For your Matthew Effect paper: pick one of the four children. In three or four sentences, explain how the Matthew Effect would play out without support, and which instructional moves break the cycle.", "hint": null, "starter": null, "model": "Without support, Elena would keep avoiding reading, so each year she would read far fewer words than her classmates and fall further behind in vocabulary and comprehension, which makes reading even harder. Systematic phonics fixed the root decoding problem, but breaking the cycle also means rebuilding her volume and confidence. Repeated reading and readers theater make practice purposeful and successful, and audiobooks let her keep learning new words at grade level while her fluency catches up.", "rows": 5, "heading": null, "optional": false, "min": 15}], "short": "Journey"}, {"title": "Commit Your Work", "lead": "<p>Proverbs 16:3: <em>Commit thy works unto the LORD, and thy thoughts shall be established.<\/em><\/p>", "comps": [{"type": "text", "id": "w8_commit", "label": "What commitments will you make so that every child in your future classroom becomes a capable, joyful reader? Name two.", "hint": null, "starter": null, "model": "First, I will screen early and teach the code explicitly to every child in Tier 1, so no child's reading depends on luck. Second, I will fill my classroom library with mirror and window books and read aloud every day, so children see reading as something joyful that belongs to them.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w8_cloud", "label": "For the class word cloud: list three words or short phrases that capture what you learned in this course.", "hint": "Separate them with commas.", "starter": null, "model": "Reading Rope, decodable text, mirrors and windows", "rows": 4, "heading": null, "optional": false, "min": 5}], "short": "Commit"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.journey = function(root, api){
+  const {h} = api;
+  const S = [
+    'Week 3: playful phonemic awareness and letter-sound routines, moving into decodable text',
+    'Week 3: connected decodable text matched to the scope and sequence he has been taught',
+    'Week 4: repeated reading and readers theater for fluency and confidence, plus audiobooks to keep vocabulary growing',
+    'Week 7: sentence combining and text structure instruction, with talk comparing English and her home language',
+    'Week 6: more Tier 3 science vocabulary lists to memorize'
+  ];
+  const K = [
+    {n:'Amari', was:'Week 1: preschool, age 4, still learning concepts about print.', now:'Now in TK: he handles books well and points to words, but he cannot yet hear or name the first sound in a word.', a:0,
+      up:'He connects sounds to letters through play, reads his first decodable books in kindergarten, and keeps his love of storytelling.',
+      down:'He memorizes favorite books by heart but cannot map sounds to letters, and he starts guessing from pictures in kindergarten.'},
+    {n:'Jaxson', was:'Week 1: kindergarten, missing phonemic awareness.', now:'Now in Grade 1: he can blend and segment sounds orally, and he is ready to read connected text.', a:1,
+      up:'He practices the exact patterns he has learned in real stories, reading becomes automatic, and he chooses books on his own.',
+      down:'He gets predictable books that reward guessing, slips back into using first letters and pictures, and decoding never becomes automatic.'},
+    {n:'Elena', was:'Week 1: grade 1, decoding gap turning into avoidance.', now:'Now in Grade 2: after systematic phonics she decodes accurately, but she reads slowly, avoids reading aloud, and her vocabulary is behind.', a:2,
+      up:'Rereading with a part to perform rebuilds her confidence, her rate and expression grow, and audiobooks let her vocabulary catch up with her peers.',
+      down:'She keeps avoiding reading, reads far fewer words than her classmates each year, and the vocabulary and comprehension gap keeps widening.'},
+    {n:'Leilani', was:'Week 1: grade 2 multilingual learner, strong decoder, confused by complex syntax.', now:'Now in Grade 3: content-area texts with dependent clauses and connectors still trip her up.', a:3,
+      up:'She learns how although, until, and because link ideas, compares them with her home language, and reads science and social studies texts with understanding.',
+      down:'She keeps reading every word correctly but missing how ideas connect, and her grades drop as texts in later grades get more complex.'}
+  ];
+  const ok = K.map(() => false);
+  K.forEach((k, i) => {
+    const id = 'jy_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose the next support...'), ...S.map((s, j) => h('option', {value:j}, s)));
+    const out = h('div', {'aria-live':'polite'});
+    sel.addEventListener('change', () => {
+      out.innerHTML = '';
+      if (sel.value === '') { ok[i] = false; }
+      else if (+sel.value === k.a) {
+        ok[i] = true;
+        out.append(h('div', {class:'paths'},
+          h('div', {class:'up'}, h('p', {}, h('strong', {}, 'With this support: '), k.up)),
+          h('div', {class:'down'}, h('p', {}, h('strong', {}, 'Without it: '), k.down))));
+      } else {
+        ok[i] = false;
+        out.append(h('div', {class:'fb no'}, h('p', {}, h('strong', {}, 'Not the best fit. '), +sel.value === 4 ? 'Memorizing word lists will not address this child\'s current need.' : 'That support fits a different child. Reread what ' + k.n + ' needs now.')));
+      }
+      const all = ok.every(Boolean);
+      api.done(all);
+      api.result(all ? K.map(x => x.n + ': ' + S[x.a]).join(' | ') : ok.filter(Boolean).length + ' of 4 matched');
+      api.resize();
+    });
+    root.append(h('div', {class:'kid'}, h('h3', {}, k.n), h('p', {class:'hint', style:'margin:0'}, k.was), h('p', {style:'margin:4px 0'}, k.now),
+      h('label', {for:id, class:'kbd'}, 'Best next support from this course'), sel, out));
+  });
+};
+
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>
