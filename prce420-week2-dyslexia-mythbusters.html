@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 2: The Dyslexia MythBusters Laboratory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+
+<style>
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:10px 0 14px}
+.dossier h3{margin:0 0 8px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 2 Application Practice</p>
+<h1>The Dyslexia MythBusters Laboratory</h1>
+<p>Investigate common myths about dyslexia and early reading, gather the science that debunks them, and script a compassionate conversation with a caregiver.</p>
+<div class="meta"><span class="pill">Week 2</span><span class="pill">About 35 minutes</span><span class="pill">Ungraded practice</span><span class="pill">5 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: California Dyslexia Guidelines; CA Preschool Learning Foundations; CA ELA/ELD Framework; TPE 1.4, 2.5, 3.1, 3.3, 3.5, 4.1, 4.4, 5.1, 5.3, 7.2, 7.5, 7.7, 7.8, 7.10</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week2", "title": "The Dyslexia MythBusters Laboratory", "course": "PRCE 420", "stations": [{"title": "Lab Orientation", "lead": "<p>Welcome to the PK-3 MythBuster Testing Facility. Families and even colleagues often hold well-meaning beliefs about dyslexia and early reading that the science does not support. Before you investigate, calibrate your instruments.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Working definition<\/p><p>The California Dyslexia Guidelines use the International Dyslexia Association definition: dyslexia is a specific learning disability that is neurobiological in origin. It shows up as difficulty with accurate and/or fluent word recognition and with spelling and decoding, typically resulting from a deficit in the <strong>phonological component of language<\/strong> that is often unexpected in relation to a child's other abilities.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w2_def", "prompt": "Based on this definition, dyslexia is best described as...", "options": [{"t": "A visual problem that makes letters look jumbled or backward", "c": false, "f": "This is one of the most common myths. Dyslexia is language based, centered on processing the sounds in words."}, {"t": "A language-based difference in processing the sounds of speech, which makes mapping sounds to letters hard", "c": true, "f": "Yes. The core difficulty is phonological, which is why phonological awareness and explicit phonics are at the center of intervention."}, {"t": "A sign of low intelligence or low effort", "c": false, "f": "Dyslexia is often unexpected in relation to a child's other abilities and is unrelated to intelligence or effort."}, {"t": "A maturity delay that children outgrow by 3rd grade", "c": false, "f": "Dyslexia does not go away with time. Explicit instruction is what helps."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Orientation"}, {"title": "Rapid Myth Sort", "lead": "<p>Eight claims arrive at the lab. Sort each one: is it a myth, or is it supported by the science?<\/p>", "comps": [{"type": "sort", "id": "w2_sort", "prompt": "Sort each claim.", "cats": ["Myth", "Supported by the science"], "optional": false, "items": [{"t": "Colored overlays and eye-tracking exercises fix dyslexia.", "a": 0, "w": "Interventions aimed at the eyes do not remediate dyslexia, which is language based.", "hint": ""}, {"t": "Letter reversals are common in young children through about age 7.", "a": 1, "w": "Reversals are developmentally typical early on. Persistent reversals with reading delays are worth a closer look.", "hint": ""}, {"t": "It is best to wait until 3rd grade to screen a struggling TK student.", "a": 0, "w": "Waiting lets the Matthew Effect compound. Early screening and intervention work best.", "hint": ""}, {"t": "Telling a child to look at the picture and guess builds strong reading habits.", "a": 0, "w": "Guessing pulls attention away from the print and skips orthographic mapping.", "hint": ""}, {"t": "A child can be gifted in reasoning and still have dyslexia.", "a": 1, "w": "Dyslexia is often unexpected in relation to a child's other abilities.", "hint": ""}, {"t": "Special dyslexia fonts significantly improve reading accuracy.", "a": 0, "w": "Studies of dyslexia-specific fonts have not shown meaningful gains.", "hint": ""}, {"t": "A poor reader at the end of 1st grade is likely to still be struggling in 4th grade without intervention.", "a": 1, "w": "Juel (1988) found about an 88% chance of remaining a poor reader.", "hint": ""}, {"t": "Irregular words like <em>said<\/em> still have mostly regular sound-spelling parts.", "a": 1, "w": "In <em>said<\/em>, only the ai is irregular. That is the idea behind Heart Words.", "hint": ""}], "hint": null, "after": null, "heading": null}], "short": "Myth Sort"}, {"title": "Evidence Bench", "lead": "<p>Test what the science says works. Each question comes from one of the eight case files.<\/p>", "comps": [{"type": "mc", "id": "w2_reverse", "prompt": "Case File 1: Leo, mid-1st grade, keeps reversing b and d and is behind in word reading. What is the best next step?", "options": [{"t": "Order colored overlays and start eye-tracking exercises", "c": false, "f": "These target the eyes, which are not the source of the difficulty."}, {"t": "Teach an explicit multisensory routine linking the sound /b/ or /d/ to its mouth shape and stroke sequence, and monitor his decoding", "c": true, "f": "Yes. The fix is strengthening the sound-to-letter link, along with watching his word reading closely."}, {"t": "Ignore it; all children reverse letters", "c": false, "f": "Reversals alone are typical, but paired with word reading delays they deserve attention."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w2_cue", "prompt": "Case File 3: Maya is stuck on the word <em>ship<\/em> in a decodable book. Which prompt builds orthographic mapping?", "options": [{"t": "\"Look at the picture. What would make sense?\"", "c": false, "f": "This invites guessing from the picture instead of the print."}, {"t": "\"What's the first letter? Think of a word that starts like that.\"", "c": false, "f": "Using only the first letter is still guessing."}, {"t": "\"Look at all the letters. Tap the sounds: /sh/ /i/ /p/. Now blend them. Does that make sense in the sentence?\"", "c": true, "f": "Yes. Attending to every letter, then checking meaning, builds the mapping skilled readers rely on."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w2_heart", "prompt": "Case File 7: In the Heart Word routine for <em>said<\/em>, which part do students \"learn by heart\"?", "options": [{"t": "The s", "c": false, "f": "S makes its usual /s/ sound here. It is regular."}, {"t": "The ai", "c": true, "f": "Yes. Ai usually spells the long a sound, but in said it spells the short e sound. That is the heart part. The s and d are regular and are sounded out."}, {"t": "The d", "c": false, "f": "D makes its usual /d/ sound. It is regular."}, {"t": "The whole word", "c": false, "f": "Most of the word is regular. Heart Words focus attention only on the irregular part."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w2_mateo", "prompt": "Case File 8: Mateo clowns around every time independent reading starts. What should the teacher consider first?", "options": [{"t": "A stricter behavior plan with consequences", "c": false, "f": "Consequences may stop the behavior briefly but miss its cause."}, {"t": "Whether the behavior is protecting him from a reading task that feels too hard, and how to reduce the risk of public failure", "c": true, "f": "Yes. Avoidance often signals a skill gap. UDL choices and private practice can rebuild safety."}, {"t": "Moving him to the back of the room", "c": false, "f": "Isolation increases shame and does not address the reading task."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Evidence"}, {"title": "Your Case File", "lead": "<p>Choose one case file to investigate in depth. Read the dossier, then record your findings using the California Dyslexia Guidelines (Chapters 1, 3, and 7), the ELA/ELD Framework, and Morrow (Chapters 3, 6, and 8).<\/p>", "comps": [{"type": "custom", "id": "casefile", "summary": "Case file investigated:", "heading": null, "optional": false}, {"type": "text", "id": "w2_neuro", "label": "The scientific explanation: why is the child's brain processing print and sound this way?", "hint": "Keep it to two or three sentences and tie it to the phonological component of language.", "starter": null, "model": null, "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w2_dev", "label": "The developmental baseline: what is typical at this child's age, and what is not?", "hint": null, "starter": null, "model": null, "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w2_rx", "label": "The evidence-based Structured Literacy routine that addresses the root cause", "hint": "Name the routine and describe what the child does, step by step.", "starter": null, "model": null, "rows": 3, "heading": null, "optional": false, "min": 15}], "short": "Case File"}, {"title": "Caregiver Conversation", "lead": "<p>Now translate the science into a warm, jargon-free conversation with the child's caregiver. In class, this becomes your 60- to 120-second video. Here, draft and rehearse your three-part blueprint.<\/p>", "comps": [{"type": "sort", "id": "w2_jargon", "prompt": "First, tune your language. Sort each phrase.", "cats": ["Family-friendly", "Too clinical or blaming"], "optional": false, "items": [{"t": "\"You noticed something important, and I'm glad you told me.\"", "a": 0, "w": "Validates the caregiver's observation.", "hint": ""}, {"t": "\"He has a phonological core deficit in the left perisylvian region.\"", "a": 1, "w": "Accurate, but alienating for most families. Say it plainly: his brain needs extra practice hearing the sounds in words.", "hint": ""}, {"t": "\"Her brain needs extra practice connecting sounds to letters, and we know how to teach that.\"", "a": 0, "w": "Clear, hopeful, and accurate.", "hint": ""}, {"t": "\"If he tried harder at home, he would be reading by now.\"", "a": 1, "w": "Blames the child and family and is not supported by the science.", "hint": ""}, {"t": "\"Here is a five-minute game you can play at dinner.\"", "a": 0, "w": "Concrete and doable.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "text", "id": "w2_ack", "label": "Part 1: Acknowledge and validate", "hint": null, "starter": "I can hear how much you care about...", "model": "I can hear how much you care about Jaxson's reading, and you were right to notice that rhyming is hard for him. Lots of families wonder whether to wait, and I'm glad we can talk about it now.", "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w2_myth", "label": "Part 2: Deconstruct the myth gently", "hint": null, "starter": null, "model": "It's natural to think he'll grow out of it, but reading doesn't develop on its own the way talking does. Children who get extra practice with sounds early tend to catch up faster, so we don't want to wait.", "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w2_plan", "label": "Part 3: Provide an actionable classroom and home plan", "hint": null, "starter": null, "model": "In class, he'll play a quick sound game with me every day, where he moves a chip into a box for each sound in a word. At home, you can play I Spy with sounds: I spy something that starts with /m/. Five minutes a day makes a real difference, and I'll check in with you in four weeks.", "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "custom", "id": "rehearse", "summary": "Rehearsal:", "heading": null, "optional": true}, {"type": "checklist", "id": "w2_check", "prompt": "Before you record in class, check your conversation against the video criteria. Does it...", "items": ["Use a warm, validating tone that does not blame the child or family? (Compassionate professionalism)", "Explain the science clearly, without jargon, grounded in the California Dyslexia Guidelines? (Scientific precision)", "Give one concrete, multisensory Structured Literacy routine to use right away? (Actionable scaffold)"], "need": 0, "heading": null}], "short": "Conversation"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.casefile = function(root, api){
+  const {h} = api;
+  const cases = [{"t": "Case File 1: The \"Visual Reversal\" Fallacy (K-1)", "myth": "Leo is in the middle of 1st grade and keeps reversing his b's and d's and writing words backward. He clearly has visual tracking problems and needs colored reading overlays or eye-tracking exercises.", "real": "Letter reversals are common and developmentally typical through about age 7. The brain's visual system is built to treat mirror images as the same object (a cup is a cup facing either way), and children must learn that b and d are different. Reversals that persist alongside word reading delays point to a weak link between the sound (/b/ vs. /d/) and the letter's stroke sequence, not to an eye problem.", "sci": "Reading is learned through the brain's language and sound-processing networks. Colored overlays and vision therapy do not remediate dyslexia or word-level decoding difficulties.", "plan": "Reassure the family that reversals are common, then introduce an explicit, multisensory letter-formation routine that pairs mouth shape cues with trace-and-say practice (for example, starting d with the c stroke, and \"bat before ball\" for b)."}, {"t": "Case File 2: The \"Wait-and-See\" Maturation Myth (PK-TK)", "myth": "Jaxson is 4 and a half and in TK. He cannot identify rhyming words, clap syllables, or remember letter sounds. We should wait until 2nd or 3rd grade to screen him because boys develop later and he will outgrow it.", "real": "Waiting invites the Matthew Effect. Children who struggle with phonological awareness read less, meet fewer words, and fall further behind in vocabulary and comprehension each year.", "sci": "Intervention is far more effective in PK through 1st grade than after reading failure sets in. Early screening of phonological awareness, letter knowledge, and rapid automatized naming (RAN) can identify children at risk years before formal failure. California now requires universal screening for risk of reading difficulties in kindergarten through 2nd grade.", "plan": "Explain to a hesitant caregiver why early screening helps, and outline a playful Tier 1 routine: rhyming games, nursery rhymes, and Elkonin sound boxes without print."}, {"t": "Case File 3: The Three-Cueing \"Context Guessing\" Illusion (K-1)", "myth": "When Maya gets stuck on a word, I tell her to look at the picture, check the first letter, and guess what makes sense so she doesn't get frustrated sounding it out.", "real": "Picture and context guessing are the strategies struggling readers fall back on, not what skilled readers do. Looking at the picture pulls attention away from the print, so the brain misses the chance to connect those letters to those sounds.", "sci": "Skilled readers process the letters in a word quickly through orthographic mapping. Guessing skips that mapping, so the word stays unfamiliar the next time it appears.", "plan": "Gently explain why \"look at the picture\" and \"what makes sense?\" prompts can hold a beginning reader back, and introduce a simple routine: look at all the letters, tap the sounds, blend them together, then check that it makes sense."}, {"t": "Case File 4: The Intelligence and Effort Myth (Grades 2-3)", "myth": "Marcus is brilliant. He builds intricate Lego machines and talks like a professor about marine biology. His trouble reading simple decodable books is just laziness.", "real": "Dyslexia is often unexpected in relation to a child's other abilities. Many children with dyslexia have strong reasoning, oral language, and creativity alongside real difficulty with accurate, fluent word reading.", "sci": "Dyslexia is associated with differences in the brain's left-hemisphere language networks that process speech sounds. It is unrelated to intelligence, curiosity, or character.", "plan": "Relieve a frustrated caregiver by separating Marcus's strong oral comprehension from his word decoding, and outline Tier 2 supports: audiobooks for content learning alongside systematic, daily phonics instruction."}, {"t": "Case File 5: The \"Miracle Font\" Panacea (Grades 1-2)", "myth": "If we switch all worksheets and tablets to special dyslexia fonts, our students with dyslexia will overcome their reading hurdles.", "real": "Dyslexia is a language-based difficulty with the sounds in words, not a problem perceiving letter shapes. Studies of dyslexia-specific fonts have not found meaningful gains in reading rate, accuracy, or comprehension compared with standard fonts.", "sci": "Reading accuracy improves through systematic instruction in phonemic awareness, sound-spelling correspondences, and syllable types, not through changing the typeface.", "plan": "Explain why a font cannot bypass the brain's need to map sounds to letters, and introduce a multisensory routine, such as tracing letters in a sand tray or on textured cards while saying the sounds."}, {"t": "Case File 6: The \"Gift of Time\" Myth (PK-K)", "myth": "Children who struggle with letters and sounds in kindergarten are just on a different timetable. If we give them the gift of time, they will catch up on their own.", "real": "Longitudinal research tells a different story. In one well-known study (Juel, 1988), a child who was a poor reader at the end of 1st grade had about an 88% chance of still being a poor reader at the end of 4th grade.", "sci": "Reading is not a natural milestone like walking or talking; it has to be taught. Dyslexia does not go away with time, though explicit instruction helps children read well.", "plan": "Dispel the \"gift of time\" idea with warmth, and present a daily Tier 1 small-group routine (sound-symbol correspondence, oral blending) that supports the child now, without waiting for retention or failure."}, {"t": "Case File 7: The \"Flashcard Memorization\" Myth (Grades 1-2)", "myth": "English is unpredictable. Struggling readers should memorize all the high-frequency words as whole pictures on flashcards instead of sounding them out.", "real": "Memorizing words as visual shapes is slow and unreliable. Orthographic mapping, connecting each sound to its spelling, is how readers store thousands of words for instant recognition.", "sci": "English is more regular than it looks. About half of English words follow predictable sound-spelling patterns, and many others have just one irregular part. In <em>said<\/em>, the s and d are regular; only the ai is irregular.", "plan": "Reassure the family that English is an orderly code, and demonstrate the Heart Word routine: sound out the regular parts and give special attention only to the irregular \"heart\" part."}, {"t": "Case File 8: The \"Defiant and Unmotivated\" Label (Grades 2-3)", "myth": "Whenever it's time for independent reading or writing, Mateo acts like the class clown, sharpens his pencil four times, or has a tantrum. He is defiant and needs strict consequences.", "real": "For a child with an unrecognized reading difficulty, reading aloud or writing in front of peers can feel threatening. Avoidance, clowning, and refusal often protect a child from embarrassment.", "sci": "Literacy-related behaviors often ease when tasks are differentiated with Universal Design for Learning and explicit scaffolding that removes the risk of public failure.", "plan": "Shift the conference from punishment to an affirming, supportive stance, and offer multiple means of engagement: partner reading, choice of decodable texts, and private voice-recording practice."}];
+  const sel = h('select', {id:'cf_pick'}, h('option', {value:''}, 'Choose a case file...'), ...cases.map((c,i) => h('option', {value:i}, c.t)));
+  const out = h('div', {'aria-live':'polite'});
+  function show(){
+    const c = cases[sel.value];
+    if (!c) { out.innerHTML=''; api.done(false); api.result(''); api.resize(); return; }
+    out.innerHTML = '<div class="dossier"><p class="eyebrow">Under investigation</p><h3>' + c.t + '</h3>' +
+      '<p><strong>The myth:</strong> "' + c.myth + '"</p>' +
+      '<p><strong>Reality check:</strong> ' + c.real + '</p>' +
+      '<p><strong>Science-backed truth:</strong> ' + c.sci + '</p>' +
+      '<p style="margin:0"><strong>Your deliverable:</strong> ' + c.plan + '</p></div>';
+    api.done(true); api.result(c.t.replace(/<[^>]+>/g,''));
+    api.resize();
+  }
+  sel.addEventListener('change', show);
+  root.append(h('p', {}, h('label', {for:'cf_pick', class:'kbd'}, 'Case file: '), sel), out);
+};
+
+CUSTOM.rehearse = function(root, api){
+  const {h} = api;
+  let t = 0, timer = null;
+  const disp = h('p', {class:'big', 'aria-live':'off'}, '0:00');
+  const msg = h('p', {class:'hint', role:'status', 'aria-live':'polite'}, 'Target: 60 to 120 seconds.');
+  function fmt(s){ return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+  const start = h('button', {class:'btn', type:'button', onclick: () => {
+    if (timer) { clearInterval(timer); timer = null; start.textContent = 'Resume'; done(); return; }
+    start.textContent = 'Stop';
+    timer = setInterval(() => { t++; disp.textContent = fmt(t); if (t === 60) msg.textContent = '60 seconds: you are in the target range.'; if (t === 120) msg.textContent = '2 minutes: time to wrap up.'; }, 1000);
+  }}, 'Start rehearsal');
+  const reset = h('button', {class:'btn secondary', type:'button', onclick: () => { clearInterval(timer); timer = null; t = 0; disp.textContent = '0:00'; start.textContent = 'Start rehearsal'; msg.textContent = 'Target: 60 to 120 seconds.'; }}, 'Reset');
+  function done(){
+    const s = t < 60 ? 'a bit short; add your home or classroom routine.' : t > 120 ? 'a bit long; trim the science to one or two sentences.' : 'right in the target range.';
+    msg.textContent = 'You spoke for ' + fmt(t) + ', ' + s;
+    api.done(true); api.result('Rehearsed for ' + fmt(t));
+  }
+  root.append(h('div', {class:'scene'}, disp, msg), h('div', {class:'btnrow'}, start, reset));
+};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

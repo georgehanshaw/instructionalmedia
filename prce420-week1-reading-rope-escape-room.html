@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 1: The PK-3 Reading Rope Escape Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+
+<style>
+.decoder{display:grid;gap:12px;margin:8px 0 14px}
+.decrow{display:flex;gap:16px;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e3ddd7;border-radius:10px;padding:12px 14px}
+.decrow select{max-width:100%}
+.decrow .tile.big{min-width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;border-radius:10px;background:#1f1f1f;color:#fff}
+.lock{border:2px dashed #7C2429;border-radius:10px;padding:12px 16px;background:#fff}
+.lock.open{border-style:solid;border-color:#2e6b3a;background:#eef7ef}
+.dossier{background:#fff;border:1px solid #e3ddd7;border-left:6px solid #1f1f1f;border-radius:10px;padding:14px 18px;margin:0 0 14px}
+.dossier h3{margin:0 0 6px}
+@media (max-width:520px){.decrow{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 1 Application Practice</p>
+<h1>The PK-3 Reading Rope Escape Room</h1>
+<p>Diagnose four young readers, Preschool through 3rd grade, along Scarborough's Reading Rope. Prescribe a Structured Literacy intervention for each child, then decode the secret password to escape.</p>
+<div class="meta"><span class="pill">Week 1</span><span class="pill">About 30 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA Preschool Learning Foundations; CA ELA/ELD Framework (Foundational Skills, Meaning Making, Language Development); TPE 2.5, 3.1, 4.4, 6.1, 6.2, 7.1, 7.5, 7.9</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week1", "title": "The PK-3 Reading Rope Escape Room", "course": "PRCE 420", "stations": [{"title": "Mission Briefing", "lead": "<p>Welcome to the PK-3 Early Literacy Triage Room. Four young learners are struggling to become fluent, joyful readers. To escape, you will diagnose each child's breakdown along Scarborough's Reading Rope, prescribe a developmentally appropriate Structured Literacy intervention, and decode a four-letter password.<\/p>", "comps": [{"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Two braids, one rope<\/p><p>Reading is not a natural biological process like talking. Skilled reading weaves two braids together. The <strong>Word Recognition<\/strong> strands become increasingly <strong>automatic<\/strong>; the <strong>Language Comprehension<\/strong> strands become increasingly <strong>strategic<\/strong>. The Simple View of Reading says the same thing as an equation: Decoding &times; Language Comprehension = Reading Comprehension.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w1_svr", "prompt": "A child decodes every word accurately but understands almost none of what she reads aloud. In the Simple View of Reading, what happens to her reading comprehension?", "options": [{"t": "It stays strong, because decoding is the harder skill", "c": false, "f": "Decoding alone is not enough. The equation multiplies the two components, so a near-zero factor pulls the product toward zero."}, {"t": "It is close to zero, because the two components multiply", "c": true, "f": "Right. D &times; LC = RC. Strong decoding times weak language comprehension still yields weak reading comprehension, and the reverse is true too."}, {"t": "It is about half of what it could be, because the components add", "c": false, "f": "The components multiply rather than add, which is why a weakness in either one has such a large effect."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "sort", "id": "w1_braids", "prompt": "Build the rope: sort each strand into its braid.", "cats": ["Word Recognition (increasingly automatic)", "Language Comprehension (increasingly strategic)"], "optional": false, "items": [{"t": "Phonological Awareness", "a": 0, "w": "Hearing and manipulating syllables, onsets and rimes, and phonemes.", "hint": ""}, {"t": "Phonics and Decoding", "a": 0, "w": "The alphabetic principle and sound-spelling correspondences.", "hint": ""}, {"t": "Sight Recognition", "a": 0, "w": "Familiar words recognized instantly, built through orthographic mapping.", "hint": ""}, {"t": "Background Knowledge", "a": 1, "w": "Facts, concepts, and schemas about the world.", "hint": ""}, {"t": "Vocabulary", "a": 1, "w": "Breadth, precision, and academic language.", "hint": ""}, {"t": "Language Structures", "a": 1, "w": "Syntax and semantics: how words and clauses link to make meaning.", "hint": ""}, {"t": "Verbal Reasoning", "a": 1, "w": "Inference, metaphor, and figurative language.", "hint": ""}, {"t": "Literacy Knowledge", "a": 1, "w": "Print concepts, directionality, and genre. In Scarborough's rope this strand sits in the language comprehension braid.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Why it matters now<\/p><p>When word recognition is neglected in PK-1, children meet the early <strong>Matthew Effect<\/strong>: they avoid text, read less, and by 3rd grade their vocabulary and comprehension fall further behind. Your job is to find each child's broken strand before the gap widens.<\/p><\/div>", "heading": null, "id": null}], "short": "Briefing"}, {"title": "Amari", "lead": "<p>Read the case file, then diagnose and prescribe.<\/p>", "comps": [{"type": "info", "html": "<div class=\"dossier\"><p class=\"eyebrow\">Case File<\/p><h3>Amari (Preschool, age 4)<\/h3><p style=\"margin:0\"><strong>Observations:<\/strong> Amari has rich oral storytelling skills, loves imaginative dramatic play, and has deep background knowledge about farm animals and construction vehicles. During shared big-book readings, he holds books upside down, does not understand that print carries meaning, cannot identify where text starts on a page, and thinks the illustrations are what the teacher is reading.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w1_amari", "prompt": "Which strand is Amari's primary breakdown?", "options": [{"t": "Background Knowledge", "c": false, "f": "Amari's background knowledge is a strength: he knows a lot about farm animals and construction vehicles."}, {"t": "Vocabulary", "c": false, "f": "His rich oral storytelling suggests vocabulary is developing well."}, {"t": "Literacy Knowledge (concepts about print)", "c": true, "f": "Yes. Book handling, directionality, and knowing that print carries meaning are concepts about print, part of literacy knowledge."}, {"t": "Phonological Awareness", "c": false, "f": "Nothing in the file describes his work with sounds. The evidence points to how he handles books and print."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_amari_rx", "prompt": "Which intervention is the best developmentally appropriate fit for Amari?", "options": [{"t": "Daily letter-name flashcard drills", "c": false, "f": "Letter names matter, but drills do not teach him how books and print work, and they are not play-based for a 4-year-old."}, {"t": "Shared big-book pointer reading with explicit modeling of where to start and the return sweep, plus environmental print treasure hunts", "c": true, "f": "Yes. Pointing while reading shows that print, not pictures, carries the words, and print hunts connect that idea to his world."}, {"t": "Tracing worksheets for uppercase letters", "c": false, "f": "Letter formation is a separate skill and does not address concepts about print."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Amari"}, {"title": "Jaxson", "lead": "<p>Read the case file, then diagnose and prescribe.<\/p>", "comps": [{"type": "info", "html": "<div class=\"dossier\"><p class=\"eyebrow\">Case File<\/p><h3>Jaxson (Kindergarten, mid-year)<\/h3><p style=\"margin:0\"><strong>Observations:<\/strong> Jaxson can sing the alphabet song and recognizes all 26 uppercase letter names on flashcards. When asked to isolate the first sound in <em>sun<\/em> or tell what word remains if you take /m/ away from <em>mat<\/em>, he looks confused. Shown the written word <em>cat<\/em>, he cannot blend the sounds and guesses words from the first letter or the pictures on the wall.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w1_jax", "prompt": "Which strand is Jaxson's primary breakdown?", "options": [{"t": "Literacy Knowledge", "c": false, "f": "He knows letter names and the alphabet song, so print knowledge is not the core problem."}, {"t": "Phonological Awareness (phoneme isolation and oral blending)", "c": true, "f": "Yes. He cannot isolate, delete, or blend sounds orally, which keeps the alphabetic principle from taking root."}, {"t": "Vocabulary", "c": false, "f": "The tasks he struggles with are about sounds, not word meanings."}, {"t": "Phonics and Decoding", "c": false, "f": "He does struggle to decode <em>cat<\/em>, but that is the symptom. The root is that he cannot yet hear and blend the separate sounds."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_jax_rx", "prompt": "Which intervention addresses the root cause?", "options": [{"t": "Give him more predictable leveled books so he can use the pictures", "c": false, "f": "Predictable books reward guessing from pictures and patterns, which he already does. They do not build phonemic awareness."}, {"t": "Daily five-minute oral routines: Elkonin sound boxes with felt chips and tapping sounds on fingers, with no print yet", "c": true, "f": "Yes. Purely auditory, playful practice builds the phonemic awareness he needs before connecting sounds to letters."}, {"t": "More alphabet songs to strengthen letter names", "c": false, "f": "He already knows letter names. Letter names are not the missing piece."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w1_jax_why", "label": "Debrief question: Why couldn't Jaxson's teacher solve the problem by giving him more predictable leveled books?", "hint": "Think about what predictable books ask a child to pay attention to.", "starter": null, "model": "Predictable leveled books let Jaxson lean on pictures and repeated patterns, so he can look like he is reading without ever processing the sounds in words. His gap is phonological, so the fix has to be explicit practice hearing, isolating, and blending phonemes, then connecting them to letters in decodable text.", "rows": 4, "heading": null, "optional": false, "min": 15}], "short": "Jaxson"}, {"title": "Elena", "lead": "<p>Read the case file, then diagnose and prescribe. This case shows how the Matthew Effect takes root.<\/p>", "comps": [{"type": "info", "html": "<div class=\"dossier\"><p class=\"eyebrow\">Case File<\/p><h3>Elena (Grade 1, spring semester)<\/h3><p style=\"margin:0\"><strong>Observations:<\/strong> In TK and early kindergarten, Elena had difficulty mastering sound-spelling correspondences. Because reading felt laborious, she began choosing drawing or toy play during independent reading. Now near the end of 1st grade, her peers read decodable and connected texts with ease and pick up new vocabulary daily. Elena avoids reading at all costs, says she feels \"stupid,\" and is stagnating in oral vocabulary and sight word automaticity.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w1_elena_all", "prompt": "Which strands are now affected for Elena? Choose all that apply.", "options": [{"t": "Phonics and Decoding", "c": true, "f": "Yes. This is where the trouble started."}, {"t": "Sight Recognition", "c": true, "f": "Yes. Low reading volume has stalled orthographic mapping of high-frequency words."}, {"t": "Vocabulary", "c": true, "f": "Yes. Reading less means meeting fewer new words, a compounding consequence."}, {"t": "Literacy Knowledge", "c": false, "f": "Nothing in the file suggests trouble with concepts about print."}], "multi": true, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_elena", "prompt": "Which strand is the root of the problem?", "options": [{"t": "Vocabulary", "c": false, "f": "Her vocabulary gap is a consequence of reading less, not the cause."}, {"t": "Phonics and Decoding", "c": true, "f": "Yes. The unresolved decoding deficit led to avoidance, and avoidance spread the gap to sight words and vocabulary."}, {"t": "Sight Recognition", "c": false, "f": "Sight words stalled because she could not map sounds to spellings. Decoding came first."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_elena_rx", "prompt": "Which intervention plan best targets the root cause?", "options": [{"t": "Systematic, explicit phonics instruction, moving her from leveled guessing books to fully decodable texts", "c": true, "f": "Yes. Decodable text lets her practice exactly the patterns she has been taught, so success replaces avoidance."}, {"t": "Extra independent reading time with books of her choice", "c": false, "f": "Choice matters for motivation, but more time with texts she cannot decode increases avoidance."}, {"t": "Wait until 2nd grade to see whether she catches up", "c": false, "f": "Waiting lets the Matthew Effect compound. Early intervention is far more effective."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w1_elena_me", "label": "In three sentences, explain how Elena's case demonstrates the early Matthew Effect and how systematic phonics in Tier 1 MTSS acts as an equity safeguard.", "hint": null, "starter": null, "model": "Elena's early trouble with sound-spelling correspondences made reading laborious, so she read less than her peers. Reading less meant fewer chances to map sight words and learn new vocabulary, so the gap between Elena and her classmates grew wider each month. Systematic phonics for every child in Tier 1 is an equity safeguard because it teaches the code explicitly instead of leaving reading success to chance, home advantages, or a referral that comes years too late.", "rows": 5, "heading": null, "optional": false, "min": 15}], "short": "Elena"}, {"title": "Leilani", "lead": "<p>Read the case file, then diagnose and prescribe.<\/p>", "comps": [{"type": "info", "html": "<div class=\"dossier\"><p class=\"eyebrow\">Case File<\/p><h3>Leilani (Grade 2, multilingual learner)<\/h3><p style=\"margin:0\"><strong>Observations:<\/strong> Leilani has mastered single-syllable phonics patterns and consonant blends and decodes grade-level text with fast, accurate word recognition. When reading informational passages about community workers or science, she misinterprets sentences with complex syntax, dependent clauses, or connectors, such as: <em>\"Although the firefighter had checked the hoses, the engine remained in the station until the alarm rang.\"<\/em> She can say who was there, but confuses the timeline and causality.<\/p><\/div>", "heading": null, "id": null}, {"type": "mc", "id": "w1_lei_time", "prompt": "Try it yourself. In the firefighter sentence, what happened last?", "options": [{"t": "The firefighter checked the hoses", "c": false, "f": "\"Had checked\" signals this happened first."}, {"t": "The engine stayed in the station", "c": false, "f": "The engine stayed put until something else happened."}, {"t": "The alarm rang", "c": true, "f": "Yes. \"Until\" marks the end point: the engine stayed in the station until the alarm rang. Words like although, until, and had checked carry the timeline, and they are exactly what Leilani is missing."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_lei", "prompt": "Which strand is Leilani's primary barrier?", "options": [{"t": "Phonics and Decoding", "c": false, "f": "Her decoding is fast and accurate."}, {"t": "Language Structures (syntax and semantics)", "c": true, "f": "Yes. She reads every word but cannot unpack how clauses and connectors relate the ideas."}, {"t": "Background Knowledge", "c": false, "f": "She knows who was there; the trouble is how the sentence's parts relate in time and cause."}, {"t": "Phonological Awareness", "c": false, "f": "Her strong decoding shows phonological skills are in place."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "mc", "id": "w1_lei_rx", "prompt": "Which intervention fits Leilani best?", "options": [{"t": "Sentence deconstruction and combining routines, sentence scooping for phrasing, and contrastive analysis with her home language", "c": true, "f": "Yes. These routines make syntax visible and build on what she knows about how her home language links ideas."}, {"t": "More phonics review of multisyllabic words", "c": false, "f": "Her word recognition is already strong. More phonics will not help her untangle clauses."}, {"t": "Silent independent reading of longer passages", "c": false, "f": "More exposure without instruction leaves her confusion about syntax in place."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}], "short": "Leilani"}, {"title": "Unlock the Rope", "lead": "<p>Use the Decoder Key. For each child, choose the primary broken strand. The cipher pulls one letter from the strand's name. If every diagnosis is right, the four letters reveal the password.<\/p>", "comps": [{"type": "custom", "id": "decoder", "summary": "Decoder:", "heading": null, "optional": false}, {"type": "text", "id": "w1_debrief", "label": "Debrief: How do playful, multisensory routines (Elkonin boxes, tactile trays) build the word recognition braid without stress?", "hint": null, "starter": null, "model": "Playful routines let children practice sounds and letters with their hands, eyes, and voices, so the work feels like a game instead of a test. Moving a chip into a box for each sound makes phonemes concrete, and tracing letters in sand while saying the sound links the sound to the symbol. Because the routines are short, predictable, and low risk, children get many successful repetitions, which is what builds automatic word recognition.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w1_field", "label": "Looking ahead to Fieldwork Reflection #1: which strand will you watch for first in your PK-3 observation, and what will you look for?", "hint": "Choose one strand and name one specific behavior you might see.", "starter": null, "model": null, "rows": 3, "heading": null, "optional": true, "min": 15}], "short": "Unlock"}], "lockNext": true}</script>
+<script>window.CUSTOM = {};
+
+
+CUSTOM.decoder = function(root, api){
+  const {h} = api;
+  const strands = ["Phonological Awareness", "Phonics and Decoding", "Sight Recognition", "Background Knowledge", "Vocabulary", "Language Structures", "Verbal Reasoning", "Literacy Knowledge"];
+  const kids = [
+    {name:'Amari', grade:'Preschool, age 4', pos:5, ans:'Literacy Knowledge'},
+    {name:'Jaxson', grade:'Kindergarten', pos:5, ans:'Phonological Awareness'},
+    {name:'Elena', grade:'Grade 1', pos:1, ans:'Phonics and Decoding'},
+    {name:'Leilani', grade:'Grade 2, multilingual learner', pos:8, ans:'Language Structures'}
+  ];
+  const ord = ['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+  const tiles = [];
+  const sels = [];
+  const grid = h('div', {class:'decoder'});
+  kids.forEach((k, i) => {
+    const id = 'dec_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose the primary broken strand...'), ...strands.map(s => h('option', {value:s}, s)));
+    const tile = h('span', {class:'tile big', 'aria-hidden':'true'}, '?');
+    const note = h('p', {class:'hint', style:'margin:4px 0 0'}, 'Cipher: take the ' + ord[k.pos-1] + ' letter of the strand name (ignore spaces).');
+    sel.addEventListener('change', upd);
+    sels.push(sel); tiles.push(tile);
+    grid.append(h('div', {class:'decrow'}, h('div', {}, h('label', {for:id, class:'kbd'}, 'Case File ' + (i+1) + ': ' + k.name + ' (' + k.grade + ')'), sel, note), tile));
+  });
+  const lock = h('div', {class:'lock', role:'status', 'aria-live':'polite'});
+  function letterFor(s, pos){ const L = s.replace(/[^A-Za-z]/g,'').toUpperCase(); return L[pos-1] || '?'; }
+  function upd(){
+    let word = '', right = 0, chosen = 0;
+    kids.forEach((k, i) => {
+      const v = sels[i].value;
+      const ch = v ? letterFor(v, k.pos) : '?';
+      tiles[i].textContent = ch; word += ch;
+      if (v) chosen++;
+      if (v === k.ans) right++;
+    });
+    const sr = 'Password so far: ' + word.split('').join(' ') + '.';
+    if (chosen < 4) { lock.className = 'lock'; lock.innerHTML = '<p><span class="sr">' + sr + ' </span>Locked. Diagnose all four case files to reveal the password.</p>'; api.done(false); api.result(''); }
+    else if (right === 4) {
+      lock.className = 'lock open';
+      lock.innerHTML = '<p><strong>Unlocked! The password is ROPE.</strong> You escaped the Triage Room. Every diagnosis matches the primary broken strand.</p>';
+      api.done(true); api.result('Unlocked ROPE: Amari = Literacy Knowledge, Jaxson = Phonological Awareness, Elena = Phonics and Decoding, Leilani = Language Structures');
+    } else if (word === 'ROPE') {
+      lock.className = 'lock';
+      lock.innerHTML = '<p>' + sr + ' The letters spell ROPE, but the Race Marshal checks diagnoses, and ' + (4-right) + ' case file' + (4-right===1?' does':'s do') + ' not match the primary strand. Revisit the case files.</p>';
+      api.done(false); api.result('');
+    } else {
+      lock.className = 'lock';
+      lock.innerHTML = '<p>' + sr + ' Still locked. ' + right + ' of 4 diagnoses are correct. Revisit any case file you are unsure about.</p>';
+      api.done(false); api.result('');
+    }
+    api.resize();
+  }
+  root.append(grid, lock);
+  upd();
+};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>

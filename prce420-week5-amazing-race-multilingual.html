@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRCE 420 Week 5: The Amazing Race: Multilingual Learners Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brick:#A8353A;--deep:#7C2429;--ink:#262523;--body:#333333;--muted:#55504a;--canvas:#F1F0EE;--cream:#F5F2EF;
+--line:#ddd5cd;--ok:#1E6B3C;--okbg:#EAF6EE;--no:#7C2429;--nobg:#FBEDED;--focus:#1a5fb4;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--body);font-family:'Public Sans',Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+html.embedded,html.embedded body{overflow-y:hidden}
+#app{max-width:980px;margin:0 auto;padding:0 18px 28px}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,'Times New Roman',serif;color:var(--deep);line-height:1.25}
+h1{font-size:32px;margin:6px 0 8px}
+h2{font-size:25px;margin:0 0 6px}
+h3{font-size:20px;margin:20px 0 6px}
+p{margin:0 0 12px}
+a{color:var(--deep)}
+.bar{display:flex;height:12px;border-radius:8px 8px 0 0;overflow:hidden;margin-top:18px}
+.bar span:first-child{flex:1;background:var(--brick)}.bar span:last-child{width:64px;background:#000}
+.hero{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:20px 26px 18px;margin-bottom:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--deep);margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.stepper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none}
+.stepper button{font:inherit;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.stepper button[aria-current="step"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.stepper .tick{display:inline-block;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:14px;text-align:center}
+.stepper .done .tick{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepper [aria-current="step"].done .tick{background:#fff;color:var(--ok);border-color:#fff}
+.progress{height:8px;background:#e4ddd6;border-radius:99px;overflow:hidden;margin:0 0 16px}
+.progress span{display:block;height:100%;background:var(--brick);width:0;transition:width .3s}
+.station{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;margin:0 0 14px}
+.station[hidden]{display:none}
+.station .lead{font-size:17px}
+.comp{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
+.comp:first-of-type{border-top:none;margin-top:6px;padding-top:6px}
+fieldset{border:none;margin:0;padding:0}
+legend{font-weight:700;color:var(--ink);margin-bottom:8px;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff;cursor:pointer}
+.opt:hover{border-color:var(--brick)}
+.opt input{margin-top:5px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--deep)}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:8px;padding:8px 16px;cursor:pointer;border:2px solid var(--deep);background:var(--deep);color:#fff}
+.btn.secondary{background:#fff;color:var(--deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.fb{margin-top:10px;border-radius:8px;padding:0}
+.fb:not(:empty){padding:10px 14px}
+.fb.ok{background:var(--okbg);color:var(--ok);border-left:5px solid var(--ok)}
+.fb.no{background:var(--nobg);color:var(--no);border-left:5px solid var(--brick)}
+.fb.info{background:var(--cream);color:var(--ink);border-left:5px solid var(--brick)}
+.fb p{margin:0 0 6px}.fb p:last-child{margin:0}
+.sortrow{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sortrow label{color:var(--ink)}
+.sortrow .mark{grid-column:1/-1;font-size:15px}
+.sortrow .mark.ok{color:var(--ok)}.sortrow .mark.no{color:var(--no)}
+select,textarea,input[type=text],input[type=number]{font:inherit;font-size:16px;border:1px solid #a79d94;border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:96px;resize:vertical}
+.hint{font-size:15px;color:var(--muted);margin:-2px 0 8px}
+.callout{background:var(--cream);border-left:6px solid var(--brick);border-radius:6px;padding:12px 16px;margin:12px 0}
+.callout .eyebrow{margin-bottom:4px}
+.scene{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;text-align:center}
+.scene svg{max-width:100%;height:auto}
+.speech{display:inline-block;background:#fff;border:2px solid var(--deep);border-radius:14px;padding:6px 14px;font-weight:700;color:var(--ink);min-width:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{font:inherit;font-size:15px;border:1px solid #a79d94;border-radius:999px;padding:5px 12px;background:#fff;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.seq{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:40px}
+.seq span{background:#fff;border:2px solid var(--brick);border-radius:8px;padding:4px 10px;font-weight:700;color:var(--ink)}
+.seq span.b{border-color:#000}.seq span.c{border-style:dashed}
+.big{font-size:22px;font-weight:700;color:var(--ink)}
+.kbd{font-family:'Public Sans',Arial,sans-serif;font-weight:700}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.summary textarea{min-height:320px;font-size:15px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{font-size:14px;color:var(--muted);text-align:center;padding:10px 0 0}
+@media (max-width:640px){
+ body{font-size:16px}h1{font-size:26px}h2{font-size:22px}
+ #app{padding:0 10px 20px}.station,.hero{padding:16px}
+ .sortrow{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}
+}
+@media print{.stepper,.nav,.progress,.btnrow{display:none}.station[hidden]{display:block}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="top" class="bar" aria-hidden="true"><span></span><span></span></div>
+<header class="hero">
+<p class="eyebrow">PRCE 420 &middot; Week 5 Application Practice</p>
+<h1>The Amazing Race: Multilingual Learners Edition</h1>
+<p>Race through four checkpoints: Integrated vs. Designated ELD, cross-linguistic transfer and cognates, tiered sentence scaffolds, and welcoming the silent period. Earn a visa stamp at each leg.</p>
+<div class="meta"><span class="pill">Week 5</span><span class="pill">About 35 minutes</span><span class="pill">Ungraded practice</span><span class="pill">6 stations</span></div>
+<p class="hint" style="margin:10px 0 0">Aligned to: CA ELD Standards (Part I: Interacting in Meaningful Ways; Part II: Learning How English Works); CA ELA/ELD Framework; TPE 1.2, 1.5, 1.6, 3.2, 3.5, 4.2, 4.7, 7.1, 7.3, 7.7, 7.10, 7.11</p>
+</header>
+<nav aria-label="Stations"><ol class="stepper" id="stepper"></ol>
+<div class="progress" role="progressbar" aria-label="Practice progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></nav>
+<main id="stations"></main>
+<footer>Azusa Pacific University &middot; School of Education &middot; PRCE 420 The Reading Rainbow: Exploring Early Literacy</footer>
+</div>
+<script type="application/json" id="cfg">{"key": "week5", "title": "The Amazing Race: Multilingual Learners Edition", "course": "PRCE 420", "stations": [{"title": "Route Briefing", "lead": "<p>Roughly one in five California public school students is an English learner, and the share is higher in the early grades. Today you are a pedagogical navigator: you will dismantle deficit myths and design asset-based literacy instruction across four checkpoint legs.<\/p>", "comps": [{"type": "mc", "id": "w5_asset", "prompt": "Before you depart: which stance should guide every leg of the race?", "options": [{"t": "Home languages interfere with learning English, so they should be left at the door", "c": false, "f": "This is the deficit myth the race is designed to dismantle."}, {"t": "A child's home language is an asset that supports English literacy through cross-linguistic transfer", "c": true, "f": "Yes. Skills and knowledge in the home language transfer, and honoring it lowers anxiety and builds identity."}, {"t": "Multilingual learners should wait to learn to read until they are fluent in spoken English", "c": false, "f": "Oral language and foundational literacy can and should develop together."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "custom", "id": "clock", "summary": "Race clock:", "heading": null, "optional": true}], "short": "Briefing", "label": "Start"}, {"title": "Checkpoint Alpha: Integrated vs. Designated ELD", "lead": "<p><strong>Scenario:<\/strong> In a 1st-grade classroom with several emerging bilingual students, the teacher is leading a foundational reading lesson on compound words (sunflower, backpack, raincoat). She believes \"good teaching is just good teaching,\" provides no dedicated time for language instruction, and assumes students will pick up the syntax and vocabulary through whole-group exposure.<\/p>", "comps": [{"type": "mc", "id": "w5_gap", "prompt": "What is missing from this teacher's plan?", "options": [{"t": "Nothing; strong whole-group teaching meets every learner's needs", "c": false, "f": "Good teaching is necessary, but California's ELA/ELD Framework calls for both Integrated and Designated ELD."}, {"t": "Designated ELD: protected time to teach how English works, built from the content of the lesson", "c": true, "f": "Yes. Integrated ELD supports access during content instruction; Designated ELD adds protected time focused on language itself."}, {"t": "A separate phonics program just for multilingual learners", "c": false, "f": "Multilingual learners need the same foundational skills instruction, plus language support. A separate program is not the answer."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "sort", "id": "w5_ide", "prompt": "Sort each practice into the right path.", "cats": ["Integrated ELD (during the whole-group literacy block)", "Designated ELD (protected small-group time)"], "optional": false, "items": [{"t": "Showing a real raincoat and backpack while reading the shared text", "a": 0, "w": "Realia scaffolds the grade-level text for everyone during whole-group instruction.", "hint": ""}, {"t": "Pantomiming \"sunflower\" and pausing for students to turn and talk", "a": 0, "w": "Gesture and partner talk support access during the core lesson.", "hint": ""}, {"t": "Inviting students to share the home-language word for flower", "a": 0, "w": "Home-language bridging during the core lesson (TPE 7.11).", "hint": ""}, {"t": "Explicitly teaching how two base nouns combine to form a new noun", "a": 1, "w": "Teaching how English works (CA ELD Standards Part II) is the heart of Designated ELD.", "hint": ""}, {"t": "Practicing the frame \"A ___ is a ___ that ___\" at Emerging and Expanding levels", "a": 1, "w": "Targeted language practice matched to proficiency levels.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "custom", "id": "compound", "summary": "Compound words unpacked:", "heading": null, "optional": false}, {"type": "text", "id": "w5_int", "label": "Integrated ELD blueprint: describe a five-minute shared reading routine that scaffolds the grade-level text with realia, pantomime, and home-language bridging.", "hint": null, "starter": null, "model": "I hold up a real raincoat and backpack as we read the shared text, pantomime each compound word, and pause for partners to repeat it with the gesture. I invite students to share the word in their home language and write two of those words beside the English words on our chart.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w5_des", "label": "Designated ELD clinic: outline a ten-minute small-group lesson on compounding, with a sentence frame for Emerging and Expanding students.", "hint": null, "starter": null, "model": "I show sun + flower and ask what each word means alone, then model: a sunflower is a flower. Students build backpack and raincoat with word cards and say each one in the frame \"A ___ is a ___ that ___.\" Emerging students choose from picture-supported endings; Expanding students complete the frame on their own and then try a new compound, like fishbowl.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Visa stamp<\/p><p>Finish this leg to earn the <strong>Linguistic Bridge Visa Stamp<\/strong>. Your responses are saved to your Race Passport on the My Work screen.<\/p><\/div>", "heading": null, "id": null}], "short": "Leg 1", "label": "Leg 1"}, {"title": "Checkpoint Bravo: Phonology, Transfer, and Cognates", "lead": "<p><strong>Scenario:<\/strong> A kindergartner at the Expanding level whose home language is Spanish is reading a decodable text and spelling words in a small group. You observe that the child: pronounces <em>van<\/em> as \"ban\"; pronounces <em>this<\/em> as \"dis\"; writes <em>duck<\/em> as \"dok\"; and uses <em>family<\/em> accurately after recognizing its link to <em>familia<\/em>.<\/p>", "comps": [{"type": "mc", "id": "w5_why", "prompt": "What is the best explanation for the first three patterns?", "options": [{"t": "A phonological processing disorder that needs an immediate referral", "c": false, "f": "These patterns are predictable from Spanish's sound system. They are not evidence of a disorder."}, {"t": "An articulation delay", "c": false, "f": "The child produces Spanish sounds accurately. These substitutions reflect differences between the two sound systems."}, {"t": "Predictable cross-linguistic transfer from Spanish's sound system", "c": true, "f": "Yes. Contrastive analysis lets you predict, and plan for, exactly these substitutions."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "sort", "id": "w5_transfer", "prompt": "Match each observation to its explanation.", "cats": ["b and v: one sound in Spanish", "No voiced th in Spanish", "No short u in Spanish", "Cognate: an asset"], "optional": false, "items": [{"t": "Says \"ban\" for <em>van<\/em>", "a": 0, "w": "Because b and v are not separate sounds in Spanish, the English contrast is new and needs explicit practice.", "hint": ""}, {"t": "Says \"dis\" for <em>this<\/em>", "a": 1, "w": "The closest Spanish sound at the start of a word is /d/.", "hint": ""}, {"t": "Writes \"dok\" for <em>duck<\/em>", "a": 2, "w": "The child is spelling the closest vowel in Spanish, the /o/ sound. That shows strong sound-symbol thinking.", "hint": ""}, {"t": "Reads <em>family<\/em> by connecting it to <em>familia<\/em>", "a": 3, "w": "This is cognate awareness, an asset to build on.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "mc", "id": "w5_cognate", "prompt": "Which pair is a true Spanish-English cognate you could use on a Cognate Bridge Card?", "options": [{"t": "insecto / insect", "c": true, "f": "Yes. Same meaning and similar spelling and sound. Planta / plant and animal / animal also work well for early science."}, {"t": "embarazada / embarrassed", "c": false, "f": "A false cognate: embarazada means pregnant."}, {"t": "librer\u00eda / library", "c": false, "f": "A false cognate: librer\u00eda means bookstore. Library is biblioteca."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w5_gym", "label": "Mouth Gym: script a playful 90-second routine with explicit physical feedback for /v/ and /th/ that does not penalize the child's accent.", "hint": null, "starter": null, "model": "Let's warm up our mouths! Grab your mirror. For /v/, put your top teeth gently on your bottom lip and hum: vvv. Touch your throat; feel the buzz? Now say van, vest, vet. For /th/, peek your tongue out between your teeth and blow gently: this, that, them. Great job! Your mouth knows Spanish sounds and English sounds.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w5_card", "label": "Cognate Bridge Card: write the Spanish and English words and one kid-friendly sentence that helps students notice the connection.", "hint": null, "starter": null, "model": "planta / plant: Planta and plant sound almost the same and mean the same thing, so when you know planta, you already know a big part of plant.", "rows": 2, "heading": null, "optional": false, "min": 15}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Visa stamp<\/p><p>Finish this leg to earn the <strong>Cognate Explorer Visa Stamp<\/strong>. Your responses are saved to your Race Passport on the My Work screen.<\/p><\/div>", "heading": null, "id": null}], "short": "Leg 2", "label": "Leg 2"}, {"title": "Checkpoint Charlie: Sentence Scaffolding and Syntax", "lead": "<p><strong>Scenario:<\/strong> In a 2nd-grade classroom, multilingual students join sorting games and understand read-alouds, but when asked to explain their reasoning, they give one-word answers or point and say \"that one.\"<\/p>", "comps": [{"type": "sort", "id": "w5_ladder", "prompt": "Build a Syntax Ladder for Comparing and Contrasting: place each frame on the right rung.", "cats": ["Emerging", "Expanding", "Bridging"], "optional": false, "items": [{"t": "\"The character is ___ because ___.\" (with picture choices)", "a": 0, "w": "Short frame with heavy graphic support and single-slot choices.", "hint": ""}, {"t": "\"___ is happy. ___ is sad.\" (with picture choices)", "a": 0, "w": "Simple parallel sentences with visual support.", "hint": ""}, {"t": "\"While Character A feels ___, Character B is ___ because ___.\"", "a": 1, "w": "Adds a conjunction to connect two ideas.", "hint": ""}, {"t": "\"Character A is ___, but Character B is ___.\"", "a": 1, "w": "Uses a common connector to contrast.", "hint": ""}, {"t": "\"Although ___, the character decides to ___.\"", "a": 2, "w": "A complex sentence with an academic transition.", "hint": ""}, {"t": "\"Unlike Character A, Character B ___, which shows ___.\"", "a": 2, "w": "Academic contrast language with an embedded clause.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "text", "id": "w5_myladder", "label": "Now write your own three-rung Syntax Ladder for Cause and Effect.", "hint": null, "starter": "Emerging: \nExpanding: \nBridging: ", "model": "Emerging: \"The ___ happened because ___.\" (with picture cards)\nExpanding: \"When ___, then ___, so ___.\"\nBridging: \"As a result of ___, the character ___, which led to ___.\"", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "sort", "id": "w5_moves", "prompt": "Sort these teacher moves.", "cats": ["Talk move that expands thinking", "Move that shuts down talk"], "optional": false, "items": [{"t": "\"Say more about that.\"", "a": 0, "w": "Invites elaboration.", "hint": ""}, {"t": "\"Can you add on to what Ana said?\"", "a": 0, "w": "Builds on a peer's idea.", "hint": ""}, {"t": "\"Try it with the word because.\"", "a": 0, "w": "Pushes toward fuller syntax.", "hint": ""}, {"t": "\"Correct. Next question.\"", "a": 1, "w": "Ends the conversation before oral language can grow.", "hint": ""}, {"t": "\"No, say it the right way.\"", "a": 1, "w": "Raises the affective filter and discourages risk taking.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "text", "id": "w5_talk", "label": "Script two teacher talk moves you would use before students write.", "hint": null, "starter": null, "model": "1. \"Turn to your partner and use the ladder: tell why the character changed her mind.\" 2. \"You said 'that one.' Can you name it and add 'because'?\"", "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Visa stamp<\/p><p>Finish this leg to earn the <strong>Syntax Navigator Visa Stamp<\/strong>. Your responses are saved to your Race Passport on the My Work screen.<\/p><\/div>", "heading": null, "id": null}], "short": "Leg 3", "label": "Leg 3"}, {"title": "Checkpoint Delta: Welcoming the Silent Period and Home Language", "lead": "<p><strong>Scenario:<\/strong> Mateo is 4 and in Transitional Kindergarten. His family recently immigrated from Guatemala; he speaks Mam, a Mayan language, at home and has had very limited exposure to English. In his first month, Mateo does not speak English during centers, circle time, or storytime and watches quietly from the edges. A well-meaning colleague suggests referring him immediately for a special education evaluation for selective mutism or an expressive language delay.<\/p>", "comps": [{"type": "mc", "id": "w5_refer", "prompt": "Is an immediate special education referral appropriate?", "options": [{"t": "Yes. A month without speaking is a red flag that needs evaluation now", "c": false, "f": "A quiet observational period is a typical stage for young children learning a new language, especially after a big move."}, {"t": "No. Mateo is likely in a typical silent (receptive) period of second-language acquisition and adjusting to a new culture; observe, support, and gather information from his family first", "c": true, "f": "Yes. Gather evidence across settings and in his home language before drawing conclusions about a disability."}, {"t": "No. Multilingual learners should never be referred for special education", "c": false, "f": "Multilingual learners can have disabilities, and they deserve timely evaluation when evidence points that way. The issue here is timing and evidence."}], "multi": false, "hint": null, "after": null, "heading": null, "optional": false}, {"type": "text", "id": "w5_reframe", "label": "Write a three-point reframing for your colleague explaining why an immediate referral is not appropriate.", "hint": null, "starter": null, "model": "1. Many young children go through a silent period when learning a new language; Mateo is listening and building understanding before he speaks. 2. He is also adjusting to a new country, school, and culture, which takes time and a sense of safety. 3. Before any referral, we should ask his family how he communicates in Mam at home and observe him in play over time; if he communicates freely in Mam, a language disorder is unlikely.", "rows": 5, "heading": null, "optional": false, "min": 15}, {"type": "text", "id": "w5_center", "label": "Design a play-based, low-stress literacy center that invites Mateo to participate without forcing public speech.", "hint": null, "starter": null, "model": "A dramatic play kitchen with picture recipe cards, play food labeled with pictures, and a menu children can point to. Mateo can join by cooking, pointing, or trading items with a partner, and I narrate in simple English (\"You made soup!\") without asking him to answer.", "rows": 4, "heading": null, "optional": false, "min": 15}, {"type": "sort", "id": "w5_home", "prompt": "Which ideas welcome Mateo's linguistic identity?", "cats": ["Welcomes his home language", "Works against it"], "optional": false, "items": [{"t": "Ask his family to record key greetings and phrases in Mam for the classroom", "a": 0, "w": "Brings his language into the room and partners with family.", "hint": ""}, {"t": "Post dual-language labels and universal visual schedule icons", "a": 0, "w": "Supports understanding and signals that his languages belong.", "hint": ""}, {"t": "Tell his family to speak only English at home", "a": 1, "w": "Home language use supports English learning and family connection.", "hint": ""}, {"t": "Give him an English-only name tag nickname so he fits in", "a": 1, "w": "His name is part of his identity. Learn to say it as his family does.", "hint": ""}], "hint": null, "after": null, "heading": null}, {"type": "text", "id": "w5_ways", "label": "Describe two specific ways you would welcome Mateo's home language into daily routines.", "hint": null, "starter": null, "model": null, "rows": 3, "heading": null, "optional": false, "min": 15}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Visa stamp<\/p><p>Finish this leg to earn the <strong>Finish Line Mat<\/strong>. Your responses are saved to your Race Passport on the My Work screen.<\/p><\/div>", "heading": null, "id": null}], "short": "Leg 4", "label": "Leg 4"}, {"title": "Pit Stop Debrief", "lead": "<p>You crossed the finish line. Reflect on the core question of the race.<\/p>", "comps": [{"type": "text", "id": "w5_core", "label": "How does honoring a child's home language accelerate, rather than hinder, the acquisition of English foundational reading skills?", "hint": null, "starter": null, "model": "Children who can use what they know in their home language, such as sounds, cognates, and how stories work, have more to build on in English. When their language is welcomed, they feel safe enough to take risks and talk, and talk is what grows oral language. Teachers who know the home language's sound system can predict transfer patterns and teach the English contrasts explicitly instead of mistaking them for disorders.", "rows": 5, "heading": null, "optional": false, "min": 15}, {"type": "checklist", "id": "w5_check", "prompt": "Final passport check. My work...", "items": ["Distinguishes Integrated and Designated ELD with specific student prompts", "Treats cross-linguistic transfer patterns as predictable and asset based", "Includes a three-rung syntax ladder and two talk moves", "Advocates for Mateo with an asset-based, low-stress plan", "Aligns with the CA ELD Standards and Science of Reading principles"], "need": 0, "heading": null}, {"type": "info", "html": "<div class=\"callout\"><p class=\"eyebrow\">Connect to your coursework<\/p><p>Bring these ideas to your next fieldwork observation and to the Kindergarten or 1st grade section of your Signature Assignment. Watch how teachers connect TPE 7.11 to daily routines: home-language bridges, cognates, and protected time for Designated ELD.<\/p><\/div>", "heading": null, "id": null}], "short": "Pit Stop", "label": "Pit Stop"}], "lockNext": false}</script>
+<script>window.CUSTOM = {};
+
+CUSTOM.clock = function(root, api){
+  const {h} = api;
+  const legs = [['Leg 1', 7], ['Leg 2', 8], ['Leg 3', 7], ['Leg 4', 8]];
+  let t = 0, timer = null;
+  const disp = h('p', {class:'big'}, '30:00');
+  const msg = h('p', {class:'hint', role:'status', 'aria-live':'polite'}, 'Optional: race against the clock, about 30 minutes for all four legs. You can also work without a timer.');
+  function fmt(s){ s = Math.max(0, s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+  function leg(){ let acc = 0; for (const [n, m] of legs) { acc += m*60; if (t < acc) return n + ' (suggested ' + m + ' minutes)'; } return 'Pit Stop'; }
+  const start = h('button', {class:'btn', type:'button', onclick: () => {
+    if (timer) { clearInterval(timer); timer = null; start.textContent = 'Resume clock'; return; }
+    start.textContent = 'Pause clock'; api.done(true); api.result('Raced with the 30-minute clock');
+    timer = setInterval(() => { t++; disp.textContent = fmt(1800 - t); if (t % 60 === 0 || t === 1) msg.textContent = 'Now on: ' + leg() + '.'; if (t >= 1800) { clearInterval(timer); timer = null; msg.textContent = 'Time! Head to the Pit Stop, or keep working at your own pace.'; } }, 1000);
+  }}, 'Start the 30-minute clock');
+  const reset = h('button', {class:'btn secondary', type:'button', onclick: () => { clearInterval(timer); timer = null; t = 0; disp.textContent = '30:00'; start.textContent = 'Start the 30-minute clock'; }}, 'Reset');
+  root.append(h('div', {class:'scene'}, disp, msg), h('div', {class:'btnrow'}, start, reset));
+};
+
+CUSTOM.compound = function(root, api){
+  const {h} = api;
+  const words = {sunflower:['sun','flower','a flower','is big and yellow and turns toward the sun'], backpack:['back','pack','a pack','you carry on your back'], raincoat:['rain','coat','a coat','keeps the rain off you']};
+  const out = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const seen = new Set();
+  const row = h('div', {class:'chips', role:'group', 'aria-label':'Compound words'});
+  Object.entries(words).forEach(([w, [a, b, kind, frame]]) => row.append(h('button', {class:'chip', type:'button', onclick: () => {
+    seen.add(w);
+    api.fb(out, 'info', '<p><strong>' + a + ' + ' + b + ' = ' + w + '</strong></p><p>The second word names what kind of thing it is (the head). The first word tells which kind.</p><p><strong>Sentence frame:</strong> A ' + w + ' is ' + kind + ' that ' + frame + '.</p>');
+    if (seen.size >= 2) { api.done(true); api.result('Unpacked: ' + [...seen].join(', ')); }
+  }}, w)));
+  root.append(h('p', {class:'kbd'}, 'Tap at least two words to unpack them.'), row, out);
+};
+</script>
+<script>
+(function(){
+const CFG = JSON.parse(document.getElementById('cfg').textContent);
+const STORE = 'prce420-' + CFG.key;
+const state = {resp:{}, done:{}, results:{}};
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch(e) { saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(state.resp)); } catch(e) {} }
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'html') e.innerHTML = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c === null || c === undefined) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+window.PH = {h, state};
+const app = document.getElementById('stations');
+const stepper = document.getElementById('stepper');
+const bar = document.querySelector('.progress span');
+const comps = []; // {id, station, optional, summary()}
+let current = 0;
+const stations = [];
+
+function setDone(id, val){ state.done[id] = val; refresh(); }
+function stationDone(i){
+  const cs = comps.filter(c => c.station === i && !c.optional);
+  if (!cs.length) return comps.some(c => c.station === i && state.done[c.id]);
+  return cs.every(c => state.done[c.id]);
+}
+function firstOpen(){ for (let i = 0; i < CFG.stations.length; i++) if (!stationDone(i)) return i; return CFG.stations.length; }
+function refresh(){
+  const req = comps.filter(c => !c.optional);
+  const n = req.filter(c => state.done[c.id]).length;
+  bar.style.width = (req.length ? Math.round(100*n/req.length) : 0) + '%';
+  bar.parentElement.setAttribute('aria-valuenow', req.length ? Math.round(100*n/req.length) : 0);
+  stepper.querySelectorAll('button').forEach((b,i) => {
+    const d = i < stations.length && stationDone(i);
+    b.classList.toggle('done', d);
+    b.querySelector('.sr').textContent = d ? ' (complete)' : '';
+  });
+  if (CFG.lockNext) {
+    const open = firstOpen();
+    stepper.querySelectorAll('button').forEach((b,i) => { const locked = i > open; b.disabled = locked; b.title = locked ? 'Locked: complete the earlier station first' : ''; });
+    document.querySelectorAll('[data-next]').forEach(b => { const i = +b.dataset.next; const locked = !stationDone(i); b.disabled = locked; b.textContent = locked ? 'Locked: finish this station' : (i === CFG.stations.length - 1 ? 'Escape: My Work' : 'Unlock next station'); });
+  }
+  const s = document.getElementById('summaryText'); if (s) s.value = buildSummary();
+  announceResize();
+}
+function fb(box, kind, html){ box.className = 'fb ' + kind; box.innerHTML = html; announceResize(); }
+
+// ---------- components
+const R = {};
+R.info = (c) => h('div', {html: c.html});
+R.mc = (c, sid) => {
+  const multi = !!c.multi;
+  const name = c.id;
+  const fs = h('fieldset', {}, h('legend', {html: c.prompt}));
+  if (c.hint) fs.append(h('p', {class:'hint', html:c.hint}));
+  c.options.forEach((o,i) => {
+    const id = name + '_' + i;
+    fs.append(h('label', {class:'opt', for:id}, h('input', {type: multi?'checkbox':'radio', name, id, value:i}), h('span', {html:o.t})));
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  const btn = h('button', {class:'btn', type:'button', onclick: () => {
+    const sel = [...fs.querySelectorAll('input:checked')].map(x => +x.value);
+    if (!sel.length) { fb(box, 'info', '<p>Choose ' + (multi?'one or more answers':'an answer') + ' first.</p>'); return; }
+    let ok;
+    if (multi) { const want = c.options.map((o,i)=>o.c?i:-1).filter(i=>i>=0); ok = want.length === sel.length && want.every(i => sel.includes(i)); }
+    else ok = !!c.options[sel[0]].c;
+    const notes = sel.map(i => c.options[i].f ? '<p>' + c.options[i].f + '</p>' : '').join('');
+    fb(box, ok ? 'ok' : 'no', '<p><strong>' + (ok ? 'Correct.' : 'Not quite. Try again.') + '</strong></p>' + notes + (ok && c.after ? '<p>' + c.after + '</p>' : ''));
+    state.results[c.id] = (ok ? 'Correct: ' : 'Attempted: ') + sel.map(i => c.options[i].t.replace(/<[^>]+>/g,'')).join('; ');
+    if (ok) setDone(c.id, true); else refresh();
+  }}, 'Check');
+  return h('div', {}, fs, h('div', {class:'btnrow'}, btn), box);
+};
+R.sort = (c) => {
+  const wrap = h('div', {}, h('p', {class:'kbd', html: c.prompt}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint}));
+  const rows = c.items.map((it,i) => {
+    const id = c.id + '_' + i;
+    const sel = h('select', {id}, h('option', {value:''}, 'Choose...'), ...c.cats.map((cat,j) => h('option', {value:j}, cat)));
+    const mark = h('div', {class:'mark', 'aria-live':'polite'});
+    const row = h('div', {class:'sortrow'}, h('label', {for:id, html: it.t}), sel, mark);
+    wrap.append(row);
+    return {sel, mark, it};
+  });
+  const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+  wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn', type:'button', onclick: () => {
+    let right = 0;
+    rows.forEach(r => {
+      if (r.sel.value === '') { r.mark.className = 'mark no'; r.mark.textContent = 'Choose a category.'; return; }
+      const ok = +r.sel.value === r.it.a;
+      if (ok) right++;
+      r.mark.className = 'mark ' + (ok ? 'ok' : 'no');
+      r.mark.innerHTML = ok ? '<strong>Correct.</strong> ' + (r.it.w || '') : '<strong>Try again.</strong> ' + (r.it.hint || '');
+    });
+    const all = right === rows.length;
+    fb(box, all ? 'ok' : 'no', '<p><strong>' + right + ' of ' + rows.length + ' sorted correctly.</strong>' + (all && c.after ? ' ' + c.after : '') + '</p>');
+    state.results[c.id] = right + ' of ' + rows.length + ' correct';
+    if (all) setDone(c.id, true); else refresh();
+  }}, 'Check my sort')), box);
+  return wrap;
+};
+R.text = (c) => {
+  const id = c.id;
+  const ta = h('textarea', {id, rows: c.rows || 4});
+  ta.value = saved[id] || '';
+  state.resp[id] = ta.value;
+  const upd = () => { state.resp[id] = ta.value; persist(); setDone(id, ta.value.trim().length >= (c.min || 15)); };
+  ta.addEventListener('input', upd);
+  const wrap = h('div', {}, h('label', {for:id, class:'kbd', html: c.label}));
+  if (c.hint) wrap.append(h('p', {class:'hint', html:c.hint, id: id+'_h'})), ta.setAttribute('aria-describedby', id+'_h');
+  wrap.append(ta);
+  if (c.starter) wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', onclick: () => { if (!ta.value.trim()) { ta.value = c.starter; upd(); } ta.focus(); }}, 'Use the sentence starter')));
+  if (c.model) {
+    const box = h('div', {class:'fb', role:'status', 'aria-live':'polite'});
+    wrap.append(h('div', {class:'btnrow'}, h('button', {class:'btn secondary', type:'button', 'aria-expanded':'false', onclick: (e) => {
+      const open = e.currentTarget.getAttribute('aria-expanded') === 'true';
+      e.currentTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (open) { box.className = 'fb'; box.innerHTML = ''; announceResize(); } else fb(box, 'info', '<p><strong>One possible response:</strong> ' + c.model + '</p>');
+    }}, 'Compare with an example')), box);
+  }
+  if (state.resp[id].trim().length >= (c.min || 15)) state.done[id] = true;
+  return wrap;
+};
+R.checklist = (c) => {
+  const fs = h('fieldset', {}, h('legend', {html:c.prompt}));
+  c.items.forEach((t,i) => {
+    const id = c.id + '_' + i;
+    const inp = h('input', {type:'checkbox', id});
+    inp.addEventListener('change', () => {
+      const n = fs.querySelectorAll('input:checked').length;
+      state.results[c.id] = n + ' of ' + c.items.length + ' checked: ' + [...fs.querySelectorAll('input:checked')].map(x => x.parentElement.textContent.trim()).join('; ');
+      setDone(c.id, c.need ? n >= c.need : n > 0);
+    });
+    fs.append(h('label', {class:'opt', for:id}, inp, h('span', {html:t})));
+  });
+  return fs;
+};
+R.custom = (c, sid) => {
+  const root = h('div', {class:'custom', id: c.id + '_root'});
+  setTimeout(() => {
+    const fn = (window.CUSTOM || {})[c.id];
+    if (fn) fn(root, {done: (v=true) => setDone(c.id, v), result: (t) => { state.results[c.id] = t; refresh(); }, fb, h, resize: announceResize});
+  }, 0);
+  return root;
+};
+
+// ---------- build stations
+CFG.stations.forEach((s, i) => {
+  const sec = h('section', {class:'station', id:'st'+i, 'aria-labelledby':'st'+i+'h', hidden: i !== 0});
+  sec.append(h('h2', {id:'st'+i+'h', tabindex:'-1'}, (s.label || ('Station ' + (i+1))) + ': ' + s.title));
+  if (s.lead) sec.append(h('div', {class:'lead', html:s.lead}));
+  s.comps.forEach(c => {
+    const block = h('div', {class:'comp'});
+    if (c.heading) block.append(h('h3', {html:c.heading}));
+    block.append(R[c.type](c, i));
+    sec.append(block);
+    if (c.type !== 'info') comps.push({id:c.id, station:i, optional: c.optional || c.type === 'checklist' && !c.need, c, title: s.title});
+  });
+  sec.append(navRow(i));
+  app.append(sec);
+  stations.push(sec);
+});
+// summary station
+const sumI = stations.length;
+const sum = h('section', {class:'station summary', id:'st'+sumI, 'aria-labelledby':'st'+sumI+'h', hidden:true},
+  h('h2', {id:'st'+sumI+'h', tabindex:'-1'}, 'My Work'),
+  h('p', {html:'This practice is <strong>ungraded</strong>. Your written responses are collected below. Copy them into a document to keep, or bring them to class to share. Work you type may be saved in this browser only, so copy anything you want to keep.'}),
+  h('label', {for:'summaryText', class:'kbd'}, 'Summary of my responses'),
+  h('textarea', {id:'summaryText', readonly:true}),
+  h('div', {class:'btnrow'},
+    h('button', {class:'btn', type:'button', onclick: copySummary}, 'Copy my work'),
+    h('button', {class:'btn secondary', type:'button', onclick: () => window.print()}, 'Print'),
+    h('button', {class:'btn secondary', type:'button', onclick: clearAll}, 'Clear my saved responses')),
+  h('div', {class:'fb', id:'copyfb', role:'status', 'aria-live':'polite'}),
+  navRow(sumI, true));
+app.append(sum); stations.push(sum);
+
+CFG.stations.concat([{title:'My Work', label:'Finish'}]).forEach((s,i) => {
+  const b = h('button', {type:'button', onclick: () => go(i, true)}, h('span', {class:'tick', 'aria-hidden':'true', text: i < CFG.stations.length ? String(i+1) : '✓'}), (i < CFG.stations.length ? s.short || s.title : 'My Work'), h('span', {class:'sr'}));
+  stepper.append(h('li', {}, b));
+});
+function navRow(i, last){
+  return h('div', {class:'nav'},
+    i > 0 ? h('button', {class:'btn secondary', type:'button', onclick: () => go(i-1, true)}, 'Previous') : h('span'),
+    last ? h('span') : h('button', {class:'btn', type:'button', 'data-next': i, onclick: () => go(i+1, true)}, i === CFG.stations.length - 1 ? 'Finish: My Work' : 'Next station'));
+}
+function go(i, focus){
+  current = i;
+  stations.forEach((s,j) => s.hidden = j !== i);
+  stepper.querySelectorAll('button').forEach((b,j) => { if (j === i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  if (focus) { const hd = stations[i].querySelector('h2'); hd.focus({preventScroll:true}); document.getElementById('top').scrollIntoView({block:'start'}); try { window.parent.postMessage({subject:'lti.scrollToTop'}, '*'); } catch(e) {} }
+  refresh();
+}
+function buildSummary(){
+  const lines = [CFG.course + ': ' + CFG.title, 'Ungraded practice', ''];
+  CFG.stations.forEach((s,i) => {
+    lines.push('== ' + (s.label || ('Station ' + (i+1))) + ': ' + s.title + (stationDone(i) ? ' (complete)' : ''));
+    comps.filter(c => c.station === i).forEach(c => {
+      const label = (c.c.label || c.c.prompt || c.c.summary || c.c.heading || '').replace(/<[^>]+>/g,'');
+      if (c.c.type === 'text') { const v = (state.resp[c.id]||'').trim(); lines.push('- ' + label); lines.push('  ' + (v || '(no response yet)')); }
+      else if (state.results[c.id]) lines.push('- ' + label + ' ' + state.results[c.id]);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+function copySummary(){
+  const t = document.getElementById('summaryText'); const box = document.getElementById('copyfb');
+  const okMsg = () => fb(box, 'ok', '<p>Copied. Paste it into a document or note to keep it.</p>');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t.value).then(okMsg, fallback); else fallback();
+  function fallback(){ t.removeAttribute('readonly'); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch(e) {} t.setAttribute('readonly',''); ok ? okMsg() : fb(box, 'info', '<p>Your browser blocked copying. The text is selected: press Ctrl+C (or Command+C) to copy.</p>'); }
+}
+function clearAll(){
+  try { localStorage.removeItem(STORE); } catch(e) {}
+  document.querySelectorAll('textarea:not([readonly])').forEach(t => { t.value=''; t.dispatchEvent(new Event('input')); });
+  fb(document.getElementById('copyfb'), 'info', '<p>Saved responses cleared from this browser.</p>');
+}
+
+// ---------- Canvas iframe resize (no double scrollbar)
+const embedded = window.self !== window.top;
+if (embedded) document.documentElement.classList.add('embedded');
+let lastH = 0;
+function announceResize(){
+  if (!embedded) return;
+  requestAnimationFrame(() => {
+    const hgt = Math.ceil(document.documentElement.getBoundingClientRect().height) + 4;
+    if (Math.abs(hgt - lastH) > 2) { lastH = hgt; try { window.parent.postMessage({subject:'lti.frameResize', height: hgt}, '*'); } catch(e) {} }
+  });
+}
+window.PH.resize = announceResize;
+window.addEventListener('load', announceResize);
+window.addEventListener('resize', announceResize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(announceResize);
+if ('ResizeObserver' in window) new ResizeObserver(announceResize).observe(document.getElementById('app'));
+go(0, false);
+})();
+</script>
+</body>
+</html>
